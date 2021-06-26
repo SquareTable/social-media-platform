@@ -2,14 +2,14 @@
     "squaretable_social_media": {
      "name": "Social media platform name here",
      "icon": "./path/to/your/app-icon.png",
-     "version": "0.0.1",
-     "slug": "your-app-slug",
+     "version": "1.0.0",
+     "slug": "social-media-platform",
      "ios": {
-       "bundleIdentifier": "com.yourcompany.yourappname",
+       "bundleIdentifier": "com.squaretable.socialmediaplatform",
        "buildNumber": "1.0.0"
      },
      "android": {
-       "package": "com.yourcompany.yourappname",
+       "package": "com.squaretable.socialmediaplatform",
        "versionCode": 1
      }
     }
