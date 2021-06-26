@@ -1,19 +1,20 @@
 import 'react-native-gesture-handler';
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+/*import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';  Uncomment these when react navigation starts working
+*/
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 export default function App() {
   return (
-    <NavigationContainer>
+    /*<NavigationContainer>*/
       <View style={styles.body_style}>
         <Text>This is the start of SquareTable's social media app</Text>
         <StatusBar style="auto" />
         <Text style={styles.test_container}>Testing</Text>
       </View>
-    </NavigationContainer>
+    /*</NavigationContainer>*/
     
   );
 }
