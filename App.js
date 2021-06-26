@@ -4,7 +4,7 @@ import { StyleSheet, Text, View } from 'react-native';
 
 export default function App() {
   return (
-    <View style={styles.container}>
+    <View style={styles.body_style}>
       <Text>This is the start of SquareTable's social media app</Text>
       <StatusBar style="auto" />
       <Text style={styles.test_container}>Testing</Text>
@@ -13,7 +13,7 @@ export default function App() {
   );
 }
 const styles = StyleSheet.create({
-  container: {
+  body_style: {
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
