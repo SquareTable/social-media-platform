@@ -24,7 +24,7 @@ const homeScreen = () => {
       <View style={{flex: 1,alignItems: "center", justifyContent: "center"}}>
       <Text>This is the start of SquareTable's social media app</Text>
       <StatusBar style="auto" />
-      <Text style={styles.test_container}>Testing</Text>
+      <Text style={{backgroundColor: '#192717',color: "white",fontWeight: "bold",}}>Testing</Text>
     </View>
     );
 };
