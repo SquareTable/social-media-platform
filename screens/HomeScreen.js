@@ -10,14 +10,6 @@ const HomeScreen = ({navigation}) => {
             title="Click here"
             onPress={() => alert('Button clicked!')}
             />
-            <Image
-                source={require('../assets/doge.gif')}
-                resizeMode = 'contain'
-                style={{
-                    width: 200,
-                    height: 200
-                }}
-            />
         </View>
     );
 };
