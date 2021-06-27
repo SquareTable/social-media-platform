@@ -4,6 +4,7 @@ import { StyleSheet, Text, View, Button } from 'react-native';
 const HomeScreen = ({navigation}) => {
     return(
         <View style={Styles.container}>
+            <Text style={{fontSize: 20}}>SquareTable Social Media Platform</Text>
             <Text>Home Screen</Text>
             <Button
             title="Click here"
