@@ -3,6 +3,7 @@
     "name": "social-media-platform",
     "slug": "social-media-platform",
     "version": "1.0.0",
+    "owner": "sebtheman",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "splash": {
