@@ -7,7 +7,7 @@ const HomeScreen = ({navigation}) => {
             <Text>Home Screen</Text>
             <Button
             title="Click here"
-            onpress={() => alert('Button clicked!')}
+            onPress={() => alert('Button clicked!')}
             />
         </View>
     );
@@ -20,6 +20,6 @@ const Styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#377412'
+        backgroundColor: '#08F1ED'
     },
 });

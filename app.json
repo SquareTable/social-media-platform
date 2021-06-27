@@ -27,6 +27,8 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "description": "SquareTable Social Media Platform",
+    "githubUrl": "https://github.com/SquareTable/social-media-platform"
   }
 }
