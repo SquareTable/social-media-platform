@@ -7,6 +7,8 @@ import FindScreen from '../screens/FindScreen';
 import ChatScreen from '../screens/ChatScreen';
 import PostScreen from '../screens/PostScreen';
 import SettingsScreen from '../screens/SettingsScreen';
+import BadgesScreen from '../screens/BadgesScreen';
+import LoginScreen from '../screens/LoginScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -20,7 +22,7 @@ const CustomTabBarButton = ({children, onPress}) => (
         }}
         onPress={onPress}
     >
-        <View sytle={{
+        <View style={{
             width: 70,
             height: 70,
             borderRadius: 35,
@@ -56,12 +58,12 @@ const Tabs = () => {
                             source={require('../assets/app_icons/home.png')}
                             resizeMode = 'contain'
                             style={{
-                                width: 25,
-                                height: 25,
+                                width: 20,
+                                height: 20,
                                 tintColor: focused ? '#e32f45' : '#748c94'
                             }}
                         />
-                        <Text style={{color: focused ? '#e32f45' : '#748c94', fontSize: 12,}}>HOME</Text>
+                        <Text style={{color: focused ? '#e32f45' : '#748c94', fontSize: 10,}}>HOME</Text>
                     </View>
                 ),
             }} />
@@ -72,15 +74,31 @@ const Tabs = () => {
                             source={require('../assets/app_icons/find.png')}
                             resizeMode = 'contain'
                             style={{
-                                width: 25,
-                                height: 25,
+                                width: 20,
+                                height: 20,
                                 tintColor: focused ? '#e32f45' : '#748c94'
                             }}
                         />
-                        <Text style={{color: focused ? '#e32f45' : '#748c94', fontSize: 12,}}>FIND</Text>
+                        <Text style={{color: focused ? '#e32f45' : '#748c94', fontSize: 10,}}>FIND</Text>
                     </View>
                 ),
             }} />
+            <Tab.Screen name="Chat" component={ChatScreen} options={{
+                tabBarIcon: ({focused}) => (
+                    <View style={{alignItems: 'center', justifyContent: 'center', top: 10}}>
+                        <Image
+                            source={require('../assets/app_icons/chat.png')}
+                            resizeMode = 'contain'
+                            style={{
+                                width: 20,
+                                height: 20,
+                                tintColor: focused ? '#e32f45' : '#748c94'
+                            }}
+                        />
+                        <Text style={{color: focused ? '#e32f45' : '#748c94', fontSize: 10,}}>CHAT</Text>
+                    </View>
+                ),
+            }}/>
             <Tab.Screen name="Post" component={PostScreen} 
             options={{
                 tabBarIcon: ({focused}) => (
@@ -97,19 +115,35 @@ const Tabs = () => {
                     <CustomTabBarButton {...props} />
                 )
             }}/>
-            <Tab.Screen name="Chat" component={ChatScreen} options={{
+            <Tab.Screen name="Badges" component={BadgesScreen} options={{
                 tabBarIcon: ({focused}) => (
                     <View style={{alignItems: 'center', justifyContent: 'center', top: 10}}>
                         <Image
                             source={require('../assets/app_icons/chat.png')}
                             resizeMode = 'contain'
                             style={{
-                                width: 25,
-                                height: 25,
+                                width: 20,
+                                height: 20,
                                 tintColor: focused ? '#e32f45' : '#748c94'
                             }}
                         />
-                        <Text style={{color: focused ? '#e32f45' : '#748c94', fontSize: 12,}}>CHAT</Text>
+                        <Text style={{color: focused ? '#e32f45' : '#748c94', fontSize: 10,}}>BADGES</Text>
+                    </View>
+                ),
+            }}/>
+            <Tab.Screen name="Login" component={LoginScreen} options={{
+                tabBarIcon: ({focused}) => (
+                    <View style={{alignItems: 'center', justifyContent: 'center', top: 10}}>
+                        <Image
+                            source={require('../assets/app_icons/settings.png')}
+                            resizeMode = 'contain'
+                            style={{
+                                width: 20,
+                                height: 20,
+                                tintColor: focused ? '#e32f45' : '#748c94'
+                            }}
+                        />
+                        <Text style={{color: focused ? '#e32f45' : '#748c94', fontSize: 10,}}>LOGIN</Text>
                     </View>
                 ),
             }}/>
@@ -120,12 +154,12 @@ const Tabs = () => {
                             source={require('../assets/app_icons/settings.png')}
                             resizeMode = 'contain'
                             style={{
-                                width: 25,
-                                height: 25,
+                                width: 20,
+                                height: 20,
                                 tintColor: focused ? '#e32f45' : '#748c94'
                             }}
                         />
-                        <Text style={{color: focused ? '#e32f45' : '#748c94', fontSize: 12,}}>SETTINGS</Text>
+                        <Text style={{color: focused ? '#e32f45' : '#748c94', fontSize: 8,}}>SETTINGS</Text>
                     </View>
                 ),
             }}/>
