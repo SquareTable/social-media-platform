@@ -5,7 +5,6 @@ const LoginScreen = ({navigation}) => {
     return(
         <View style={Styles.container}>
             <Text>Login Screen</Text>
-            <Text>Test</Text>
             <Button
             title="Click here"
             onPress={() => alert('Button clicked!')}
