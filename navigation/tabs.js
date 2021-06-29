@@ -143,8 +143,8 @@ const Tabs = () => {
                                 tintColor: focused ? '#e32f45' : '#748c94'
                             }}
                         />
-                        <Text style={{color: focused ? '#e32f45' : '#748c94', fontSize: 10,}}>LOGIN</Text>
-                        <Text style={{color: focused ? '#e32f45' : '#748c94', fontSize: 8,}}>/ LOGOUT</Text>
+                        <Text style={{color: focused ? '#e32f45' : '#748c94', fontSize: 10,}}>LOGIN /</Text>
+                        <Text style={{color: focused ? '#e32f45' : '#748c94', fontSize: 9,}}>LOGOUT</Text>
                     </View>
                 ),
             }}/>
