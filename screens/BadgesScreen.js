@@ -51,6 +51,62 @@ const BadgesScreen = ({navigation}) => {
                 <Text>Test</Text>
                 <Text>Test</Text>
                 <Text>Test</Text>
+                <Text>Test</Text>
+                <Text>Test</Text>
+                <Text>Test</Text>
+                <Text>Test</Text>
+                <Text>Test</Text>
+                <Text>Test</Text>
+                <Text>Test</Text>
+                <Text>Test</Text>
+                <Text>Test</Text>
+                <Text>Test</Text>
+                <Text>Test</Text>
+                <Text>Test</Text>
+                <Text>Test</Text>
+                <Text>Test</Text>
+                <Text>Test</Text>
+                <Text>Test</Text>
+                <Text>Test</Text>
+                <Text>Test</Text>
+                <Text>Test</Text>
+                <Text>Test</Text>
+                <Text>Test</Text>
+                <Text>Test</Text>
+                <Text>Test</Text>
+                <Text>Test</Text>
+                <Text>Test</Text>
+                <Text>Test</Text>
+                <Text>Test</Text>
+                <Text>Test</Text>
+                <Text>Test</Text>
+                <Text>Test</Text>
+                <Text>Test</Text>
+                <Text>Test</Text>
+                <Text>Test</Text>
+                <Text>Test</Text>
+                <Text>Test</Text>
+                <Text>Test</Text>
+                <Text>Test</Text>
+                <Text>Test</Text>
+                <Text>Test</Text>
+                <Text>Test</Text>
+                <Text>Test</Text>
+                <Text>Test</Text>
+                <Text>Test</Text>
+                <Text>Test</Text>
+                <Text>Test</Text>
+                <Text>Test</Text>
+                <Text>Test</Text>
+                <Text>Test</Text>
+                <Text>Test</Text>
+                <Text>Test</Text>
+                <Text>Test</Text>
+                <Text>Test</Text>
+                <Text>Test</Text>
+                <Text>Test</Text>
+                <Text>Test</Text>
+                <Text>Test</Text>
                 <Button
                 title="Click here"
                 onPress={() => alert('Button clicked!')}
@@ -72,9 +128,11 @@ export default BadgesScreen;
 
 const Styles = StyleSheet.create({
     container: {
-        flex: 1,
         paddingTop: StatusBar.currentHeight,
         backgroundColor: '#08F1ED',
+        flex: 1,
+        justifyContent: 'center',
+        alignContent: 'center',
     },
     scrollView: {
         width: screenWidth,
@@ -83,6 +141,5 @@ const Styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         alignContent: 'center',
-        flex: 1
     },  
 });
