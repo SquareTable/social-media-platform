@@ -144,6 +144,7 @@ const Tabs = () => {
                             }}
                         />
                         <Text style={{color: focused ? '#e32f45' : '#748c94', fontSize: 10,}}>LOGIN</Text>
+                        <Text style={{color: focused ? '#e32f45' : '#748c94', fontSize: 8,}}>/ LOGOUT</Text>
                     </View>
                 ),
             }}/>
