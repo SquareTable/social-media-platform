@@ -119,7 +119,7 @@ const Tabs = () => {
                 tabBarIcon: ({focused}) => (
                     <View style={{alignItems: 'center', justifyContent: 'center', top: 10}}>
                         <Image
-                            source={require('../assets/app_icons/chat.png')}
+                            source={require('../assets/app_icons/badges.png')}
                             resizeMode = 'contain'
                             style={{
                                 width: 20,
@@ -135,7 +135,7 @@ const Tabs = () => {
                 tabBarIcon: ({focused}) => (
                     <View style={{alignItems: 'center', justifyContent: 'center', top: 10}}>
                         <Image
-                            source={require('../assets/app_icons/settings.png')}
+                            source={require('../assets/app_icons/login.png')}
                             resizeMode = 'contain'
                             style={{
                                 width: 20,
