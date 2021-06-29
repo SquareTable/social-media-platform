@@ -18,14 +18,6 @@ const HomeScreen = ({navigation}) => {
                     height: 200
                 }}
             />
-            <Image
-                source={require('../assets/icon.png')}
-                resizeMode = 'contain'
-                style={{
-                    width: 200,
-                    height: 200
-                }}
-            />
         </View>
     );
 };

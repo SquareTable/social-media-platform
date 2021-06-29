@@ -5,6 +5,7 @@ const SettingsScreen = ({navigation}) => {
     return(
         <View style={Styles.container}>
             <Text>Settings Screen</Text>
+            <Text>Put the login/logout screen in here</Text>
             <Button
             title="Click here"
             onPress={() => alert('Button clicked!')}
