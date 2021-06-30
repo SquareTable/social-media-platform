@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button, Image, TouchableOpacity} from 'react-native';
+import { StyleSheet, Text, View, Button, Image, TouchableOpacity, SafeAreaView} from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import Constants from "expo-constants";
 import styled from "styled-components";
@@ -12,7 +12,7 @@ var onPressSettings=() => {
 
 const HomeScreen = ({navigation}) => {
     return(
-        <StyledContainer>
+        <SafeAreaView style={Styles.container}>
             <TouchableOpacity onPressIn={() => {onPressSettings();}}>
                 <Image
                     source={require('../assets/app_icons/settings.png')} 
@@ -31,24 +31,28 @@ const HomeScreen = ({navigation}) => {
                     height: 200,
                 }}
             />
-        </StyledContainer>
+        </SafeAreaView>
     );
 };
 
 export default HomeScreen;
 
-const StyledContainer = styled.View`
+/*const StyledContainer = styled.View`
     flex: 1;
     padding: 25px;
     padding-top: ${StatusBarHeight}px;
     backgroundColor: #08F1ED
-`
+`*/
 
 const Styles = StyleSheet.create({
+    color_container: {
+        marginTop: -Constants.statusBarHeight,
+        backgroundColor: '#08F1ED',
+        marginTop: Constants.statusBarHeight,
+    },
     container: {
         flex: 1,
+        padding: 25,
         backgroundColor: '#08F1ED',
-        alignItems: 'center',
-        justifyContent: 'center',
     },
 });

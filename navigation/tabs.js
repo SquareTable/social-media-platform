@@ -68,22 +68,6 @@ const Tabs = () => {
                     </View>
                 ),
             }} />
-            <Tab.Screen name="SettingsButton" component={settingsButtonTopRight} options={{
-                tabBarIcon: ({focused}) => (
-                    <View style={{alignItems: 'center', justifyContent: 'center', top: 10}}>
-                        <Image
-                            source={require('../assets/app_icons/home.png')}
-                            resizeMode = 'contain'
-                            style={{
-                                width: 20,
-                                height: 20,
-                                tintColor: focused ? '#e32f45' : '#748c94'
-                            }}
-                        />
-                        <Text style={{color: focused ? '#e32f45' : '#748c94', fontSize: 10,}}>TEST</Text>
-                    </View>
-                ),
-            }} />
             <Tab.Screen name="Find" component={FindScreen} options={{
                 tabBarIcon: ({focused}) => (
                     <View style={{alignItems: 'center', justifyContent: 'center', top: 10}}>
