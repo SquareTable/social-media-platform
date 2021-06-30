@@ -9,6 +9,7 @@ import PostScreen from '../screens/PostScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import BadgesScreen from '../screens/BadgesScreen';
 import LoginScreen from '../screens/LoginScreen';
+import settingsButtonTopRight from '../screens/settingsButtonTopRight';
 
 const Tab = createBottomTabNavigator();
 
@@ -64,6 +65,22 @@ const Tabs = () => {
                             }}
                         />
                         <Text style={{color: focused ? '#e32f45' : '#748c94', fontSize: 10,}}>HOME</Text>
+                    </View>
+                ),
+            }} />
+            <Tab.Screen name="SettingsButton" component={settingsButtonTopRight} options={{
+                tabBarIcon: ({focused}) => (
+                    <View style={{alignItems: 'center', justifyContent: 'center', top: 10}}>
+                        <Image
+                            source={require('../assets/app_icons/home.png')}
+                            resizeMode = 'contain'
+                            style={{
+                                width: 20,
+                                height: 20,
+                                tintColor: focused ? '#e32f45' : '#748c94'
+                            }}
+                        />
+                        <Text style={{color: focused ? '#e32f45' : '#748c94', fontSize: 10,}}>TEST</Text>
                     </View>
                 ),
             }} />
@@ -127,7 +144,7 @@ const Tabs = () => {
                                 tintColor: focused ? '#e32f45' : '#748c94'
                             }}
                         />
-                        <Text style={{color: focused ? '#e32f45' : '#748c94', fontSize: 10,}}>BADGES</Text>
+                        <Text style={{color: focused ? '#e32f45' : '#748c94', fontSize: 9,}}>BADGES</Text>
                     </View>
                 ),
             }}/>
@@ -159,7 +176,7 @@ const Tabs = () => {
                                 tintColor: focused ? '#e32f45' : '#748c94'
                             }}
                         />
-                        <Text style={{color: focused ? '#e32f45' : '#748c94', fontSize: 8,}}>SETTINGS</Text>
+                        <Text style={{color: focused ? '#e32f45' : '#748c94', fontSize: 7,}}>SETTINGS</Text>
                     </View>
                 ),
             }}/>
