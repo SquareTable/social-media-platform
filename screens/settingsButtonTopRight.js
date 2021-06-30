@@ -17,7 +17,7 @@ const settingsButtonTopRight = ({navigation}) => {
             <TouchableOpacity onPressIn={() => {onPressSettings();}}>
                 <Image
                     source={require('../assets/app_icons/settings.png')} 
-                    style={{ width: 30, height: 30, position: 'absolute', right: 20, top: 40 }}
+                    style={{ width: 30, height: 30, position: 'absolute', right: 20, top: 20 }}
                 />
             </TouchableOpacity>
         </View>
