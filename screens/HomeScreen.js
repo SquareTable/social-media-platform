@@ -25,14 +25,16 @@ const HomeScreen = ({navigation}) => {
                         resizeMethod="resize"
                     />
             </TouchableOpacity>
-            <Text style={{fontSize: 30}}>SocialSquare</Text>
-            <Text>Home Screen</Text>
+            <Text style={{fontSize: 30, textAlign: 'center'}}>SocialSquare</Text>
+            <Text style={{textAlign: 'center'}}>Home Screen</Text>
             <Image
                 source={require('../assets/doge.gif')}
                 resizeMode = 'contain'
                 style={{
                     width: 200,
                     height: 200,
+                    paddingLeft: '50%',
+                    paddingRight: '50%',
                 }}
             />
         </SafeAreaView>
@@ -42,5 +44,8 @@ const HomeScreen = ({navigation}) => {
 export default HomeScreen;
 
 const Styles = StyleSheet.create({
-
+    centerItems: {
+        paddingLeft: '50%',
+        paddingRight: '50%',
+    }
 });
