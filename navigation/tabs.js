@@ -10,6 +10,7 @@ import SettingsScreen from '../screens/SettingsScreen';
 import BadgesScreen from '../screens/BadgesScreen';
 import LoginScreen from '../screens/LoginScreen';
 import settingsButtonTopRight from '../screens/settingsButtonTopRight';
+import ProfileScreen from '../screens/ProfileScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -132,7 +133,7 @@ const Tabs = () => {
                     </View>
                 ),
             }}/>
-            <Tab.Screen name="Login" component={LoginScreen} options={{
+            <Tab.Screen name="Profile" component={ProfileScreen} options={{
                 tabBarIcon: ({focused}) => (
                     <View style={{alignItems: 'center', justifyContent: 'center', top: 10}}>
                         <Image
