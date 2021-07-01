@@ -7,106 +7,184 @@ const BadgesScreen = ({navigation}) => {
     return(
         <SafeAreaView style={Styles.container}>
             <ScrollView style={Styles.ScrollView}>
-                <Text style={Styles.containerItems}>Badges Screen</Text>
-                <Text>This will also be used as a testing screen as badges are the least of our priorities</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
-                <Text>Test</Text>
+                <Text style={Styles.containerText}>Badges Screen</Text>
+                <Text style={Styles.containerText}>This will also be used as a testing screen as badges are the least of our priorities</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
+                <Text style={Styles.containerText}>Testing</Text>
                 <Button
                 title="Click here"
                 onPress={() => alert('Button clicked!')}
@@ -116,7 +194,9 @@ const BadgesScreen = ({navigation}) => {
                     resizeMode = 'contain'
                     style={{
                         width: 200,
-                        height: 200
+                        height: 200,
+                        paddingLeft: '50%',
+                        paddingRight: '50%'
                     }}
                 />
             </ScrollView>
@@ -137,9 +217,7 @@ const Styles = StyleSheet.create({
     scrollView: {
         width: screenWidth,
     },
-    containerItems: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        alignContent: 'center',
+    containerText: {
+        textAlign: 'center'
     },  
 });
