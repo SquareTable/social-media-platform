@@ -6,7 +6,6 @@ const FindScreen = ({navigation}) => {
         <View style={Styles.container}>
             <Text>Find Screen</Text>
             <Button
-            title="Click here"
             onPress={() => alert('Button clicked!')}
             />
             <Image
