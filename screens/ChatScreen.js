@@ -6,8 +6,8 @@ const ChatScreen = ({navigation}) => {
         <View style={Styles.container}>
             <Text>Chat Screen</Text>
             <Button
-            title="Click here"
-            onPress={() => alert('Button clicked!')}
+            title="Click here - Andrew"
+            onPress={() => alert('ANDREW IS A NONCE')}
             />
             <Image
                 source={require('../assets/doge.gif')}
