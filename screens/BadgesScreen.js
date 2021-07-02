@@ -188,6 +188,9 @@ const BadgesScreen = ({navigation}) => {
                 <Button
                 title="Click here"
                 onPress={() => alert('Button clicked!')}
+                style={{
+                    
+                }}
                 />
                 <Image
                     source={require('../assets/doge.gif')}
