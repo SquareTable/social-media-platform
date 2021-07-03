@@ -3,12 +3,16 @@ import { StyleSheet, Text, View, Button, Image, TouchableOpacity, SafeAreaView, 
 import { StatusBar } from 'expo-status-bar';
 import Constants from "expo-constants";
 import styled from "styled-components";
+import Images from "../posts/images.js";
+import Post from "../posts/post.js";
 
 const StatusBarHeight = Constants.statusBarHeight;
 
 var onPressSettings=() => {
     alert("KING KOVID");
 }
+
+var postImage = "'../assets/app_icons/settings.png'";
 
 const HomeScreen = ({navigation}) => {
     /*   LIST OF THINGS TO DO TO THIS PAGE (HomeScreen.js):
@@ -27,7 +31,56 @@ const HomeScreen = ({navigation}) => {
             </TouchableOpacity>
             <Text style={{fontSize: 30, fontWeight: 'bold'}}>SocialSquare</Text>
             <ScrollView>
-                <Text style={{fontSize: 20, textAlign: 'center', paddingTop: '50%', paddingBottom: '50%'}}>Feed goes here</Text>
+                <Post></Post>
+                <Post></Post>
+                <Post></Post>
+                <Post></Post>
+                <Post></Post>
+                <Post></Post>
+                <Post></Post>
+                <Post></Post>
+                <Post></Post>
+                <Post></Post>
+                <Post></Post>
+                <Post></Post>
+                <Post></Post>
+                <Post></Post>
+                <Post></Post>
+                <Post></Post>
+                <Post></Post>
+                <Post></Post>
+                <Post></Post>
+                <Post></Post>
+                <Post></Post>
+                <Post></Post>
+                <Post></Post>
+                <Post></Post>
+                <Post></Post>
+                <Post></Post>
+                <Post></Post>
+                <Post></Post>
+                <Post></Post>
+                <Post></Post>
+                <Post></Post>
+                <Post></Post>
+                <Post></Post>
+                <Post></Post>
+                <Post></Post>
+                <Post></Post>
+                <Post></Post>
+                <Post></Post>
+                <Post></Post>
+                <Post></Post>
+                <Post></Post>
+                <Post></Post>
+                <Post></Post>
+                <Post></Post>
+                <Post></Post>
+                <Post></Post>
+                <Post></Post>
+                <Post></Post>
+                <Post></Post>
+                <Post></Post>
             </ScrollView>
         </SafeAreaView>
     );
@@ -42,5 +95,18 @@ const Styles = StyleSheet.create({
     },
     centerText: {
         textAlign: 'center'
-    }
+    },
+    post: {
+        maxWidth: 500,
+        alignContent: 'center',
+        alignItems: 'center',
+        alignSelf: 'center',
+
+    },
+    post_background: {
+        minWidth: 600,
+        maxWidth: 600,
+        backgroundColor: '#333333',
+        alignSelf: 'center',
+    },
 });
