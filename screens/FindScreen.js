@@ -1,10 +1,11 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button, Image} from 'react-native';
+import { StyleSheet, Text, View, Button, Image, SafeAreaView, ScrollView} from 'react-native';
 
 const FindScreen = ({navigation}) => {
     return(
-        <View style={Styles.container}>
-            <Text>Find Screen</Text>
+        <SafeAreaView style={Styles.container}>
+            <ScrollView>
+            <Text style={{textAlign: 'center'}}>Find Screen</Text>
             <Button
             title="Click here"
             onPress={() => alert('Button clicked!')}
@@ -14,10 +15,13 @@ const FindScreen = ({navigation}) => {
                 resizeMode = 'contain'
                 style={{
                     width: 200,
-                    height: 200
+                    height: 200,
+                    paddingLeft: '50%',
+                    paddingRight: '50%'
                 }}
             />
-        </View>
+            </ScrollView>
+        </SafeAreaView>
     );
 };
 
@@ -26,8 +30,6 @@ export default FindScreen;
 const Styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
         backgroundColor: '#08F1ED'
     },
 });
