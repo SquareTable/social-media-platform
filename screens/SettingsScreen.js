@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button, Image, SafeAreaView, TouchableOpacity} from 'react-native';
+import { StyleSheet, Text, View, Button, Image, SafeAreaView, TouchableOpacity, ScrollView} from 'react-native';
 import { Col, Row, Grid } from "react-native-easy-grid";
 
 const SettingsScreen = ({navigation}) => {
@@ -7,18 +7,12 @@ const SettingsScreen = ({navigation}) => {
         <SafeAreaView style={Styles.container}>
             <Text>Settings Screen</Text>
             <Grid style={{height: 50}}>
-                <TouchableOpacity style={{backgroundColor: '#284712', height:50, width: '100%', minWidth: '100%', maxWidth: '100%'}}>
-                    <Row>
-                        <Text>Hi</Text>
-                    </Row>
-                </TouchableOpacity>
-            </Grid>
-            <Grid>
-                <TouchableOpacity style={{backgroundColor: '#923716', height:50, width: '100%', minWidth: '100%', maxWidth: '100%'}}>
-                    <Row>
-                        <Text>Hi</Text>
-                    </Row>
-                </TouchableOpacity>
+                <Row style={{backgroundColor: "#927341", height: 50, maxHeight: 50, minHeight: 50}}>
+                    <Text>Hi</Text>
+                </Row>
+                <Row style={{backgroundColor: '#384721', height: 50, maxHeight: 50, minHeight: 50}}>
+                    <Text>Hi</Text>
+                </Row>
             </Grid>
         </SafeAreaView>
     );
