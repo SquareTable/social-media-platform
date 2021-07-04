@@ -4,6 +4,7 @@ import { StatusBar } from 'expo-status-bar';
 import Constants from "expo-constants";
 import styled from "styled-components";
 import Images from "../posts/images.js";
+import ProgressiveImage from './ProgressiveImage.js';
 
 const StatusBarHeight = Constants.statusBarHeight;
 
@@ -11,15 +12,18 @@ const Post = ({navigation}) => {
     return(
         <View style={Styles.post_background}>
             <View style={Styles.post}>
-                <View style={{backgroundColor: '#FF0000', maxWidth: 500, minWidth: 500}}>
-                    <Image
-                        source={Images.posts.clock}
-                        style={{width: 500, height: 500}}
-                        resizeMode="contain"
-                        resizeMethod="resize"
-                    />
+                <View style={{maxWidth: 400, minWidth: 400}}>
+                    <Text style={{color: 'white', textAlign: 'center'}}>Profile pic and username goes here</Text>
+                    <View style={{backgroundColor: '#FF0000', maxWidth: 400, minWidth: 400}}>
+                        <ProgressiveImage
+                            source={Images.posts.clock}
+                            style={{minHeight: 400, minWidth: 400, width: 400, height: 400, maxWidth: 400, maxHeight: 400}}
+                            resizeMode="contain"
+                            resizeMethod="resize"
+                        />
                     </View>
-                    <Text style={{color: "white"}}>Like and comment buttons will go here</Text>
+                    <Text style={{color: "white", textAlign: 'center'}}>Like and comment buttons will go here</Text>
+                </View>
             </View>
         </View>
     );
@@ -43,8 +47,8 @@ const Styles = StyleSheet.create({
 
     },
     post_background: {
-        minWidth: 600,
-        maxWidth: 600,
+        minWidth: 500,
+        maxWidth: 500,
         backgroundColor: '#333333',
         alignSelf: 'center',
     },
