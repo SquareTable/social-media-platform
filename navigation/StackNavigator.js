@@ -5,6 +5,7 @@ import ProfileScreen from "../screens/ProfileScreen";
 import SettingsScreen from "../screens/SettingsScreen";
 import HomeScreen from "../screens/HomeScreen";
 import BadgesScreen from "../screens/BadgesScreen";
+import LoginScreen from "../screens/LoginScreen";
 
 const Stack = createStackNavigator();
 
@@ -22,6 +23,7 @@ const ProfileScreenToSettings_StackNavigation = () => {
       <Stack.Screen name="Profile" component={ProfileScreen} />
       <Stack.Screen name="Settings" component={SettingsScreen} />
       <Stack.Screen name="Badges" component={BadgesScreen} />
+      <Stack.Screen name="Login" component={LoginScreen} />
     </Stack.Navigator>
   );
 };
@@ -33,6 +35,15 @@ const SettingsToBadges_StackNavigation = () => {
         <Stack.Screen name="Badges" component={BadgesScreen} />
       </Stack.Navigator>
     );
-  };
+};
 
-export { ProfileScreenToSettings_StackNavigation, SettingsToBadges_StackNavigation};
+const SettingsToLoginScreen_StackNavigation = () => {
+    return (
+      <Stack.Navigator screenOptions={screenOptionStyle}>
+        <Stack.Screen name="Settings" component={SettingsScreen} />
+        <Stack.Screen name="Login" component={LoginScreen} />
+      </Stack.Navigator>
+    );
+};
+
+export { ProfileScreenToSettings_StackNavigation, SettingsToBadges_StackNavigation, SettingsToLoginScreen_StackNavigation};
