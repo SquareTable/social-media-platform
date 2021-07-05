@@ -8,7 +8,7 @@ var onPressSettings=() => {
 const ProfileScreen = ({navigation}) => {
     return(
         <SafeAreaView style={{flex: 1, backgroundColor: '#08F1ED', paddingLeft: 10}}>
-            <TouchableOpacity onPressIn={() => navigation.navigate('Settings')} activeOpacity={0.5} style={{maxHeight: 15, minHeight: 15}}>
+            <TouchableOpacity onPressIn={() => navigation.navigate('Settings')} activeOpacity={0.5} style={{maxHeight: 40, minHeight: 40}}>
                 <Image
                     source={require('../assets/app_icons/settings.png')} 
                     style={{ width: 40, height: 40, position: 'absolute', right: 20, top: 10, zIndex: 9999999999}}
