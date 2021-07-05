@@ -5,9 +5,8 @@ import { Col, Row, Grid } from "react-native-easy-grid";
 const SettingsScreen = ({navigation}) => {
     return(
         <SafeAreaView style={Styles.container}>
-            <Text style={{textAlign: 'center', fontSize: 20, fontWeight: 'bold'}}>Settings Screen</Text>
-            <View style={{width: '100%', maxWidth: '100%', minWidth: '100%', height: 10, maxHeight: 10, minHeight: 10}}/>
-            <TouchableOpacity style={{backgroundColor: "#184727", width: '100%', maxWidth: '100%', minWidth: '100%', height: 50, maxHeight: 50, minHeight: 50}} onPressIn={() => alert("Need to learn how to have both a Stack Navigator and a Bottom Tabs Navigator in the same Expo app before I can make this work")}>
+            <View style={{width: '100%', maxWidth: '100%', minWidth: '100%', height: 20, maxHeight: 20, minHeight: 20}}/>
+            <TouchableOpacity style={{backgroundColor: "#184727", width: '100%', maxWidth: '100%', minWidth: '100%', height: 50, maxHeight: 50, minHeight: 50}} onPressIn={() => navigation.navigate('Badges')}>
                 <View>
                     <Text style={{color: 'white', fontWeight: 'bold', fontSize: 20}}>Badges</Text>
                 </View>

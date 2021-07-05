@@ -12,6 +12,7 @@ import BadgesScreen from '../screens/BadgesScreen';
 import LoginScreen from '../screens/LoginScreen';
 import settingsButtonTopRight from '../screens/settingsButtonTopRight';
 import ProfileScreen from '../screens/ProfileScreen';
+import {ProfileScreenToSettings_StackNavigation, SettingsToBadges_StackNavigation} from '../navigation/StackNavigator.js'
 
 
 const Tab = createBottomTabNavigator();
@@ -87,22 +88,6 @@ const Tabs = () => {
                     </View>
                 ),
             }} />
-            <Tab.Screen name="Chat" component={ChatScreen} options={{
-                tabBarIcon: ({focused}) => (
-                    <View style={{alignItems: 'center', justifyContent: 'center', top: 10}}>
-                        <Image
-                            source={require('../assets/app_icons/chat.png')}
-                            resizeMode = 'contain'
-                            style={{
-                                width: 20,
-                                height: 20,
-                                tintColor: focused ? '#e32f45' : '#748c94'
-                            }}
-                        />
-                        <Text style={{color: focused ? '#e32f45' : '#748c94', fontSize: 10,}}>CHAT</Text>
-                    </View>
-                ),
-            }}/>
             <Tab.Screen name="Post" component={PostScreen} 
             options={{
                 tabBarIcon: ({focused}) => (
@@ -119,11 +104,11 @@ const Tabs = () => {
                     <CustomTabBarButton {...props} />
                 )
             }}/>
-            <Tab.Screen name="Badges" component={BadgesScreen} options={{
+            <Tab.Screen name="Chat" component={ChatScreen} options={{
                 tabBarIcon: ({focused}) => (
                     <View style={{alignItems: 'center', justifyContent: 'center', top: 10}}>
                         <Image
-                            source={require('../assets/app_icons/badges.png')}
+                            source={require('../assets/app_icons/chat.png')}
                             resizeMode = 'contain'
                             style={{
                                 width: 20,
@@ -131,11 +116,11 @@ const Tabs = () => {
                                 tintColor: focused ? '#e32f45' : '#748c94'
                             }}
                         />
-                        <Text style={{color: focused ? '#e32f45' : '#748c94', fontSize: 9,}}>BADGES</Text>
+                        <Text style={{color: focused ? '#e32f45' : '#748c94', fontSize: 10,}}>CHAT</Text>
                     </View>
                 ),
             }}/>
-            <Tab.Screen name="Profile" component={ProfileScreen} options={{
+            <Tab.Screen name="Profile" component={ProfileScreenToSettings_StackNavigation} options={{
                 tabBarIcon: ({focused}) => (
                     <View style={{alignItems: 'center', justifyContent: 'center', top: 10}}>
                         <Image
@@ -148,22 +133,6 @@ const Tabs = () => {
                                 borderColor: 'black'
                             }}
                         />
-                    </View>
-                ),
-            }}/>
-            <Tab.Screen name="Settings" component={SettingsScreen} options={{
-                tabBarIcon: ({focused}) => (
-                    <View style={{alignItems: 'center', justifyContent: 'center', top: 10}}>
-                        <Image
-                            source={require('../assets/app_icons/settings.png')}
-                            resizeMode = 'contain'
-                            style={{
-                                width: 20,
-                                height: 20,
-                                tintColor: focused ? '#e32f45' : '#748c94'
-                            }}
-                        />
-                        <Text style={{color: focused ? '#e32f45' : '#748c94', fontSize: 7,}}>SETTINGS</Text>
                     </View>
                 ),
             }}/>

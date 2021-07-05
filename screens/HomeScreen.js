@@ -9,26 +9,14 @@ import Post from "../posts/post.js";
 const StatusBarHeight = Constants.statusBarHeight;
 
 var onPressSettings=() => {
-    alert("Once I learn how to make there be a Bottom Tabs Navigator and a Stack Navigator in the same project, I will make this settings icon take you to the settings screen");
+    navigation.navigate("Settings")
 }
 
 var postImage = "'../assets/app_icons/settings.png'";
 
 const HomeScreen = ({navigation}) => {
-    /*   LIST OF THINGS TO DO TO THIS PAGE (HomeScreen.js):
-        -Get settings button to work at the top of the screen for iOS and Android
-        -Add a little bit of padding to SafeAreaView for iOS and Android
-    */
     return(
         <SafeAreaView style={{flex: 1, backgroundColor: '#08F1ED', paddingLeft: 10}}>
-            <TouchableOpacity onPressIn={() => {onPressSettings();}} activeOpacity={0.5} style={{maxHeight: 15, minHeight: 15}}>
-                <Image
-                    source={require('../assets/app_icons/settings.png')} 
-                    style={{ width: 40, height: 40, position: 'absolute', right: 20, top: 10, zIndex: 9999999999}}
-                    resizeMode="contain"
-                    resizeMethod="resize"
-                />
-            </TouchableOpacity>
             <Text style={{fontSize: 30, fontWeight: 'bold', alignContent: 'center', alignItems: 'center', alignSelf: 'center'}}>SocialSquare</Text>
             <ScrollView>
                 <Post></Post>
