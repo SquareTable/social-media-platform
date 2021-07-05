@@ -20,10 +20,47 @@ const screenOptionStyle = {
 const ProfileScreenToSettings_StackNavigation = () => {
   return (
     <Stack.Navigator screenOptions={screenOptionStyle}>
-      <Stack.Screen name="Profile" component={ProfileScreen} />
-      <Stack.Screen name="Settings" component={SettingsScreen} />
-      <Stack.Screen name="Badges" component={BadgesScreen} />
-      <Stack.Screen name="Login" component={LoginScreen} />
+      <Stack.Screen name="Profile" component={ProfileScreen}
+        options={{
+          headerStyle: {
+            backgroundColor: '#f4511e',
+          },
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            fontSize: 20
+          },
+        }}
+      />
+      <Stack.Screen name="Settings" component={SettingsScreen} 
+      options={{
+        headerStyle: {
+          backgroundColor: '#f4511e',
+        },
+        headerTitleStyle: {
+          fontWeight: 'bold',
+          fontSize: 20
+        },
+      }}/>
+      <Stack.Screen name="Badges" component={BadgesScreen} 
+      options={{
+        headerStyle: {
+          backgroundColor: '#f4511e',
+        },
+        headerTitleStyle: {
+          fontWeight: 'bold',
+          fontSize: 20
+        },
+      }}/>
+      <Stack.Screen name="Login" component={LoginScreen} 
+      options={{
+        headerStyle: {
+          backgroundColor: '#f4511e',
+        },
+        headerTitleStyle: {
+          fontWeight: 'bold',
+          fontSize: 20
+        },
+      }}/>
     </Stack.Navigator>
   );
 };
@@ -31,8 +68,26 @@ const ProfileScreenToSettings_StackNavigation = () => {
 const SettingsToBadges_StackNavigation = () => {
     return (
       <Stack.Navigator screenOptions={screenOptionStyle}>
-        <Stack.Screen name="Settings" component={SettingsScreen} />
-        <Stack.Screen name="Badges" component={BadgesScreen} />
+        <Stack.Screen name="Settings" component={SettingsScreen} 
+        options={{
+          headerStyle: {
+            backgroundColor: '#f4511e',
+          },
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            fontSize: 20
+          },
+        }}/>
+        <Stack.Screen name="Badges" component={BadgesScreen} 
+        options={{
+          headerStyle: {
+            backgroundColor: '#f4511e',
+          },
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            fontSize: 20
+          },
+        }}/>
       </Stack.Navigator>
     );
 };
@@ -40,8 +95,26 @@ const SettingsToBadges_StackNavigation = () => {
 const SettingsToLoginScreen_StackNavigation = () => {
     return (
       <Stack.Navigator screenOptions={screenOptionStyle}>
-        <Stack.Screen name="Settings" component={SettingsScreen} />
-        <Stack.Screen name="Login" component={LoginScreen} />
+        <Stack.Screen name="Settings" component={SettingsScreen} 
+        options={{
+          headerStyle: {
+            backgroundColor: '#f4511e',
+          },
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            fontSize: 20
+          },
+        }}/>
+        <Stack.Screen name="Login" component={LoginScreen} 
+        options={{
+          headerStyle: {
+            backgroundColor: '#f4511e',
+          },
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            fontSize: 20
+          },
+        }}/>
       </Stack.Navigator>
     );
 };

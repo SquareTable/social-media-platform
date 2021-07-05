@@ -5,13 +5,9 @@ const ChatScreen = ({navigation}) => {
     return(
         <SafeAreaView style={Styles.container}>
             <ScrollView>
-            <Text style={{textAlign: 'center'}}>Chat Screen</Text>
-            <View style={{maxWidth: 70, maxHeight: 70, alignContent: 'center', alignItems: 'center'}}>
-                <Button
-                title="Click here - Andrew"
-                onPress={() => alert('ANDREW IS A NONCE')}
-                />
-            </View>
+            <Text style={{textAlign: 'center', fontSize: 40, fontWeight: 'bold'}}>Chat Screen</Text>
+            <Text style={{textAlign: 'center', fontSize: 25}}>Coming soon :)</Text>
+            <View style={{height: 20, maxHeight: 20, minHeight: 20, width: '100%', minWidth: '100%', maxWidth: '100%'}}/>
             <Image
                 source={require('../assets/doge.gif')}
                 resizeMode = 'contain'
