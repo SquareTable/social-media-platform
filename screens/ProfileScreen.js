@@ -1,33 +1,34 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button, Image} from 'react-native';
+import { StyleSheet, Text, View, Button, Image, TouchableOpacity, SafeAreaView, ScrollView} from 'react-native';
 
-const PostScreen = ({navigation}) => {
+var onPressSettings=() => {
+    alert("KING KOVID");
+}
+
+const ProfileScreen = ({navigation}) => {
     return(
-        <View style={Styles.container}>
-            <Text>Profile Screen</Text>
-            <Button
-            title="Click here"
-            onPress={() => alert('Button clicked!')}
-            />
-            <Image
-                source={require('../assets/doge.gif')}
-                resizeMode = 'contain'
-                style={{
-                    width: 200,
-                    height: 200
-                }}
-            />
-        </View>
+        <SafeAreaView style={{flex: 1, backgroundColor: '#08F1ED', paddingLeft: 10}}>
+            <TouchableOpacity onPressIn={() => {onPressSettings();}} activeOpacity={0.5} style={{maxHeight: 15, minHeight: 15}}>
+                <Image
+                    source={require('../assets/app_icons/settings.png')} 
+                    style={{ width: 40, height: 40, position: 'absolute', right: 20, top: 10, zIndex: 9999999999}}
+                    resizeMode="contain"
+                    resizeMethod="resize"
+                />
+            </TouchableOpacity>
+            <Text style={{fontSize: 20, fontWeight: 'bold', alignContent: 'center', alignItems: 'center', alignSelf: 'center'}}>PROFILE NAME HERE</Text>
+            <ScrollView>
+                <Text style={{fontSize: 30}}>Profile stuff will go here</Text>
+            </ScrollView>
+        </SafeAreaView>
     );
 };
 
-export default PostScreen;
+export default ProfileScreen;
 
 const Styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
         backgroundColor: '#08F1ED'
     },
 });
