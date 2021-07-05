@@ -6,14 +6,21 @@ const SettingsScreen = ({navigation}) => {
     return(
         <SafeAreaView style={Styles.container}>
             <Text>Settings Screen</Text>
-            <Grid style={{height: 50}}>
-                <Row style={{backgroundColor: "#927341", height: 50, maxHeight: 50, minHeight: 50}}>
+            <TouchableOpacity style={{backgroundColor: "#184727", width: '100%', maxWidth: '100%', minWidth: '100%', height: 50, maxHeight: 50, minHeight: 50}}>
+                <View>
                     <Text>Hi</Text>
-                </Row>
-                <Row style={{backgroundColor: '#384721', height: 50, maxHeight: 50, minHeight: 50}}>
+                </View>
+            </TouchableOpacity>
+            <TouchableOpacity style={{backgroundColor: "#927431", width: '100%', maxWidth: '100%', minWidth: '100%', height: 50, maxHeight: 50, minHeight: 50}}>
+                <View>
                     <Text>Hi</Text>
-                </Row>
-            </Grid>
+                </View>
+            </TouchableOpacity>
+            <TouchableOpacity style={{backgroundColor: "#543187", width: '100%', maxWidth: '100%', minWidth: '100%', height: 50, maxHeight: 50, minHeight: 50}}>
+                <View>
+                    <Text>Hi</Text>
+                </View>
+            </TouchableOpacity>
         </SafeAreaView>
     );
 };
