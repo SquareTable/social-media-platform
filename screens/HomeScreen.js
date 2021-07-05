@@ -9,7 +9,7 @@ import Post from "../posts/post.js";
 const StatusBarHeight = Constants.statusBarHeight;
 
 var onPressSettings=() => {
-    alert("KING KOVID");
+    alert("Once I learn how to make there be a Bottom Tabs Navigator and a Stack Navigator in the same project, I will make this settings icon take you to the settings screen");
 }
 
 var postImage = "'../assets/app_icons/settings.png'";
