@@ -1,10 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, Button, Image, TouchableOpacity, SafeAreaView, ScrollView} from 'react-native';
 
-var onPressSettings=() => {
-    alert("Once I learn how to make there be a Bottom Tabs Navigator and a Stack Navigator in the same project, I will make this settings icon take you to the settings screen");
-}
-
 const ProfileScreen = ({navigation}) => {
     return(
         <SafeAreaView style={{flex: 1, backgroundColor: '#08F1ED', paddingLeft: 10}}>

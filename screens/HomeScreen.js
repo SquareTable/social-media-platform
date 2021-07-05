@@ -6,14 +6,6 @@ import styled from "styled-components";
 import Images from "../posts/images.js";
 import Post from "../posts/post.js";
 
-const StatusBarHeight = Constants.statusBarHeight;
-
-var onPressSettings=() => {
-    navigation.navigate("Settings")
-}
-
-var postImage = "'../assets/app_icons/settings.png'";
-
 const HomeScreen = ({navigation}) => {
     return(
         <SafeAreaView style={{flex: 1, backgroundColor: '#08F1ED', paddingLeft: 10}}>
