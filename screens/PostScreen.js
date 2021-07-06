@@ -1,23 +1,21 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button, Image} from 'react-native';
+import { StyleSheet, Text, View, Button, Image, SafeAreaView} from 'react-native';
 
 const PostScreen = ({navigation}) => {
     return(
-        <View style={Styles.container}>
-            <Text>Post Screen</Text>
-            <Button
-            title="Click here"
-            onPress={() => alert('Button clicked!')}
-            />
+        <SafeAreaView style={Styles.container}>
+            <Text style={{textAlign: 'center', fontSize: 30, fontWeight: 'bold'}}>Post Screen</Text>
+            <Text style={{textAlign: 'center', fontSize: 20}}>Coming soon :)</Text>
+            <View style={{height: 20, maxHeight: 20, minHeight: 20, width: '100%', maxWidth: '100%', minWidth: '100%'}}/>
             <Image
                 source={require('../assets/doge.gif')}
                 resizeMode = 'contain'
                 style={{
                     width: 200,
-                    height: 200
+                    height: 200, paddingLeft: '50%', paddingRight: '50%'
                 }}
             />
-        </View>
+        </SafeAreaView>
     );
 };
 
@@ -26,8 +24,6 @@ export default PostScreen;
 const Styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
         backgroundColor: '#08F1ED'
     },
 });

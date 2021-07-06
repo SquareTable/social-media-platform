@@ -6,37 +6,37 @@ const SettingsScreen = ({navigation}) => {
     return(
         <SafeAreaView style={Styles.container}>
             <View style={{width: '100%', maxWidth: '100%', minWidth: '100%', height: 20, maxHeight: 20, minHeight: 20}}/>
-            <TouchableOpacity style={{backgroundColor: "#184727", width: '100%', maxWidth: '100%', minWidth: '100%', height: 50, maxHeight: 50, minHeight: 50}} onPressIn={() => navigation.navigate('Badges')}>
+            <TouchableOpacity style={{backgroundColor: "#08AAF1", width: '100%', maxWidth: '100%', minWidth: '100%', height: 50, maxHeight: 50, minHeight: 50}} onPressIn={() => navigation.navigate('Badges')}>
                 <View>
                     <Text style={{color: 'white', fontWeight: 'bold', fontSize: 20, textAlign: 'center', textAlignVertical: 'center', justifyContent: 'center'}}>Badges</Text>
                 </View>
             </TouchableOpacity>
             <View style={{width: '100%', maxWidth: '100%', minWidth: '100%', height: 20, maxHeight: 20, minHeight: 20}}/>
-            <TouchableOpacity style={{backgroundColor: "#524828", width: '100%', maxWidth: '100%', minWidth: '100%', height: 50, maxHeight: 50, minHeight: 50}} onPressIn={() => navigation.navigate('Login')}>
+            <TouchableOpacity style={{backgroundColor: "#08AAF1", width: '100%', maxWidth: '100%', minWidth: '100%', height: 50, maxHeight: 50, minHeight: 50}} onPressIn={() => navigation.navigate('Login')}>
                 <View>
                     <Text style={{color: 'white', fontWeight: 'bold', fontSize: 20, textAlign: 'center', textAlignVertical: 'center', justifyContent: 'center'}}>Login</Text>
                 </View>
             </TouchableOpacity>
             <View style={{width: '100%', maxWidth: '100%', minWidth: '100%', height: 20, maxHeight: 20, minHeight: 20}}/>
-            <TouchableOpacity style={{backgroundColor: "#924871", width: '100%', maxWidth: '100%', minWidth: '100%', height: 50, maxHeight: 50, minHeight: 50}} onPressIn={() => navigation.navigate('Change Username')}>
+            <TouchableOpacity style={{backgroundColor: "#08AAF1", width: '100%', maxWidth: '100%', minWidth: '100%', height: 50, maxHeight: 50, minHeight: 50}} onPressIn={() => navigation.navigate('Change Username')}>
                 <View>
                     <Text style={{color: 'white', fontWeight: 'bold', fontSize: 20, textAlign: 'center', textAlignVertical: 'center', justifyContent: 'center'}}>Change Username</Text>
                 </View>
             </TouchableOpacity>
             <View style={{width: '100%', maxWidth: '100%', minWidth: '100%', height: 20, maxHeight: 20, minHeight: 20}}/>
-            <TouchableOpacity style={{backgroundColor: "#924871", width: '100%', maxWidth: '100%', minWidth: '100%', height: 50, maxHeight: 50, minHeight: 50}} onPressIn={() => navigation.navigate('Change Password')}>
+            <TouchableOpacity style={{backgroundColor: "#08AAF1", width: '100%', maxWidth: '100%', minWidth: '100%', height: 50, maxHeight: 50, minHeight: 50}} onPressIn={() => navigation.navigate('Change Password')}>
                 <View>
                     <Text style={{color: 'white', fontWeight: 'bold', fontSize: 20, textAlign: 'center', textAlignVertical: 'center', justifyContent: 'center'}}>Change Password</Text>
                 </View>
             </TouchableOpacity>
             <View style={{width: '100%', maxWidth: '100%', minWidth: '100%', height: 20, maxHeight: 20, minHeight: 20}}/>
-            <TouchableOpacity style={{backgroundColor: "#924871", width: '100%', maxWidth: '100%', minWidth: '100%', height: 50, maxHeight: 50, minHeight: 50}} onPressIn={() => navigation.navigate('Account Settings')}>
+            <TouchableOpacity style={{backgroundColor: "#08AAF1", width: '100%', maxWidth: '100%', minWidth: '100%', height: 50, maxHeight: 50, minHeight: 50}} onPressIn={() => navigation.navigate('Account Settings')}>
                 <View>
                     <Text style={{color: 'white', fontWeight: 'bold', fontSize: 20, textAlign: 'center', textAlignVertical: 'center', justifyContent: 'center'}}>Account Settings</Text>
                 </View>
             </TouchableOpacity>
             <View style={{width: '100%', maxWidth: '100%', minWidth: '100%', height: 20, maxHeight: 20, minHeight: 20}}/>
-            <TouchableOpacity style={{backgroundColor: "#924871", width: '100%', maxWidth: '100%', minWidth: '100%', height: 50, maxHeight: 50, minHeight: 50}} onPressIn={() => alert("More settings coming soon")}>
+            <TouchableOpacity style={{backgroundColor: "#08AAF1", width: '100%', maxWidth: '100%', minWidth: '100%', height: 50, maxHeight: 50, minHeight: 50}} onPressIn={() => alert("More settings coming soon")}>
                 <View>
                     <Text style={{color: 'white', fontWeight: 'bold', fontSize: 20, textAlign: 'center', textAlignVertical: 'center', justifyContent: 'center'}}>More settings coming soon</Text>
                 </View>
