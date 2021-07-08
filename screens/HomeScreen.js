@@ -8,7 +8,9 @@ import Post from "../posts/post.js";
 
 const HomeScreen = ({navigation}) => {
     return(
-        <SafeAreaView style={{flex: 1, backgroundColor: '#08F1ED', paddingLeft: 10}}>
+        <SafeAreaView
+         style={{flex: 1, backgroundColor: '#08F1ED', paddingLeft: 10}}
+         >
             <Text style={{fontSize: 30, fontWeight: 'bold', alignContent: 'center', alignItems: 'center', alignSelf: 'center'}}>SocialSquare</Text>
             <ScrollView>
                 <Post></Post>
