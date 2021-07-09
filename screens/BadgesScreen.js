@@ -6,7 +6,7 @@ const screenWidth = Dimensions.get('window').width;
 const BadgesScreen = ({navigation}) => {
     return(
         <SafeAreaView style={Styles.container}>
-            <ScrollView style={Styles.ScrollView}>
+            <ScrollView>
                 <Text style={Styles.containerText}>Badges Screen</Text>
                 <Text style={Styles.containerText}>This will be used for testing since it is the least of our priorities</Text>
                 <Text style={Styles.containerText}>Testing</Text>
@@ -88,9 +88,6 @@ const Styles = StyleSheet.create({
     container: {
         backgroundColor: '#08F1ED',
         flex: 1,
-    },
-    scrollView: {
-        width: '100%'
     },
     containerText: {
         textAlign: 'center'
