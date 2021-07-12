@@ -41,6 +41,8 @@ const Styles = StyleSheet.create({
     },
     post: {
         maxWidth: 500,
+        minWidth: 500,
+        width: 500,
         alignContent: 'center',
         alignItems: 'center',
         alignSelf: 'center',
@@ -49,6 +51,7 @@ const Styles = StyleSheet.create({
     post_background: {
         minWidth: 500,
         maxWidth: 500,
+        width: 500,
         backgroundColor: '#333333',
         alignSelf: 'center',
     },

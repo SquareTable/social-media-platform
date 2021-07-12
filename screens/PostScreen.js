@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button, Image, SafeAreaView} from 'react-native';
+import { StyleSheet, Text, View, Button, Image, SafeAreaView, Switch} from 'react-native';
 
 const PostScreen = ({navigation}) => {
     return(

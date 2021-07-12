@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button, Image, TouchableOpacity, SafeAreaView, ScrollView} from 'react-native';
+import { StyleSheet, Text, View, Button, Image, TouchableOpacity, SafeAreaView, ScrollView, FlatList} from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import Constants from "expo-constants";
 import styled from "styled-components";
@@ -13,6 +13,11 @@ const HomeScreen = ({navigation}) => {
          >
             <Text style={{fontSize: 30, fontWeight: 'bold', alignContent: 'center', alignItems: 'center', alignSelf: 'center'}}>SocialSquare</Text>
             <ScrollView>
+                <Post></Post>
+                <Post></Post>
+                <Post></Post>
+                <Post></Post>
+                <Post></Post>
                 <Post></Post>
                 <Post></Post>
                 <Post></Post>

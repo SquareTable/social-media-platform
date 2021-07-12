@@ -1,12 +1,13 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button, Image, ScrollView, SafeAreaView, StatusBar, Dimensions} from 'react-native';
+import { StyleSheet, Text, View, Button, Image, ScrollView, SafeAreaView, StatusBar, Dimensions, FlatList} from 'react-native';
 
 const screenWidth = Dimensions.get('window').width;
 
 const BadgesScreen = ({navigation}) => {
     return(
         <SafeAreaView style={Styles.container}>
-            <ScrollView>
+            <ScrollView style={{flex: 1}}>
+                <View>
                 <Text style={Styles.containerText}>Badges Screen</Text>
                 <Text style={Styles.containerText}>This will be used for testing since it is the least of our priorities</Text>
                 <Text style={Styles.containerText}>Testing</Text>
@@ -77,6 +78,8 @@ const BadgesScreen = ({navigation}) => {
                         paddingRight: '50%'
                     }}
                 />
+                </View>
+                <View style={{height: 100}} />
             </ScrollView>
         </SafeAreaView>
     );
