@@ -36,6 +36,6 @@ export default ChatScreen;
 const Styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#08F1ED'
+        backgroundColor: '#D8DEE9' /* Dark mode from Nord Theme */
     },
 });

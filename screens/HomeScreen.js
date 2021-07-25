@@ -6,6 +6,10 @@ import styled from "styled-components";
 import Images from "../posts/images.js";
 import Post from "../posts/post.js";
 
+const darkMode = "#2E3440";
+const lightMode = "#D8DEE9"
+
+
 const HomeScreen = ({navigation}) => {
     return(
         <SafeAreaView
