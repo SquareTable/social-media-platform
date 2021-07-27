@@ -45,9 +45,9 @@ const Tabs = () => {
                 showLabel: false,
                 style: {
                     position: 'absolute',
-                    bottom: 25,
-                    left: 20,
-                    right: 20,
+                    bottom: 0, /* Change the distance the tab navigator is away from the bottom of the screen*/
+                    left: 0, /*Change the margin from the left of the screen for the tab navigator*/
+                    right: 0, /*Change the margin from the right of the screen for the tab navigator*/
                     elevation: 0,
                     backgroundColor: '#FFFFFF',
                     borderRadius: 15,
