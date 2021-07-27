@@ -38,6 +38,7 @@ const CustomTabBarButton = ({children, onPress}) => (
     </TouchableOpacity>
 );
 
+
 const Tabs = () => {
     return(
         <Tab.Navigator
@@ -45,7 +46,7 @@ const Tabs = () => {
                 showLabel: false,
                 style: {
                     position: 'absolute',
-                    bottom: 0, /* Change the distance the tab navigator is away from the bottom of the screen*/
+                    bottom: 2, /* Change the distance the tab navigator is away from the bottom of the screen*/
                     left: 0, /*Change the margin from the left of the screen for the tab navigator*/
                     right: 0, /*Change the margin from the right of the screen for the tab navigator*/
                     elevation: 0,
