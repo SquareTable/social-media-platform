@@ -23,7 +23,7 @@ const CustomTabBarButton = ({children, onPress}) => (
             top: -30,
             justifyContent: 'center',
             alignItems: 'center',
-            ... styles.shadow
+            /*... styles.shadow*/
         }}
         onPress={onPress}
     >
@@ -46,14 +46,15 @@ const Tabs = () => {
                 showLabel: false,
                 style: {
                     position: 'absolute',
-                    bottom: 2, /* Change the distance the tab navigator is away from the bottom of the screen*/
+                    bottom: 2, /*Change the margin from the bottom of the screen for the tab navigator*/
                     left: 0, /*Change the margin from the left of the screen for the tab navigator*/
                     right: 0, /*Change the margin from the right of the screen for the tab navigator*/
                     elevation: 0,
-                    backgroundColor: '#FFFFFF',
-                    borderRadius: 15,
-                    height: 90,
-                    ...styles.shadow
+                    backgroundColor: '#3B4252',
+                    borderRadius: '15px',
+                    borderColor: "#3B4252",
+                    height: 75,
+                    /*...styles.shadow*/
                 }
             }}
         >
@@ -64,12 +65,12 @@ const Tabs = () => {
                             source={require('../assets/app_icons/home.png')}
                             resizeMode = 'contain'
                             style={{
-                                width: 20,
-                                height: 20,
-                                tintColor: focused ? '#e32f45' : '#748c94'
+                                width: 35,
+                                height: 35,
+                                tintColor: focused ? '#88C0D0' : '#ECEFF4'
                             }}
                         />
-                        <Text style={{color: focused ? '#e32f45' : '#748c94', fontSize: 10,}}>HOME</Text>
+                        <Text style={{color: focused ? '#88C0D0' : '#ECEFF4', fontSize: 10,}}>HOME</Text>
                     </View>
                 ),
             }} />
@@ -80,12 +81,12 @@ const Tabs = () => {
                             source={require('../assets/app_icons/find.png')}
                             resizeMode = 'contain'
                             style={{
-                                width: 20,
-                                height: 20,
-                                tintColor: focused ? '#e32f45' : '#748c94'
+                                width: 35,
+                                height: 35,
+                                tintColor: focused ? '#88C0D0' : '#ECEFF4'
                             }}
                         />
-                        <Text style={{color: focused ? '#e32f45' : '#748c94', fontSize: 10,}}>FIND</Text>
+                        <Text style={{color: focused ? '#88C0D0' : '#ECEFF4', fontSize: 10,}}>FIND</Text>
                     </View>
                 ),
             }} />
@@ -112,12 +113,12 @@ const Tabs = () => {
                             source={require('../assets/app_icons/chat.png')}
                             resizeMode = 'contain'
                             style={{
-                                width: 20,
-                                height: 20,
-                                tintColor: focused ? '#e32f45' : '#748c94'
+                                width: 35,
+                                height: 35,
+                                tintColor: focused ? '#88C0D0' : '#ECEFF4'
                             }}
                         />
-                        <Text style={{color: focused ? '#e32f45' : '#748c94', fontSize: 10,}}>CHAT</Text>
+                        <Text style={{color: focused ? '#88C0D0' : '#ECEFF4', fontSize: 10,}}>CHAT</Text>
                     </View>
                 ),
             }}/>
@@ -128,12 +129,14 @@ const Tabs = () => {
                             source={require('../assets/app_icons/profile_pic.jpg')}
                             resizeMode = 'contain'
                             style={{
-                                width: focused ? 40 : 35,
-                                height: focused ? 40 : 35,
-                                borderWidth: focused ? 5 : 0,
-                                borderColor: 'black'
+                                width: 35,
+                                height: 35,
+                                borderWidth: 3,
+                                borderColor: focused ? '#88C0D0' : '#ECEFF4',
+                                borderRadius: 40/2
                             }}
                         />
+                        <Text style={{color: focused ? '#88C0D0' : '#ECEFF4', fontSize: 10,}}>PROFILE</Text>
                     </View>
                 ),
             }}/>
@@ -143,7 +146,7 @@ const Tabs = () => {
 
 const styles = StyleSheet.create({
     shadow: {
-        shadowColor: '#65605F',
+        shadowColor: '#88C0D0',
         shadowOffset: {
             width: 0,
             height: 10

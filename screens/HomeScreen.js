@@ -13,9 +13,9 @@ const lightMode = "#D8DEE9"
 const HomeScreen = ({navigation}) => {
     return(
         <SafeAreaView
-         style={{flex: 1, backgroundColor: '#08F1ED', paddingLeft: 10}}
+         style={{flex: 1, backgroundColor: '#2E3440', paddingLeft: 10}}
          >
-            <Text style={{fontSize: 30, fontWeight: 'bold', alignContent: 'center', alignItems: 'center', alignSelf: 'center'}}>SocialSquare</Text>
+            <Text style={{fontSize: 30, fontWeight: 'bold', alignContent: 'center', alignItems: 'center', alignSelf: 'center', color: "#ECEFF4"}}>SocialSquare</Text>
             <ScrollView>
                 <Post></Post>
                 <Post></Post>
@@ -53,7 +53,7 @@ const Styles = StyleSheet.create({
     post_background: {
         minWidth: 600,
         maxWidth: 600,
-        backgroundColor: '#333333',
+        backgroundColor: '#2E3440',
         alignSelf: 'center',
     },
 });

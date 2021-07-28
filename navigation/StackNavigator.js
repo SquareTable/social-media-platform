@@ -25,85 +25,93 @@ const screenOptionStyle = {
 const ProfileScreenToSettings_StackNavigation = () => {
   return (
     <Stack.Navigator screenOptions={screenOptionStyle}>
-      <Stack.Screen name="Profile" component={ProfileScreen}
+      <Stack.Screen name="Profile Name Here" component={ProfileScreen}
         options={{
           headerStyle: {
-            backgroundColor: '#f4511e',
+            backgroundColor: '#2E3440',
           },
           headerTitleStyle: {
             fontWeight: 'bold',
-            fontSize: 20
+            fontSize: 20,
+            textAlign: 'center'
           },
         }}
       />
       <Stack.Screen name="Settings" component={SettingsScreen} 
       options={{
         headerStyle: {
-          backgroundColor: '#f4511e',
+          backgroundColor: '#2E3440',
         },
         headerTitleStyle: {
           fontWeight: 'bold',
-          fontSize: 20
+          fontSize: 20,
+          textAlign: 'center'
         },
       }}/>
       <Stack.Screen name="Badges" component={BadgesScreen} 
       options={{
         headerStyle: {
-          backgroundColor: '#f4511e',
+          backgroundColor: '#2E3440',
         },
         headerTitleStyle: {
           fontWeight: 'bold',
-          fontSize: 20
+          fontSize: 20,
+          textAlign: 'center'
         },
       }}/>
       <Stack.Screen name="Login" component={LoginScreen} 
       options={{
         headerStyle: {
-          backgroundColor: '#f4511e',
+          backgroundColor: '#2E3440',
         },
         headerTitleStyle: {
           fontWeight: 'bold',
-          fontSize: 20
+          fontSize: 20,
+          textAlign: 'center'
         },
       }}/>
       <Stack.Screen name="Change Username" component={ChangeUsername} 
       options={{
         headerStyle: {
-          backgroundColor: '#f4511e',
+          backgroundColor: '#2E3440',
         },
         headerTitleStyle: {
           fontWeight: 'bold',
-          fontSize: 20
+          fontSize: 20,
+          textAlign: 'center'
         },
       }}/>
       <Stack.Screen name="Change Password" component={ChangePassword} 
       options={{
         headerStyle: {
-          backgroundColor: '#f4511e',
+          backgroundColor: '#2E3440',
         },
         headerTitleStyle: {
           fontWeight: 'bold',
-          fontSize: 20
+          fontSize: 20,
+          textAlign: 'center'
         },
       }}/>
       <Stack.Screen name="Account Settings" component={AccountSettings} 
       options={{
         headerStyle: {
-          backgroundColor: '#f4511e',
+          backgroundColor: '#2E3440',
         },
         headerTitleStyle: {
           fontWeight: 'bold',
-          fontSize: 20
+          fontSize: 20,
+          textAlign: 'center'
         },
       }}/>
       <Stack.Screen name="App Styling" component={AppStyling} 
       options={{
         headerStyle: {
-          backgroundColor: '#f4511e',
+          backgroundColor: '#2E3440',
         },
         headerTitleStyle: {
           fontWeight: 'bold',
-          fontSize: 20
+          fontSize: 20,
+          textAlign: 'center'
         },
       }}/>
     </Stack.Navigator>
@@ -116,21 +124,23 @@ const SettingsToBadges_StackNavigation = () => {
         <Stack.Screen name="Settings" component={SettingsScreen} 
         options={{
           headerStyle: {
-            backgroundColor: '#f4511e',
+            backgroundColor: '#2E3440',
           },
           headerTitleStyle: {
             fontWeight: 'bold',
-            fontSize: 20
+            fontSize: 20,
+            textAlign: 'center'
           },
         }}/>
         <Stack.Screen name="Badges" component={BadgesScreen} 
         options={{
           headerStyle: {
-            backgroundColor: '#f4511e',
+            backgroundColor: '#2E3440',
           },
           headerTitleStyle: {
             fontWeight: 'bold',
-            fontSize: 20
+            fontSize: 20,
+            textAlign: 'center'
           },
         }}/>
       </Stack.Navigator>
@@ -143,21 +153,23 @@ const SettingsToLoginScreen_StackNavigation = () => {
         <Stack.Screen name="Settings" component={SettingsScreen} 
         options={{
           headerStyle: {
-            backgroundColor: '#f4511e',
+            backgroundColor: '#2E3440',
           },
           headerTitleStyle: {
             fontWeight: 'bold',
-            fontSize: 20
+            fontSize: 20,
+            textAlign: 'center'
           },
         }}/>
         <Stack.Screen name="Login" component={LoginScreen} 
         options={{
           headerStyle: {
-            backgroundColor: '#f4511e',
+            backgroundColor: '#2E3440',
           },
           headerTitleStyle: {
             fontWeight: 'bold',
-            fontSize: 20
+            fontSize: 20,
+            textAlign: 'center'
           },
         }}/>
       </Stack.Navigator>
@@ -170,21 +182,23 @@ const SettingsToChangeUsername = () => {
       <Stack.Screen name="Settings" component={SettingsScreen} 
       options={{
         headerStyle: {
-          backgroundColor: '#f4511e',
+          backgroundColor: '#2E3440',
         },
         headerTitleStyle: {
           fontWeight: 'bold',
-          fontSize: 20
+          fontSize: 20,
+          textAlign: 'center'
         },
       }}/>
       <Stack.Screen name="Change Username" component={ChangeUsername} 
       options={{
         headerStyle: {
-          backgroundColor: '#f4511e',
+          backgroundColor: '#2E3440',
         },
         headerTitleStyle: {
           fontWeight: 'bold',
-          fontSize: 20
+          fontSize: 20,
+          textAlign: 'center'
         },
       }}/>
     </Stack.Navigator>
@@ -197,21 +211,23 @@ const SettingsToChangePassword = () => {
       <Stack.Screen name="Settings" component={SettingsScreen} 
       options={{
         headerStyle: {
-          backgroundColor: '#f4511e',
+          backgroundColor: '#2E3440',
         },
         headerTitleStyle: {
           fontWeight: 'bold',
-          fontSize: 20
+          fontSize: 20,
+          textAlign: 'center'
         },
       }}/>
       <Stack.Screen name="Change Password" component={ChangePassword} 
       options={{
         headerStyle: {
-          backgroundColor: '#f4511e',
+          backgroundColor: '#2E3440',
         },
         headerTitleStyle: {
           fontWeight: 'bold',
-          fontSize: 20
+          fontSize: 20,
+          textAlign: 'center'
         },
       }}/>
     </Stack.Navigator>
@@ -224,21 +240,23 @@ const SettingsToAccountSettings = () => {
       <Stack.Screen name="Settings" component={SettingsScreen} 
       options={{
         headerStyle: {
-          backgroundColor: '#f4511e',
+          backgroundColor: '#2E3440',
         },
         headerTitleStyle: {
           fontWeight: 'bold',
-          fontSize: 20
+          fontSize: 20,
+          textAlign: 'center'
         },
       }}/>
       <Stack.Screen name="Account Settings" component={AccountSettings} 
       options={{
         headerStyle: {
-          backgroundColor: '#f4511e',
+          backgroundColor: '#2E3440',
         },
         headerTitleStyle: {
           fontWeight: 'bold',
-          fontSize: 20
+          fontSize: 20,
+          textAlign: 'center'
         },
       }}/>
     </Stack.Navigator>
@@ -251,21 +269,23 @@ const SettingsToAppStyling = () => {
       <Stack.Screen name="Settings" component={SettingsScreen} 
       options={{
         headerStyle: {
-          backgroundColor: '#f4511e',
+          backgroundColor: '#2E3440',
         },
         headerTitleStyle: {
           fontWeight: 'bold',
-          fontSize: 20
+          fontSize: 20,
+          textAlign: 'center'
         },
       }}/>
       <Stack.Screen name="App Styling" component={AppStyling} 
       options={{
         headerStyle: {
-          backgroundColor: '#f4511e',
+          backgroundColor: '#2E3440',
         },
         headerTitleStyle: {
           fontWeight: 'bold',
-          fontSize: 20
+          fontSize: 20,
+          textAlign: 'center'
         },
       }}/>
     </Stack.Navigator>

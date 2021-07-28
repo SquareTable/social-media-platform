@@ -5,8 +5,8 @@ const FindScreen = ({navigation}) => {
     return(
         <SafeAreaView style={Styles.container}>
             <ScrollView>
-            <Text style={{textAlign: 'center', fontSize: 30, fontWeight: 'bold'}}>Find Screen</Text>
-            <Text style={{textAlign: 'center', fontSize: 20}}>Coming soon :)</Text>
+            <Text style={{textAlign: 'center', fontSize: 30, fontWeight: 'bold', color: '#ECEFF4'}}>Find Screen</Text>
+            <Text style={{textAlign: 'center', fontSize: 20, color: '#ECEFF4'}}>Coming soon :)</Text>
             <View style={{height: 20, maxHeight: 20, minHeight: 20, width: '100%', maxWidth: '100%', minWidth: '100%'}}/>
             <Image
                 source={require('../assets/doge.gif')}
@@ -18,7 +18,6 @@ const FindScreen = ({navigation}) => {
                     paddingRight: '50%'
                 }}
             />
-            <Text style={{fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>KING KOVID</Text>
             </ScrollView>
         </SafeAreaView>
     );
@@ -29,6 +28,6 @@ export default FindScreen;
 const Styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#08F1ED'
+        backgroundColor: '#2E3440'
     },
 });

@@ -4,11 +4,8 @@ import { StyleSheet, Text, View, Button, Image} from 'react-native';
 const LoginScreen = ({navigation}) => {
     return(
         <View style={Styles.container}>
-            <Text>Login Screen</Text>
-            <Button
-            title="Click here"
-            onPress={() => alert('Button clicked!')}
-            />
+            <Text style={{fontWeight: 'bold', fontSize: 30}}>Login Screen</Text>
+            <Text style={{fontWeight: 'bold', fontSize: 30}}>COMING SOONNNNNNNN</Text>
             <Image
                 source={require('../assets/doge.gif')}
                 resizeMode = 'contain'

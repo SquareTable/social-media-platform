@@ -5,8 +5,8 @@ const ChangeUsername = ({navigation}) => {
     return(
         <SafeAreaView style={Styles.container}>
             <ScrollView>
-            <Text style={{textAlign: 'center', fontSize: 40, fontWeight: 'bold'}}>Change Username Screen</Text>
-            <Text style={{textAlign: 'center', fontSize: 25}}>Coming soon :)</Text>
+            <Text style={{textAlign: 'center', fontSize: 40, fontWeight: 'bold', color: '#ECEFF4'}}>Change Username Screen</Text>
+            <Text style={{textAlign: 'center', fontSize: 25, color: '#ECEFF4'}}>Coming soon :)</Text>
             <View style={{height: 20, maxHeight: 20, minHeight: 20, width: '100%', minWidth: '100%', maxWidth: '100%'}}/>
             <Image
                 source={require('../assets/doge.gif')}
@@ -28,6 +28,6 @@ export default ChangeUsername;
 const Styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#08F1ED'
+        backgroundColor: '#2E3440'
     },
 });

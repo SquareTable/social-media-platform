@@ -4,8 +4,8 @@ import { StyleSheet, Text, View, Button, Image, SafeAreaView, Switch} from 'reac
 const PostScreen = ({navigation}) => {
     return(
         <SafeAreaView style={Styles.container}>
-            <Text style={{textAlign: 'center', fontSize: 30, fontWeight: 'bold'}}>Post Screen</Text>
-            <Text style={{textAlign: 'center', fontSize: 20}}>Coming soon :)</Text>
+            <Text style={{textAlign: 'center', fontSize: 30, fontWeight: 'bold', color: '#ECEFF4'}}>Post Screen</Text>
+            <Text style={{textAlign: 'center', fontSize: 20, color: '#ECEFF4'}}>Coming soon :)</Text>
             <View style={{height: 20, maxHeight: 20, minHeight: 20, width: '100%', maxWidth: '100%', minWidth: '100%'}}/>
             <Image
                 source={require('../assets/doge.gif')}
@@ -24,6 +24,6 @@ export default PostScreen;
 const Styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#08F1ED'
+        backgroundColor: '#2E3440'
     },
 });

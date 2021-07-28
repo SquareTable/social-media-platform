@@ -89,10 +89,11 @@ export default BadgesScreen;
 
 const Styles = StyleSheet.create({
     container: {
-        backgroundColor: '#08F1ED',
+        backgroundColor: '#2E3440',
         flex: 1,
     },
     containerText: {
-        textAlign: 'center'
+        textAlign: 'center',
+        color: '#ECEFF4'
     },  
 });

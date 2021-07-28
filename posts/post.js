@@ -13,8 +13,8 @@ const Post = ({navigation}) => {
         <View style={Styles.post_background}>
             <View style={Styles.post}>
                 <View style={{maxWidth: 400, minWidth: 400}}>
-                    <Text style={{color: 'white', textAlign: 'center'}}>Profile pic and username goes here</Text>
-                    <View style={{backgroundColor: '#FF0000', maxWidth: 400, minWidth: 400}}>
+                    <Text style={{color: '#ECEFF4', textAlign: 'center'}}>Profile pic and username goes here</Text>
+                    <View style={{backgroundColor: '#2E3440', maxWidth: 400, minWidth: 400}}>
                         <ProgressiveImage
                             source={Images.posts.clock}
                             style={{minHeight: 400, minWidth: 400, width: 400, height: 400, maxWidth: 400, maxHeight: 400}}
@@ -22,7 +22,7 @@ const Post = ({navigation}) => {
                             resizeMethod="resize"
                         />
                     </View>
-                    <Text style={{color: "white", textAlign: 'center'}}>Like and comment buttons will go here</Text>
+                    <Text style={{color: "#ECEFF4", textAlign: 'center'}}>Like and comment buttons will go here</Text>
                 </View>
             </View>
         </View>
@@ -52,7 +52,7 @@ const Styles = StyleSheet.create({
         minWidth: 500,
         maxWidth: 500,
         width: 500,
-        backgroundColor: '#333333',
+        backgroundColor: '#2E3440',
         alignSelf: 'center',
     },
 });

@@ -5,9 +5,9 @@ const ChatScreen = ({navigation}) => {
     return(
         <SafeAreaView style={Styles.container}>
             <ScrollView>
-            <Text style={{textAlign: 'center', fontSize: 40, fontWeight: 'bold'}}>Chat Screen</Text>
-            <Text style={{textAlign: 'center', fontSize: 25}}>Coming soon :)</Text>
-            <View style={{height: 20, maxHeight: 20, minHeight: 20, width: '100%', minWidth: '100%', maxWidth: '100%'}}/>
+            <Text style={{textAlign: 'center', fontSize: 40, fontWeight: 'bold', color: "#ECEFF4"}}>Chat Screen</Text>
+            <Text style={{textAlign: 'center', fontSize: 25, color: "#ECEFF4"}}>Coming soon :)</Text>
+            <View style={{height: 20, maxHeight: 20, minHeight: 20, width: '100%', minWidth: '100%', maxWidth: '100%', color: '#ECEFF4'}}/>
             <Image
                 source={require('../assets/doge.gif')}
                 resizeMode = 'contain'
@@ -36,6 +36,6 @@ export default ChatScreen;
 const Styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#D8DEE9' /* Dark mode from Nord Theme */
+        backgroundColor: '#2E3440' /* Dark mode from Nord Theme */
     },
 });
