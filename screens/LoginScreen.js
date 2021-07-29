@@ -4,8 +4,8 @@ import { StyleSheet, Text, View, Button, Image} from 'react-native';
 const LoginScreen = ({navigation}) => {
     return(
         <View style={Styles.container}>
-            <Text style={{fontWeight: 'bold', fontSize: 30}}>Login Screen</Text>
-            <Text style={{fontWeight: 'bold', fontSize: 30}}>COMING SOONNNNNNNN</Text>
+            <Text style={{fontWeight: 'bold', fontSize: 30, color: '#ECEFF4'}}>Login Screen</Text>
+            <Text style={{fontWeight: 'bold', fontSize: 30, color: '#ECEFF4'}}>COMING SOONNNNNNNN</Text>
             <Image
                 source={require('../assets/doge.gif')}
                 resizeMode = 'contain'
@@ -25,6 +25,6 @@ const Styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: '#08F1ED'
+        backgroundColor: '#2E3440'
     },
 });
