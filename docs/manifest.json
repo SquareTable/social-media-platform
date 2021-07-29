@@ -1,0 +1,34 @@
+{
+  "background_color": "#ffffff",
+  "description": "SquareTable Social Media Platform",
+  "display": "standalone",
+  "lang": "en",
+  "name": "social-media-platform",
+  "short_name": "social-media-platform",
+  "start_url": "/?utm_source=web_app_manifest",
+  "orientation": "portrait",
+  "related_applications": [
+    {
+      "platform": "itunes",
+      "id": "com.sebtheman.social-media-platform"
+    }
+  ],
+  "prefer_related_applications": true,
+  "icons": [
+    {
+      "src": "/SquareTable/social-media-platform/pwa/chrome-icon/chrome-icon-144.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    },
+    {
+      "src": "/SquareTable/social-media-platform/pwa/chrome-icon/chrome-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/SquareTable/social-media-platform/pwa/chrome-icon/chrome-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
