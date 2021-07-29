@@ -4,7 +4,7 @@ import { StyleSheet, Text, View, Button, Image, TouchableOpacity, SafeAreaView, 
 const ProfileScreen = ({navigation}) => {
     return(
         <SafeAreaView style={{flex: 1, backgroundColor: '#2E3440', paddingLeft: 10}}>
-            <TouchableOpacity onPressIn={() => navigation.navigate('Settings')} activeOpacity={0.5} style={{maxHeight: 40, minHeight: 40}}>
+            <TouchableOpacity onPressIn={() => navigation.navigate('Settings')} activeOpacity={0.5} style={{maxHeight: 55, minHeight: 55}}>
                 <Image
                     source={require('../assets/app_icons/settings.png')} 
                     style={{ width: 40, height: 40, position: 'absolute', right: 20, top: 10, zIndex: 9999999999, tintColor: '#ECEFF4'}}
