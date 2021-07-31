@@ -23,11 +23,6 @@ const HomeScreen = ({navigation}) => {
                 <Post></Post>
                 <Post></Post>
                 <Post></Post>
-                <Post></Post>
-                <Post></Post>
-                <Post></Post>
-                <Post></Post>
-                <Post></Post>
             </ScrollView>
         </SafeAreaView>
     );

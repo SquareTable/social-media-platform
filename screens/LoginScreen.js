@@ -1,19 +1,22 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button, Image} from 'react-native';
+import { StyleSheet, Text, View, Button, Image, TouchableOpacity} from 'react-native';
 
 const LoginScreen = ({navigation}) => {
     return(
         <View style={Styles.container}>
             <Text style={{fontWeight: 'bold', fontSize: 30, color: '#ECEFF4'}}>Login Screen</Text>
             <Text style={{fontWeight: 'bold', fontSize: 30, color: '#ECEFF4'}}>COMING SOONNNNNNNN</Text>
-            <Image
-                source={require('../assets/doge.gif')}
-                resizeMode = 'contain'
-                style={{
-                    width: 200,
-                    height: 200
-                }}
-            />
+            <Text style={{fontWeight: 'bold', fontSize: 20, color: '#ECEFF4'}}>Press the doge gif to temporarily login</Text>
+            <TouchableOpacity onPressIn={() => navigation.replace('Profile Name Here')}>
+                <Image
+                    source={require('../assets/doge.gif')}
+                    resizeMode = 'contain'
+                    style={{
+                        width: 200,
+                        height: 200
+                    }}
+                />
+            </TouchableOpacity>
         </View>
     );
 };

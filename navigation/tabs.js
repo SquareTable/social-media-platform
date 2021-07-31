@@ -12,7 +12,7 @@ import BadgesScreen from '../screens/BadgesScreen';
 import LoginScreen from '../screens/LoginScreen';
 import settingsButtonTopRight from '../screens/settingsButtonTopRight';
 import ProfileScreen from '../screens/ProfileScreen';
-import {ProfileScreenToSettings_StackNavigation, SettingsToBadges_StackNavigation} from '../navigation/StackNavigator.js'
+import {ChatScreen_Stack, ProfileScreenToSettings_StackNavigation, SettingsToBadges_StackNavigation} from '../navigation/StackNavigator.js'
 
 
 const Tab = createBottomTabNavigator();
@@ -20,7 +20,7 @@ const Tab = createBottomTabNavigator();
 const CustomTabBarButton = ({children, onPress}) => (
     <TouchableOpacity
         style={{
-            top: -30,
+            top: 10,
             justifyContent: 'center',
             alignItems: 'center',
             /*... styles.shadow*/
@@ -28,8 +28,8 @@ const CustomTabBarButton = ({children, onPress}) => (
         onPress={onPress}
     >
         <View style={{
-            width: 70,
-            height: 70,
+            width: 50,
+            height: 50,
             borderRadius: 35,
             backgroundColor: '#e32f45'
         }}>
@@ -45,13 +45,12 @@ const Tabs = () => {
             tabBarOptions={{
                 showLabel: false,
                 style: {
-                    position: 'absolute',
-                    bottom: 2, /*Change the margin from the bottom of the screen for the tab navigator*/
+                    position: 'fixed',
+                    bottom: 0, /*Change the margin from the bottom of the screen for the tab navigator*/
                     left: 0, /*Change the margin from the left of the screen for the tab navigator*/
                     right: 0, /*Change the margin from the right of the screen for the tab navigator*/
                     elevation: 0,
                     backgroundColor: '#3B4252',
-                    borderRadius: '15px',
                     borderColor: "#3B4252",
                     height: 75,
                     /*...styles.shadow*/
@@ -97,8 +96,8 @@ const Tabs = () => {
                         source={require('../assets/app_icons/test3.png')}
                         resizeMode="contain"
                         style={{
-                            width: 70,
-                            height: 70,
+                            width: 50,
+                            height: 50,
                         }}
                     />
                 ),
@@ -106,7 +105,7 @@ const Tabs = () => {
                     <CustomTabBarButton {...props} />
                 )
             }}/>
-            <Tab.Screen name="Chat" component={ChatScreen} options={{
+            <Tab.Screen name="Chat" component={ChatScreen_Stack} options={{
                 tabBarIcon: ({focused}) => (
                     <View style={{alignItems: 'center', justifyContent: 'center', top: 10}}>
                         <Image
@@ -126,7 +125,7 @@ const Tabs = () => {
                 tabBarIcon: ({focused}) => (
                     <View style={{alignItems: 'center', justifyContent: 'center', top: 10}}>
                         <Image
-                            source={require('../assets/app_icons/profile_pic.jpg')}
+                            source={require('../assets/app_icons/blank_profile_pic.png')}
                             resizeMode = 'contain'
                             style={{
                                 width: 35,
