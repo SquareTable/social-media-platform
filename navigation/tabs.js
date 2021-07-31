@@ -13,6 +13,8 @@ import LoginScreen from '../screens/LoginScreen';
 import settingsButtonTopRight from '../screens/settingsButtonTopRight';
 import ProfileScreen from '../screens/ProfileScreen';
 import {ChatScreen_Stack, ProfileScreenToSettings_StackNavigation, SettingsToBadges_StackNavigation} from '../navigation/StackNavigator.js'
+import AppStyling from '../screens/AppStylingScreen';
+import {darkModeStyling, darkModeOn, lightModeStyling, darkModeStyling_navFocusedColor, lightModeStyling_navFocusedColor, darkModeStyling_navNonFocusedColor, lightModeStyling_navNonFocusedColor} from '../screens/screenStylings/styling.js';
 
 
 const Tab = createBottomTabNavigator();
@@ -40,6 +42,15 @@ const CustomTabBarButton = ({children, onPress}) => (
 
 
 const Tabs = () => {
+    if (darkModeOn === true) {
+        var styling = darkModeStyling;
+        var navFocusedColor = darkModeStyling_navFocusedColor;
+        var navNonFocusedColor = darkModeStyling_navNonFocusedColor;
+    } else {
+        var styling = lightModeStyling;
+        var navFocusedColor = lightModeStyling_navFocusedColor;
+        var navNonFocusedColor = lightModeStyling_navNonFocusedColor;
+    }
     return(
         <Tab.Navigator
             tabBarOptions={{
@@ -50,8 +61,8 @@ const Tabs = () => {
                     left: 0, /*Change the margin from the left of the screen for the tab navigator*/
                     right: 0, /*Change the margin from the right of the screen for the tab navigator*/
                     elevation: 0,
-                    backgroundColor: '#3B4252',
-                    borderColor: "#3B4252",
+                    ...styling.navBackgroundColor,
+                    ...styling.borderColor,
                     height: 75,
                     /*...styles.shadow*/
                 }
@@ -66,10 +77,10 @@ const Tabs = () => {
                             style={{
                                 width: 35,
                                 height: 35,
-                                tintColor: focused ? '#88C0D0' : '#ECEFF4'
+                                tintColor: focused ? navFocusedColor : navNonFocusedColor
                             }}
                         />
-                        <Text style={{color: focused ? '#88C0D0' : '#ECEFF4', fontSize: 10,}}>HOME</Text>
+                        <Text style={{color: focused ? navFocusedColor : navNonFocusedColor, fontSize: 10,}}>HOME</Text>
                     </View>
                 ),
             }} />
@@ -82,10 +93,10 @@ const Tabs = () => {
                             style={{
                                 width: 35,
                                 height: 35,
-                                tintColor: focused ? '#88C0D0' : '#ECEFF4'
+                                tintColor: focused ? navFocusedColor : navNonFocusedColor
                             }}
                         />
-                        <Text style={{color: focused ? '#88C0D0' : '#ECEFF4', fontSize: 10,}}>FIND</Text>
+                        <Text style={{color: focused ? navFocusedColor : navNonFocusedColor, fontSize: 10,}}>FIND</Text>
                     </View>
                 ),
             }} />
@@ -114,10 +125,10 @@ const Tabs = () => {
                             style={{
                                 width: 35,
                                 height: 35,
-                                tintColor: focused ? '#88C0D0' : '#ECEFF4'
+                                tintColor: focused ? navFocusedColor : navNonFocusedColor
                             }}
                         />
-                        <Text style={{color: focused ? '#88C0D0' : '#ECEFF4', fontSize: 10,}}>CHAT</Text>
+                        <Text style={{color: focused ? navFocusedColor : navNonFocusedColor, fontSize: 10,}}>CHAT</Text>
                     </View>
                 ),
             }}/>
@@ -131,11 +142,11 @@ const Tabs = () => {
                                 width: 35,
                                 height: 35,
                                 borderWidth: 3,
-                                borderColor: focused ? '#88C0D0' : '#ECEFF4',
+                                borderColor: focused ? navFocusedColor : navNonFocusedColor,
                                 borderRadius: 40/2
                             }}
                         />
-                        <Text style={{color: focused ? '#88C0D0' : '#ECEFF4', fontSize: 10,}}>PROFILE</Text>
+                        <Text style={{color: focused ? navFocusedColor : navNonFocusedColor, fontSize: 10,}}>PROFILE</Text>
                     </View>
                 ),
             }}/>

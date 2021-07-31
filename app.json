@@ -19,7 +19,8 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.sebtheman.social-media-platform"
+      "bundleIdentifier": "com.sebtheman.social-media-platform",
+      "userInterfaceStyle": "automatic"
     },
     "android": {
       "adaptiveIcon": {

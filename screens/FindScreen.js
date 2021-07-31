@@ -1,23 +1,33 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button, Image, SafeAreaView, ScrollView} from 'react-native';
+import { StyleSheet, Text, View, Button, Image, SafeAreaView, ScrollView, Appearance} from 'react-native';
+import {darkModeStyling, darkModeOn, lightModeStyling} from '../screens/screenStylings/styling.js';
 
 const FindScreen = ({navigation}) => {
+    if (darkModeOn === true) {
+        var styling = darkModeStyling;
+    } else {
+        var styling = lightModeStyling;
+    }
+
+    const colorScheme = Appearance.getColorScheme();
+    if (colorScheme === 'dark') {
+        //Dark mode is on
+    } else {
+        //Dark mode is off
+    }
+
+    const Styles = StyleSheet.create({
+        container: {
+            flex: 1,
+            ...styling.backgroundColor
+        },
+    });
+
     return(
         <SafeAreaView style={Styles.container}>
             <ScrollView>
-            <Text style={{textAlign: 'center', fontSize: 30, fontWeight: 'bold', color: '#ECEFF4'}}>Find Screen</Text>
-            <Text style={{textAlign: 'center', fontSize: 20, color: '#ECEFF4'}}>Coming soon :)</Text>
-            <View style={{height: 20, maxHeight: 20, minHeight: 20, width: '100%', maxWidth: '100%', minWidth: '100%'}}/>
-            <Image
-                source={require('../assets/doge.gif')}
-                resizeMode = 'contain'
-                style={{
-                    width: 200,
-                    height: 200,
-                    paddingLeft: '50%',
-                    paddingRight: '50%'
-                }}
-            />
+            <Text style={{textAlign: 'center', fontSize: 30, fontWeight: 'bold', ...styling.textColor}}>Find Screen</Text>
+            <Text style={{textAlign: 'center', fontSize: 20, ...styling.textColor}}>Coming soon :)</Text>
             </ScrollView>
         </SafeAreaView>
     );
@@ -25,9 +35,3 @@ const FindScreen = ({navigation}) => {
 
 export default FindScreen;
 
-const Styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#2E3440'
-    },
-});

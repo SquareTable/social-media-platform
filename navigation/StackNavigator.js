@@ -1,6 +1,7 @@
 import React from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { StyleSheet, Text, View, Button, Image, TouchableOpacity, SafeAreaView, ScrollView} from 'react-native';
+import {darkModeStyling, darkModeOn, lightModeStyling} from '../screens/screenStylings/styling.js';
 
 import ProfileScreen from "../screens/ProfileScreen";
 import SettingsScreen from "../screens/SettingsScreen";
@@ -24,17 +25,25 @@ const screenOptionStyle = {
 };
 
 const ProfileScreenToSettings_StackNavigation = () => {
+  if (darkModeOn === true) {
+    var styling = darkModeStyling;
+  } else {
+    var styling = lightModeStyling;
+  }
   return (
     <Stack.Navigator screenOptions={screenOptionStyle}>
       <Stack.Screen name="Profile Name Here" component={ProfileScreen}
         options={{
           headerStyle: {
-            backgroundColor: '#2E3440',
+            borderBottomWidth: 5,
+            ...styling.navBackgroundColor,
+            ...styling.borderColor
           },
           headerTitleStyle: {
             fontWeight: 'bold',
             fontSize: 20,
-            textAlign: 'center'
+            textAlign: 'center',
+            ...styling.textColor
           },
         }}
       />
@@ -120,17 +129,25 @@ const ProfileScreenToSettings_StackNavigation = () => {
 };
 
 const ChatScreen_Stack = () => {
+  if (darkModeOn === true) {
+    var styling = darkModeStyling;
+  } else {
+    var styling = lightModeStyling;
+  }
   return (
     <Stack.Navigator screenOptions={screenOptionStyle}>
       <Stack.Screen name="Chat" component={ChatScreen}
         options={{
           headerStyle: {
-            backgroundColor: '#2E3440',
+            borderBottomWidth: 3,
+            ...styling.navBackgroundColor,
+            ...styling.borderColor
           },
           headerTitleStyle: {
             fontWeight: 'bold',
             fontSize: 20,
-            textAlign: 'center'
+            textAlign: 'center',
+            ...styling.textColor
           },
         }}
       />
