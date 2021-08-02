@@ -5,17 +5,20 @@ import Constants from "expo-constants";
 import styled from "styled-components";
 import Images from "../posts/images.js";
 import Post from "../posts/post.js";
-
-const darkMode = "#2E3440";
-const lightMode = "#D8DEE9"
+import {darkModeStyling, darkModeOn, lightModeStyling} from '../screens/screenStylings/styling.js';
 
 
 const HomeScreen = ({navigation}) => {
+    if (darkModeOn === true) {
+        var styling = darkModeStyling;
+    } else {
+        var styling = lightModeStyling;
+    }
     return(
         <SafeAreaView
-         style={{flex: 1, backgroundColor: '#2E3440', paddingLeft: 10}}
+         style={{flex: 1, ...styling.backgroundColor, paddingLeft: 10}}
          >
-            <Text style={{fontSize: 30, fontWeight: 'bold', alignContent: 'center', alignItems: 'center', alignSelf: 'center', color: "#ECEFF4"}}>SocialSquare</Text>
+            <Text style={{fontSize: 30, fontWeight: 'bold', alignContent: 'center', alignItems: 'center', alignSelf: 'center', ...styling.textColor}}>SocialSquare</Text>
             <ScrollView>
                 <Post></Post>
                 <Post></Post>
@@ -31,24 +34,5 @@ const HomeScreen = ({navigation}) => {
 export default HomeScreen;
 
 const Styles = StyleSheet.create({
-    centerItems: {
-        paddingLeft: '50%',
-        paddingRight: '50%',
-    },
-    centerText: {
-        textAlign: 'center'
-    },
-    post: {
-        maxWidth: 500,
-        alignContent: 'center',
-        alignItems: 'center',
-        alignSelf: 'center',
-
-    },
-    post_background: {
-        minWidth: 600,
-        maxWidth: 600,
-        backgroundColor: '#2E3440',
-        alignSelf: 'center',
-    },
+    
 });

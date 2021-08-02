@@ -1,13 +1,16 @@
 import { StyleSheet} from 'react-native';
 
 
-var darkModeOn = true;
+var darkModeOn = false;
 
-/* Transfer home screen, settings screen, and all settings pages over to the dark mode switching system */
+/* Transfer all settings pages over to the dark mode switching system */
 
 var darkModeStyling = StyleSheet.create({
     textColor: {
         color: '#ECEFF4'
+    },
+    oppositeTextColor: {
+        color: '#2E3440'
     },
     tintColor: {
         tintColor: '#ECEFF4'
@@ -17,6 +20,9 @@ var darkModeStyling = StyleSheet.create({
     },
     backgroundColor: {
         backgroundColor: '#2E3440'
+    },
+    oppositeBackgroundColor: {
+        backgroundColor: '#ECEFF4'
     },
     navBackgroundColor: {
         backgroundColor: '#3B4252'
@@ -30,6 +36,9 @@ var lightModeStyling = StyleSheet.create({
     textColor: {
         color: '#2E3440'
     },
+    oppositeTextColor: {
+        color: '#ECEFF4'
+    },
     tintColor: {
         tintColor: '#2E3440'
     },
@@ -38,6 +47,9 @@ var lightModeStyling = StyleSheet.create({
     },
     backgroundColor: {
         backgroundColor: '#ECEFF4'
+    },
+    oppositeBackgroundColor: {
+        backgroundColor: '#2E3440'
     },
     navBackgroundColor: {
         backgroundColor: '#D8DEE9'

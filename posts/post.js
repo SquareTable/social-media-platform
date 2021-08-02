@@ -7,14 +7,20 @@ import Images from "../posts/images.js";
 import ProgressiveImage from './ProgressiveImage.js';
 
 const StatusBarHeight = Constants.statusBarHeight;
+import {darkModeStyling, darkModeOn, lightModeStyling} from '../screens/screenStylings/styling.js';
 
 const Post = ({navigation}) => {
+    if (darkModeOn === true) {
+        var styling = darkModeStyling;
+    } else {
+        var styling = lightModeStyling;
+    }
     return(
-        <View style={Styles.post_background}>
-            <View style={Styles.post}>
+        <View style={{minWidth: 500, maxWidth: 500, width: 500, ...styling.backgroundColor, alignSelf: 'center',}}>
+            <View style={{maxWidth: 500, minWidth: 500, width: 500, alignContent: 'center', alignItems: 'center', alignSelf: 'center',}}>
                 <View style={{maxWidth: 400, minWidth: 400}}>
-                    <Text style={{color: '#ECEFF4', textAlign: 'center'}}>Profile pic and username goes here</Text>
-                    <View style={{backgroundColor: '#2E3440', maxWidth: 400, minWidth: 400}}>
+                    <Text style={{...styling.textColor, textAlign: 'center'}}>Profile pic and username goes here</Text>
+                    <View style={{...styling.backgroundColor, maxWidth: 400, minWidth: 400}}>
                         <ProgressiveImage
                             source={Images.posts.clock}
                             style={{minHeight: 400, minWidth: 400, width: 400, height: 400, maxWidth: 400, maxHeight: 400}}
@@ -22,7 +28,7 @@ const Post = ({navigation}) => {
                             resizeMethod="resize"
                         />
                     </View>
-                    <Text style={{color: "#ECEFF4", textAlign: 'center'}}>Like and comment buttons will go here</Text>
+                    <Text style={{...styling.textColor, textAlign: 'center'}}>Like and comment buttons will go here</Text>
                 </View>
             </View>
         </View>
@@ -30,29 +36,3 @@ const Post = ({navigation}) => {
 };
 
 export default Post;
-
-const Styles = StyleSheet.create({
-    centerItems: {
-        paddingLeft: '50%',
-        paddingRight: '50%',
-    },
-    centerText: {
-        textAlign: 'center'
-    },
-    post: {
-        maxWidth: 500,
-        minWidth: 500,
-        width: 500,
-        alignContent: 'center',
-        alignItems: 'center',
-        alignSelf: 'center',
-
-    },
-    post_background: {
-        minWidth: 500,
-        maxWidth: 500,
-        width: 500,
-        backgroundColor: '#2E3440',
-        alignSelf: 'center',
-    },
-});

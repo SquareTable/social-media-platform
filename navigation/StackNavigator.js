@@ -14,6 +14,8 @@ import AccountSettings from "../screens/AccountSettings";
 import AppStyling from "../screens/AppStylingScreen";
 import ChatScreen from "../screens/ChatScreen";
 
+import { NavigationImages } from '../navigation/navigationImages.js';
+
 const Stack = createStackNavigator();
 
 const screenOptionStyle = {
@@ -25,6 +27,9 @@ const screenOptionStyle = {
 };
 
 const ProfileScreenToSettings_StackNavigation = () => {
+  /*
+    Use the images in navigationImages.js to 
+  */
   if (darkModeOn === true) {
     var styling = darkModeStyling;
   } else {
@@ -45,83 +50,127 @@ const ProfileScreenToSettings_StackNavigation = () => {
             textAlign: 'center',
             ...styling.textColor
           },
+          headerBackTitleStyle: {
+            ...styling.textColor,
+          },
+          /*headerTintColor: { Add tint colour to support dark mode for the back navigation arrow
+            ...styling.tintColor
+          }*/
         }}
       />
       <Stack.Screen name="Settings" component={SettingsScreen} 
       options={{
         headerStyle: {
-          backgroundColor: '#2E3440',
+          ...styling.navBackgroundColor,
+          ...styling.borderColor
         },
         headerTitleStyle: {
           fontWeight: 'bold',
           fontSize: 20,
-          textAlign: 'center'
+          textAlign: 'center',
+          ...styling.textColor
         },
+        headerBackTitleStyle: {
+          ...styling.textColor,
+        },/*
+        headerTintColor: {  Add tint colour to support dark mode for the back navigation arrow
+          ...styling.tintColor
+        }*/
       }}/>
       <Stack.Screen name="Badges" component={BadgesScreen} 
       options={{
         headerStyle: {
-          backgroundColor: '#2E3440',
+          ...styling.navBackgroundColor,
+          ...styling.borderColor
         },
         headerTitleStyle: {
           fontWeight: 'bold',
           fontSize: 20,
-          textAlign: 'center'
+          textAlign: 'center',
+          ...styling.textColor
+        },
+        headerBackTitleStyle: {
+          ...styling.textColor,
         },
       }}/>
       <Stack.Screen name="Login" component={LoginScreen} 
       options={{
         headerStyle: {
-          backgroundColor: '#2E3440',
+          ...styling.navBackgroundColor,
+          ...styling.borderColor
         },
         headerTitleStyle: {
           fontWeight: 'bold',
           fontSize: 20,
-          textAlign: 'center'
+          textAlign: 'center',
+          ...styling.textColor
+        },
+        headerBackTitleStyle: {
+          ...styling.textColor,
         },
       }}/>
       <Stack.Screen name="Change Username" component={ChangeUsername} 
       options={{
         headerStyle: {
-          backgroundColor: '#2E3440',
+          ...styling.navBackgroundColor,
+          ...styling.borderColor
         },
         headerTitleStyle: {
           fontWeight: 'bold',
           fontSize: 20,
-          textAlign: 'center'
+          textAlign: 'center',
+          ...styling.textColor
+        },
+        headerBackTitleStyle: {
+          ...styling.textColor,
         },
       }}/>
       <Stack.Screen name="Change Password" component={ChangePassword} 
       options={{
         headerStyle: {
-          backgroundColor: '#2E3440',
+          ...styling.navBackgroundColor,
+          ...styling.borderColor
         },
         headerTitleStyle: {
           fontWeight: 'bold',
           fontSize: 20,
-          textAlign: 'center'
+          textAlign: 'center',
+          ...styling.textColor
+        },
+        headerBackTitleStyle: {
+          ...styling.textColor,
         },
       }}/>
       <Stack.Screen name="Account Settings" component={AccountSettings} 
       options={{
         headerStyle: {
-          backgroundColor: '#2E3440',
+          ...styling.navBackgroundColor,
+          ...styling.borderColor
         },
         headerTitleStyle: {
           fontWeight: 'bold',
           fontSize: 20,
-          textAlign: 'center'
+          textAlign: 'center',
+          ...styling.textColor
+        },
+        headerBackTitleStyle: {
+          ...styling.textColor,
         },
       }}/>
       <Stack.Screen name="App Styling" component={AppStyling} 
       options={{
         headerStyle: {
-          backgroundColor: '#2E3440',
+          ...styling.navBackgroundColor,
+          ...styling.borderColor
         },
         headerTitleStyle: {
           fontWeight: 'bold',
           fontSize: 20,
-          textAlign: 'center'
+          textAlign: 'center',
+          ...styling.textColor
+        },
+        headerBackTitleStyle: {
+          ...styling.textColor,
         },
       }}/>
     </Stack.Navigator>
@@ -148,6 +197,9 @@ const ChatScreen_Stack = () => {
             fontSize: 20,
             textAlign: 'center',
             ...styling.textColor
+          },
+          headerBackTitleStyle: {
+            ...styling.textColor,
           },
         }}
       />

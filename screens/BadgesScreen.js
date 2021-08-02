@@ -2,10 +2,27 @@
 
 import React from 'react';
 import { StyleSheet, Text, View, Button, Image, ScrollView, SafeAreaView, StatusBar, Dimensions, FlatList} from 'react-native';
+import AppStyling from './AppStylingScreen';
+import {darkModeStyling, darkModeOn, lightModeStyling} from '../screens/screenStylings/styling.js';
 
 const screenWidth = Dimensions.get('window').width;
 
 const BadgesScreen = ({navigation}) => {
+    if (darkModeOn === true) {
+        var styling = darkModeStyling;
+    } else {
+        var styling = lightModeStyling;
+    }
+    const Styles = StyleSheet.create({
+        container: {
+            ...styling.backgroundColor,
+            flex: 1,
+        },
+        containerText: {
+            textAlign: 'center',
+            ...styling.textColor
+        },  
+    });
     return(
         <SafeAreaView style={Styles.container}>
             <ScrollView style={{flex: 1}}>
@@ -71,14 +88,3 @@ const BadgesScreen = ({navigation}) => {
 };
 
 export default BadgesScreen;
-
-const Styles = StyleSheet.create({
-    container: {
-        backgroundColor: '#2E3440',
-        flex: 1,
-    },
-    containerText: {
-        textAlign: 'center',
-        color: '#ECEFF4',
-    },  
-});
