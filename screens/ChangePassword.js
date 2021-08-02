@@ -4,7 +4,7 @@ import {darkModeStyling, darkModeOn, lightModeStyling} from '../screens/screenSt
 
 const ChangePassword = ({navigation}) => {
     if (darkModeOn === true) {
-        var styling = darkModeOn;
+        var styling = darkModeStyling;
     } else {
         var styling = lightModeStyling;
     }

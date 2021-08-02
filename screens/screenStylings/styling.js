@@ -1,7 +1,7 @@
 import { StyleSheet} from 'react-native';
 
 
-var darkModeOn = false;
+var darkModeOn = true;
 
 /* Transfer all settings pages over to the dark mode switching system */
 
