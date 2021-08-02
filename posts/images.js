@@ -1,6 +1,6 @@
 const images = {
     posts: {
-        seb_test: require('../assets/app_icons/profile_pic.jpg'),
+        profile_picture: require('../assets/app_icons/profile_pic.jpg'),
         clock: require('../post_media/clock.gif'),
         code: require('../post_media/code.png'),
         background: require('../post_media/background.jpeg')
