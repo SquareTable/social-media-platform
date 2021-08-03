@@ -15,6 +15,9 @@ var darkModeStyling = StyleSheet.create({
     tintColor: {
         tintColor: '#ECEFF4'
     },
+    oppositeTintColor: {
+        tintColor: '#2E3440'
+    },
     borderColor: {
         borderColor: '#ECEFF4'
     },
@@ -53,6 +56,16 @@ var darkModeStyling = StyleSheet.create({
         alignContent: 'center',
         alignItems: 'center',
         alignSelf: 'center'
+    },
+    like_comment_save_buttons: {
+        minHeight: 40, 
+        minWidth: 40, 
+        width: 40, 
+        height: 40, 
+        maxWidth: 40, 
+        maxHeight: 40, 
+        position:'absolute', 
+        left:15
     }
 })
 
@@ -65,6 +78,9 @@ var lightModeStyling = StyleSheet.create({
     },
     tintColor: {
         tintColor: '#2E3440'
+    },
+    oppositeTintColor: {
+        tintColor: '#ECEFF4'
     },
     borderColor: {
         borderColor: '#2E3440'
@@ -101,6 +117,16 @@ var lightModeStyling = StyleSheet.create({
         alignContent: 'center',
         alignItems: 'center',
         alignSelf: 'center'
+    },
+    like_comment_save_buttons: {
+        minHeight: 40, 
+        minWidth: 40, 
+        width: 40, 
+        height: 40, 
+        maxWidth: 40, 
+        maxHeight: 40, 
+        position:'absolute', 
+        left:15
     }
 })
 

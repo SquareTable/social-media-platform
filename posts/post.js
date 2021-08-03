@@ -41,7 +41,32 @@ const Post = ({navigation}) => {
                             resizeMethod="resize"
                         />
                     </View>
-                    <Text style={{...styling.textColor, textAlign: 'center'}}>Like and comment buttons will go here</Text>
+                    <View style={{flex: 2, flexDirection: 'row', marginTop: 10, marginBottom: 10}}>
+                        <View style={{height: 50, width: 65}}>
+                            <Image
+                                source={Images.posts.heart}
+                                style={{...styling.like_comment_save_buttons, ...styling.tintColor}}
+                                resizeMode="contain"
+                                resizeMethod="resize"
+                            />
+                        </View>
+                        <View style={{width: 50}}>
+                            <Image
+                                source={Images.posts.message_bubbles}
+                                style={{...styling.like_comment_save_buttons, ...styling.tintColor}}
+                                resizeMode="contain"
+                                resizeMethod="resize"
+                            />
+                        </View>
+                        <View style={{width:50, position:'absolute', right: 20}}>
+                            <Image
+                                source={Images.posts.bookmark}
+                                style={{...styling.like_comment_save_buttons, ...styling.tintColor}}
+                                resizeMode="contain"
+                                resizeMethod="resize"
+                            />
+                        </View>
+                    </View>
                 </View>
             </View>
         </View>
