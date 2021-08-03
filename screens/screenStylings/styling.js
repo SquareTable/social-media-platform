@@ -29,6 +29,30 @@ var darkModeStyling = StyleSheet.create({
     },
     navFocusedColor: {
         color: '#88C0D0'
+    },
+    settingsButtonTouchableOpacity: {
+        backgroundColor: '#3B4252', 
+        width: '40%', 
+        maxWidth: '40%', 
+        minWidth: '40%', 
+        height: 50, 
+        maxHeight: 50, 
+        minHeight: 50, 
+        borderColor: '#5E81AC', 
+        borderWidth: 5, 
+        borderRadius: 50/2, 
+        marginLeft: '5%', 
+        marginRight: '5%'
+    },
+    settingsButtonText: {
+        color: '#ECEFF4',
+        fontSize: 14, 
+        textAlign: 'center', 
+        textAlignVertical: 'center', 
+        justifyContent: 'center',
+        alignContent: 'center',
+        alignItems: 'center',
+        alignSelf: 'center'
     }
 })
 
@@ -54,6 +78,30 @@ var lightModeStyling = StyleSheet.create({
     navBackgroundColor: {
         backgroundColor: '#D8DEE9'
     },
+    settingsButtonTouchableOpacity: {
+        backgroundColor: '#D8DEE9',
+        width: '40%', 
+        maxWidth: '40%', 
+        minWidth: '40%', 
+        height: 50, 
+        maxHeight: 50, 
+        minHeight: 50, 
+        borderColor: '#5E81AC', 
+        borderWidth: 5, 
+        borderRadius: 50/2, 
+        marginLeft: '5%', 
+        marginRight: '5%'
+    },
+    settingsButtonText: {
+        color: '#2E3440',
+        fontSize: 14, 
+        textAlign: 'center', 
+        textAlignVertical: 'center', 
+        justifyContent: 'center',
+        alignContent: 'center',
+        alignItems: 'center',
+        alignSelf: 'center'
+    }
 })
 
 var lightModeStyling_navFocusedColor = '#5E81AC';
