@@ -1,7 +1,7 @@
 import { StyleSheet} from 'react-native';
 
 
-var darkModeOn = true;
+var darkModeOn = false;
 
 /* Transfer all settings pages over to the dark mode switching system */
 
@@ -111,4 +111,12 @@ var lightModeStyling_navNonFocusedColor = '#2E3440';
 
 
 
-export {darkModeStyling, darkModeOn, lightModeStyling, lightModeStyling_navFocusedColor, darkModeStyling_navFocusedColor, darkModeStyling_navNonFocusedColor, lightModeStyling_navNonFocusedColor};
+export {
+    darkModeStyling, 
+    darkModeOn, 
+    lightModeStyling, 
+    lightModeStyling_navFocusedColor, 
+    darkModeStyling_navFocusedColor, 
+    darkModeStyling_navNonFocusedColor, 
+    lightModeStyling_navNonFocusedColor
+};

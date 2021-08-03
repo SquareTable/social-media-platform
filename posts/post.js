@@ -19,7 +19,20 @@ const Post = ({navigation}) => {
         <View style={{minWidth: 500, maxWidth: 500, width: 500, ...styling.backgroundColor, alignSelf: 'center',}}>
             <View style={{maxWidth: 500, minWidth: 500, width: 500, alignContent: 'center', alignItems: 'center', alignSelf: 'center',}}>
                 <View style={{maxWidth: 400, minWidth: 400}}>
-                    <Text style={{...styling.textColor, textAlign: 'center'}}>Profile pic and username goes here</Text>
+                    <View style={{flex: 2, flexDirection:'row'}}>
+                        <View style={{width:60}}>
+                            <Image
+                                source={Images.posts.profile_picture}
+                                style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2, position:'absolute', left:13}}
+                                resizeMode="contain"
+                                resizeMethod="resize"
+                            />
+                            <View style={{width:'100%', minHeight:42, height:42}}/>
+                        </View>
+                        <View style={{width:'100%'}}>
+                            <Text style={{...styling.textColor, textAlign: 'left', fontWeight:'bold', fontSize: 20, textAlignVertical:'bottom'}}>SebTheMan</Text>
+                        </View>
+                    </View>
                     <View style={{...styling.backgroundColor, maxWidth: 400, minWidth: 400}}>
                         <ProgressiveImage
                             source={Images.posts.clock}

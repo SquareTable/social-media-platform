@@ -51,7 +51,8 @@ const SettingsScreen = ({navigation}) => {
                 <View style={{width: '100%', minWidth: '100%', maxWidth: '100%'}}>
                     <Text style={{fontSize: 18, textAlign: 'center', ...styling.textColor}}>Made by Sebastian Webster, Kovid Dev, and Jacob Bowen</Text>
                     <View style={{width: '100%', maxWidth: '100%', minWidth: '100%', height: 5, maxHeight: 5, minHeight: 5}}/>
-                    <Text style={{fontSize: 16, textAlign: 'center', ...styling.textColor}}>© (coming soon) 2021</Text>
+                    <Text style={{fontSize: 16, textAlign: 'center', ...styling.textColor}}>© SquareTable 2021</Text>
+                    <Text style={{fontSize: 16, textAlign: 'center', ...styling.textColor}}>All Rights Reserved</Text>
                 </View>
             </ScrollView>
         </SafeAreaView>
