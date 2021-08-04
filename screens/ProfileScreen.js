@@ -1,106 +1,141 @@
-import React, {useLayoutEffect} from 'react';
-import { StyleSheet, Text, View, Button, Image, TouchableOpacity, SafeAreaView, ScrollView, Appearance} from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
-import {darkModeStyling, darkModeOn, lightModeStyling} from '../screens/screenStylings/styling.js';
+import React, {useContext, useState} from 'react';
+import { StatusBar } from 'expo-status-bar';
+import { TouchableOpacity } from 'react-native';
+
+import {
+    InnerContainer,
+    PageTitle,
+    SubTitle,
+    StyledFormArea,
+    StyledButton,
+    ButtonText,
+    Line,
+    WelcomeContainer,
+    WelcomeImage,
+    Avatar,
+    StyledContainer,
+    ProfileHorizontalView,
+    ProfileHorizontalViewItem,
+    ProfIcons,
+    ProfInfoAreaImage,
+    ProfileBadgesView,
+    ProfileBadgeIcons,
+    ProfilePostsSelectionView,
+    ProfilePostsSelectionBtns,
+    ProfileGridPosts,
+    ProfileFeaturedPosts,
+    ProfileTopBtns,
+    TopButtonIcons
+} from '../screens/screenStylings/styling.js';
+
+// async-storage
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+//credentials context
+import { CredentialsContext } from '../components/CredentialsContext';
+import { ImageBackground, ScrollView, Touchable } from 'react-native';
+
 
 const ProfileScreen = ({navigation}) => {
-    if (darkModeOn === true) {
-        
-        useLayoutEffect(() => {
-            navigation.setOptions({
-                headerRight: () => (
-                    <TouchableOpacity>
-                        <MaterialIcons 
-                        name="logout" 
-                        size={24} 
-                        color="#ECEFF4"
-                        onPress={() => navigation.replace('Login')}
-                        />
-                    </TouchableOpacity>
-                )
-            })
-        }, [])
+     //context
+    const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
+    const {name, email, photoUrl} = storedCredentials;
+    const AvatarImg = photoUrl ? {uri: photoUrl} : require('./../assets/img/Logo.png');
+    const [gridViewState, setGridViewState] = useState("flex")
+    const [featuredViewState, setFeaturedViewState] = useState("none")
 
-        var styling = darkModeStyling;
-        
-    } else {
-        useLayoutEffect(() => {
-            navigation.setOptions({
-                headerRight: () => (
-                    <TouchableOpacity>
-                        <MaterialIcons 
-                        name="logout" 
-                        size={24} 
-                        color="#2E3440"
-                        onPress={() => navigation.replace('Login')}
-                        />
-                    </TouchableOpacity>
-                )
-            })
-        }, [])
-
-        var styling = lightModeStyling;
+    const clearLogin = () => {
+        AsyncStorage.removeItem('socialSquareCredentials').then(() => {
+            setStoredCredentials("");
+        })
+        .catch(error => console.log(error))
     }
-/*
-    const colorScheme = Appearance.getColorScheme();
-    if (colorScheme === 'dark') {
-        useLayoutEffect(() => {
-            navigation.setOptions({
-                headerRight: () => (
-                    <TouchableOpacity>
-                        <MaterialIcons 
-                        name="logout" 
-                        size={24} 
-                        color="#ECEFF4"
-                        onPress={() => navigation.replace('Login')}
-                        />
-                    </TouchableOpacity>
-                )
-            })
-        }, [])
 
-        var styling = darkModeStyling;
+    const changeToGrid = () => {
+        if (gridViewState=="none") {
+            setFeaturedViewState("none")
+            setGridViewState("flex")
+        }
+    }
 
-    } else {
-        useLayoutEffect(() => {
-            navigation.setOptions({
-                headerRight: () => (
-                    <TouchableOpacity>
-                        <MaterialIcons 
-                        name="logout" 
-                        size={24} 
-                        color="#2E3440"
-                        onPress={() => navigation.replace('Login')}
-                        />
-                    </TouchableOpacity>
-                )
-            })
-        }, [])
+    const changeToFeatured = () => {
+        if (featuredViewState=="none") {
+            console.log("SussyBaka")
+            setGridViewState("none")
+            setFeaturedViewState("flex")
+        }
+    }
 
-        var styling = lightModeStyling;
-    }*/
     return(
-        <SafeAreaView style={{flex: 1, paddingLeft: 10, ...styling.backgroundColor}}>
-            <TouchableOpacity onPressIn={() => navigation.navigate('Settings')} activeOpacity={0.5} style={{maxHeight: 55, minHeight: 55}}>
-                <Image
-                    source={require('../assets/app_icons/settings.png')} 
-                    style={{ width: 40, height: 40, position: 'absolute', right: 20, top: 10, zIndex: 9999999999, ...styling.tintColor}}
-                    resizeMode="contain"
-                    resizeMethod="resize"
-                />
-            </TouchableOpacity>
+        <>    
+            <StatusBar style="dark"/>
             <ScrollView>
-                <Text style={{fontSize: 30, ...styling.textColor}}>Profile stuff will go here</Text>
+                <WelcomeContainer>
+                    <ProfileHorizontalView topItems={true}>
+                        <ProfileTopBtns leftSide={true}>
+                            <TopButtonIcons source={require('./../assets/img/ThreeDots.png')}/>
+                        </ProfileTopBtns>
+                        <ProfileTopBtns rightSide={true} onPress={() => navigation.navigate("SettingsPage")}>
+                            <TopButtonIcons source={require('./../assets/img/ThreeDots.png')}/>
+                        </ProfileTopBtns>
+                    </ProfileHorizontalView>
+                    <ProfInfoAreaImage>
+                        <Avatar resizeMode="cover" source={AvatarImg} />
+                        <PageTitle welcome={true}>{name || "Couldn't get name"}</PageTitle>
+                        <ProfileBadgesView onPress={() => navigation.navigate("BadgesScreen")}>
+                            <ProfileBadgeIcons source={require('./../assets/img/TempProfIcons.jpg')}/>
+                            <ProfileBadgeIcons source={require('./../assets/img/BgImage1.png')}/>
+                            <ProfileBadgeIcons source={require('./../assets/img/TempProfIcons.jpg')}/>
+                            <ProfileBadgeIcons source={require('./../assets/img/Toga.jpg')}/>
+                            <ProfileBadgeIcons source={require('./../assets/img/TempProfIcons.jpg')}/>
+                        </ProfileBadgesView>
+                        <SubTitle bioText={true} > Bio </SubTitle>
+                    </ProfInfoAreaImage>
+                    <ProfileHorizontalView>
+                        <ProfileHorizontalViewItem profLeftIcon={true}>
+                            <SubTitle welcome={true}> Followers </SubTitle>
+                            <ProfIcons source={require('./../assets/img/TempProfIcons.jpg')}/>
+                            <SubTitle welcome={true}> 0 </SubTitle>
+                        </ProfileHorizontalViewItem>
+                        <ProfileHorizontalViewItem profCenterIcon={true}>
+                            <SubTitle welcome={true}> Following </SubTitle>
+                                <ProfIcons source={require('./../assets/img/BgImage1.png')}/>
+                            <SubTitle welcome={true}> 0 </SubTitle>
+                        </ProfileHorizontalViewItem>
+                        <ProfileHorizontalViewItem profRightIcon={true}>
+                            <SubTitle welcome={true}> Likes </SubTitle>
+                                <ProfIcons source={require('./../assets/img/Toga.jpg')}/>
+                            <SubTitle welcome={true}> 0 </SubTitle>
+                        </ProfileHorizontalViewItem>
+                    </ProfileHorizontalView>
+                    <ProfilePostsSelectionView>
+                        <ProfilePostsSelectionBtns onPress={changeToGrid}>
+                            <ProfIcons source={require('./../assets/img/Toga.jpg')}/>
+                        </ProfilePostsSelectionBtns>
+                        <ProfilePostsSelectionBtns onPress={changeToFeatured}>
+                            <ProfIcons source={require('./../assets/img/Toga.jpg')}/>
+                        </ProfilePostsSelectionBtns>
+                    </ProfilePostsSelectionView>
+                    <ProfileGridPosts display={gridViewState}>
+                        <SubTitle profNoPosts={true}>
+                            This user has no posts.
+                        </SubTitle>
+                    </ProfileGridPosts>
+                    <ProfileFeaturedPosts display={featuredViewState}>
+                        <SubTitle profNoPosts={true}>
+                            This user has been featured in no posts.
+                        </SubTitle>
+                    </ProfileFeaturedPosts>
+                    <StyledFormArea>
+                        <Line />
+                        <StyledButton onPress={clearLogin}>
+                            <ButtonText> Logout </ButtonText>
+                        </StyledButton>
+                    </StyledFormArea>
+                </WelcomeContainer>
             </ScrollView>
-        </SafeAreaView>
+        </>
     );
-};
+}
 
 export default ProfileScreen;
-
-const Styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#08F1ED'
-    },
-});

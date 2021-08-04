@@ -13,11 +13,6 @@ const SettingsScreen = ({navigation}) => {
         <SafeAreaView style={{flex: 1, ...styling.backgroundColor}}>
             <ScrollView style={{flex: 1}}>
                 <View style={Styles.flex_row}>
-                    <TouchableOpacity style={styling.settingsButtonTouchableOpacity} onPressIn={() => navigation.navigate('Badges')}>
-                        <View>
-                            <Text style={styling.settingsButtonText}>Badges</Text>
-                        </View>
-                    </TouchableOpacity>
                     <TouchableOpacity style={styling.settingsButtonTouchableOpacity} onPressIn={() => navigation.navigate('Login')}>
                         <View>
                             <Text style={styling.settingsButtonText}>Login</Text>
