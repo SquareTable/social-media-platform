@@ -25,7 +25,8 @@ import {
     ProfileGridPosts,
     ProfileFeaturedPosts,
     ProfileTopBtns,
-    TopButtonIcons
+    TopButtonIcons,
+    BackgroundDarkColor
 } from '../screens/screenStylings/styling.js';
 
 // async-storage
@@ -48,7 +49,8 @@ const ProfileScreen = ({navigation}) => {
         AsyncStorage.removeItem('socialSquareCredentials').then(() => {
             setStoredCredentials("");
         })
-        .catch(error => console.log(error))
+        .catch(error => console.log(error));
+        navigation.replace("LoginScreen");
     }
 
     const changeToGrid = () => {
@@ -67,73 +69,75 @@ const ProfileScreen = ({navigation}) => {
     }
 
     return(
-        <>    
-            <StatusBar style="dark"/>
-            <ScrollView>
-                <WelcomeContainer>
-                    <ProfileHorizontalView topItems={true}>
-                        <ProfileTopBtns leftSide={true}>
-                            <TopButtonIcons source={require('./../assets/img/ThreeDots.png')}/>
-                        </ProfileTopBtns>
-                        <ProfileTopBtns rightSide={true} onPress={() => navigation.navigate("SettingsPage")}>
-                            <TopButtonIcons source={require('./../assets/img/ThreeDots.png')}/>
-                        </ProfileTopBtns>
-                    </ProfileHorizontalView>
-                    <ProfInfoAreaImage>
-                        <Avatar resizeMode="cover" source={AvatarImg} />
-                        <PageTitle welcome={true}>{name || "Couldn't get name"}</PageTitle>
-                        <ProfileBadgesView onPress={() => navigation.navigate("BadgesScreen")}>
-                            <ProfileBadgeIcons source={require('./../assets/img/TempProfIcons.jpg')}/>
-                            <ProfileBadgeIcons source={require('./../assets/img/BgImage1.png')}/>
-                            <ProfileBadgeIcons source={require('./../assets/img/TempProfIcons.jpg')}/>
-                            <ProfileBadgeIcons source={require('./../assets/img/Toga.jpg')}/>
-                            <ProfileBadgeIcons source={require('./../assets/img/TempProfIcons.jpg')}/>
-                        </ProfileBadgesView>
-                        <SubTitle bioText={true} > Bio </SubTitle>
-                    </ProfInfoAreaImage>
-                    <ProfileHorizontalView>
-                        <ProfileHorizontalViewItem profLeftIcon={true}>
-                            <SubTitle welcome={true}> Followers </SubTitle>
-                            <ProfIcons source={require('./../assets/img/TempProfIcons.jpg')}/>
-                            <SubTitle welcome={true}> 0 </SubTitle>
-                        </ProfileHorizontalViewItem>
-                        <ProfileHorizontalViewItem profCenterIcon={true}>
-                            <SubTitle welcome={true}> Following </SubTitle>
-                                <ProfIcons source={require('./../assets/img/BgImage1.png')}/>
-                            <SubTitle welcome={true}> 0 </SubTitle>
-                        </ProfileHorizontalViewItem>
-                        <ProfileHorizontalViewItem profRightIcon={true}>
-                            <SubTitle welcome={true}> Likes </SubTitle>
+        <>   
+            <BackgroundDarkColor> 
+                <StatusBar style="dark"/>
+                <ScrollView>
+                    <WelcomeContainer>
+                        <ProfileHorizontalView topItems={true}>
+                            <ProfileTopBtns leftSide={true}>
+                                <TopButtonIcons source={require('./../assets/img/ThreeDots.png')}/>
+                            </ProfileTopBtns>
+                            <ProfileTopBtns rightSide={true} onPress={() => navigation.navigate("SettingsPage")}>
+                                <TopButtonIcons source={require('./../assets/img/ThreeDots.png')}/>
+                            </ProfileTopBtns>
+                        </ProfileHorizontalView>
+                        <ProfInfoAreaImage>
+                            <Avatar resizeMode="cover" source={AvatarImg} />
+                            <PageTitle welcome={true}>{name || "Couldn't get name"}</PageTitle>
+                            <ProfileBadgesView onPress={() => navigation.navigate("BadgesScreen")}>
+                                <ProfileBadgeIcons source={require('./../assets/img/TempProfIcons.jpg')}/>
+                                <ProfileBadgeIcons source={require('./../assets/img/BgImage1.png')}/>
+                                <ProfileBadgeIcons source={require('./../assets/img/TempProfIcons.jpg')}/>
+                                <ProfileBadgeIcons source={require('./../assets/img/Toga.jpg')}/>
+                                <ProfileBadgeIcons source={require('./../assets/img/TempProfIcons.jpg')}/>
+                            </ProfileBadgesView>
+                            <SubTitle bioText={true} > Bio </SubTitle>
+                        </ProfInfoAreaImage>
+                        <ProfileHorizontalView>
+                            <ProfileHorizontalViewItem profLeftIcon={true}>
+                                <SubTitle welcome={true}> Followers </SubTitle>
+                                <ProfIcons source={require('./../assets/img/TempProfIcons.jpg')}/>
+                                <SubTitle welcome={true}> 0 </SubTitle>
+                            </ProfileHorizontalViewItem>
+                            <ProfileHorizontalViewItem profCenterIcon={true}>
+                                <SubTitle welcome={true}> Following </SubTitle>
+                                    <ProfIcons source={require('./../assets/img/BgImage1.png')}/>
+                                <SubTitle welcome={true}> 0 </SubTitle>
+                            </ProfileHorizontalViewItem>
+                            <ProfileHorizontalViewItem profRightIcon={true}>
+                                <SubTitle welcome={true}> Likes </SubTitle>
+                                    <ProfIcons source={require('./../assets/img/Toga.jpg')}/>
+                                <SubTitle welcome={true}> 0 </SubTitle>
+                            </ProfileHorizontalViewItem>
+                        </ProfileHorizontalView>
+                        <ProfilePostsSelectionView>
+                            <ProfilePostsSelectionBtns onPress={changeToGrid}>
                                 <ProfIcons source={require('./../assets/img/Toga.jpg')}/>
-                            <SubTitle welcome={true}> 0 </SubTitle>
-                        </ProfileHorizontalViewItem>
-                    </ProfileHorizontalView>
-                    <ProfilePostsSelectionView>
-                        <ProfilePostsSelectionBtns onPress={changeToGrid}>
-                            <ProfIcons source={require('./../assets/img/Toga.jpg')}/>
-                        </ProfilePostsSelectionBtns>
-                        <ProfilePostsSelectionBtns onPress={changeToFeatured}>
-                            <ProfIcons source={require('./../assets/img/Toga.jpg')}/>
-                        </ProfilePostsSelectionBtns>
-                    </ProfilePostsSelectionView>
-                    <ProfileGridPosts display={gridViewState}>
-                        <SubTitle profNoPosts={true}>
-                            This user has no posts.
-                        </SubTitle>
-                    </ProfileGridPosts>
-                    <ProfileFeaturedPosts display={featuredViewState}>
-                        <SubTitle profNoPosts={true}>
-                            This user has been featured in no posts.
-                        </SubTitle>
-                    </ProfileFeaturedPosts>
-                    <StyledFormArea>
-                        <Line />
-                        <StyledButton onPress={clearLogin}>
-                            <ButtonText> Logout </ButtonText>
-                        </StyledButton>
-                    </StyledFormArea>
-                </WelcomeContainer>
-            </ScrollView>
+                            </ProfilePostsSelectionBtns>
+                            <ProfilePostsSelectionBtns onPress={changeToFeatured}>
+                                <ProfIcons source={require('./../assets/img/Toga.jpg')}/>
+                            </ProfilePostsSelectionBtns>
+                        </ProfilePostsSelectionView>
+                        <ProfileGridPosts display={gridViewState}>
+                            <SubTitle profNoPosts={true}>
+                                This user has no posts.
+                            </SubTitle>
+                        </ProfileGridPosts>
+                        <ProfileFeaturedPosts display={featuredViewState}>
+                            <SubTitle profNoPosts={true}>
+                                This user has been featured in no posts.
+                            </SubTitle>
+                        </ProfileFeaturedPosts>
+                        <StyledFormArea>
+                            <Line />
+                            <StyledButton onPress={clearLogin}>
+                                <ButtonText> Logout </ButtonText>
+                            </StyledButton>
+                        </StyledFormArea>
+                    </WelcomeContainer>
+                </ScrollView>
+            </BackgroundDarkColor>
         </>
     );
 }

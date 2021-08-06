@@ -47,7 +47,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { CredentialsContext } from './../components/CredentialsContext';
 
 
-const Login = ({navigation}) => {
+const LoginScreen = ({navigation}) => {
     const [hidePassword, setHidePassword] = useState(true);
     const [message, setMessage] = useState();
     const [messageType, setMessageType] = useState();
@@ -184,4 +184,4 @@ const UserTextInput = ({label, icon, isPassword, hidePassword, setHidePassword, 
     )
 }
 
-export default Login;
+export default LoginScreen;

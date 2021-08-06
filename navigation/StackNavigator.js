@@ -91,8 +91,9 @@ const RootStack = () => {
                         </>
                     ) : ( 
                         <>
-                            <Stack.Screen name="Login" component={LoginScreen}/>
+                            <Stack.Screen name="LoginScreen" component={LoginScreen}/>
                             <Stack.Screen name="Signup" component={Signup}/>
+                            <Stack.Screen name="Welcome" component={ProfileScreen}/>
                         </>
                     )}
                 </Stack.Navigator>

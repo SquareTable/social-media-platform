@@ -551,3 +551,10 @@ export const BadgeGridLayout = styled.View`
     flexDirection: row;
     flexWrap: wrap;
 `;
+
+export const BackgroundDarkColor = styled.View`
+    backgroundColor: ${primary};
+    height: 500%;
+    minHeight: 500%;
+    zIndex: -100;
+`;

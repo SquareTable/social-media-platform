@@ -26,6 +26,7 @@ const HomeScreen = ({navigation}) => {
                 <Post></Post>
                 <Post></Post>
                 <Post></Post>
+                <Text style={{...styling.textColor, fontSize: 14, fontWeight: 'bold', textAlign: 'center', marginTop: 10, marginBottom: 30}}>It looks like you have reached the end</Text>
             </ScrollView>
         </SafeAreaView>
     );
