@@ -22,6 +22,8 @@ import { NavigationImages } from '../navigation/navigationImages.js';
 
 import { CredentialsContext } from "../components/CredentialsContext.js";
 import { NavigationContainer } from '@react-navigation/native';
+import FindScreen from "../screens/FindScreen.js";
+import Post from "../posts/post.js";
 
 const Stack = createStackNavigator();
 
@@ -81,7 +83,7 @@ const RootStack = () => {
                             paddingLeft: 20,
                         },
                     }}
-                    initialRouteName="Login"
+                    initialRouteName="LoginScreen"
                 >
                     {storedCredentials ? (
                         <>
@@ -93,7 +95,6 @@ const RootStack = () => {
                         <>
                             <Stack.Screen name="LoginScreen" component={LoginScreen}/>
                             <Stack.Screen name="Signup" component={Signup}/>
-                            <Stack.Screen name="Welcome" component={ProfileScreen}/>
                         </>
                     )}
                 </Stack.Navigator>
@@ -102,4 +103,54 @@ const RootStack = () => {
   )
 }
 
-export { ChatScreen_Stack, AppStyling, RootStack};
+const FindScreen_Stack = () => {
+  if (darkModeOn === true) {
+    var styling = darkModeStyling;
+  } else {
+    var styling = lightModeStyling;
+  }
+  return (
+    <Stack.Navigator screenOptions={screenOptionStyle}>
+      <Stack.Screen name="FindScreen" component={FindScreen}
+        options={{
+          headerStyle: {
+            borderBottomWidth: 3,
+            ...styling.navBackgroundColor,
+            ...styling.borderColor
+          },
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            fontSize: 20,
+            textAlign: 'center',
+            ...styling.textColor
+          },
+          headerBackTitleStyle: {
+            ...styling.textColor,
+          },
+        }}
+      />
+      <Stack.Screen name="Post" component={Post}
+        options={{
+          headerStyle: {
+            borderBottomWidth: 3,
+            ...styling.navBackgroundColor,
+            ...styling.borderColor
+          },
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            fontSize: 20,
+            textAlign: 'center',
+            ...styling.textColor
+          },
+          headerBackTitleStyle: {
+            ...styling.textColor,
+          },
+        }}
+      />
+    </Stack.Navigator>
+  );
+};
+
+
+
+export { ChatScreen_Stack, AppStyling, RootStack, FindScreen_Stack};

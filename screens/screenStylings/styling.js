@@ -68,6 +68,36 @@ var darkModeStyling = StyleSheet.create({
         maxHeight: 40, 
         position:'absolute', 
         left:15
+    },
+    ProfileTopBtn_Left: {
+        position: 'absolute',
+        zIndex: 100,
+        width: '10%',
+        backgroundColor: '#2E3440',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 30,
+        marginVertical: 5,
+        height: 40,
+        right: '35%',
+        flex: 5,
+        width: 40,
+        height: 40
+    },
+    ProfileTopBtn_Right: {
+        position: 'absolute',
+        zIndex: 100,
+        width: '10%',
+        backgroundColor: '#2E3440',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 30,
+        marginVertical: 5,
+        height: 40,
+        left: '35%',
+        flex: 5,
+        width: 40,
+        height: 40
     }
 })
 
@@ -129,6 +159,36 @@ var lightModeStyling = StyleSheet.create({
         maxHeight: 40, 
         position:'absolute', 
         left:15
+    },
+    ProfileTopBtn_Left: {
+        position: 'absolute',
+        zIndex: 100,
+        width: '10%',
+        backgroundColor: '#ECEFF4',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 30,
+        marginVertical: 5,
+        height: 40,
+        right: '35%',
+        flex: 500,
+        width: 40,
+        height: 40
+    },
+    ProfileTopBtn_Right: {
+        position: 'absolute',
+        zIndex: 10000,
+        width: '10%',
+        backgroundColor: '#ECEFF4',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 30,
+        marginVertical: 5,
+        height: 40,
+        left: '35%',
+        flex: 500,
+        height: 40,
+        width: 40
     }
 })
 
@@ -377,7 +437,7 @@ export const ProfileBadgeIcons = styled.Image`
 `;
 
 export const ProfileHorizontalView = styled.View`
-    flex: 1;
+    flex: 2;
     flexDirection: row;
 `;
 

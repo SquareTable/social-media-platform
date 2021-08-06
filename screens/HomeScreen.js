@@ -33,7 +33,3 @@ const HomeScreen = ({navigation}) => {
 };
 
 export default HomeScreen;
-
-const Styles = StyleSheet.create({
-    
-});

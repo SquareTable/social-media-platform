@@ -1,6 +1,6 @@
 import React, {useContext, useState} from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { TouchableOpacity } from 'react-native';
+import { TouchableOpacity, Image, View, Pressable } from 'react-native';
 
 import {
     InnerContainer,
@@ -26,7 +26,10 @@ import {
     ProfileFeaturedPosts,
     ProfileTopBtns,
     TopButtonIcons,
-    BackgroundDarkColor
+    BackgroundDarkColor,
+    darkModeOn,
+    darkModeStyling,
+    lightModeStyling
 } from '../screens/screenStylings/styling.js';
 
 // async-storage
@@ -35,6 +38,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 //credentials context
 import { CredentialsContext } from '../components/CredentialsContext';
 import { ImageBackground, ScrollView, Touchable } from 'react-native';
+import images from '../posts/images.js';
 
 
 const ProfileScreen = ({navigation}) => {
@@ -68,19 +72,39 @@ const ProfileScreen = ({navigation}) => {
         }
     }
 
+    const goToSettingsScreen = () => {
+        navigation.navigate("SettingsScreen");
+    }
+
+    if (darkModeOn === true) {
+        var styling = darkModeStyling;
+    } else {
+        var styling = lightModeStyling;
+    }
+
     return(
         <>   
             <BackgroundDarkColor> 
                 <StatusBar style="dark"/>
                 <ScrollView>
                     <WelcomeContainer>
-                        <ProfileHorizontalView topItems={true}>
-                            <ProfileTopBtns leftSide={true}>
-                                <TopButtonIcons source={require('./../assets/img/ThreeDots.png')}/>
-                            </ProfileTopBtns>
-                            <ProfileTopBtns rightSide={true} onPress={() => navigation.navigate("SettingsPage")}>
-                                <TopButtonIcons source={require('./../assets/img/ThreeDots.png')}/>
-                            </ProfileTopBtns>
+                        <ProfileHorizontalView>
+                            <TouchableOpacity style={{marginLeft: '0%', marginRight: '80%'}}>
+                                <Image
+                                    source={require('../assets/img/ThreeDots.png')}
+                                    style={{ width: 40, height: 40}}
+                                    resizeMode="contain"
+                                    resizeMethod="resize"
+                                />
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={goToSettingsScreen}>
+                                <Image
+                                    source={require('../assets/app_icons/settings.png')}
+                                    style={{ width: 40, height: 40,}}
+                                    resizeMode="contain"
+                                    resizeMethod="resize"
+                                />
+                            </TouchableOpacity>
                         </ProfileHorizontalView>
                         <ProfInfoAreaImage>
                             <Avatar resizeMode="cover" source={AvatarImg} />
