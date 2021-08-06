@@ -24,6 +24,7 @@ import { CredentialsContext } from "../components/CredentialsContext.js";
 import { NavigationContainer } from '@react-navigation/native';
 import FindScreen from "../screens/FindScreen.js";
 import Post from "../posts/post.js";
+import Post_FullScreen from "../posts/post_fullscreen.js";
 
 const Stack = createStackNavigator();
 
@@ -129,7 +130,7 @@ const FindScreen_Stack = () => {
           },
         }}
       />
-      <Stack.Screen name="Post" component={Post}
+      <Stack.Screen name="Post_FullScreen" component={Post_FullScreen}
         options={{
           headerStyle: {
             borderBottomWidth: 3,

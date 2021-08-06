@@ -54,7 +54,6 @@ const ProfileScreen = ({navigation}) => {
             setStoredCredentials("");
         })
         .catch(error => console.log(error));
-        navigation.replace("LoginScreen");
     }
 
     const changeToGrid = () => {
@@ -89,7 +88,7 @@ const ProfileScreen = ({navigation}) => {
                 <ScrollView>
                     <WelcomeContainer>
                         <ProfileHorizontalView>
-                            <TouchableOpacity style={{marginLeft: '0%', marginRight: '80%'}}>
+                            <TouchableOpacity style={{marginLeft: '0%', marginRight: '80%'}} onPressIn={() => {alert("Jacob is a sussy femboy!")}}>
                                 <Image
                                     source={require('../assets/img/ThreeDots.png')}
                                     style={{ width: 40, height: 40}}

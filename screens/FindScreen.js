@@ -27,7 +27,7 @@ const FindScreen = ({navigation}) => {
     });
 
     const navigateToPost = () => {
-        navigation.navigate("Post");
+        navigation.navigate("Post_FullScreen");
     }
 
     return(
