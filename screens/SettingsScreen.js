@@ -21,7 +21,7 @@ import { CredentialsContext } from '../components/CredentialsContext';
 import { ImageBackground, ScrollView } from 'react-native';
 
 
-const SettingsPage = () => {
+const SettingsPage = ({navigation}) => {
      //context
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
     const {name, email, photoUrl} = storedCredentials;
@@ -31,6 +31,10 @@ const SettingsPage = () => {
     const clearLogin = () => {
         AsyncStorage.removeItem('socialSquareCredentials').then(() => {
             setStoredCredentials("");
+            navigation.reset({
+                index: 0,
+                routes: [{ name: 'LoginScreen' }],
+            });
         })
         .catch(error => console.log(error))
     }

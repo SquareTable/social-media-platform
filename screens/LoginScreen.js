@@ -67,6 +67,7 @@ const LoginScreen = ({navigation}) => {
                 handleMessage(message,status);
             } else {
                 persistLogin({...data[0]}, message, status);
+                navigation.replace("Tabs");
             }
             setSubmitting(false);
 

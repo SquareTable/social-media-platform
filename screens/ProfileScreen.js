@@ -88,7 +88,7 @@ const ProfileScreen = ({navigation}) => {
                 <ScrollView>
                     <WelcomeContainer>
                         <ProfileHorizontalView>
-                            <TouchableOpacity style={{marginLeft: '0%', marginRight: '80%'}} onPressIn={() => {alert("Jacob is a sussy femboy!")}}>
+                            <TouchableOpacity style={{marginLeft: '0%', marginRight: '70%'}} onPressIn={() => {alert("Jacob is a sussy femboy!")}}>
                                 <Image
                                     source={require('../assets/img/ThreeDots.png')}
                                     style={{ width: 40, height: 40}}
@@ -152,12 +152,6 @@ const ProfileScreen = ({navigation}) => {
                                 This user has been featured in no posts.
                             </SubTitle>
                         </ProfileFeaturedPosts>
-                        <StyledFormArea>
-                            <Line />
-                            <StyledButton onPress={clearLogin}>
-                                <ButtonText> Logout </ButtonText>
-                            </StyledButton>
-                        </StyledFormArea>
                     </WelcomeContainer>
                 </ScrollView>
             </BackgroundDarkColor>

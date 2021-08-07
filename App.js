@@ -7,14 +7,14 @@ import { StyleSheet, Text, View, TouchableOpacity, Alert, SafeAreaView} from 're
 import Tabs from './navigation/tabs.js';
 import styled from "styled-components";
 import LoginScreen from './screens/LoginScreen.js';
-import { RootStack } from './navigation/StackNavigator.js';
+import { RootStack, Start_Stack } from './navigation/StackNavigator.js';
 
 const Stack = createStackNavigator();
 
 const App = () => {
   return(
     <NavigationContainer>
-      <Tabs />
+      <Start_Stack/>
     </NavigationContainer>
   );
 };

@@ -67,6 +67,10 @@ const Signup = ({navigation}) => {
                 handleMessage(message,status);
             } else {
                 persistLogin({...data}, message, status);
+                navigation.reset({
+                    index: 0,
+                    routes: [{ name: 'Tabs' }],
+                });
             }
             setSubmitting(false);
 
@@ -92,6 +96,13 @@ const Signup = ({navigation}) => {
             console.log(error);
             handleMessage('Persisting login failed');
         })
+    }
+
+    const goBackToLoginScreen = () => {
+        navigation.reset({
+            index: 0,
+            routes: [{ name: 'LoginScreen' }],
+        });
     }
 
     return(
@@ -176,7 +187,7 @@ const Signup = ({navigation}) => {
                                 </StyledButton>)}
                                 <ExtraView>
                                     <ExtraText>Already have an account? </ExtraText>
-                                    <TextLink onPress={() => navigation.navigate('Login')}>
+                                    <TextLink onPress={goBackToLoginScreen}>
                                         <TextLinkContent>Login</TextLinkContent>
                                     </TextLink>
                                 </ExtraView>

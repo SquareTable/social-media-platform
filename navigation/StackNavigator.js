@@ -25,6 +25,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import FindScreen from "../screens/FindScreen.js";
 import Post from "../posts/post.js";
 import Post_FullScreen from "../posts/post_fullscreen.js";
+import Tabs from "./tabs.js";
 
 const Stack = createStackNavigator();
 
@@ -70,39 +71,26 @@ const ChatScreen_Stack = () => {
 
 const RootStack = () => {
   return(
-      <CredentialsContext.Consumer>
-          {({storedCredentials}) => (
-                <Stack.Navigator
-                    screenOptions={{
-                        headerStyle: {
-                            backgroundColor: 'transparent',
-                        },
-                        headerTintColor: tertiary,
-                        headerTransparent: true,
-                        headerTitle: '',
-                        headerLeftContainerStyle: {
-                            paddingLeft: 20,
-                        },
-                    }}
-                    initialRouteName="LoginScreen"
-                >
-                    {storedCredentials ? (
-                        <>
-                            <Stack.Screen name="Welcome" component={ProfileScreen}/>
-                            <Stack.Screen name="SettingsScreen" component={SettingsScreen}/>
-                            <Stack.Screen name="BadgesScreen" component={BadgesScreen}/>
-                        </>
-                    ) : ( 
-                        <>
-                            <Stack.Screen name="LoginScreen" component={LoginScreen}/>
-                            <Stack.Screen name="Signup" component={Signup}/>
-                        </>
-                    )}
-                </Stack.Navigator>
-          )}
-      </CredentialsContext.Consumer>
-  )
-}
+    <Stack.Navigator
+        screenOptions={{
+            headerStyle: {
+                backgroundColor: 'transparent',
+            },
+            headerTintColor: tertiary,
+            headerTransparent: true,
+            headerTitle: '',
+            headerLeftContainerStyle: {
+                paddingLeft: 20,
+            },
+        }}
+        initialRouteName="ProfileScreen"
+    >
+                <Stack.Screen name="Welcome" component={ProfileScreen}/>
+                <Stack.Screen name="SettingsScreen" component={SettingsScreen}/>
+                <Stack.Screen name="BadgesScreen" component={BadgesScreen}/>
+    </Stack.Navigator>
+  );
+};
 
 const FindScreen_Stack = () => {
   if (darkModeOn === true) {
@@ -152,6 +140,82 @@ const FindScreen_Stack = () => {
   );
 };
 
+const Start_Stack = () => {
+  return(
+      <CredentialsContext.Consumer>
+          {({storedCredentials}) => (
+                <Stack.Navigator
+                    screenOptions={{
+                        headerStyle: {
+                            backgroundColor: 'transparent',
+                        },
+                        headerShown: false,
+                        headerTintColor: tertiary,
+                        headerTransparent: true,
+                        headerTitle: '',
+                        headerLeftContainerStyle: {
+                            paddingLeft: 20,
+                        },
+                    }}
+                    initialRouteName="LoginScreen"
+                >
+                    {storedCredentials ? (
+                        <>
+                            <Stack.Screen name="LoginScreen" component={LoginScreen}/>
+                            <Stack.Screen name="Signup" component={Signup}/>
+                            <Stack.Screen name="Tabs" component={Tabs}/>
+                        </>
+                    ) : ( 
+                        <>
+                            <Stack.Screen name="Tabs" component={Tabs}/>
+                        </>
+                    )}
+                </Stack.Navigator>
+          )}
+      </CredentialsContext.Consumer>
+  )
+}
 
 
-export { ChatScreen_Stack, AppStyling, RootStack, FindScreen_Stack};
+
+export { ChatScreen_Stack, AppStyling, RootStack, FindScreen_Stack, Start_Stack};
+
+/* OLD ROOTSTACK
+
+const RootStack = () => {
+  return(
+      <CredentialsContext.Consumer>
+          {({storedCredentials}) => (
+                <Stack.Navigator
+                    screenOptions={{
+                        headerStyle: {
+                            backgroundColor: 'transparent',
+                        },
+                        headerTintColor: tertiary,
+                        headerTransparent: true,
+                        headerTitle: '',
+                        headerLeftContainerStyle: {
+                            paddingLeft: 20,
+                        },
+                    }}
+                    initialRouteName="LoginScreen"
+                >
+                    {storedCredentials ? (
+                        <>
+                            <Stack.Screen name="Welcome" component={ProfileScreen}/>
+                            <Stack.Screen name="SettingsScreen" component={SettingsScreen}/>
+                            <Stack.Screen name="BadgesScreen" component={BadgesScreen}/>
+                        </>
+                    ) : ( 
+                        <>
+                            <Stack.Screen name="LoginScreen" component={LoginScreen}/>
+                            <Stack.Screen name="Signup" component={Signup}/>
+                        </>
+                    )}
+                </Stack.Navigator>
+          )}
+      </CredentialsContext.Consumer>
+  )
+}
+
+*/
