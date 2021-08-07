@@ -49,7 +49,7 @@ const SettingsPage = () => {
         <> 
             <StatusBar style="dark"/>   
             <WelcomeContainer>                
-            <ConfirmLogoutView viewHidden={logoutViewState}>
+                <ConfirmLogoutView viewHidden={logoutViewState}>
                    <ConfirmLogoutText>Are you sure you want to logout?</ConfirmLogoutText>
                    <ConfirmLogoutButtons cancelButton={true} onPress={changeLogoutView}>
                        <ConfirmLogoutButtonText cancelButton={true}>Cancel</ConfirmLogoutButtonText>
@@ -57,7 +57,7 @@ const SettingsPage = () => {
                     <ConfirmLogoutButtons confirmButton={true} onPress={clearLogin}>
                         <ConfirmLogoutButtonText confirmButton>Confirm</ConfirmLogoutButtonText>
                     </ConfirmLogoutButtons> 
-            </ConfirmLogoutView>
+                </ConfirmLogoutView>
                 <Avatar resizeMode="cover" source={AvatarImg} />
                 <SettingsPageItemTouchableOpacity>
                     <SettingsItemImage source={require('./../assets/img/ThreeDots.png')}/>

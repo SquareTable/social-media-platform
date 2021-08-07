@@ -9,12 +9,13 @@ import ProgressiveImage from './ProgressiveImage.js';
 const StatusBarHeight = Constants.statusBarHeight;
 import {darkModeStyling, darkModeOn, lightModeStyling} from '../screens/screenStylings/styling.js';
 
-const Post = ({navigation}) => {
+const Post = (props, {navigation}) => {
     if (darkModeOn === true) {
         var styling = darkModeStyling;
     } else {
         var styling = lightModeStyling;
     }
+    const { postSource } = props;
     return(
         <View style={{minWidth: 500, maxWidth: 500, width: 500, ...styling.backgroundColor, alignSelf: 'center', zIndex: 100}}>
             <View style={{maxWidth: 500, minWidth: 500, width: 500, alignContent: 'center', alignItems: 'center', alignSelf: 'center',}}>
@@ -35,7 +36,7 @@ const Post = ({navigation}) => {
                     </View>
                     <View style={{...styling.backgroundColor, maxWidth: 400, minWidth: 400}}>
                         <ProgressiveImage
-                            source={Images.posts.clock}
+                            source={postSource}
                             style={{minHeight: 400, minWidth: 400, width: 400, height: 400, maxWidth: 400, maxHeight: 400}}
                             resizeMode="contain"
                             resizeMethod="resize"
