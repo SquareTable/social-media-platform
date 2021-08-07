@@ -1,6 +1,6 @@
 import React, {useContext, useState} from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { TouchableOpacity, Image, View, Pressable } from 'react-native';
+import { TouchableOpacity, Image, View, Pressable, Text } from 'react-native';
 
 import {
     InnerContainer,
@@ -153,6 +153,7 @@ const ProfileScreen = ({navigation}) => {
                             </SubTitle>
                         </ProfileFeaturedPosts>
                     </WelcomeContainer>
+                    <Text style={{position: 'absolute', top: '-80%', ...styling.textColor, fontWeight: 'bold', fontSize: 26}}>Easter egg</Text>
                 </ScrollView>
             </BackgroundDarkColor>
         </>

@@ -614,7 +614,7 @@ export const BadgeGridLayout = styled.View`
 
 export const BackgroundDarkColor = styled.View`
     backgroundColor: ${primary};
-    height: 500%;
-    minHeight: 500%;
+    height: 100%;
+    minHeight: 100%;
     zIndex: -100;
 `;

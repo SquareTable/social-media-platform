@@ -18,7 +18,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 //credentials context
 import { CredentialsContext } from '../components/CredentialsContext';
-import { ImageBackground, ScrollView } from 'react-native';
+import { ImageBackground, ScrollView, Text } from 'react-native';
 
 
 const SettingsPage = ({navigation}) => {
