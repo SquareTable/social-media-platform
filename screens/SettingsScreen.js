@@ -1,76 +1,79 @@
-import React from 'react';
-import { StyleSheet, Text, View, Button, Image, SafeAreaView, TouchableOpacity, ScrollView} from 'react-native';
-import { Col, Row, Grid } from "react-native-easy-grid";
-import {darkModeStyling, darkModeOn, lightModeStyling} from '../screens/screenStylings/styling.js';
-if (darkModeOn === true) {
-    var styling = darkModeStyling;
-} else {
-    var styling = lightModeStyling;
+import React, {useContext, useState} from 'react';
+import { StatusBar } from 'expo-status-bar';
+
+import {
+    WelcomeContainer,
+    Avatar,
+    SettingsPageItemTouchableOpacity,
+    SettingsItemImage,
+    SettingsItemText,
+    ConfirmLogoutView,
+    ConfirmLogoutText,
+    ConfirmLogoutButtons,
+    ConfirmLogoutButtonText
+} from '../screens/screenStylings/styling.js';
+
+// async-storage
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+//credentials context
+import { CredentialsContext } from '../components/CredentialsContext';
+import { ImageBackground, ScrollView } from 'react-native';
+
+
+const SettingsPage = () => {
+     //context
+    const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
+    const {name, email, photoUrl} = storedCredentials;
+    const AvatarImg = photoUrl ? {uri: photoUrl} : require('./../assets/img/Logo.png');
+    const [logoutViewState, setLogoutViewState] = useState("false")
+
+    const clearLogin = () => {
+        AsyncStorage.removeItem('socialSquareCredentials').then(() => {
+            setStoredCredentials("");
+        })
+        .catch(error => console.log(error))
+    }
+
+    const changeLogoutView = () => {
+        if (logoutViewState==true) {
+            setLogoutViewState(false)
+        }else{
+            console.log("Closed Confirm")
+            setLogoutViewState(true)
+        }
+    }
+    
+
+    return(
+        <> 
+            <StatusBar style="dark"/>   
+            <WelcomeContainer>                
+            <ConfirmLogoutView viewHidden={logoutViewState}>
+                   <ConfirmLogoutText>Are you sure you want to logout?</ConfirmLogoutText>
+                   <ConfirmLogoutButtons cancelButton={true} onPress={changeLogoutView}>
+                       <ConfirmLogoutButtonText cancelButton={true}>Cancel</ConfirmLogoutButtonText>
+                    </ConfirmLogoutButtons> 
+                    <ConfirmLogoutButtons confirmButton={true} onPress={clearLogin}>
+                        <ConfirmLogoutButtonText confirmButton>Confirm</ConfirmLogoutButtonText>
+                    </ConfirmLogoutButtons> 
+            </ConfirmLogoutView>
+                <Avatar resizeMode="cover" source={AvatarImg} />
+                <SettingsPageItemTouchableOpacity>
+                    <SettingsItemImage source={require('./../assets/img/ThreeDots.png')}/>
+                    <SettingsItemText>Account Settings</SettingsItemText>
+                </SettingsPageItemTouchableOpacity>
+                <SettingsPageItemTouchableOpacity>
+                    <SettingsItemImage source={require('./../assets/img/ThreeDots.png')}/>
+                    <SettingsItemText>Convert To Femboy</SettingsItemText>
+                </SettingsPageItemTouchableOpacity>
+                <SettingsPageItemTouchableOpacity onPress={changeLogoutView}>
+                    <SettingsItemImage source={require('./../assets/img/ThreeDots.png')}/>
+                    <SettingsItemText>Logout</SettingsItemText>
+                </SettingsPageItemTouchableOpacity>
+            </WelcomeContainer>
+        </>
+    );
 }
 
-const SettingsScreen = ({navigation}) => {
-    return(
-        <SafeAreaView style={{flex: 1, ...styling.backgroundColor}}>
-            <ScrollView style={{flex: 1}}>
-                <View style={Styles.flex_row}>
-                    <TouchableOpacity style={styling.settingsButtonTouchableOpacity} onPressIn={() => navigation.navigate('Badges')}>
-                        <View>
-                            <Text style={styling.settingsButtonText}>Badges</Text>
-                        </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styling.settingsButtonTouchableOpacity} onPressIn={() => navigation.navigate('Login')}>
-                        <View>
-                            <Text style={styling.settingsButtonText}>Login</Text>
-                        </View>
-                    </TouchableOpacity>
-                </View>
-                <View style={Styles.flex_row}>
-                    <TouchableOpacity style={styling.settingsButtonTouchableOpacity} onPressIn={() => navigation.navigate('Change Username')}>
-                        <View>
-                            <Text style={styling.settingsButtonText}>Change Username</Text>
-                        </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styling.settingsButtonTouchableOpacity} onPressIn={() => navigation.navigate('Change Password')}>
-                        <View>
-                            <Text style={styling.settingsButtonText}>Change Password</Text>
-                        </View>
-                    </TouchableOpacity>
-                </View>
-                <View style={Styles.flex_row}>
-                    <TouchableOpacity style={styling.settingsButtonTouchableOpacity} onPressIn={() => navigation.navigate('Account Settings')}>
-                        <View>
-                            <Text style={styling.settingsButtonText}>Account Settings</Text>
-                        </View>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styling.settingsButtonTouchableOpacity} onPressIn={() => navigation.navigate('App Styling')}>
-                        <View>
-                            <Text style={styling.settingsButtonText}>App Styling</Text>
-                        </View>
-                    </TouchableOpacity>
-                </View>
-                <View style={{width: '100%', minWidth: '100%', maxWidth: '100%'}}>
-                    <Text style={{fontSize: 18, textAlign: 'center', ...styling.textColor}}>Made by Sebastian Webster, Kovid Dev, and Jacob Bowen</Text>
-                    <View style={{width: '100%', maxWidth: '100%', minWidth: '100%', height: 5, maxHeight: 5, minHeight: 5}}/>
-                    <Text style={{fontSize: 16, textAlign: 'center', ...styling.textColor}}>© SquareTable 2021</Text>
-                    <Text style={{fontSize: 16, textAlign: 'center', ...styling.textColor}}>All Rights Reserved</Text>
-                </View>
-            </ScrollView>
-        </SafeAreaView>
-    );
-};
-
-
-
-export default SettingsScreen;
-
-const Styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#2E3440'
-    },
-    flex_row: {
-        flex: 2,
-        flexDirection: 'row',
-        marginTop: 20
-    }
-});
+export default SettingsPage;

@@ -12,7 +12,7 @@ import BadgesScreen from '../screens/BadgesScreen';
 import LoginScreen from '../screens/LoginScreen';
 import settingsButtonTopRight from '../screens/settingsButtonTopRight';
 import ProfileScreen from '../screens/ProfileScreen';
-import {ChatScreen_Stack, ProfileScreenToSettings_StackNavigation, SettingsToBadges_StackNavigation} from '../navigation/StackNavigator.js'
+import {ChatScreen_Stack, ProfileScreenToSettings_StackNavigation, RootStack, SettingsToBadges_StackNavigation, FindScreen_Stack} from '../navigation/StackNavigator.js'
 import AppStyling from '../screens/AppStylingScreen';
 import {darkModeStyling, darkModeOn, lightModeStyling, darkModeStyling_navFocusedColor, lightModeStyling_navFocusedColor, darkModeStyling_navNonFocusedColor, lightModeStyling_navNonFocusedColor} from '../screens/screenStylings/styling.js';
 
@@ -84,7 +84,7 @@ const Tabs = () => {
                     </View>
                 ),
             }} />
-            <Tab.Screen name="Find" component={FindScreen} options={{
+            <Tab.Screen name="Find" component={FindScreen_Stack} options={{
                 tabBarIcon: ({focused}) => (
                     <View style={{alignItems: 'center', justifyContent: 'center', top: 10}}>
                         <Image
@@ -132,7 +132,7 @@ const Tabs = () => {
                     </View>
                 ),
             }}/>
-            <Tab.Screen name="Profile" component={ProfileScreenToSettings_StackNavigation} options={{
+            <Tab.Screen name="Profile" component={RootStack} options={{
                 tabBarIcon: ({focused}) => (
                     <View style={{alignItems: 'center', justifyContent: 'center', top: 10}}>
                         <Image

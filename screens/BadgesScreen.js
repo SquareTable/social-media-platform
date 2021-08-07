@@ -1,90 +1,63 @@
-/*This is going to be used as the testing screen*/
+import React, {useContext, useState} from 'react';
+import { StatusBar } from 'expo-status-bar';
 
-import React from 'react';
-import { StyleSheet, Text, View, Button, Image, ScrollView, SafeAreaView, StatusBar, Dimensions, FlatList} from 'react-native';
-import AppStyling from './AppStylingScreen';
-import {darkModeStyling, darkModeOn, lightModeStyling} from '../screens/screenStylings/styling.js';
+import {
+    WelcomeContainer,
+    Avatar,
+    SettingsPageItemTouchableOpacity,
+    SettingsItemImage,
+    SettingsItemText,
+    ConfirmLogoutView,
+    ConfirmLogoutText,
+    ConfirmLogoutButtons,
+    ConfirmLogoutButtonText,
+    PageTitle,
+    BadgeGridLayout
+} from '../screens/screenStylings/styling.js';
 
-const screenWidth = Dimensions.get('window').width;
+// async-storage
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+//credentials context
+import { CredentialsContext } from '../components/CredentialsContext';
+import { ImageBackground, ScrollView } from 'react-native';
+
 
 const BadgesScreen = ({navigation}) => {
-    if (darkModeOn === true) {
-        var styling = darkModeStyling;
-    } else {
-        var styling = lightModeStyling;
+     //context
+    const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
+    const {name, email, photoUrl} = storedCredentials;
+    const AvatarImg = photoUrl ? {uri: photoUrl} : require('./../assets/img/Logo.png');
+    const [logoutViewState, setLogoutViewState] = useState("false")
+
+    const clearLogin = () => {
+        AsyncStorage.removeItem('socialSquareCredentials').then(() => {
+            setStoredCredentials("");
+        })
+        .catch(error => console.log(error))
     }
-    const Styles = StyleSheet.create({
-        container: {
-            ...styling.backgroundColor,
-            flex: 1,
-        },
-        containerText: {
-            textAlign: 'center',
-            ...styling.textColor
-        },  
-    });
+
+    const changeLogoutView = () => {
+        if (logoutViewState==true) {
+            setLogoutViewState(false)
+        }else{
+            console.log("Closed Confirm")
+            setLogoutViewState(true)
+        }
+    }
+    
+
     return(
-        <SafeAreaView style={Styles.container}>
-            <ScrollView style={{flex: 1}}>
-                <View>
-                    <Text style={Styles.containerText}>Badges Screen</Text>
-                    <Text style={Styles.containerText}>This will be used for testing since it is the least of our priorities</Text>
-                    <Text style={Styles.containerText}>Testing</Text>
-                    <Text style={Styles.containerText}>Testing</Text>
-                    <Text style={Styles.containerText}>Testing</Text>
-                    <Text style={Styles.containerText}>Testing</Text>
-                    <Text style={Styles.containerText}>Testing</Text>
-                    <Text style={Styles.containerText}>Testing</Text>
-                    <Text style={Styles.containerText}>Testing</Text>
-                    <Text style={Styles.containerText}>Testing</Text>
-                    <Text style={Styles.containerText}>Testing</Text>
-                    <Text style={Styles.containerText}>Testing</Text>
-                    <Text style={Styles.containerText}>Testing</Text>
-                    <Text style={Styles.containerText}>Testing</Text>
-                    <Text style={Styles.containerText}>Testing</Text>
-                    <Text style={Styles.containerText}>Testing</Text>
-                    <Text style={Styles.containerText}>Testing</Text>
-                    <Text style={Styles.containerText}>Testing</Text>
-                    <Text style={Styles.containerText}>Testing</Text>
-                    <Text style={Styles.containerText}>Testing</Text>
-                    <Text style={Styles.containerText}>Testing</Text>
-                    <Text style={Styles.containerText}>Testing</Text>
-                    <Text style={Styles.containerText}>Testing</Text>
-                    <Text style={Styles.containerText}>Testing</Text>
-                    <Text style={Styles.containerText}>Testing</Text>
-                    <Text style={Styles.containerText}>Testing</Text>
-                    <Text style={Styles.containerText}>Testing</Text>
-                    <Text style={Styles.containerText}>Testing</Text>
-                    <Text style={Styles.containerText}>Testing</Text>
-                    <Text style={Styles.containerText}>Testing</Text>
-                    <Text style={Styles.containerText}>Testing</Text>
-                    <Text style={Styles.containerText}>Testing</Text>
-                    <Text style={Styles.containerText}>Testing</Text>
-                    <Text style={Styles.containerText}>Testing</Text>
-                    <Text style={Styles.containerText}>Testing</Text>
-                    <Text style={Styles.containerText}>Testing</Text>
-                    <Text style={Styles.containerText}>Testing</Text>
-                    <Text style={Styles.containerText}>Testing</Text>
-                    <Text style={Styles.containerText}>Testing</Text>
-                    <Text style={Styles.containerText}>Testing</Text>
-                    <Text style={Styles.containerText}>Testing</Text>
-                    <Text style={Styles.containerText}>Testing</Text>
-                    <Text style={Styles.containerText}>Testing</Text>
-                    <Text style={Styles.containerText}>Testing</Text>
-                    <Text style={Styles.containerText}>Testing</Text>
-                    <Text style={Styles.containerText}>Testing</Text>
-                    <Text style={Styles.containerText}>Testing</Text>
-                    <Text style={Styles.containerText}>Testing</Text>
-                    <Text style={Styles.containerText}>Testing</Text>
-                    <Text style={Styles.containerText}>Testing</Text>
-                    <Text style={Styles.containerText}>Testing</Text>
-                    <Text style={Styles.containerText}>Testing</Text>
-                    <Text style={Styles.containerText}>Testing</Text>
-                </View>
-                <View style={{height: 100}} />
-            </ScrollView>
-        </SafeAreaView>
+        <> 
+            <StatusBar style="dark"/>   
+            <WelcomeContainer>                
+            <PageTitle>Badges</PageTitle>
+            <BadgeGridLayout>
+                
+            </BadgeGridLayout>
+            </WelcomeContainer>
+        </>
     );
-};
+}
 
 export default BadgesScreen;
