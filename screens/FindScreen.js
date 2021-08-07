@@ -34,7 +34,7 @@ const FindScreen = ({navigation}) => {
         <SafeAreaView style={Styles.container}>
             <ScrollView>
                 <View style={{flex: 2, flexDirection: 'row', ...styling.backgroundColor, marginTop: 0, marginBottom: 20}}>
-                    <TouchableOpacity style={{minWidth: '30%', width: '30%', maxWidth: '30%', marginHorizontal: '1.6%'}} onPress={navigateToPost}>
+                    <TouchableOpacity style={{minWidth: '30%', width: '30%', maxWidth: '30%', marginHorizontal: '1.6%'}} onPressIn={navigateToPost}>
                         <ProgressiveImage
                             source={Images.posts.clock}
                             style={{minWidth: '100%', width: '100%', maxWidth: '100%', aspectRatio: 1, position: 'absolute'}}
@@ -42,7 +42,7 @@ const FindScreen = ({navigation}) => {
                             resizeMethod="resize"
                         />
                     </TouchableOpacity>
-                    <TouchableOpacity style={{minWidth: '30%', width: '30%', maxWidth: '30%', marginHorizontal: '1.6%'}} onPress={navigateToPost}>
+                    <TouchableOpacity style={{minWidth: '30%', width: '30%', maxWidth: '30%', marginHorizontal: '1.6%'}} onPressIn={navigateToPost}>
                         <ProgressiveImage
                             source={Images.posts.clock}
                             style={{minWidth: '100%', width: '100%', maxWidth: '100%', aspectRatio: 1, position: 'absolute'}}
@@ -50,7 +50,7 @@ const FindScreen = ({navigation}) => {
                             resizeMethod="resize"
                         />
                     </TouchableOpacity>
-                    <TouchableOpacity style={{minWidth: '30%', width: '30%', maxWidth: '30%', marginHorizontal: '1.6%'}} onPress={navigateToPost}>
+                    <TouchableOpacity style={{minWidth: '30%', width: '30%', maxWidth: '30%', marginHorizontal: '1.6%'}} onPressIn={navigateToPost}>
                         <ProgressiveImage
                             source={Images.posts.clock}
                             style={{minWidth: '100%', width: '100%', maxWidth: '100%', aspectRatio: 1, position: 'absolute'}}

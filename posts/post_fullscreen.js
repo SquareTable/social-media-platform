@@ -19,7 +19,7 @@ const Post_FullScreen = ({navigation}) => {
     return(
         <ScrollView style={styling.backgroundColor}>
             <View style={{marginTop: 20}}/>
-            <Post></Post>
+            <Post postSource={Images.posts.clock}></Post>
         </ScrollView>
     );
 };
