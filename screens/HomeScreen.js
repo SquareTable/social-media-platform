@@ -17,9 +17,9 @@ const HomeScreen = ({navigation}) => {
     const [people, setPeople] = useState([
         { postSource: Images.posts.social_studies_1, key: '1' },
         { postSource: Images.posts.social_studies_2, key: '2' },
-        { postSource: Images.posts.clock, key: '3' },
-        { postSource: Images.posts.clock, key: '4' },
-        { postSource: Images.posts.clock, key: '5' },
+        { postSource: Images.posts.social_studies_3, key: '3' },
+        { postSource: Images.posts.social_studies_4, key: '4' },
+        { postSource: Images.posts.social_studies_5, key: '5' },
     ]);
     return(
         <SafeAreaView

@@ -9,6 +9,9 @@ const images = {
         message_bubbles: require('../assets/app_icons/message_bubbles.png'),
         social_studies_1: require('../post_media/social_studies_images/image_1.png'),
         social_studies_2: require('../post_media/social_studies_images/image_2.png'),
+        social_studies_3: require('../post_media/social_studies_images/image_3.png'),
+        social_studies_4: require('../post_media/social_studies_images/image_4.png'),
+        social_studies_5: require('../post_media/social_studies_images/image_5.png'),
     },
     /*image1: require('./image1.jpg'),
     image2: require('./image2.jpg'),*/
