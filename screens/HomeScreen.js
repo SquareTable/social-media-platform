@@ -15,8 +15,8 @@ const HomeScreen = ({navigation}) => {
         var styling = lightModeStyling;
     }
     const [people, setPeople] = useState([
-        { postSource: Images.posts.clock, key: '1' },
-        { postSource: Images.posts.clock, key: '2' },
+        { postSource: Images.posts.social_studies_1, key: '1' },
+        { postSource: Images.posts.social_studies_2, key: '2' },
         { postSource: Images.posts.clock, key: '3' },
         { postSource: Images.posts.clock, key: '4' },
         { postSource: Images.posts.clock, key: '5' },

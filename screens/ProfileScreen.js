@@ -46,8 +46,8 @@ const ProfileScreen = ({navigation}) => {
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
     const {name, email, photoUrl} = storedCredentials;
     const AvatarImg = photoUrl ? {uri: photoUrl} : require('./../assets/img/Logo.png');
-    const [gridViewState, setGridViewState] = useState("flex")
-    const [featuredViewState, setFeaturedViewState] = useState("none")
+    const [gridViewState, setGridViewState] = useState("flex");
+    const [featuredViewState, setFeaturedViewState] = useState("none");
 
     const clearLogin = () => {
         AsyncStorage.removeItem('socialSquareCredentials').then(() => {
