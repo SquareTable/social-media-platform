@@ -63,15 +63,15 @@ const SettingsPage = ({navigation}) => {
                     </ConfirmLogoutButtons> 
                 </ConfirmLogoutView>
                 <Avatar resizeMode="cover" source={AvatarImg} />
-                <SettingsPageItemTouchableOpacity>
+                <SettingsPageItemTouchableOpacity onPress={() => {alert("ACCOUNT SETTINGS PAGE IS SUS!")}}>
                     <SettingsItemImage source={require('./../assets/img/ThreeDots.png')}/>
                     <SettingsItemText>Account Settings</SettingsItemText>
                 </SettingsPageItemTouchableOpacity>
-                <SettingsPageItemTouchableOpacity>
+                <SettingsPageItemTouchableOpacity onPress={() => {alert("Jacob is a sussy femboy.")}}>
                     <SettingsItemImage source={require('./../assets/img/ThreeDots.png')}/>
                     <SettingsItemText>Convert To Femboy</SettingsItemText>
                 </SettingsPageItemTouchableOpacity>
-                <SettingsPageItemTouchableOpacity onPress={changeLogoutView}>
+                <SettingsPageItemTouchableOpacity onPressOut={changeLogoutView}>
                     <SettingsItemImage source={require('./../assets/img/ThreeDots.png')}/>
                     <SettingsItemText>Logout</SettingsItemText>
                 </SettingsPageItemTouchableOpacity>

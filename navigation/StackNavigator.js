@@ -176,6 +176,30 @@ const Start_Stack = () => {
   )
 }
 
+const home_screen_post_to_profile_screen = () => {
+  return(
+    <Stack.Navigator
+        screenOptions={{
+            headerStyle: {
+                backgroundColor: 'transparent',
+            },
+            headerShown: false,
+            headerTintColor: tertiary,
+            headerTransparent: true,
+            headerTitle: '',
+            headerLeftContainerStyle: {
+                paddingLeft: 20,
+            },
+        }}
+        initialRouteName="LoginScreen"
+    >
+      <Stack.Screen name="Post" component={Post}/>
+      <Stack.Screen name="Welcome" component={ProfileScreen}/> 
+    </Stack.Navigator>
+  )
+}
+
+
 
 
 export { ChatScreen_Stack, AppStyling, RootStack, FindScreen_Stack, Start_Stack};
