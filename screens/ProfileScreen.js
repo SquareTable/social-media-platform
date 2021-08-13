@@ -153,7 +153,11 @@ const ProfileScreen = ({navigation}) => {
                             </SubTitle>
                         </ProfileFeaturedPosts>
                     </WelcomeContainer>
-                    <Text style={{position: 'absolute', top: '-80%', ...styling.textColor, fontWeight: 'bold', fontSize: 26}}>Easter egg</Text>
+                    <View style={{flex: 1, position:'absolute', top: '-80%'}}>
+                        <TouchableOpacity onLongPress={() => {alert("Congratulations you found the Easter Egg on the Profile Screen! Eventually this will actually do something cool :)")}}>
+                            <Text style={{...styling.textColor, fontWeight: 'bold', fontSize: 26}}>Easter egg</Text>
+                        </TouchableOpacity>
+                    </View>
                 </ScrollView>
             </BackgroundDarkColor>
         </>

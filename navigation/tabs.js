@@ -15,6 +15,7 @@ import ProfileScreen from '../screens/ProfileScreen';
 import {ChatScreen_Stack, ProfileScreenToSettings_StackNavigation, RootStack, SettingsToBadges_StackNavigation, FindScreen_Stack} from '../navigation/StackNavigator.js'
 import AppStyling from '../screens/AppStylingScreen';
 import {darkModeStyling, darkModeOn, lightModeStyling, darkModeStyling_navFocusedColor, lightModeStyling_navFocusedColor, darkModeStyling_navNonFocusedColor, lightModeStyling_navNonFocusedColor} from '../screens/screenStylings/styling.js';
+import * as Haptics from 'expo-haptics';
 
 
 const Tab = createBottomTabNavigator();
@@ -41,7 +42,7 @@ const CustomTabBarButton = ({children, onPress}) => (
 );
 
 
-const Tabs = () => {
+const Tabs = ({navigation}) => {
     if (darkModeOn === true) {
         var styling = darkModeStyling;
         var navFocusedColor = darkModeStyling_navFocusedColor;
@@ -50,6 +51,30 @@ const Tabs = () => {
         var styling = lightModeStyling;
         var navFocusedColor = lightModeStyling_navFocusedColor;
         var navNonFocusedColor = lightModeStyling_navNonFocusedColor;
+    }
+    const haptic_feedback_options = {
+        enableVibrateFallback: true,
+        ignoreAndroidSystemSettings: false
+    };
+    const onHomeScreenNavigate = () => {
+        navigation.navigate("Home");
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
+    const onFindScreenNavigate = () => {
+        navigation.navigate("Find");
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
+    const onPostScreenNavigate = () => {
+        navigation.navigate("Post");
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
+    const onChatScreenNavigate = () => {
+        navigation.navigate("Chat");
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
+    const onProfileScreenNavigate = () => {
+        navigation.navigate("Profile");
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     }
     return(
         <Tab.Navigator
@@ -70,47 +95,53 @@ const Tabs = () => {
         >
             <Tab.Screen name="Home" component={HomeScreen} options={{
                 tabBarIcon: ({focused}) => (
-                    <View style={{alignItems: 'center', justifyContent: 'center', top: 10}}>
-                        <Image
-                            source={require('../assets/app_icons/home.png')}
-                            resizeMode = 'contain'
-                            style={{
-                                width: 35,
-                                height: 35,
-                                tintColor: focused ? navFocusedColor : navNonFocusedColor
-                            }}
-                        />
-                        <Text style={{color: focused ? navFocusedColor : navNonFocusedColor, fontSize: 10,}}>HOME</Text>
-                    </View>
+                    <TouchableOpacity onPressIn={() => {onHomeScreenNavigate()}}>
+                        <View style={{alignItems: 'center', justifyContent: 'center', top: 10}}>
+                            <Image
+                                source={require('../assets/app_icons/home.png')}
+                                resizeMode = 'contain'
+                                style={{
+                                    width: 35,
+                                    height: 35,
+                                    tintColor: focused ? navFocusedColor : navNonFocusedColor
+                                }}
+                            />
+                            <Text style={{color: focused ? navFocusedColor : navNonFocusedColor, fontSize: 10,}}>HOME</Text>
+                        </View>
+                    </TouchableOpacity>
                 ),
             }} />
             <Tab.Screen name="Find" component={FindScreen_Stack} options={{
                 tabBarIcon: ({focused}) => (
-                    <View style={{alignItems: 'center', justifyContent: 'center', top: 10}}>
-                        <Image
-                            source={require('../assets/app_icons/find.png')}
-                            resizeMode = 'contain'
-                            style={{
-                                width: 35,
-                                height: 35,
-                                tintColor: focused ? navFocusedColor : navNonFocusedColor
-                            }}
-                        />
-                        <Text style={{color: focused ? navFocusedColor : navNonFocusedColor, fontSize: 10,}}>FIND</Text>
-                    </View>
+                    <TouchableOpacity onPressIn={() => {onFindScreenNavigate()}}>
+                        <View style={{alignItems: 'center', justifyContent: 'center', top: 10}}>
+                            <Image
+                                source={require('../assets/app_icons/find.png')}
+                                resizeMode = 'contain'
+                                style={{
+                                    width: 35,
+                                    height: 35,
+                                    tintColor: focused ? navFocusedColor : navNonFocusedColor
+                                }}
+                            />
+                            <Text style={{color: focused ? navFocusedColor : navNonFocusedColor, fontSize: 10,}}>FIND</Text>
+                        </View>
+                    </TouchableOpacity>
                 ),
             }} />
             <Tab.Screen name="Post" component={PostScreen} 
             options={{
                 tabBarIcon: ({focused}) => (
-                    <Image 
-                        source={require('../assets/app_icons/test3.png')}
-                        resizeMode="contain"
-                        style={{
-                            width: 50,
-                            height: 50,
-                        }}
-                    />
+                    <TouchableOpacity onPressIn={() => {onPostScreenNavigate()}}>
+                        <Image 
+                            source={require('../assets/app_icons/test3.png')}
+                            resizeMode="contain"
+                            style={{
+                                width: 50,
+                                height: 50,
+                            }}
+                        />
+                    </TouchableOpacity>
                 ),
                 tabBarButton: (props) => (
                     <CustomTabBarButton {...props} />
@@ -118,36 +149,40 @@ const Tabs = () => {
             }}/>
             <Tab.Screen name="Chat" component={ChatScreen_Stack} options={{
                 tabBarIcon: ({focused}) => (
-                    <View style={{alignItems: 'center', justifyContent: 'center', top: 10}}>
-                        <Image
-                            source={require('../assets/app_icons/chat.png')}
-                            resizeMode = 'contain'
-                            style={{
-                                width: 35,
-                                height: 35,
-                                tintColor: focused ? navFocusedColor : navNonFocusedColor
-                            }}
-                        />
-                        <Text style={{color: focused ? navFocusedColor : navNonFocusedColor, fontSize: 10,}}>CHAT</Text>
-                    </View>
+                    <TouchableOpacity onPressIn={() => {onChatScreenNavigate()}}>
+                        <View style={{alignItems: 'center', justifyContent: 'center', top: 10}}>
+                            <Image
+                                source={require('../assets/app_icons/chat.png')}
+                                resizeMode = 'contain'
+                                style={{
+                                    width: 35,
+                                    height: 35,
+                                    tintColor: focused ? navFocusedColor : navNonFocusedColor
+                                }}
+                            />
+                            <Text style={{color: focused ? navFocusedColor : navNonFocusedColor, fontSize: 10,}}>CHAT</Text>
+                        </View>
+                    </TouchableOpacity>
                 ),
             }}/>
             <Tab.Screen name="Profile" component={RootStack} options={{
                 tabBarIcon: ({focused}) => (
-                    <View style={{alignItems: 'center', justifyContent: 'center', top: 10}}>
-                        <Image
-                            source={require('../assets/app_icons/blank_profile_pic.png')}
-                            resizeMode = 'contain'
-                            style={{
-                                width: 35,
-                                height: 35,
-                                borderWidth: 3,
-                                borderColor: focused ? navFocusedColor : navNonFocusedColor,
-                                borderRadius: 40/2
-                            }}
-                        />
-                        <Text style={{color: focused ? navFocusedColor : navNonFocusedColor, fontSize: 10,}}>PROFILE</Text>
-                    </View>
+                    <TouchableOpacity onPressIn={() => {onProfileScreenNavigate()}}>
+                        <View style={{alignItems: 'center', justifyContent: 'center', top: 10}}>
+                            <Image
+                                source={require('../assets/app_icons/blank_profile_pic.png')}
+                                resizeMode = 'contain'
+                                style={{
+                                    width: 35,
+                                    height: 35,
+                                    borderWidth: 3,
+                                    borderColor: focused ? navFocusedColor : navNonFocusedColor,
+                                    borderRadius: 40/2
+                                }}
+                            />
+                            <Text style={{color: focused ? navFocusedColor : navNonFocusedColor, fontSize: 10,}}>PROFILE</Text>
+                        </View>
+                    </TouchableOpacity>
                 ),
             }}/>
         </Tab.Navigator>

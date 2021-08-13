@@ -178,11 +178,9 @@ const Start_Stack = () => {
 
 const home_screen_post_to_profile_screen = () => {
   return(
-    <Stack.Navigator screenOptions={screenOptionStyle}
-        initialRouteName="LoginScreen"
-    >
+    <Stack.Navigator screenOptions={screenOptionStyle}>
       <Stack.Screen name="Post" component={Post}/>
-      <Stack.Screen name="Welcome" component={ProfileScreen}/> 
+      <Stack.Screen name="ProfileScreen" component={ProfileScreen}/> 
     </Stack.Navigator>
   )
 }

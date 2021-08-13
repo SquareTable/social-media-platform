@@ -24,6 +24,7 @@
     "chokidar": "^3.5.2",
     "core-js": "^3.16.0",
     "expo": "~41.0.1",
+    "expo-haptics": "^10.1.0",
     "expo-notifications": "^0.12.3",
     "expo-permissions": "^12.1.1",
     "expo-status-bar": "~1.0.4",
