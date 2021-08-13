@@ -10,6 +10,7 @@ import styled from "styled-components";
 import LoginScreen from './screens/LoginScreen.js';
 import { RootStack, Start_Stack } from './navigation/StackNavigator.js';
 import * as Notifications from "expo-notifications";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Stack = createStackNavigator();
 
@@ -22,6 +23,10 @@ Notifications.setNotificationHandler({
 });
 
 const App = () => {
+  const clearAsyncStorageOnLogin = false;
+  if (clearAsyncStorageOnLogin === true) {
+    AsyncStorage.clear();
+  }
   async function registerForPushNotificationsAsync() {
     let token;
     if (Constants.isDevice) {
@@ -76,6 +81,39 @@ const App = () => {
       Notifications.removeNotificationSubscription(responseListener.current);
     };
   }, []);
+
+  const storeData = async (value) => {
+    try {
+      await AsyncStorage.setItem('development_version', value)
+    } catch (e) {
+      alert(e)
+    }
+  };
+  const welcome_message = () => {
+    alert("Welcome to SocialSquare, it looks like you have just downloaded this app for the first time! Nice! You are right now on development version " + development_version);
+  };
+  var development_version = '0.0.01';
+  const getData = async () => {
+    try {
+      var development_version_localstorage_value = await AsyncStorage.getItem('development_version')
+      if(development_version_localstorage_value !== null) {
+        if (development_version !== development_version_localstorage_value) {
+          console.log(development_version_localstorage_value);
+          var releaseNotes = "None so far."
+          var alert_on_update = "You have been updated to dev version " + development_version + ". Changes in this update are: " + releaseNotes;
+          alert(alert_on_update);
+        } else {
+          console.log("Not updated");
+        }
+      } else {
+        welcome_message();
+      }
+    } catch(e) {
+      alert(e)
+    }
+  }
+  getData();
+  storeData(development_version);
 
   return(
     <NavigationContainer>

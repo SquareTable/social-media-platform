@@ -19,7 +19,7 @@ const Post = (props) => {
     const navigation = useNavigation(); 
     const goToProfileScreen = () => {
         navigation.navigate("Welcome");
-        alert("We need to make it so there is a back button to go back to the homescreen")
+        alert("We need to make it so there is a back button to go back to the homescreen");
     }
     const { postSource } = props;
     return(

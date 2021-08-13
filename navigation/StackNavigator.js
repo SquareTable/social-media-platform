@@ -178,19 +178,7 @@ const Start_Stack = () => {
 
 const home_screen_post_to_profile_screen = () => {
   return(
-    <Stack.Navigator
-        screenOptions={{
-            headerStyle: {
-                backgroundColor: 'transparent',
-            },
-            headerShown: false,
-            headerTintColor: tertiary,
-            headerTransparent: true,
-            headerTitle: '',
-            headerLeftContainerStyle: {
-                paddingLeft: 20,
-            },
-        }}
+    <Stack.Navigator screenOptions={screenOptionStyle}
         initialRouteName="LoginScreen"
     >
       <Stack.Screen name="Post" component={Post}/>
@@ -202,7 +190,7 @@ const home_screen_post_to_profile_screen = () => {
 
 
 
-export { ChatScreen_Stack, AppStyling, RootStack, FindScreen_Stack, Start_Stack};
+export { ChatScreen_Stack, AppStyling, RootStack, FindScreen_Stack, Start_Stack, home_screen_post_to_profile_screen};
 
 /* OLD ROOTSTACK
 
