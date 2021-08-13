@@ -5,10 +5,9 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState, useRef } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Alert, SafeAreaView} from 'react-native';
-import Tabs from './navigation/tabs.js';
 import styled from "styled-components";
 import LoginScreen from './screens/LoginScreen.js';
-import { RootStack, Start_Stack } from './navigation/StackNavigator.js';
+import { Start_Stack } from './navigation/Start_Stack.js';
 import * as Notifications from "expo-notifications";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -92,14 +91,14 @@ const App = () => {
   const welcome_message = () => {
     alert("Welcome to SocialSquare, it looks like you have just downloaded this app for the first time! Nice! You are right now on development version " + development_version);
   };
-  var development_version = '0.0.02';
+  var development_version = '0.0.03';
   const getData = async () => {
     try {
       var development_version_localstorage_value = await AsyncStorage.getItem('development_version')
       if(development_version_localstorage_value !== null) {
         if (development_version !== development_version_localstorage_value) {
           console.log(development_version_localstorage_value);
-          var releaseNotes = "There are now haptic touches when you navigate using the bottom tab navigator!"
+          var releaseNotes = "Fixed minor bugs and also added more haptic touch feedback!"
           var alert_on_update = "SocialSquare has been updated to the latest version (dev version " + development_version + "). Changes in this update are: " + releaseNotes;
           alert(alert_on_update);
         } else {

@@ -21,6 +21,9 @@ import { CredentialsContext } from '../components/CredentialsContext';
 import { ImageBackground, ScrollView, Text } from 'react-native';
 
 
+import * as Haptics from 'expo-haptics';
+
+
 const SettingsPage = ({navigation}) => {
      //context
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
@@ -35,6 +38,10 @@ const SettingsPage = ({navigation}) => {
                 index: 0,
                 routes: [{ name: 'LoginScreen' }],
             });
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+            setTimeout(() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy); }, 60);
+            setTimeout(() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy); }, 120);
+            setTimeout(() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy); }, 180);
         })
         .catch(error => console.log(error))
     }

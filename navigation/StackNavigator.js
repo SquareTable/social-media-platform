@@ -25,7 +25,6 @@ import { NavigationContainer } from '@react-navigation/native';
 import FindScreen from "../screens/FindScreen.js";
 import Post from "../posts/post.js";
 import Post_FullScreen from "../posts/post_fullscreen.js";
-import Tabs from "./tabs.js";
 
 const Stack = createStackNavigator();
 
@@ -140,42 +139,6 @@ const FindScreen_Stack = () => {
   );
 };
 
-const Start_Stack = () => {
-  return(
-      <CredentialsContext.Consumer>
-          {({storedCredentials}) => (
-                <Stack.Navigator
-                    screenOptions={{
-                        headerStyle: {
-                            backgroundColor: 'transparent',
-                        },
-                        headerShown: false,
-                        headerTintColor: tertiary,
-                        headerTransparent: true,
-                        headerTitle: '',
-                        headerLeftContainerStyle: {
-                            paddingLeft: 20,
-                        },
-                    }}
-                    initialRouteName="LoginScreen"
-                >
-                    {storedCredentials ? (
-                        <>
-                            <Stack.Screen name="LoginScreen" component={LoginScreen}/>
-                            <Stack.Screen name="Signup" component={Signup}/>
-                            <Stack.Screen name="Tabs" component={Tabs}/>
-                        </>
-                    ) : ( 
-                        <>
-                            <Stack.Screen name="Tabs" component={Tabs}/>
-                        </>
-                    )}
-                </Stack.Navigator>
-          )}
-      </CredentialsContext.Consumer>
-  )
-}
-
 const home_screen_post_to_profile_screen = () => {
   return(
     <Stack.Navigator screenOptions={screenOptionStyle}>
@@ -188,7 +151,7 @@ const home_screen_post_to_profile_screen = () => {
 
 
 
-export { ChatScreen_Stack, AppStyling, RootStack, FindScreen_Stack, Start_Stack, home_screen_post_to_profile_screen};
+export { ChatScreen_Stack, AppStyling, RootStack, FindScreen_Stack, home_screen_post_to_profile_screen};
 
 /* OLD ROOTSTACK
 
