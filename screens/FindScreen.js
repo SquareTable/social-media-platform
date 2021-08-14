@@ -1,9 +1,10 @@
 import React from 'react';
-import { StyleSheet, Text, View, Button, Image, SafeAreaView, ScrollView, Appearance, TouchableOpacity} from 'react-native';
+import { StyleSheet, Text, View, Button, Image, SafeAreaView, ScrollView, Appearance, TouchableOpacity, Dimensions } from 'react-native';
 import ProgressiveImage from '../posts/ProgressiveImage.js';
 import {darkModeStyling, darkModeOn, lightModeStyling} from '../screens/screenStylings/styling.js';
 import Images from "../posts/images.js";
 import { setSyntheticLeadingComments } from 'typescript';
+import { FindScreen_Posts_Row } from '../posts/FindScreen_Posts_Row.js';
 
 const FindScreen = ({navigation}) => {
     if (darkModeOn === true) {
@@ -11,6 +12,10 @@ const FindScreen = ({navigation}) => {
     } else {
         var styling = lightModeStyling;
     }
+
+    var deviceWidth = Dimensions.get('window').width
+    var postWidth = deviceWidth / 3.1
+    var postHeight = postWidth
 
     const colorScheme = Appearance.getColorScheme();
     if (colorScheme === 'dark') {
@@ -33,31 +38,11 @@ const FindScreen = ({navigation}) => {
     return(
         <SafeAreaView style={Styles.container}>
             <ScrollView>
-                <View style={{flex: 2, flexDirection: 'row', ...styling.backgroundColor, marginTop: 0, marginBottom: 20}}>
-                    <TouchableOpacity style={{minWidth: '30%', width: '30%', maxWidth: '30%', marginHorizontal: '1.6%'}} onPressIn={navigateToPost}>
-                        <ProgressiveImage
-                            source={Images.posts.clock}
-                            style={{minWidth: '100%', width: '100%', maxWidth: '100%', aspectRatio: 1, position: 'absolute'}}
-                            resizeMode="contain"
-                            resizeMethod="resize"
-                        />
-                    </TouchableOpacity>
-                    <TouchableOpacity style={{minWidth: '30%', width: '30%', maxWidth: '30%', marginHorizontal: '1.6%'}} onPressIn={navigateToPost}>
-                        <ProgressiveImage
-                            source={Images.posts.clock}
-                            style={{minWidth: '100%', width: '100%', maxWidth: '100%', aspectRatio: 1, position: 'absolute'}}
-                            resizeMode="contain"
-                            resizeMethod="resize"
-                        />
-                    </TouchableOpacity>
-                    <TouchableOpacity style={{minWidth: '30%', width: '30%', maxWidth: '30%', marginHorizontal: '1.6%'}} onPressIn={navigateToPost}>
-                        <ProgressiveImage
-                            source={Images.posts.clock}
-                            style={{minWidth: '100%', width: '100%', maxWidth: '100%', aspectRatio: 1, position: 'absolute'}}
-                            resizeMode="contain"
-                            resizeMethod="resize"
-                        />
-                    </TouchableOpacity>
+                <View style={{flex: 3, flexDirection: 'column', ...styling.backgroundColor}}>
+                    <FindScreen_Posts_Row/>
+                    <FindScreen_Posts_Row/>
+                    <FindScreen_Posts_Row/>
+                    <FindScreen_Posts_Row/>
                 </View>           
             </ScrollView>
         </SafeAreaView>

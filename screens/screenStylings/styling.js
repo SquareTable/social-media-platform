@@ -618,3 +618,81 @@ export const BackgroundDarkColor = styled.View`
     minHeight: 100%;
     zIndex: -100;
 `;
+
+export const ProfileOptionsView = styled.View`
+    position: absolute;
+    zIndex: 9999999;
+    align-self: center;
+    align-items: center;
+    margin-vertical: 30%;
+    left: -30000px;
+    width: 90%;
+    height: 400px;
+    background-color: ${darkest};
+    border-color: ${secondary};
+    border-radius: 20px;
+    border-width: 3px;
+    ${(props) => props.viewHidden == false && `
+        margin-left: 5%;
+        margin-right: 5%;
+        position: absolute;
+        align-self: center;
+        align-items: center;
+        left: 0px
+    `}
+    ${(props) => props.viewHidden == true && `
+        margin-left: 5%;
+        margin-right: 5%;
+        position: absolute;
+        align-self: center;
+        align-items: center;
+        left: -30000px;
+    `}
+`;
+
+export const ProfileOptionsViewButtons = styled.TouchableOpacity`
+    height: 20%;
+    margin-top: 5%;
+    align-items: center;
+    justify-content: center;
+    width: 80%;
+    border-radius: 20px;
+    border-width: 3px;
+    border-color: ${primary};
+    ${(props) => props.cancelButton == true && `
+        background-color: ${greyish};
+    `}
+    ${(props) => props.confirmButton == true && `
+        background-color: ${red};
+    `}
+`;
+
+export const ProfileOptionsViewButtonsText = styled.Text`
+    color: ${darkest};
+    align-self: center;
+    text-align: center;
+    font-size: 25px;
+    margin-vertical: 10px;
+    ${(props) => props.cancelButton == true && `
+        color: ${darkest};
+    `}
+    ${(props) => props.confirmButton == true && `
+        color: ${tertiary};
+    `}
+`;
+
+export const ProfileOptionsViewText = styled.Text`
+    color: ${tertiary};
+    align-self: center;
+    text-align: center;
+    font-size: 30px;
+    margin-vertical: 10px;
+`;
+
+export const ProfileOptionsViewSubtitleText = styled.Text`
+    color: ${tertiary};
+    align-self: center;
+    text-align: center;
+    font-size: 24px;
+    margin-vertical: 3px;
+`;

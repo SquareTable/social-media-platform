@@ -29,7 +29,12 @@ import {
     BackgroundDarkColor,
     darkModeOn,
     darkModeStyling,
-    lightModeStyling
+    lightModeStyling,
+    ProfileOptionsView,
+    ProfileOptionsViewButtons,
+    ProfileOptionsViewButtonsText,
+    ProfileOptionsViewText,
+    ProfileOptionsViewSubtitleText
 } from '../screens/screenStylings/styling.js';
 
 // async-storage
@@ -81,17 +86,41 @@ const ProfileScreen = ({navigation}) => {
         var styling = lightModeStyling;
     }
 
+    const [logoutViewState, setLogoutViewState] = useState(true)
+
+    const changeLogoutView = () => {
+        if (logoutViewState == true) {
+            setLogoutViewState(false)
+        }else{
+            console.log("Closed Confirm")
+            setLogoutViewState(true)
+        }
+    }
+
+
     return(
-        <>   
             <BackgroundDarkColor> 
+                <ProfileOptionsView viewHidden={logoutViewState}>
+                   <ProfileOptionsViewText>{name || "Couldn't get profile name"}</ProfileOptionsViewText>
+                   <ProfileOptionsViewSubtitleText>Options</ProfileOptionsViewSubtitleText>
+                   <ProfileOptionsViewButtons cancelButton={true} onPress={changeLogoutView}>
+                       <ProfileOptionsViewButtonsText cancelButton={true}>Cancel</ProfileOptionsViewButtonsText>
+                    </ProfileOptionsViewButtons> 
+                    <ProfileOptionsViewButtons cancelButton={true} onPress={() => {alert("Coming soon");}}>
+                       <ProfileOptionsViewButtonsText cancelButton={true}>Message</ProfileOptionsViewButtonsText>
+                    </ProfileOptionsViewButtons>
+                    <ProfileOptionsViewButtons confirmButton={true} onPress={() => {alert("Coming soon");}}>
+                        <ProfileOptionsViewButtonsText confirmButton>Report</ProfileOptionsViewButtonsText>
+                    </ProfileOptionsViewButtons> 
+                </ProfileOptionsView>
                 <StatusBar style="dark"/>
                 <ScrollView>
                     <WelcomeContainer>
                         <ProfileHorizontalView>
-                            <TouchableOpacity style={{marginLeft: '0%', marginRight: '70%'}} onPressIn={() => {alert("Jacob is a sussy femboy!")}}>
+                            <TouchableOpacity style={{marginLeft: '0%', marginRight: '70%'}} onPress={changeLogoutView}>
                                 <Image
                                     source={require('../assets/img/ThreeDots.png')}
-                                    style={{ width: 40, height: 40}}
+                                    style={{ width: 40, height: 40, ...styling.tintColor}}
                                     resizeMode="contain"
                                     resizeMethod="resize"
                                 />
@@ -99,7 +128,7 @@ const ProfileScreen = ({navigation}) => {
                             <TouchableOpacity onPress={goToSettingsScreen}>
                                 <Image
                                     source={require('../assets/app_icons/settings.png')}
-                                    style={{ width: 40, height: 40,}}
+                                    style={{ width: 40, height: 40, ...styling.tintColor}}
                                     resizeMode="contain"
                                     resizeMethod="resize"
                                 />
@@ -160,7 +189,6 @@ const ProfileScreen = ({navigation}) => {
                     </View>
                 </ScrollView>
             </BackgroundDarkColor>
-        </>
     );
 }
 

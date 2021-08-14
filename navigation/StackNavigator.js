@@ -62,6 +62,7 @@ const ChatScreen_Stack = () => {
           headerBackTitleStyle: {
             ...styling.textColor,
           },
+          headerTitle: 'Chat (Not working yet)',
         }}
       />
     </Stack.Navigator>
@@ -115,6 +116,7 @@ const FindScreen_Stack = () => {
           headerBackTitleStyle: {
             ...styling.textColor,
           },
+          headerTitle: 'FindScreen (Not working yet)',
         }}
       />
       <Stack.Screen name="Post_FullScreen" component={Post_FullScreen}
@@ -142,8 +144,8 @@ const FindScreen_Stack = () => {
 const home_screen_post_to_profile_screen = () => {
   return(
     <Stack.Navigator screenOptions={screenOptionStyle}>
+      <Stack.Screen name="Profile_Screen" component={ProfileScreen}/> 
       <Stack.Screen name="Post" component={Post}/>
-      <Stack.Screen name="ProfileScreen" component={ProfileScreen}/> 
     </Stack.Navigator>
   )
 }

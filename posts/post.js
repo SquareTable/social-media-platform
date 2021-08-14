@@ -18,8 +18,8 @@ const Post = (props) => {
     }
     const navigation = useNavigation(); 
     const goToProfileScreen = () => {
-        navigation.navigate("ProfileScreen");
-        alert("We need to make it so there is a back button to go back to the homescreen");
+        navigation.navigate("Profile_Screen");
+        alert("We need to make it so there is a back button to go back to the homescreen. This was working before, but one of the updates broke what this does. We will be fixing this bug soon hehe :)");
     }
     const { postSource } = props;
     return(
@@ -38,7 +38,7 @@ const Post = (props) => {
                                 <View style={{width:'100%', minHeight:42, height:42}}/>
                             </TouchableOpacity>
                         </View>
-                        <View style={{width:'100%'}}>
+                        <View>
                             <TouchableOpacity onPressOut={goToProfileScreen}>
                                 <Text style={{...styling.textColor, textAlign: 'left', fontWeight:'bold', fontSize: 20, textAlignVertical:'bottom'}}>SebTheMan</Text>
                             </TouchableOpacity>
@@ -54,7 +54,7 @@ const Post = (props) => {
                     </View>
                     <View style={{flex: 2, flexDirection: 'row', marginTop: 10, marginBottom: 10}}>
                         <View style={{height: 50, width: 65}}>
-                            <TouchableOpacity>
+                            <TouchableOpacity onPress={() => {alert("The Like Button does not work yet. We will add functionality to this very shortly.")}}>
                                 <Image
                                     source={Images.posts.heart}
                                     style={{...styling.like_comment_save_buttons, ...styling.tintColor}}
@@ -64,7 +64,7 @@ const Post = (props) => {
                             </TouchableOpacity>
                         </View>
                         <View style={{width: 50}}>
-                            <TouchableOpacity>
+                            <TouchableOpacity onPress={() => {alert("The Comment Button does not work yet. We will add functionality to this very shortly.")}}>
                                 <Image
                                     source={Images.posts.message_bubbles}
                                     style={{...styling.like_comment_save_buttons, ...styling.tintColor}}
@@ -74,7 +74,7 @@ const Post = (props) => {
                             </TouchableOpacity>
                         </View>
                         <View style={{width:50, position:'absolute', right: 20}}>
-                            <TouchableOpacity>
+                            <TouchableOpacity onPress={() => {alert("The Save Button does not work yet. We will add functionality to this very shortly.")}}>
                                 <Image
                                     source={Images.posts.bookmark}
                                     style={{...styling.like_comment_save_buttons, ...styling.tintColor}}
