@@ -696,3 +696,31 @@ export const ProfileOptionsViewSubtitleText = styled.Text`
     font-size: 24px;
     margin-vertical: 3px;
 `;
+
+export const TermsOfServiceGoBackButton = styled.TouchableOpacity`
+    height: 80px;
+    margin-top: 10%;
+    align-items: center;
+    justify-content: center;
+    width: 80%;
+    border-radius: 20px;
+    border-width: 3px;
+    border-color: ${primary};
+    background-color: ${greyish};
+    align-self: center;
+`;
+
+export const TermsOfServiceGoBackButtonText = styled.Text`
+    color: ${darkest};
+    align-self: center;
+    text-align: center;
+    font-size: 25px;
+    font-weight: bold;
+    margin-vertical: 10px;
+    color: ${darkest};
+`;
+
+export const TermsOfServiceBackground = styled.SafeAreaView`
+    backgroundColor: ${primary};
+    flex: 1;
+`;

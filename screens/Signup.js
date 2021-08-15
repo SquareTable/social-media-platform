@@ -26,9 +26,12 @@ import {
     ExtraView,
     ExtraText,
     TextLink,
-    TextLinkContent
+    TextLinkContent,
+    darkModeOn,
+    darkModeStyling,
+    lightModeStyling
 } from '../screens/screenStylings/styling.js';
-import {View, ActivityIndicator} from 'react-native';
+import {View, ActivityIndicator, TouchableOpacity, Text} from 'react-native';
 
 // Colors
 const {brand, primary, tertiary} = Colors;
@@ -44,9 +47,16 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 //credentials context
 import { CredentialsContext } from './../components/CredentialsContext';
+import AppStyling from './AppStylingScreen.js';
 
 
 const Signup = ({navigation}) => {
+    if (darkModeOn === true) {
+        var styling = darkModeStyling;
+    } else {
+        var styling = lightModeStyling;
+    }
+
     const [hidePassword, setHidePassword] = useState(true);
     const [message, setMessage] = useState();
     const [messageType, setMessageType] = useState();
@@ -103,6 +113,10 @@ const Signup = ({navigation}) => {
             index: 0,
             routes: [{ name: 'LoginScreen' }],
         });
+    }
+
+    const goToTermsOfService = () => {
+        navigation.navigate("Terms of Service");
     }
 
     return(
@@ -191,6 +205,10 @@ const Signup = ({navigation}) => {
                                         <TextLinkContent>Login</TextLinkContent>
                                     </TextLink>
                                 </ExtraView>
+                                <Text style={{textAlign: 'center', ...styling.textColor, marginTop: 20}}>By signing up, you agree to our </Text>
+                                <TextLink onPress={goToTermsOfService}>
+                                    <TextLinkContent>Terms of Service</TextLinkContent>
+                                </TextLink>
                             </StyledFormArea>)}
                     </Formik>
                 </InnerContainer>

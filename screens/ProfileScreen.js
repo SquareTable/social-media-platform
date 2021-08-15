@@ -44,6 +44,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { CredentialsContext } from '../components/CredentialsContext';
 import { ImageBackground, ScrollView, Touchable } from 'react-native';
 import images from '../posts/images.js';
+import * as Haptics from 'expo-haptics';
 
 
 const ProfileScreen = ({navigation}) => {
@@ -78,6 +79,7 @@ const ProfileScreen = ({navigation}) => {
 
     const goToSettingsScreen = () => {
         navigation.navigate("SettingsScreen");
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     }
 
     if (darkModeOn === true) {
@@ -86,30 +88,42 @@ const ProfileScreen = ({navigation}) => {
         var styling = lightModeStyling;
     }
 
-    const [logoutViewState, setLogoutViewState] = useState(true)
+    const [ProfileOptionsViewState, setProfileOptionsViewState] = useState(true)
 
-    const changeLogoutView = () => {
-        if (logoutViewState == true) {
-            setLogoutViewState(false)
+    const changeProfilesOptionsView = () => {
+        if (ProfileOptionsViewState == true) {
+            setProfileOptionsViewState(false)
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
         }else{
             console.log("Closed Confirm")
-            setLogoutViewState(true)
+            setProfileOptionsViewState(true)
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
         }
+    }
+
+    const ProfileOptionsViewMessageButtonOnPress = () => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        alert("Coming soon");
+    }
+
+    const ProfileOptionsViewReportButtonOnPress = () => {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        alert("Coming soon");
     }
 
 
     return(
             <BackgroundDarkColor> 
-                <ProfileOptionsView viewHidden={logoutViewState}>
+                <ProfileOptionsView viewHidden={ProfileOptionsViewState}>
                    <ProfileOptionsViewText>{name || "Couldn't get profile name"}</ProfileOptionsViewText>
                    <ProfileOptionsViewSubtitleText>Options</ProfileOptionsViewSubtitleText>
-                   <ProfileOptionsViewButtons cancelButton={true} onPress={changeLogoutView}>
+                   <ProfileOptionsViewButtons cancelButton={true} onPress={changeProfilesOptionsView}>
                        <ProfileOptionsViewButtonsText cancelButton={true}>Cancel</ProfileOptionsViewButtonsText>
                     </ProfileOptionsViewButtons> 
-                    <ProfileOptionsViewButtons cancelButton={true} onPress={() => {alert("Coming soon");}}>
+                    <ProfileOptionsViewButtons cancelButton={true} onPress={ProfileOptionsViewMessageButtonOnPress}>
                        <ProfileOptionsViewButtonsText cancelButton={true}>Message</ProfileOptionsViewButtonsText>
                     </ProfileOptionsViewButtons>
-                    <ProfileOptionsViewButtons confirmButton={true} onPress={() => {alert("Coming soon");}}>
+                    <ProfileOptionsViewButtons confirmButton={true} onPress={ProfileOptionsViewReportButtonOnPress}>
                         <ProfileOptionsViewButtonsText confirmButton>Report</ProfileOptionsViewButtonsText>
                     </ProfileOptionsViewButtons> 
                 </ProfileOptionsView>
@@ -117,7 +131,7 @@ const ProfileScreen = ({navigation}) => {
                 <ScrollView>
                     <WelcomeContainer>
                         <ProfileHorizontalView>
-                            <TouchableOpacity style={{marginLeft: '0%', marginRight: '70%'}} onPress={changeLogoutView}>
+                            <TouchableOpacity style={{marginLeft: '0%', marginRight: '70%'}} onPress={changeProfilesOptionsView}>
                                 <Image
                                     source={require('../assets/img/ThreeDots.png')}
                                     style={{ width: 40, height: 40, ...styling.tintColor}}

@@ -27,6 +27,8 @@ import Post from "../posts/post.js";
 import Post_FullScreen from "../posts/post_fullscreen.js";
 import Tabs from "./tabs.js";
 
+import TermsOfService from "../screens/TermsOfService.js";
+
 const Stack = createStackNavigator();
 
 
@@ -54,6 +56,7 @@ const Start_Stack = () => {
                             <Stack.Screen name="LoginScreen" component={LoginScreen}/>
                             <Stack.Screen name="Signup" component={Signup}/>
                             <Stack.Screen name="Tabs" component={Tabs}/>
+                            <Stack.Screen name="Terms of Service" component={TermsOfService}/>
                         </>
                     ) : ( 
                         <>
