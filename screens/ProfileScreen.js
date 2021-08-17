@@ -130,6 +130,49 @@ const ProfileScreen = ({navigation}) => {
         }
     }
 
+    const [ReportProfile_ContentThatShouldNotBePosted_OptionsViewState, setReportProfile_ContentThatShouldNotBePosted_OptionsViewState] = useState(true)
+
+    const changeReportProfiles_ContentThatShouldNotBePosted_OptionsView = () => {
+        if (ReportProfile_ContentThatShouldNotBePosted_OptionsViewState == true) {
+            setReportProfile_ContentThatShouldNotBePosted_OptionsViewState(false)
+            changeReportProfilesOptionsView();
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        }else{
+            console.log("Closed Confirm")
+            setReportProfile_ContentThatShouldNotBePosted_OptionsViewState(true)
+            changeReportProfilesOptionsView();
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        }
+    }
+
+    const [ReportProfile_PretendingToBeSomeoneElse_OptionsViewState, setReportProfile_PretendingToBeSomeoneElse_OptionsViewState] = useState(true)
+
+    const changeReportProfiles_PretendingToBeSomeoneElse_OptionsView = () => {
+        if (ReportProfile_PretendingToBeSomeoneElse_OptionsViewState == true) {
+            setReportProfile_PretendingToBeSomeoneElse_OptionsViewState(false)
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        }else{
+            console.log("Closed Confirm")
+            setReportProfile_PretendingToBeSomeoneElse_OptionsViewState(true)
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        }
+    }
+
+    const [ReportProfile_MayBeUnder13_OptionsViewState, setReportProfile_MayBeUnder13_OptionsViewState] = useState(true)
+
+    const changeReportProfiles_MayBeUnder13_OptionsView = () => {
+        if (ReportProfile_MayBeUnder13_OptionsViewState == true) {
+            setReportProfile_MayBeUnder13_OptionsViewState(false)
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            changeReportProfilesOptionsView();
+        }else{
+            console.log("Closed Confirm")
+            setReportProfile_MayBeUnder13_OptionsViewState(true)
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            changeReportProfilesOptionsView();
+        }
+    }
+
 
     return(
             <BackgroundDarkColor> 
@@ -152,15 +195,80 @@ const ProfileScreen = ({navigation}) => {
                    <ReportProfileOptionsViewButtons greyButton={true} onPress={changeReportProfilesOptionsView}>
                        <ReportProfileOptionsViewButtonsText greyButton={true}>Cancel</ReportProfileOptionsViewButtonsText>
                     </ReportProfileOptionsViewButtons>
-                    <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
-                    <ReportProfileOptionsViewButtonsText redButton={true}>Something</ReportProfileOptionsViewButtonsText>
+                    <ScrollView style={{width: '100%'}}>
+                    <ReportProfileOptionsViewButtons redButton={true} onPress={changeReportProfiles_ContentThatShouldNotBePosted_OptionsView}>
+                            <ReportProfileOptionsViewButtonsText redButton={true}>This account is posting content that should not be on SocialSquare</ReportProfileOptionsViewButtonsText>
+                        </ReportProfileOptionsViewButtons>
+                        <ReportProfileOptionsViewButtons redButton={true} onPress={changeReportProfiles_MayBeUnder13_OptionsView}>
+                            <ReportProfileOptionsViewButtonsText redButton={true}>The user may be under 13</ReportProfileOptionsViewButtonsText>
+                        </ReportProfileOptionsViewButtons> 
+                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                            <ReportProfileOptionsViewButtonsText redButton={true}>This account is pretending to be me</ReportProfileOptionsViewButtonsText>
+                        </ReportProfileOptionsViewButtons> 
+                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                            <ReportProfileOptionsViewButtonsText redButton={true}>This account is pretending to be someone I know</ReportProfileOptionsViewButtonsText>
+                        </ReportProfileOptionsViewButtons> 
+                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                            <ReportProfileOptionsViewButtonsText redButton={true}>This account is pretending to be a celebrity or public figure</ReportProfileOptionsViewButtonsText>
+                        </ReportProfileOptionsViewButtons> 
+                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                            <ReportProfileOptionsViewButtonsText redButton={true}>This account is pretending to be a business or organisation</ReportProfileOptionsViewButtonsText>
+                        </ReportProfileOptionsViewButtons> 
+                    </ScrollView>
+                </ReportProfileOptionsView>
+                <ReportProfileOptionsView viewHidden={ReportProfile_ContentThatShouldNotBePosted_OptionsViewState}>
+                   <ReportProfileOptionsViewText>{"Report", name || "Report profile"}</ReportProfileOptionsViewText>
+                   <ReportProfileOptionsViewSubtitleText>What content are you trying to report?</ReportProfileOptionsViewSubtitleText>
+                   <ReportProfileOptionsViewButtons greyButton={true} onPress={changeReportProfiles_ContentThatShouldNotBePosted_OptionsView}>
+                       <ReportProfileOptionsViewButtonsText greyButton={true}>Back</ReportProfileOptionsViewButtonsText>
                     </ReportProfileOptionsViewButtons>
-                    <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
-                        <ReportProfileOptionsViewButtonsText redButton={true}>Something</ReportProfileOptionsViewButtonsText>
-                    </ReportProfileOptionsViewButtons> 
-                    <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
-                        <ReportProfileOptionsViewButtonsText redButton={true}>Something</ReportProfileOptionsViewButtonsText>
-                    </ReportProfileOptionsViewButtons> 
+                    <ScrollView style={{width: '100%'}}>
+                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                            <ReportProfileOptionsViewButtonsText redButton={true}>It's spam</ReportProfileOptionsViewButtonsText>
+                        </ReportProfileOptionsViewButtons>
+                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                            <ReportProfileOptionsViewButtonsText redButton={true}>Nudity or sexual activity</ReportProfileOptionsViewButtonsText>
+                        </ReportProfileOptionsViewButtons> 
+                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                            <ReportProfileOptionsViewButtonsText redButton={true}>I just don't like it</ReportProfileOptionsViewButtonsText>
+                        </ReportProfileOptionsViewButtons> 
+                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                            <ReportProfileOptionsViewButtonsText redButton={true}>Hate speech or symbols</ReportProfileOptionsViewButtonsText>
+                        </ReportProfileOptionsViewButtons> 
+                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                            <ReportProfileOptionsViewButtonsText redButton={true}>Suicide, self-injury or eating disorders</ReportProfileOptionsViewButtonsText>
+                        </ReportProfileOptionsViewButtons> 
+                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                            <ReportProfileOptionsViewButtonsText redButton={true}>Sale of illegal or regulated goods</ReportProfileOptionsViewButtonsText>
+                        </ReportProfileOptionsViewButtons> 
+                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                            <ReportProfileOptionsViewButtonsText redButton={true}>Violence or dangerous organizations</ReportProfileOptionsViewButtonsText>
+                        </ReportProfileOptionsViewButtons> 
+                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                            <ReportProfileOptionsViewButtonsText redButton={true}>Bullying or harassment</ReportProfileOptionsViewButtonsText>
+                        </ReportProfileOptionsViewButtons> 
+                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                            <ReportProfileOptionsViewButtonsText redButton={true}>Intellectual property violation</ReportProfileOptionsViewButtonsText>
+                        </ReportProfileOptionsViewButtons> 
+                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                            <ReportProfileOptionsViewButtonsText redButton={true}>Scam or fraud</ReportProfileOptionsViewButtonsText>
+                        </ReportProfileOptionsViewButtons> 
+                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                            <ReportProfileOptionsViewButtonsText redButton={true}>False information</ReportProfileOptionsViewButtonsText>
+                        </ReportProfileOptionsViewButtons>
+                    </ScrollView>
+                </ReportProfileOptionsView>
+                <ReportProfileOptionsView viewHidden={changeReportProfiles_MayBeUnder13_OptionsView}>
+                   <ReportProfileOptionsViewText>{"Report", name || "Report profile"}</ReportProfileOptionsViewText>
+                   <ReportProfileOptionsViewSubtitleText>User May Be Under 13</ReportProfileOptionsViewSubtitleText>
+                   <ReportProfileOptionsViewButtons greyButton={true} onPress={changeReportProfilesOptionsView}>
+                       <ReportProfileOptionsViewButtonsText greyButton={true}>Cancel</ReportProfileOptionsViewButtonsText>
+                    </ReportProfileOptionsViewButtons>
+                    <ScrollView style={{width: '100%'}}>
+                        <ReportProfileOptionsViewButtons redButton={true} onPress={changeReportProfiles_ContentThatShouldNotBePosted_OptionsView}>
+                            <ReportProfileOptionsViewButtonsText redButton={true}>This account is posting content that should not be on SocialSquare</ReportProfileOptionsViewButtonsText>
+                        </ReportProfileOptionsViewButtons>
+                    </ScrollView>
                 </ReportProfileOptionsView>
                 <StatusBar style="dark"/>
                 <ScrollView>
@@ -199,7 +307,7 @@ const ProfileScreen = ({navigation}) => {
                         <ProfileHorizontalView>
                             <ProfileHorizontalViewItem profLeftIcon={true}>
                                 <SubTitle welcome={true}> Followers </SubTitle>
-                                <ProfIcons source={require('./../assets/img/TempProfIcons.jpg')}/>
+                                <ProfIcons style={styling.tintColor}source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/114-user.png')}/>
                                 <SubTitle welcome={true}> 0 </SubTitle>
                             </ProfileHorizontalViewItem>
                             <ProfileHorizontalViewItem profCenterIcon={true}>
@@ -209,7 +317,7 @@ const ProfileScreen = ({navigation}) => {
                             </ProfileHorizontalViewItem>
                             <ProfileHorizontalViewItem profRightIcon={true}>
                                 <SubTitle welcome={true}> Likes </SubTitle>
-                                    <ProfIcons source={require('./../assets/img/Toga.jpg')}/>
+                                    <ProfIcons style={styling.tintColor} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/219-heart.png')}/>
                                 <SubTitle welcome={true}> 0 </SubTitle>
                             </ProfileHorizontalViewItem>
                         </ProfileHorizontalView>

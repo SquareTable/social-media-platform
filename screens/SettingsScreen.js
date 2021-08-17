@@ -81,19 +81,19 @@ const SettingsPage = ({navigation}) => {
                         <Avatar resizeMode="cover" source={AvatarImg} />
                         
                         <SettingsPageItemTouchableOpacity onPress={() => navigation.navigate("AccountSettings")}>
-                            <SettingsItemImage source={require('./../assets/img/ThreeDots.png')}/>
+                            <SettingsItemImage source={require('./../assets/app_icons/settings.png')}/>
                             <SettingsItemText>Account Settings</SettingsItemText>
                         </SettingsPageItemTouchableOpacity>
                         <SettingsPageItemTouchableOpacity onPress={() => navigation.navigate("AccountSettings")}>
-                            <SettingsItemImage source={require('./../assets/img/ThreeDots.png')}/>
+                            <SettingsItemImage source={require('./../assets/app_icons/settings.png')}/>
                             <SettingsItemText>Privacy Settings</SettingsItemText>
                         </SettingsPageItemTouchableOpacity>
                         <SettingsPageItemTouchableOpacity>
-                            <SettingsItemImage source={require('./../assets/img/ThreeDots.png')}/>
+                            <SettingsItemImage source={require('./../assets/app_icons/apple_clown.png')}/>
                             <SettingsItemText>Convert To Femboy</SettingsItemText>
                         </SettingsPageItemTouchableOpacity>
                         <SettingsPageItemTouchableOpacity onPressOut={changeLogoutView}>
-                            <SettingsItemImage source={require('./../assets/img/ThreeDots.png')}/>
+                            <SettingsItemImage source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/277-exit.png')}/>
                             <SettingsItemText>Logout</SettingsItemText>
                         </SettingsPageItemTouchableOpacity>
                         <Text style={{...styling.textColor, fontSize: 24, textAlign: 'center'}}>© SquareTable 2021</Text>

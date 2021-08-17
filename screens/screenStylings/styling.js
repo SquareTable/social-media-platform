@@ -285,6 +285,10 @@ export const PageTitle = styled.Text`
     ${(props) => props.welcome && `
         font-size: 35px;
     `}
+    ${(props) => props.badges && `
+        margin-top: 10px;
+        font-size: 35px;
+    `}
 `;
 
 export const SubTitle = styled.Text`
@@ -762,7 +766,6 @@ export const ReportProfileOptionsView = styled.View`
 `;
 
 export const ReportProfileOptionsViewButtons = styled.TouchableOpacity`
-    height: 80px;
     margin-top: 5%;
     align-items: center;
     justify-content: center;
@@ -770,6 +773,10 @@ export const ReportProfileOptionsViewButtons = styled.TouchableOpacity`
     border-radius: 20px;
     border-width: 3px;
     border-color: ${primary};
+    flex-wrap: wrap;
+    text-align: center;
+    align-self: center;
+    align-content: center;
     ${(props) => props.greyButton == true && `
         background-color: ${greyish};
     `}
