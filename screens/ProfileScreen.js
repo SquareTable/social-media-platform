@@ -34,7 +34,12 @@ import {
     ProfileOptionsViewButtons,
     ProfileOptionsViewButtonsText,
     ProfileOptionsViewText,
-    ProfileOptionsViewSubtitleText
+    ProfileOptionsViewSubtitleText,
+    ReportProfileOptionsView,
+    ReportProfileOptionsViewButtons,
+    ReportProfileOptionsViewButtonsText,
+    ReportProfileOptionsViewSubtitleText,
+    ReportProfileOptionsViewText,
 } from '../screens/screenStylings/styling.js';
 
 // async-storage
@@ -108,25 +113,55 @@ const ProfileScreen = ({navigation}) => {
 
     const ProfileOptionsViewReportButtonOnPress = () => {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-        alert("Coming soon");
+        changeProfilesOptionsView();
+        changeReportProfilesOptionsView();
+    }
+
+    const [ReportProfileOptionsViewState, setReportProfileOptionsViewState] = useState(true)
+
+    const changeReportProfilesOptionsView = () => {
+        if (ReportProfileOptionsViewState == true) {
+            setReportProfileOptionsViewState(false)
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        }else{
+            console.log("Closed Confirm")
+            setReportProfileOptionsViewState(true)
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        }
     }
 
 
     return(
             <BackgroundDarkColor> 
                 <ProfileOptionsView viewHidden={ProfileOptionsViewState}>
-                   <ProfileOptionsViewText>{name || "Couldn't get profile name"}</ProfileOptionsViewText>
+                   <ProfileOptionsViewText>{name || "Couldn't get name"}</ProfileOptionsViewText>
                    <ProfileOptionsViewSubtitleText>Options</ProfileOptionsViewSubtitleText>
-                   <ProfileOptionsViewButtons cancelButton={true} onPress={changeProfilesOptionsView}>
-                       <ProfileOptionsViewButtonsText cancelButton={true}>Cancel</ProfileOptionsViewButtonsText>
+                   <ProfileOptionsViewButtons greyButton={true} onPress={changeProfilesOptionsView}>
+                       <ProfileOptionsViewButtonsText greyButton={true}>Cancel</ProfileOptionsViewButtonsText>
                     </ProfileOptionsViewButtons> 
-                    <ProfileOptionsViewButtons cancelButton={true} onPress={ProfileOptionsViewMessageButtonOnPress}>
-                       <ProfileOptionsViewButtonsText cancelButton={true}>Message</ProfileOptionsViewButtonsText>
+                    <ProfileOptionsViewButtons greyButton={true} onPress={ProfileOptionsViewMessageButtonOnPress}>
+                       <ProfileOptionsViewButtonsText greyButton={true}>Message</ProfileOptionsViewButtonsText>
                     </ProfileOptionsViewButtons>
-                    <ProfileOptionsViewButtons confirmButton={true} onPress={ProfileOptionsViewReportButtonOnPress}>
-                        <ProfileOptionsViewButtonsText confirmButton>Report</ProfileOptionsViewButtonsText>
+                    <ProfileOptionsViewButtons redButton={true} onPress={ProfileOptionsViewReportButtonOnPress}>
+                        <ProfileOptionsViewButtonsText redButton={true}>Report</ProfileOptionsViewButtonsText>
                     </ProfileOptionsViewButtons> 
                 </ProfileOptionsView>
+                <ReportProfileOptionsView viewHidden={ReportProfileOptionsViewState}>
+                   <ReportProfileOptionsViewText>{"Report", name || "Report profile"}</ReportProfileOptionsViewText>
+                   <ReportProfileOptionsViewSubtitleText>Use this page to report this profile. If anyone is in danger immediately call emergency services. Do Not Wait.</ReportProfileOptionsViewSubtitleText>
+                   <ReportProfileOptionsViewButtons greyButton={true} onPress={changeReportProfilesOptionsView}>
+                       <ReportProfileOptionsViewButtonsText greyButton={true}>Cancel</ReportProfileOptionsViewButtonsText>
+                    </ReportProfileOptionsViewButtons>
+                    <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                    <ReportProfileOptionsViewButtonsText redButton={true}>Something</ReportProfileOptionsViewButtonsText>
+                    </ReportProfileOptionsViewButtons>
+                    <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                        <ReportProfileOptionsViewButtonsText redButton={true}>Something</ReportProfileOptionsViewButtonsText>
+                    </ReportProfileOptionsViewButtons> 
+                    <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                        <ReportProfileOptionsViewButtonsText redButton={true}>Something</ReportProfileOptionsViewButtonsText>
+                    </ReportProfileOptionsViewButtons> 
+                </ReportProfileOptionsView>
                 <StatusBar style="dark"/>
                 <ScrollView>
                     <WelcomeContainer>

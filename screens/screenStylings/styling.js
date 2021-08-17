@@ -659,10 +659,10 @@ export const ProfileOptionsViewButtons = styled.TouchableOpacity`
     border-radius: 20px;
     border-width: 3px;
     border-color: ${primary};
-    ${(props) => props.cancelButton == true && `
+    ${(props) => props.greyButton == true && `
         background-color: ${greyish};
     `}
-    ${(props) => props.confirmButton == true && `
+    ${(props) => props.redButton == true && `
         background-color: ${red};
     `}
 `;
@@ -673,10 +673,10 @@ export const ProfileOptionsViewButtonsText = styled.Text`
     text-align: center;
     font-size: 25px;
     margin-vertical: 10px;
-    ${(props) => props.cancelButton == true && `
+    ${(props) => props.greyButton == true && `
         color: ${darkest};
     `}
-    ${(props) => props.confirmButton == true && `
+    ${(props) => props.redButton == true && `
         color: ${tertiary};
     `}
 `;
@@ -723,4 +723,82 @@ export const TermsOfServiceGoBackButtonText = styled.Text`
 export const TermsOfServiceBackground = styled.SafeAreaView`
     backgroundColor: ${primary};
     flex: 1;
+`;
+
+export const ReportProfileOptionsView = styled.View`
+    position: absolute;
+    zIndex: 9999999;
+    align-self: center;
+    align-items: center;
+    margin-vertical: 30%;
+    left: -30000px;
+    width: 90%;
+    height: 500px;
+    background-color: ${darkest};
+    border-color: ${secondary};
+    border-radius: 20px;
+    border-width: 3px;
+    ${(props) => props.viewHidden == false && `
+        margin-left: 5%;
+        margin-right: 5%;
+        position: absolute;
+        align-self: center;
+        align-items: center;
+        left: 0px
+    `}
+    ${(props) => props.viewHidden == true && `
+        margin-left: 5%;
+        margin-right: 5%;
+        position: absolute;
+        align-self: center;
+        align-items: center;
+        left: -30000px;
+    `}
+`;
+
+export const ReportProfileOptionsViewButtons = styled.TouchableOpacity`
+    height: 80px;
+    margin-top: 5%;
+    align-items: center;
+    justify-content: center;
+    width: 80%;
+    border-radius: 20px;
+    border-width: 3px;
+    border-color: ${primary};
+    ${(props) => props.greyButton == true && `
+        background-color: ${greyish};
+    `}
+    ${(props) => props.redButton == true && `
+        background-color: ${red};
+    `}
+`;
+
+export const ReportProfileOptionsViewButtonsText = styled.Text`
+    color: ${darkest};
+    align-self: center;
+    text-align: center;
+    font-size: 25px;
+    margin-vertical: 10px;
+    ${(props) => props.greyButton == true && `
+        color: ${darkest};
+    `}
+    ${(props) => props.redButton == true && `
+        color: ${tertiary};
+    `}
+`;
+
+export const ReportProfileOptionsViewText = styled.Text`
+    color: ${tertiary};
+    align-self: center;
+    text-align: center;
+    font-size: 30px;
+    margin-vertical: 10px;
+`;
+
+export const ReportProfileOptionsViewSubtitleText = styled.Text`
+    color: ${tertiary};
+    align-self: center;
+    text-align: center;
+    font-size: 10px;
+    margin-vertical: 3px;
 `;
