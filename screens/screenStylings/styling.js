@@ -224,10 +224,12 @@ export const Colors = {
     green: '#A3BE8C',
     red: '#BF616A',
     darkest: '#2e3440',
-    greyish: '#D8DEE9'
+    greyish: '#D8DEE9',
+    bronzeRarity: '#b08d57',
+    darkestBlue: '#5E81AC'
 };
 
-const {primary, secondary,tertiary, darkLight, brand, green, red, darkest, greyish} = Colors;
+const {primary, secondary,tertiary, darkLight, brand, green, red, darkest, greyish, bronzeRarity, darkestBlue} = Colors;
 
 export const StyledContainer = styled.View`
     flex: 1;
@@ -252,6 +254,9 @@ export const WelcomeContainer = styled(InnerContainer)`
     display: flex;
     padding-vertical: 25px;
     padding-top: ${StatusBarHeight + 10}px;
+    ${props => props.postScreen == true &&`
+        justify-content: center;
+    `}
 `;
 
 export const PageLogo = styled.Image`
@@ -802,3 +807,90 @@ export const ReportProfileOptionsViewSubtitleText = styled.Text`
     font-size: 10px;
     margin-vertical: 3px;
 `;
+
+/* Code from merge of Kovid's code 17/08/21 */
+export const BadgeGridViewBlockStyle = styled.TouchableOpacity`
+    justifyContent: center;
+    flex: 1;
+    alignItems: center;
+    margin: 2.5%;
+    padding-horizontal: 20%;
+    border-color: ${secondary};
+    border-width: 3px;
+`;
+
+export const GridViewInsideTextItemStyle = styled.Text`
+    color: ${tertiary};
+    justifyContent: center;
+    ${(props) => props.badgeTitle == true &&`
+        fontSize: 20px;
+    `}
+    ${(props) => props.bottomText == true && `
+        margin-bottom: 10px;
+        fontSize: 18px;
+    `}
+    ${(props) => props.rarityForTextColor == "Bronze" && `
+        fontSize: 25px;
+        margin-top: 10px;
+        color: ${bronzeRarity};
+    `}
+`;
+
+export const BadgeGridViewImage = styled.Image`
+    margin-vertical: 10px;
+    width: 80px;
+    height: 80px;
+`;
+
+export const PostCollectionView = styled.View`
+    margin-top: 10px;
+    align-items: center;
+    justify-content: center;
+`;
+
+export const PostHorizontalView = styled.View`
+    flexDirection: row;
+`;
+
+export const PostTypeSelector = styled.TouchableOpacity`
+    padding-horizontal: 10px;
+    padding-vertical: 10px;
+    border-width: 3px;
+    border-color: ${brand};
+    border-radius: 100px;
+    ${(props) => props.sideIcons == true && `
+        margin-horizontal: 40px;
+    `} 
+    ${(props) => props.styleForSelected == true && `
+        border-color: ${darkestBlue};
+    `} 
+`;
+
+export const PostIcons = styled.Image`
+    width: 60px;
+    height: 60px;
+`;
+
+export const PostMsgBox = styled.Text`
+    margin-top: 20px;
+    text-align: center;
+    font-size: 20px;
+    color: ${red};
+    ${(props) => props.viewHidden == true && `
+        margin-left: 5%;
+        margin-right: 5%;
+        text-align: center;
+        align-self: center;
+        align-items: center;
+        left: 0px;
+    `}
+    ${(props) => props.viewHidden == false && `
+        margin-left: 5%;
+        margin-right: 5%;
+        position: absolute;
+        align-self: center;
+        align-items: center;
+        left: -30000px;
+    `}
+`;
+/* End of code from code merge of 17/08/21 */

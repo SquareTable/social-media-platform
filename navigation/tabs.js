@@ -12,7 +12,7 @@ import BadgesScreen from '../screens/BadgesScreen';
 import LoginScreen from '../screens/LoginScreen';
 import settingsButtonTopRight from '../screens/settingsButtonTopRight';
 import ProfileScreen from '../screens/ProfileScreen';
-import {ChatScreen_Stack, ProfileScreenToSettings_StackNavigation, RootStack, SettingsToBadges_StackNavigation, FindScreen_Stack} from '../navigation/StackNavigator.js'
+import {ChatScreen_Stack, ProfileScreenToSettings_StackNavigation, RootStack, SettingsToBadges_StackNavigation, FindScreen_Stack, post_screen_navigator} from '../navigation/StackNavigator.js'
 import AppStyling from '../screens/AppStylingScreen';
 import {darkModeStyling, darkModeOn, lightModeStyling, darkModeStyling_navFocusedColor, lightModeStyling_navFocusedColor, darkModeStyling_navNonFocusedColor, lightModeStyling_navNonFocusedColor} from '../screens/screenStylings/styling.js';
 import * as Haptics from 'expo-haptics';
@@ -129,7 +129,7 @@ const Tabs = ({navigation}) => {
                     </TouchableOpacity>
                 ),
             }} />
-            <Tab.Screen name="Post" component={PostScreen} 
+            <Tab.Screen name="Post" component={post_screen_navigator} 
             options={{
                 tabBarIcon: ({focused}) => (
                     <TouchableOpacity onPressIn={() => {onPostScreenNavigate()}}>

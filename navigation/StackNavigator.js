@@ -26,6 +26,16 @@ import FindScreen from "../screens/FindScreen.js";
 import Post from "../posts/post.js";
 import Post_FullScreen from "../posts/post_fullscreen.js";
 
+import PostScreen from '../screens/PostScreen';
+import MultiMediaUploadPage from '../screens/PostScreens/MultiMediaUploadPage';
+import ThreadUploadPage from '../screens/PostScreens/ThreadUploadPage';
+import PollUploadPage from '../screens/PostScreens/PollUploadPage';
+
+import AccountBadges from "../screens/AccountBadges.js";
+import ChangeDisplayNamePage from "../screens/ChangeDisplayNamePage";
+import ChangeUsernamePage from "../screens/ChangeUsernamePage";
+import ChangeEmailPage from "../screens/ChangeEmailPage";
+
 const Stack = createStackNavigator();
 
 const screenOptionStyle = {
@@ -88,6 +98,11 @@ const RootStack = () => {
                 <Stack.Screen name="Welcome" component={ProfileScreen}/>
                 <Stack.Screen name="SettingsScreen" component={SettingsScreen}/>
                 <Stack.Screen name="BadgesScreen" component={BadgesScreen}/>
+                <Stack.Screen name="AccountBadges" component={AccountBadges}/>
+                <Stack.Screen name="AccountSettings" component={AccountSettings}/>
+                <Stack.Screen name="ChangeDisplayNamePage" component={ChangeDisplayNamePage}/>
+                <Stack.Screen name="ChangeUsernamePage" component={ChangeUsernamePage}/>
+                <Stack.Screen name="ChangeEmailPage" component={ChangeEmailPage}/>
     </Stack.Navigator>
   );
 };
@@ -150,10 +165,32 @@ const home_screen_post_to_profile_screen = () => {
   )
 }
 
+const post_screen_navigator = () => {
+  return(
+    <Stack.Navigator 
+    screenOptions={{
+      headerStyle: {
+          backgroundColor: 'transparent',
+      },
+      headerTintColor: tertiary,
+      headerTransparent: true,
+      headerTitle: '',
+      headerLeftContainerStyle: {
+          paddingLeft: 20,
+      },
+  }}
+  >
+      <Stack.Screen name="PostScreen" component={PostScreen}/>
+      <Stack.Screen name="MultiMediaUploadPage" component={MultiMediaUploadPage}/>
+      <Stack.Screen name="ThreadUploadPage" component={ThreadUploadPage}/>
+      <Stack.Screen name="PollUploadPage" component={PollUploadPage}/>
+    </Stack.Navigator>
+  )
+}
 
 
 
-export { ChatScreen_Stack, AppStyling, RootStack, FindScreen_Stack, home_screen_post_to_profile_screen};
+export { ChatScreen_Stack, AppStyling, RootStack, FindScreen_Stack, home_screen_post_to_profile_screen, post_screen_navigator};
 
 /* OLD ROOTSTACK
 

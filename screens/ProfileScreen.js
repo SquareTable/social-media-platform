@@ -55,7 +55,7 @@ import * as Haptics from 'expo-haptics';
 const ProfileScreen = ({navigation}) => {
      //context
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
-    const {name, email, photoUrl} = storedCredentials;
+    const {name, displayName, email, photoUrl} = storedCredentials;
     const AvatarImg = photoUrl ? {uri: photoUrl} : require('./../assets/img/Logo.png');
     const [gridViewState, setGridViewState] = useState("flex");
     const [featuredViewState, setFeaturedViewState] = useState("none");
@@ -185,7 +185,8 @@ const ProfileScreen = ({navigation}) => {
                         </ProfileHorizontalView>
                         <ProfInfoAreaImage>
                             <Avatar resizeMode="cover" source={AvatarImg} />
-                            <PageTitle welcome={true}>{name || "Couldn't get name"}</PageTitle>
+                            <PageTitle welcome={true}>{displayName || name || "Couldn't get name"}</PageTitle>
+                            <SubTitle>{"@"+name}</SubTitle>
                             <ProfileBadgesView onPress={() => navigation.navigate("BadgesScreen")}>
                                 <ProfileBadgeIcons source={require('./../assets/img/TempProfIcons.jpg')}/>
                                 <ProfileBadgeIcons source={require('./../assets/img/BgImage1.png')}/>
