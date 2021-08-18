@@ -1,9 +1,9 @@
 {
   "expo": {
-    "name": "social-media-platform",
-    "slug": "social-media-platform",
+    "name": "SocialSquare",
+    "slug": "SocialSquare",
     "version": "1.0.0",
-    "owner": "sebtheman",
+    "owner": "squaretabledevelopment",
     "orientation": "portrait",
     "icon": "./assets/photoshop_icon.png",
     "splash": {
@@ -19,7 +19,7 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.sebtheman.social-media-platform",
+      "bundleIdentifier": "com.squaretabledevlopment.social-media-platform",
       "userInterfaceStyle": "automatic"
     },
     "android": {

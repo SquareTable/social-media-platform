@@ -742,7 +742,7 @@ export const ReportProfileOptionsView = styled.View`
     margin-vertical: 30%;
     left: -30000px;
     width: 90%;
-    height: 500px;
+    height: 550px;
     background-color: ${darkest};
     border-color: ${secondary};
     border-radius: 20px;

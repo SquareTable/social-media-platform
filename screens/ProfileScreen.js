@@ -195,22 +195,20 @@ const ProfileScreen = ({navigation}) => {
                    <ReportProfileOptionsViewButtons greyButton={true} onPress={changeReportProfilesOptionsView}>
                        <ReportProfileOptionsViewButtonsText greyButton={true}>Cancel</ReportProfileOptionsViewButtonsText>
                     </ReportProfileOptionsViewButtons>
-                    <ScrollView style={{width: '100%'}}>
                     <ReportProfileOptionsViewButtons redButton={true} onPress={changeReportProfiles_ContentThatShouldNotBePosted_OptionsView}>
-                            <ReportProfileOptionsViewButtonsText redButton={true}>This account is posting content that should not be on SocialSquare</ReportProfileOptionsViewButtonsText>
-                        </ReportProfileOptionsViewButtons>
-                        <ReportProfileOptionsViewButtons redButton={true} onPress={changeReportProfiles_MayBeUnder13_OptionsView}>
-                            <ReportProfileOptionsViewButtonsText redButton={true}>This account is run by someone under 13</ReportProfileOptionsViewButtonsText>
-                        </ReportProfileOptionsViewButtons> 
-                        <ReportProfileOptionsViewButtons redButton={true} onPress={changeReportProfiles_PretendingToBeSomeoneElse_OptionsView}>
-                            <ReportProfileOptionsViewButtonsText redButton={true}>This account is pretending to be someone they're not</ReportProfileOptionsViewButtonsText>
-                        </ReportProfileOptionsViewButtons>
-                    </ScrollView>
+                        <ReportProfileOptionsViewButtonsText redButton={true}>This account is posting content that should not be on SocialSquare</ReportProfileOptionsViewButtonsText>
+                    </ReportProfileOptionsViewButtons>
+                    <ReportProfileOptionsViewButtons redButton={true} onPress={changeReportProfiles_MayBeUnder13_OptionsView}>
+                        <ReportProfileOptionsViewButtonsText redButton={true}>This account is run by someone under 13</ReportProfileOptionsViewButtonsText>
+                    </ReportProfileOptionsViewButtons> 
+                    <ReportProfileOptionsViewButtons redButton={true} onPress={changeReportProfiles_PretendingToBeSomeoneElse_OptionsView}>
+                        <ReportProfileOptionsViewButtonsText redButton={true}>This account is pretending to be someone they're not</ReportProfileOptionsViewButtonsText>
+                    </ReportProfileOptionsViewButtons>
                 </ReportProfileOptionsView>
                 <ReportProfileOptionsView viewHidden={ReportProfile_ContentThatShouldNotBePosted_OptionsViewState}>
                    <ReportProfileOptionsViewText>{"Report", name || "Report profile"}</ReportProfileOptionsViewText>
                    <ReportProfileOptionsViewSubtitleText>What content are you trying to report?</ReportProfileOptionsViewSubtitleText>
-                   <ReportProfileOptionsViewButtons greyButton={true} onPress={changeReportProfiles_ContentThatShouldNotBePosted_OptionsView}>
+                   <ReportProfileOptionsViewButtons padding={true} paddingAmount={'100px'}greyButton={true} onPress={changeReportProfiles_ContentThatShouldNotBePosted_OptionsView}>
                        <ReportProfileOptionsViewButtonsText greyButton={true}>Back</ReportProfileOptionsViewButtonsText>
                     </ReportProfileOptionsViewButtons>
                     <ScrollView style={{width: '100%'}}>
@@ -255,12 +253,10 @@ const ProfileScreen = ({navigation}) => {
                    <ReportProfileOptionsViewButtons greyButton={true} onPress={changeReportProfiles_MayBeUnder13_OptionsView}>
                        <ReportProfileOptionsViewButtonsText greyButton={true}>Back</ReportProfileOptionsViewButtonsText>
                     </ReportProfileOptionsViewButtons>
-                    <ScrollView style={{width: '100%'}}>
-                        <Text style={{...styling.textColor, fontSize: 18, textAlign: 'center'}}>Everyone must be at least 13 to have a SocialSquare account. In some jurisdictions, this age limit may be higher. If you would like to report an account because it belongs to someone under the age of 13, or someone is impresonating your child who's under 13, please press the report button.</Text>
-                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
-                            <ReportProfileOptionsViewButtonsText redButton={true}>Send report</ReportProfileOptionsViewButtonsText>
-                        </ReportProfileOptionsViewButtons>
-                    </ScrollView>
+                    <Text style={{...styling.textColor, fontSize: 18, textAlign: 'center', marginTop: 25, marginBottom: 10}}>Everyone must be at least 13 to have a SocialSquare account. In some jurisdictions, this age limit may be higher. If you would like to report an account because it belongs to someone under the age of 13, or someone is impresonating your child who's under 13, please press the report button.</Text>
+                    <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                        <ReportProfileOptionsViewButtonsText redButton={true}>Send report</ReportProfileOptionsViewButtonsText>
+                    </ReportProfileOptionsViewButtons>
                 </ReportProfileOptionsView>
                 <ReportProfileOptionsView viewHidden={ReportProfile_PretendingToBeSomeoneElse_OptionsViewState}>
                    <ReportProfileOptionsViewText>{"Report", name || "Report profile"}</ReportProfileOptionsViewText>
