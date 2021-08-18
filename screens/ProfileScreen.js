@@ -202,18 +202,9 @@ const ProfileScreen = ({navigation}) => {
                         <ReportProfileOptionsViewButtons redButton={true} onPress={changeReportProfiles_MayBeUnder13_OptionsView}>
                             <ReportProfileOptionsViewButtonsText redButton={true}>This account is run by someone under 13</ReportProfileOptionsViewButtonsText>
                         </ReportProfileOptionsViewButtons> 
-                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
-                            <ReportProfileOptionsViewButtonsText redButton={true}>This account is pretending to be me</ReportProfileOptionsViewButtonsText>
-                        </ReportProfileOptionsViewButtons> 
-                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
-                            <ReportProfileOptionsViewButtonsText redButton={true}>This account is pretending to be someone I know</ReportProfileOptionsViewButtonsText>
-                        </ReportProfileOptionsViewButtons> 
-                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
-                            <ReportProfileOptionsViewButtonsText redButton={true}>This account is pretending to be a celebrity or public figure</ReportProfileOptionsViewButtonsText>
-                        </ReportProfileOptionsViewButtons> 
-                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
-                            <ReportProfileOptionsViewButtonsText redButton={true}>This account is pretending to be a business or organisation</ReportProfileOptionsViewButtonsText>
-                        </ReportProfileOptionsViewButtons> 
+                        <ReportProfileOptionsViewButtons redButton={true} onPress={changeReportProfiles_PretendingToBeSomeoneElse_OptionsView}>
+                            <ReportProfileOptionsViewButtonsText redButton={true}>This account is pretending to be someone they're not</ReportProfileOptionsViewButtonsText>
+                        </ReportProfileOptionsViewButtons>
                     </ScrollView>
                 </ReportProfileOptionsView>
                 <ReportProfileOptionsView viewHidden={ReportProfile_ContentThatShouldNotBePosted_OptionsViewState}>
@@ -269,6 +260,27 @@ const ProfileScreen = ({navigation}) => {
                         <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
                             <ReportProfileOptionsViewButtonsText redButton={true}>Send report</ReportProfileOptionsViewButtonsText>
                         </ReportProfileOptionsViewButtons>
+                    </ScrollView>
+                </ReportProfileOptionsView>
+                <ReportProfileOptionsView viewHidden={ReportProfile_PretendingToBeSomeoneElse_OptionsViewState}>
+                   <ReportProfileOptionsViewText>{"Report", name || "Report profile"}</ReportProfileOptionsViewText>
+                   <ReportProfileOptionsViewSubtitleText>User May Be Under 13</ReportProfileOptionsViewSubtitleText>
+                   <ReportProfileOptionsViewButtons greyButton={true} onPress={changeReportProfiles_PretendingToBeSomeoneElse_OptionsView}>
+                       <ReportProfileOptionsViewButtonsText greyButton={true}>Back</ReportProfileOptionsViewButtonsText>
+                    </ReportProfileOptionsViewButtons>
+                    <ScrollView style={{width: '100%'}}>
+                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                            <ReportProfileOptionsViewButtonsText redButton={true}>This account is pretending to be me</ReportProfileOptionsViewButtonsText>
+                        </ReportProfileOptionsViewButtons> 
+                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                            <ReportProfileOptionsViewButtonsText redButton={true}>This account is pretending to be someone I know</ReportProfileOptionsViewButtonsText>
+                        </ReportProfileOptionsViewButtons> 
+                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                            <ReportProfileOptionsViewButtonsText redButton={true}>This account is pretending to be a celebrity or public figure</ReportProfileOptionsViewButtonsText>
+                        </ReportProfileOptionsViewButtons> 
+                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                            <ReportProfileOptionsViewButtonsText redButton={true}>This account is pretending to be a business or organisation</ReportProfileOptionsViewButtonsText>
+                        </ReportProfileOptionsViewButtons> 
                     </ScrollView>
                 </ReportProfileOptionsView>
                 <StatusBar style="dark"/>
