@@ -30,6 +30,7 @@ import PostScreen from '../screens/PostScreen';
 import MultiMediaUploadPage from '../screens/PostScreens/MultiMediaUploadPage';
 import ThreadUploadPage from '../screens/PostScreens/ThreadUploadPage';
 import PollUploadPage from '../screens/PostScreens/PollUploadPage';
+import AudioUploadPage from '../screens/PostScreens/AudioUploadPage';
 
 import AccountBadges from "../screens/AccountBadges.js";
 import ChangeDisplayNamePage from "../screens/ChangeDisplayNamePage";
@@ -184,6 +185,7 @@ const post_screen_navigator = () => {
       <Stack.Screen name="MultiMediaUploadPage" component={MultiMediaUploadPage}/>
       <Stack.Screen name="ThreadUploadPage" component={ThreadUploadPage}/>
       <Stack.Screen name="PollUploadPage" component={PollUploadPage}/>
+      <Stack.Screen name="AudioUploadPage" component={AudioUploadPage}/>
     </Stack.Navigator>
   )
 }

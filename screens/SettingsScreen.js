@@ -88,9 +88,9 @@ const SettingsPage = ({navigation}) => {
                             <SettingsItemImage source={require('./../assets/app_icons/settings.png')}/>
                             <SettingsItemText>Privacy Settings</SettingsItemText>
                         </SettingsPageItemTouchableOpacity>
-                        <SettingsPageItemTouchableOpacity>
-                            <SettingsItemImage source={require('./../assets/app_icons/apple_clown.png')}/>
-                            <SettingsItemText>Convert To Femboy</SettingsItemText>
+                        <SettingsPageItemTouchableOpacity onPress={() => {alert("Coming soon")}}>
+                            <SettingsItemImage source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/265-notification.png')}/>
+                            <SettingsItemText>Report bug</SettingsItemText>
                         </SettingsPageItemTouchableOpacity>
                         <SettingsPageItemTouchableOpacity onPressOut={changeLogoutView}>
                             <SettingsItemImage source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/277-exit.png')}/>

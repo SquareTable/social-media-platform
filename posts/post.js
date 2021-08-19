@@ -43,6 +43,16 @@ const Post = (props) => {
                                 <Text style={{...styling.textColor, textAlign: 'left', fontWeight:'bold', fontSize: 20, textAlignVertical:'bottom'}}>SebTheMan</Text>
                             </TouchableOpacity>
                         </View>
+                        <View style={{position: 'absolute', right: 20}}>
+                            <TouchableOpacity onPress={() => {alert("Coming soon")}}>
+                                <Image
+                                    source={require('../assets/app_icons/3dots.png')}
+                                    style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, ...styling.tintColor}}
+                                    resizeMode="contain"
+                                    resizeMethod="resize"
+                                />
+                            </TouchableOpacity>
+                        </View>
                     </View>
                     <View style={{...styling.backgroundColor, maxWidth: 400, minWidth: 400}}>
                         <ProgressiveImage

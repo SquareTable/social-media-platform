@@ -249,13 +249,16 @@ export const InnerContainer = styled.View`
 
 export const WelcomeContainer = styled(InnerContainer)`
     background-color: ${primary};
-    flex: 1;
+    flex: 5;
     width: 100%;
     display: flex;
     padding-vertical: 25px;
     padding-top: ${StatusBarHeight + 10}px;
     ${props => props.postScreen == true &&`
         justify-content: center;
+    `}
+    ${props => props.audioPostScreen == true &&`
+        padding-top: ${StatusBarHeight + 50}px;
     `}
 `;
 
@@ -901,3 +904,38 @@ export const PostMsgBox = styled.Text`
     `}
 `;
 /* End of code from code merge of 17/08/21 */
+
+export const FlexRow = styled.View`
+    flex: 1;
+    flex-direction: row;
+    justify-content: center;
+`;
+
+export const LeftButton_AudioUploadScreen = styled.View`
+    margin-right: 7%
+`;
+
+export const RightButton_AudioUploadScreen = styled.View`
+    margin-left: 7%
+`;
+
+export const AudioUploadScreenUploadButtons = styled.View`
+    justify-content: center;
+    align-self: center;
+    align-content: center;
+    align-items: center;
+    margin-top: 20%;
+`;
+
+export const HorizontalLineAcrossScreen = styled.View`
+    z-index: 100;
+    ${(props) => `
+        width: ${props.elementWidth}
+    `}
+    ${(props) => `
+        height: ${props.elementHeight}
+    `}
+    ${(props) => `
+        background-color: ${props.elementColor}
+    `}
+`;

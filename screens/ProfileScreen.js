@@ -285,7 +285,7 @@ const ProfileScreen = ({navigation}) => {
                         <ProfileHorizontalView>
                             <TouchableOpacity style={{marginLeft: '0%', marginRight: '70%'}} onPress={changeProfilesOptionsView}>
                                 <Image
-                                    source={require('../assets/img/ThreeDots.png')}
+                                    source={require('../assets/app_icons/3dots.png')}
                                     style={{ width: 40, height: 40, ...styling.tintColor}}
                                     resizeMode="contain"
                                     resizeMethod="resize"

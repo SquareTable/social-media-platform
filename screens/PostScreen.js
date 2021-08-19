@@ -65,6 +65,7 @@ const PostScreen = ({navigation}) => {
             navigation.navigate("PollUploadPage")
         } else if (formatFourSelected == true) {
             setMessageVisibility(false)
+            navigation.navigate("AudioUploadPage")
         } else {
             setMessageVisibility(true)
         }
@@ -125,7 +126,7 @@ const PostScreen = ({navigation}) => {
                             </PostTypeSelector>
                         </PostHorizontalView>
                         <PostTypeSelector styleForSelected={formatFourSelected} onPress={formatFourPressed}>
-                            <PostIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/161-glass.png')}/>
+                            <PostIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/018-music.png')}/>
                         </PostTypeSelector>
                         <PostMsgBox viewHidden={messageVisibility}> Select a format </PostMsgBox>
                     </PostCollectionView>
