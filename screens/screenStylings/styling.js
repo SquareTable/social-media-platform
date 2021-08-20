@@ -939,3 +939,68 @@ export const HorizontalLineAcrossScreen = styled.View`
         background-color: ${props.elementColor}
     `}
 `;
+
+export const RecordAudio_AudioUploadPage = styled.View`
+    position: absolute;
+    zIndex: 9999999;
+    align-self: center;
+    align-items: center;
+    margin-vertical: 30%;
+    left: -30000px;
+    width: 90%;
+    height: 400px;
+    background-color: ${darkest};
+    border-color: ${secondary};
+    border-radius: 20px;
+    border-width: 3px;
+    ${(props) => props.viewHidden == false && `
+        margin-left: 5%;
+        margin-right: 5%;
+        position: absolute;
+        align-self: center;
+        align-items: center;
+        left: 0px
+    `}
+    ${(props) => props.viewHidden == true && `
+        margin-left: 5%;
+        margin-right: 5%;
+        position: absolute;
+        align-self: center;
+        align-items: center;
+        left: -30000px;
+    `}
+`;
+
+export const RecordButton_RecordScreen_AudioUploadPage = styled.TouchableOpacity`
+    position: absolute;
+    right: 20%;
+    padding-right: 10px;
+    border-right-width: 3px;
+    border-color: ${tertiary};
+    width: 80px;
+`;
+
+export const RecordButtonChanger_RecordScreen_AudioUploadPage = styled.View`
+    ${(props) => props.viewHidden == true && `
+        position: absolute;
+        left: 30000px;
+    `}
+`;
+
+export const AudioWaveBox_RecordScreen_AudioUploadPage = styled.View`
+    border-width: 0px;
+    border-radius: 50px;
+    border-color: ${tertiary};
+    width: 60%;
+    ${(props) => props.viewHidden == true && `
+        position: absolute;
+        left: 30000px;
+    `}
+`;
+
+export const ViewHider = styled.View`
+    ${(props) => props.viewHidden == true && `
+        position: absolute;
+        left: 30000px;
+    `}
+`;
