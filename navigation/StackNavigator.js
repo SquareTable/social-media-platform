@@ -37,6 +37,8 @@ import ChangeDisplayNamePage from "../screens/ChangeDisplayNamePage";
 import ChangeUsernamePage from "../screens/ChangeUsernamePage";
 import ChangeEmailPage from "../screens/ChangeEmailPage";
 
+import ReportBugScreen from "../screens/ReportBugScreen.js";
+
 const Stack = createStackNavigator();
 
 const screenOptionStyle = {
@@ -104,6 +106,7 @@ const RootStack = () => {
                 <Stack.Screen name="ChangeDisplayNamePage" component={ChangeDisplayNamePage}/>
                 <Stack.Screen name="ChangeUsernamePage" component={ChangeUsernamePage}/>
                 <Stack.Screen name="ChangeEmailPage" component={ChangeEmailPage}/>
+                <Stack.Screen name="ReportBugScreen" component={ReportBugScreen}/>
     </Stack.Navigator>
   );
 };

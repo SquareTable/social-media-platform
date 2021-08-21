@@ -260,6 +260,10 @@ export const WelcomeContainer = styled(InnerContainer)`
     ${props => props.audioPostScreen == true &&`
         padding-top: ${StatusBarHeight + 50}px;
     `}
+    ${props => props.reportBugScreenScreen == true &&`
+        padding-top: ${StatusBarHeight + 40}px;
+        justify-content: center;
+    `}
 `;
 
 export const PageLogo = styled.Image`
@@ -292,6 +296,9 @@ export const PageTitle = styled.Text`
         margin-top: 10px;
         font-size: 35px;
     `}
+    ${(props) => props.fontSize && `
+        font-size: ${props.fontSize};
+    `}
 `;
 
 export const SubTitle = styled.Text`
@@ -320,6 +327,10 @@ export const SubTitle = styled.Text`
         margin-top: 40px;
         margin-bottom: 40px;
     `}
+
+    ${(props) => props.centered && `
+        text-align: center;
+    `}
 `;
 
 export const StyledFormArea = styled.View`
@@ -339,6 +350,9 @@ export const StyledTextInput = styled.TextInput`
     margin-vertical: 3px;
     margin-bottom: 10px;
     color: ${tertiary};
+    ${(props) => props.bugReport == true && `
+        height: 200px;
+    `}
 `;
 
 export const StyledInputLabel = styled.Text`
@@ -1003,4 +1017,22 @@ export const ViewHider = styled.View`
         position: absolute;
         left: 30000px;
     `}
+    ${(props) => props.bugScreenVarNum !== 2 && props.bugScreen == 2 && `
+        position: absolute;
+        left: 30000px;
+    `}
+    ${(props) => props.bugScreenVarNum !== 1 && props.bugScreen == 1 && `
+        position: absolute;
+        left: 30000px;
+    `}
+    ${(props) => props.zIndex && `
+        z-index: ${props.zIndex};
+    `}
+`;
+
+export const TestText = styled.Text`
+    font-size: 20px;
+    font-weight: bold;
+    color: ${tertiary};
+    text-align: center;
 `;

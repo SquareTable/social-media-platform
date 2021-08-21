@@ -88,7 +88,7 @@ const SettingsPage = ({navigation}) => {
                             <SettingsItemImage source={require('./../assets/app_icons/settings.png')}/>
                             <SettingsItemText>Privacy Settings</SettingsItemText>
                         </SettingsPageItemTouchableOpacity>
-                        <SettingsPageItemTouchableOpacity onPress={() => {alert("Coming soon")}}>
+                        <SettingsPageItemTouchableOpacity onPress={() => {navigation.navigate('ReportBugScreen')}}>
                             <SettingsItemImage source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/265-notification.png')}/>
                             <SettingsItemText>Report bug</SettingsItemText>
                         </SettingsPageItemTouchableOpacity>
