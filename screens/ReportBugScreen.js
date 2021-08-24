@@ -41,7 +41,7 @@ import {
 import {View, ActivityIndicator, ImageBackground, StyleSheet, Text, Alert} from 'react-native';
 
 // Colors
-const {brand, primary, tertiary} = Colors;
+const {brand, primary, tertiary, darkest} = Colors;
 
 // keyboard avoiding view
 import KeyboardAvoidingWrapper from '../components/KeyboardAvoidingWrapper';
@@ -96,6 +96,7 @@ const ReportBugScreen = ({navigation}) => {
         */
        alert("Coming soon");
        setSubmitting(false);
+       console.log(credentials);
     }
 
     const handleMessage = (message, type = 'FAILED') => {
@@ -161,15 +162,22 @@ const ReportBugScreen = ({navigation}) => {
                         <PageTitle>SocialSquare</PageTitle>
                         <SubTitle>Report bug</SubTitle>
                         <Formik
-                            initialValues={{bugReport: '', screenThatBugOccuredOn: 'Choose'}}
+                            initialValues={{bugReport: '', screenThatBugOccuredOn: ''}}
                             onSubmit={(values, {setSubmitting}) => {
                                 console.log("Submitting")
                                 if (values.bugReport == "" || values.screenThatBugOccuredOn == "") {
                                     handleMessage('Please fill all the fields.');
                                     setSubmitting(false);
                                 } else {
-                                    handleChangebugReport(values, setSubmitting);
-                                    handleMessage('')
+                                    if (values.screenThatBugOccuredOn == null) {
+                                        handleMessage('Screen that bug occured on is null. This may be an error or you have not selected a screen that the bug occured on.');
+                                        console.log("Screen that bug occured on box is null. This is the console log of the variable credentials");
+                                        console.log(values);
+                                        setSubmitting(false);
+                                    } else {
+                                        handleChangebugReport(values, setSubmitting);
+                                        handleMessage('')
+                                    }
                                 }
                             }}
                         >
@@ -204,6 +212,24 @@ const ReportBugScreen = ({navigation}) => {
                                             onChangeValue={(value) => {
                                                 console.log("Value chosen in bug report screen dropdown box is " + value);
                                             }}
+                                            style={{
+                                                backgroundColor: brand,
+                                                borderColor: darkest,
+                                                borderWidth: 5
+                                            }}
+                                            containerStyle={{
+                                                
+                                            }}
+                                            textStyle={{
+                                                fontSize: 14,
+                                            }}
+                                            dropDownContainerStyle={{
+                                                backgroundColor: brand,
+                                                borderColor: darkest,
+                                                borderWidth: 5
+                                            }}
+                                            onPress={(value) => {values.screenThatBugOccuredOn = value}}
+                                            onClose={(value) => {values.screenThatBugOccuredOn = value}}
                                         />
                                     </ViewHider>
                                     <MsgBox type={messageType}>{message}</MsgBox>

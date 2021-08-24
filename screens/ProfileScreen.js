@@ -326,7 +326,7 @@ const ProfileScreen = ({navigation}) => {
                             </ProfileHorizontalViewItem>
                             <ProfileHorizontalViewItem profRightIcon={true}>
                                 <SubTitle welcome={true}> Likes </SubTitle>
-                                    <ProfIcons style={styling.tintColor} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/219-heart.png')}/>
+                                    <ProfIcons style={styling.tintColor} source={require('./../assets/app_icons/heart.png')}/>
                                 <SubTitle welcome={true}> 0 </SubTitle>
                             </ProfileHorizontalViewItem>
                         </ProfileHorizontalView>

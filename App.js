@@ -10,6 +10,8 @@ import LoginScreen from './screens/LoginScreen.js';
 import { Start_Stack } from './navigation/Start_Stack.js';
 import * as Notifications from "expo-notifications";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import AppLoading from 'expo-app-loading';
+import { Asset } from 'expo-asset';
 
 const Stack = createStackNavigator();
 
@@ -91,14 +93,14 @@ const App = () => {
   const welcome_message = () => {
     alert("Welcome to SocialSquare, it looks like you have just downloaded this app for the first time! Nice! You are right now on development version " + development_version);
   };
-  var development_version = '0.1.03';
+  var development_version = '0.1.04';
   const getData = async () => {
     try {
       var development_version_localstorage_value = await AsyncStorage.getItem('development_version')
       if(development_version_localstorage_value !== null) {
         if (development_version !== development_version_localstorage_value) {
           console.log(development_version_localstorage_value);
-          var releaseNotes = "Add bug reporting screen (still WIP)";
+          var releaseNotes = "Added a Chat Screen";
           var alert_on_update = "SocialSquare has been updated to the latest version (dev version " + development_version + "). Changes in this update are: " + releaseNotes;
           alert(alert_on_update);
         } else {
@@ -114,12 +116,59 @@ const App = () => {
   getData();
   storeData(development_version);
 
+  const [isReady, setIsReady] = useState(false);
 
-  return(
-    <NavigationContainer>
-      <Start_Stack/>
-    </NavigationContainer>
-  );
+  if (isReady == false) {
+    async function cacheResourcesAsync() {
+      const images = [
+        require('./assets/img/Logo.png'),
+        require('./assets/app_icons/test3.png'),
+        require('./assets/app_icons/3dots.png'),
+        require('./assets/app_icons/settings.png'),
+        require('./assets/app_icons/message_bubbles.png'),
+        require('./assets/app_icons/heart.png'),
+        require('./assets/app_icons/find.png'),
+        require('./assets/app_icons/home.png'),
+        require('./assets/app_icons/bookmark.png'),
+        require('./assets/app_icons/chat.png'),
+        require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/016-camera.png'),
+        require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/007-pencil2.png'),
+        require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/157-stats-bars.png'),
+        require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/018-music.png'),
+        require("./assets/record_button.png"),
+        require("./assets/recording_icon.png"),
+        require("./assets/app_icons/upload_arrow.png"),
+        require('./post_media/clock.gif'),
+        require('./assets/app_icons/profile_pic.jpg'),
+        require('./post_media/social_studies_images/image_1.png'),
+        require('./post_media/social_studies_images/image_2.png'),
+        require('./post_media/social_studies_images/image_3.png'),
+        require('./post_media/social_studies_images/image_4.png'),
+        require('./post_media/social_studies_images/image_5.png'),
+        require('./assets/img/TempProfIcons.jpg'),
+        require('./assets/img/BgImage1.png'),
+        require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/114-user.png'),
+      ];
+  
+      const cacheImages = images.map(image => {
+        return Asset.fromModule(image).downloadAsync();
+      }); 
+      return Promise.all(cacheImages);
+    }
+    return (
+      <AppLoading
+        startAsync={cacheResourcesAsync}
+        onFinish={() => {setIsReady(true)}}
+        onError={console.warn}
+      />
+    ); } else {
+
+    return (
+      <NavigationContainer>
+        <Start_Stack/>
+      </NavigationContainer>
+    );
+  }
 };
 
 export default App;

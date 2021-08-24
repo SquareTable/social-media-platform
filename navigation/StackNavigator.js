@@ -38,6 +38,8 @@ import ChangeUsernamePage from "../screens/ChangeUsernamePage";
 import ChangeEmailPage from "../screens/ChangeEmailPage";
 
 import ReportBugScreen from "../screens/ReportBugScreen.js";
+import ChatScreenNavigator from "../screens/ChatScreenNavigator.js";
+import ChatInformationScreen from "../screens/ChatInformationScreen.js";
 
 const Stack = createStackNavigator();
 
@@ -59,23 +61,45 @@ const ChatScreen_Stack = () => {
   }
   return (
     <Stack.Navigator screenOptions={screenOptionStyle}>
+      <Stack.Screen name="ChatScreenNavigator" component={ChatScreenNavigator}
+        options={{
+          headerStyle: {
+            backgroundColor: 'transparent',
+          },
+          headerTintColor: tertiary,
+          headerTransparent: true,
+          headerTitle: '',
+          headerLeftContainerStyle: {
+              paddingLeft: 20,
+          },
+        }}
+      />
       <Stack.Screen name="Chat" component={ChatScreen}
         options={{
           headerStyle: {
-            borderBottomWidth: 3,
-            ...styling.navBackgroundColor,
-            ...styling.borderColor
+            backgroundColor: 'transparent',
           },
-          headerTitleStyle: {
-            fontWeight: 'bold',
-            fontSize: 20,
-            textAlign: 'center',
-            ...styling.textColor
+          headerTintColor: tertiary,
+          headerTransparent: true,
+          headerTitle: '',
+          headerLeftContainerStyle: {
+              paddingLeft: 20,
           },
-          headerBackTitleStyle: {
-            ...styling.textColor,
+          headerLeft: null
+        }}
+      />
+      <Stack.Screen name="ChatInformationScreen" component={ChatInformationScreen}
+        options={{
+          headerStyle: {
+            backgroundColor: 'transparent',
           },
-          headerTitle: 'Chat (Not working yet)',
+          headerTintColor: tertiary,
+          headerTransparent: true,
+          headerTitle: '',
+          headerLeftContainerStyle: {
+              paddingLeft: 20,
+          },
+          headerLeft: null
         }}
       />
     </Stack.Navigator>
@@ -234,5 +258,26 @@ const RootStack = () => {
       </CredentialsContext.Consumer>
   )
 }
+
+*/
+
+/* old chat navigator settings
+
+headerStyle: {
+            borderBottomWidth: 3,
+            ...styling.navBackgroundColor,
+            ...styling.borderColor
+          },
+          headerTitleStyle: {
+            fontWeight: 'bold',
+            fontSize: 20,
+            textAlign: 'center',
+            ...styling.textColor
+          },
+          headerBackTitleStyle: {
+            ...styling.textColor,
+          },
+          headerTitle: 'Chat (Not working yet)',
+        }}
 
 */

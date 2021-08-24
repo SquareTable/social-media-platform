@@ -14,7 +14,7 @@ const HomeScreen = ({navigation}) => {
     } else {
         var styling = lightModeStyling;
     }
-    const [people, setPeople] = useState([
+    const [Posts, setPosts] = useState([
         { postSource: Images.posts.social_studies_1, key: '1' },
         { postSource: Images.posts.social_studies_2, key: '2' },
         { postSource: Images.posts.social_studies_3, key: '3' },
@@ -27,7 +27,7 @@ const HomeScreen = ({navigation}) => {
          >
             <Text style={{fontSize: 30, fontWeight: 'bold', alignContent: 'center', alignItems: 'center', alignSelf: 'center', ...styling.textColor}}>SocialSquare</Text>
             <FlatList 
-                data={people} 
+                data={Posts} 
                 renderItem={({ item }) => ( 
                     <Post postSource={item.postSource}></Post>
                 )}

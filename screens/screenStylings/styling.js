@@ -2,7 +2,6 @@ import { StyleSheet} from 'react-native';
 import styled from "styled-components/native";
 import Constants from "expo-constants";
 
-
 var darkModeOn = true;
 
 /* Transfer all settings pages over to the dark mode switching system */
@@ -331,6 +330,10 @@ export const SubTitle = styled.Text`
     ${(props) => props.centered && `
         text-align: center;
     `}
+
+    ${(props) => props.marginLeft && `
+        margin-left: ${props.marginLeft};
+    `}
 `;
 
 export const StyledFormArea = styled.View`
@@ -639,7 +642,7 @@ export const BadgeGridLayout = styled.View`
 `;
 
 export const BackgroundDarkColor = styled.View`
-    backgroundColor: ${primary};
+    background-color: ${primary};
     height: 100%;
     minHeight: 100%;
     zIndex: -100;
@@ -1035,4 +1038,58 @@ export const TestText = styled.Text`
     font-weight: bold;
     color: ${tertiary};
     text-align: center;
+`;
+
+export const ChatScreenNavigator_Row_Styling = styled.TouchableOpacity`
+    background-color: ${darkLight}
+    border-color: ${darkest};
+    border-width: 2px;
+    height: 65px;
+    margin-horizontal: 2px;
+    flex-direction: row;
+`;
+
+export const BackgroundDarkColor_SafeAreaView = styled.SafeAreaView`
+    background-color: ${primary};
+    height: 100%;
+`;
+
+export const ChatScreenNavigator_Title = styled.View`
+    border-width: 1px;
+    border-color: ${primary};
+    height: 45px;
+`;
+
+export const FlexRow_NOJustifyContent = styled.View`
+    flex: 1;
+    flex-direction: row;
+`;
+
+export const ChatScreen_Title = styled.View`
+    border-width: 1px;
+    border-color: ${darkest};
+    height: 90px;
+    background-color: ${darkest};
+    padding-top: ${StatusBarHeight + 10}px;
+`;
+
+export const Chat_Info_Icon_Styling = styled.TouchableOpacity`
+    position: absolute;
+    right: 10px;
+    padding-top: ${StatusBarHeight + 2}px;
+`;
+
+export const ChatScreenInformation_Title = styled.View`
+    border-width: 1px;
+    border-color: ${darkest};
+    height: 90px;
+    background-color: ${darkest};
+    padding-top: ${StatusBarHeight + 9}px;
+`;
+
+export const Navigator_BackButton = styled.TouchableOpacity`
+    position: absolute;
+    left: 10px;
+    padding-top: ${StatusBarHeight + 2}px;
+    z-index: 10000;
 `;

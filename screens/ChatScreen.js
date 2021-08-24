@@ -1,16 +1,31 @@
 import React, { useState, useCallback, useEffect, useLayoutEffect } from 'react'
 import { StyleSheet, Text, View, Button, Image, TouchableOpacity, SafeAreaView, ScrollView, Platform} from 'react-native';
 import { GiftedChat } from 'react-native-gifted-chat'
+import {
+  ChatScreen_Title, 
+  TestText,
+  darkModeOn,
+  darkModeStyling,
+  lightModeStyling,
+  Chat_Info_Icon_Styling,
+  Navigator_BackButton
+} from '../screens/screenStylings/styling.js'
 
 const ChatScreen = ({navigation}) => {
 
     const [messages, setMessages] = useState([]);
 
+    if (darkModeOn === true) {
+      var styling = darkModeStyling;
+  } else {
+      var styling = lightModeStyling;
+  }
+
     useEffect(() => {
       setMessages([
         {
           _id: 1,
-          text: 'This is the chat screen. Right now chats do not save to the backend server, and also you can only chat with 1 person. That will be fixed very soon, and this will be similar to Instagrams DMs. Also yes we know that this is a bit buggy on both web browsers and mobile devices. These bugs will be getting fixed very soon.',
+          text: 'This is the chat screen. Right now chats do not save to the backend server. That will be fixed very soon, and this will be similar to Instagrams DMs. We know that this screen is pretty buggy, and all of these bugs will be fixed soon',
           createdAt: new Date(),
           user: {
             _id: 2,
@@ -37,26 +52,27 @@ const ChatScreen = ({navigation}) => {
       */
     }, [])
 
-    useLayoutEffect(() => {
-        navigation.setOptions({
-            headerLeft: () => (
-                <TouchableOpacity>
-                    <Image
-                        source={require('../assets/app_icons/blank_profile_pic.png')}
-                        resizeMode = 'contain'
-                        style={{
-                            width: 40,
-                            height: 40,
-                            borderRadius: 40/2,
-                            marginLeft: 20
-                        }}
-                        />
-                </TouchableOpacity>
-            )
-        })
-    }, [])
     return(
       <View style={Styles.giftedChatStyling}>
+        <ChatScreen_Title>
+          <Navigator_BackButton onPress={() => {navigation.goBack()}}>
+            <Image
+              source={require('../assets/app_icons/back_arrow.png')}
+              style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2, ...styling.tintColor}}
+              resizeMode="contain"
+              resizeMethod="resize"
+            />
+          </Navigator_BackButton>
+          <TestText style={{textAlign: 'center'}}>Username goes here</TestText>
+          <Chat_Info_Icon_Styling onPress={() => {navigation.navigate("ChatInformationScreen")}}>
+            <Image
+              source={require('../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/269-info.png')}
+              style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2, ...styling.tintColor}}
+              resizeMode="contain"
+              resizeMethod="resize"
+            />
+          </Chat_Info_Icon_Styling>
+        </ChatScreen_Title>
           <GiftedChat
         messages={messages}
         showAvatarForEveryMessage={true}
@@ -70,14 +86,6 @@ const ChatScreen = ({navigation}) => {
     );
 };
 
-const ChatScreenCode = () => {
-    return(
-        <Stack.Navigator>
-
-        </Stack.Navigator>
-    );
-};
-
 export default ChatScreen;
 
 const Styles = StyleSheet.create({
@@ -86,6 +94,7 @@ const Styles = StyleSheet.create({
         backgroundColor: '#2E3440' /* Dark mode from Nord Theme */
     },
     giftedChatStyling: {
+      backgroundColor: '#2E3440',
       flex: 1, 
       ...Platform.select({
         ios: {
