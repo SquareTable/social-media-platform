@@ -15,11 +15,11 @@ const HomeScreen = ({navigation}) => {
         var styling = lightModeStyling;
     }
     const [Posts, setPosts] = useState([
-        { postSource: Images.posts.social_studies_1, key: '1' },
-        { postSource: Images.posts.social_studies_2, key: '2' },
-        { postSource: Images.posts.social_studies_3, key: '3' },
-        { postSource: Images.posts.social_studies_4, key: '4' },
-        { postSource: Images.posts.social_studies_5, key: '5' },
+        { postSource: Images.posts.social_studies_1, profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', key: '1' },
+        { postSource: Images.posts.social_studies_2, profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', key: '2' },
+        { postSource: Images.posts.social_studies_3, profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', key: '3' },
+        { postSource: Images.posts.social_studies_4, profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', key: '4' },
+        { postSource: Images.posts.social_studies_5, profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', key: '5' },
     ]);
     return(
         <SafeAreaView
@@ -27,9 +27,9 @@ const HomeScreen = ({navigation}) => {
          >
             <Text style={{fontSize: 30, fontWeight: 'bold', alignContent: 'center', alignItems: 'center', alignSelf: 'center', ...styling.textColor}}>SocialSquare</Text>
             <FlatList 
-                data={Posts} 
+                data={Posts}
                 renderItem={({ item }) => ( 
-                    <Post postSource={item.postSource}></Post>
+                    <Post postSource={item.postSource} profilePictureSource={item.profilePictureSource} username={item.username}></Post>
                 )}
             />
         </SafeAreaView>

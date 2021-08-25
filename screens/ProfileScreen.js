@@ -303,7 +303,7 @@ const ProfileScreen = ({navigation}) => {
                         <ProfInfoAreaImage>
                             <Avatar resizeMode="cover" source={AvatarImg} />
                             <PageTitle welcome={true}>{displayName || name || "Couldn't get name"}</PageTitle>
-                            <SubTitle>{"@"+name}</SubTitle>
+                            <SubTitle>{name? "@"+name : "Couldn't get @"}</SubTitle>
                             <ProfileBadgesView onPress={() => navigation.navigate("BadgesScreen")}>
                                 <ProfileBadgeIcons source={require('./../assets/img/TempProfIcons.jpg')}/>
                                 <ProfileBadgeIcons source={require('./../assets/img/BgImage1.png')}/>
@@ -321,7 +321,7 @@ const ProfileScreen = ({navigation}) => {
                             </ProfileHorizontalViewItem>
                             <ProfileHorizontalViewItem profCenterIcon={true}>
                                 <SubTitle welcome={true}> Following </SubTitle>
-                                    <ProfIcons source={require('./../assets/img/BgImage1.png')}/>
+                                    <ProfIcons style={styling.tintColor}source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/118-user-check.png')}/>
                                 <SubTitle welcome={true}> 0 </SubTitle>
                             </ProfileHorizontalViewItem>
                             <ProfileHorizontalViewItem profRightIcon={true}>

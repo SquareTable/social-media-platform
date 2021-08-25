@@ -131,6 +131,9 @@ const Welcome = ({navigation}) => {
                         <StyledButton onPress={() => navigation.navigate("PostScreen")}>
                             <ButtonText> PostScreen </ButtonText>
                         </StyledButton>
+                        <StyledButton onPress={() => navigation.navigate("AccountSettings")}>
+                            <ButtonText> SettingsScreen </ButtonText>
+                        </StyledButton>
                         <StyledButton onPress={clearLogin}>
                             <ButtonText> Logout </ButtonText>
                         </StyledButton>

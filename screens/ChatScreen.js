@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useEffect, useLayoutEffect } from 'react'
 import { StyleSheet, Text, View, Button, Image, TouchableOpacity, SafeAreaView, ScrollView, Platform} from 'react-native';
-import { GiftedChat } from 'react-native-gifted-chat'
+import { GiftedChat, InputToolbar, Bubble } from 'react-native-gifted-chat'
 import {
   ChatScreen_Title, 
   TestText,
@@ -8,7 +8,8 @@ import {
   darkModeStyling,
   lightModeStyling,
   Chat_Info_Icon_Styling,
-  Navigator_BackButton
+  Navigator_BackButton,
+  Colors
 } from '../screens/screenStylings/styling.js'
 
 const ChatScreen = ({navigation}) => {
@@ -21,6 +22,7 @@ const ChatScreen = ({navigation}) => {
       var styling = lightModeStyling;
   }
 
+  const {primary, tertiary, darkest, darkestBlue} = Colors;
     useEffect(() => {
       setMessages([
         {
@@ -52,6 +54,37 @@ const ChatScreen = ({navigation}) => {
       */
     }, [])
 
+    function renderInputToolbar (props) {
+      //Add the extra styles via containerStyle
+     return <InputToolbar {...props} containerStyle={{borderTopWidth: 1.5, borderTopColor: '#333', backgroundColor: primary, color: tertiary}} textInputStyle={{ color: tertiary }} placeholderTextColor={tertiary}/>
+    }
+
+    function renderBubble(props) {
+      return <Bubble 
+                {...props} 
+                textStyle={{
+                  left: {
+                    color: tertiary
+                  },
+                  right: {
+                    color: tertiary,
+                  },
+                }}
+                wrapperStyle={{
+                  left: {
+                    borderColor: darkest,
+                    borderWidth: 5,
+                    backgroundColor: primary,
+                  },
+                  right: {
+                    borderColor: darkest,
+                    borderWidth: 5,
+                    backgroundColor: darkestBlue
+                  }
+                }}
+              />;
+    }
+
     return(
       <View style={Styles.giftedChatStyling}>
         <ChatScreen_Title>
@@ -77,6 +110,8 @@ const ChatScreen = ({navigation}) => {
         messages={messages}
         showAvatarForEveryMessage={true}
         onSend={messages => onSend(messages)}
+        renderInputToolbar={renderInputToolbar} 
+        renderBubble={renderBubble}
         user={{
           _id: 1,
           name: 'Username goes here'
@@ -94,7 +129,7 @@ const Styles = StyleSheet.create({
         backgroundColor: '#2E3440' /* Dark mode from Nord Theme */
     },
     giftedChatStyling: {
-      backgroundColor: '#2E3440',
+      backgroundColor: '#3b4252',
       flex: 1, 
       ...Platform.select({
         ios: {

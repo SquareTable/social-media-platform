@@ -1,5 +1,5 @@
-import React from 'react';
-import { StyleSheet, Text, View, Button, Image, SafeAreaView, ScrollView, Appearance, TouchableOpacity, Dimensions } from 'react-native';
+import React, {useState} from 'react';
+import { StyleSheet, Text, View, Button, Image, SafeAreaView, ScrollView, Appearance, TouchableOpacity, Dimensions, FlatList } from 'react-native';
 import ProgressiveImage from '../posts/ProgressiveImage.js';
 import {darkModeStyling, darkModeOn, lightModeStyling} from '../screens/screenStylings/styling.js';
 import Images from "../posts/images.js";
@@ -31,20 +31,48 @@ const FindScreen = ({navigation}) => {
         },
     });
 
+    const [PostRows, setPostRows] = useState([
+        { post_source_one: Images.posts.clock, post_source_two: Images.posts.clock, post_source_three: Images.posts.clock, key: '1' },
+        { post_source_one: Images.posts.clock, post_source_two: Images.posts.clock, post_source_three: Images.posts.clock, key: '2' },
+    ]);
+
     const navigateToPost = () => {
         navigation.navigate("Post_FullScreen");
     }
 
     return(
         <SafeAreaView style={Styles.container}>
-            <ScrollView>
-                <View style={{flex: 3, flexDirection: 'column', ...styling.backgroundColor}}>
-                    <FindScreen_Posts_Row/>
-                    <FindScreen_Posts_Row/>
-                    <FindScreen_Posts_Row/>
-                    <FindScreen_Posts_Row/>
-                </View>           
-            </ScrollView>
+            <FlatList 
+                data={PostRows}
+                renderItem={({ item }) => ( 
+                    <View style={{flex: 2, flexDirection: 'row', ...styling.backgroundColor, marginTop: 0, marginBottom: postHeight}}>
+                        <TouchableOpacity style={{minWidth: '30%', width: '30%', maxWidth: '30%', marginHorizontal: '1.6%'}} onPressOut={navigateToPost}>
+                            <ProgressiveImage
+                                source={item.post_source_one}
+                                style={{width: postWidth, height: postHeight, position: 'absolute'}}
+                                resizeMode="contain"
+                                resizeMethod="resize"
+                            />
+                        </TouchableOpacity>
+                        <TouchableOpacity style={{minWidth: '30%', width: '30%', maxWidth: '30%', marginHorizontal: '1.6%'}} onPressOut={navigateToPost}>
+                            <ProgressiveImage
+                                source={item.post_source_two}
+                                style={{width: postWidth, height: postHeight, position: 'absolute'}}
+                                resizeMode="contain"
+                                resizeMethod="resize"
+                            />
+                        </TouchableOpacity>
+                        <TouchableOpacity style={{minWidth: '30%', width: '30%', maxWidth: '30%', marginHorizontal: '1.6%'}} onPressOut={navigateToPost}>
+                            <ProgressiveImage
+                                source={item.post_source_three}
+                                style={{width: postWidth, height: postHeight, position: 'absolute'}}
+                                resizeMode="contain"
+                                resizeMethod="resize"
+                            />
+                        </TouchableOpacity>
+                    </View>
+                )}
+            />
         </SafeAreaView>
     );
 };

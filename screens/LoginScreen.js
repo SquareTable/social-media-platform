@@ -88,11 +88,6 @@ const LoginScreen = ({navigation}) => {
         .then(() => {
             handleMessage(message, status);
             setStoredCredentials(credentials);
-            /* Only used for testing purposes 
-            console.log(credentials);
-            console.log(setStoredCredentials);
-            console.log(storedCredentials);
-            */
         })
         .catch((error) => {
             console.log(error);

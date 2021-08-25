@@ -102,7 +102,7 @@ const ChatScreenNavigator = ({navigation}) => {
         <BackgroundDarkColor_SafeAreaView>
             <ChatScreenNavigator_Title>
                 <FlexRow_NOJustifyContent>
-                    <SubTitle marginLeft={'10px'}>SocialSquare DM's</SubTitle>
+                    <SubTitle marginLeft={'10px'}>SocialSquare DMs</SubTitle>
                     <TouchableOpacity style={{position: 'absolute', right: 10}}onPress={() => {alert("Coming soon")}}>
                         <Image
                             source={require('../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/074-compass.png')}

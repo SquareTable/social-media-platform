@@ -334,6 +334,14 @@ export const SubTitle = styled.Text`
     ${(props) => props.marginLeft && `
         margin-left: ${props.marginLeft};
     `}
+
+    ${(props) => props.BoldOff == true && `
+        font-weight: normal;
+    `}
+
+    ${(props) => props.ChatInformationScreen == true & `
+        text-align: left;
+    `}
 `;
 
 export const StyledFormArea = styled.View`
@@ -1067,9 +1075,9 @@ export const FlexRow_NOJustifyContent = styled.View`
 
 export const ChatScreen_Title = styled.View`
     border-width: 1px;
-    border-color: ${darkest};
+    border-color: ${primary};
     height: 90px;
-    background-color: ${darkest};
+    background-color: ${primary};
     padding-top: ${StatusBarHeight + 10}px;
 `;
 
@@ -1081,9 +1089,9 @@ export const Chat_Info_Icon_Styling = styled.TouchableOpacity`
 
 export const ChatScreenInformation_Title = styled.View`
     border-width: 1px;
-    border-color: ${darkest};
+    border-color: ${primary};
     height: 90px;
-    background-color: ${darkest};
+    background-color: ${primary};
     padding-top: ${StatusBarHeight + 9}px;
 `;
 

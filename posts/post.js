@@ -21,7 +21,7 @@ const Post = (props) => {
         navigation.navigate("Profile_Screen");
         alert("We need to make it so there is a back button to go back to the homescreen. This was working before, but one of the updates broke what this does. We will be fixing this bug soon hehe :)");
     }
-    const { postSource } = props;
+    const { postSource, profilePictureSource, username } = props;
     return(
         <View style={{minWidth: 500, maxWidth: 500, width: 500, ...styling.backgroundColor, alignSelf: 'center', zIndex: 100}}>
             <View style={{maxWidth: 500, minWidth: 500, width: 500, alignContent: 'center', alignItems: 'center', alignSelf: 'center',}}>
@@ -30,7 +30,7 @@ const Post = (props) => {
                         <View style={{width:60}}>
                             <TouchableOpacity onPressOut={goToProfileScreen}>
                                 <Image
-                                    source={Images.posts.profile_picture}
+                                    source={profilePictureSource || require('../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/266-question.png')}
                                     style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2, position:'absolute', left:13}}
                                     resizeMode="contain"
                                     resizeMethod="resize"
@@ -40,7 +40,7 @@ const Post = (props) => {
                         </View>
                         <View>
                             <TouchableOpacity onPressOut={goToProfileScreen}>
-                                <Text style={{...styling.textColor, textAlign: 'left', fontWeight:'bold', fontSize: 20, textAlignVertical:'bottom'}}>SebTheMan</Text>
+                                <Text style={{...styling.textColor, textAlign: 'left', fontWeight:'bold', fontSize: 20, textAlignVertical:'bottom'}}>{username || "Couldn't get name"}</Text>
                             </TouchableOpacity>
                         </View>
                         <View style={{position: 'absolute', right: 20}}>
