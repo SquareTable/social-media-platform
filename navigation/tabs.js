@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -12,10 +12,11 @@ import BadgesScreen from '../screens/BadgesScreen';
 import LoginScreen from '../screens/LoginScreen';
 import settingsButtonTopRight from '../screens/settingsButtonTopRight';
 import ProfileScreen from '../screens/ProfileScreen';
-import {ChatScreen_Stack, ProfileScreenToSettings_StackNavigation, RootStack, SettingsToBadges_StackNavigation, FindScreen_Stack, post_screen_navigator} from '../navigation/StackNavigator.js'
+import {ChatScreen_Stack, ProfileScreenToSettings_StackNavigation, RootStack, SettingsToBadges_StackNavigation, FindScreen_Stack, post_screen_navigator, home_screen_post_to_profile_screen} from '../navigation/StackNavigator.js'
 import AppStyling from '../screens/AppStylingScreen';
 import {darkModeStyling, darkModeOn, lightModeStyling, darkModeStyling_navFocusedColor, lightModeStyling_navFocusedColor, darkModeStyling_navNonFocusedColor, lightModeStyling_navNonFocusedColor} from '../screens/screenStylings/styling.js';
 import * as Haptics from 'expo-haptics';
+import { CredentialsContext } from '../components/CredentialsContext';
 
 
 const Tab = createBottomTabNavigator();
@@ -72,10 +73,12 @@ const Tabs = ({navigation}) => {
         navigation.navigate("Chat");
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     }
-    const onProfileScreenNavigate = () => {
-        navigation.navigate("Profile");
+    const onProfileScreenNavigate = (ownerStatus) => {
+        navigation.navigate("Profile", {owner: ownerStatus});
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     }
+    const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
+    const {name, displayName, email, photoUrl} = storedCredentials;
     return(
         <Tab.Navigator
             tabBarOptions={{
@@ -93,7 +96,7 @@ const Tabs = ({navigation}) => {
                 }
             }}
         >
-            <Tab.Screen name="Home" component={HomeScreen} options={{
+            <Tab.Screen name="Home" component={home_screen_post_to_profile_screen} options={{
                 tabBarIcon: ({focused}) => (
                     <TouchableOpacity onPressIn={() => {onHomeScreenNavigate()}}>
                         <View style={{alignItems: 'center', justifyContent: 'center', top: 10}}>
@@ -168,10 +171,10 @@ const Tabs = ({navigation}) => {
             }}/>
             <Tab.Screen name="Profile" component={RootStack} options={{
                 tabBarIcon: ({focused}) => (
-                    <TouchableOpacity onPressIn={() => {onProfileScreenNavigate()}}>
+                    <TouchableOpacity onPressIn={() => {onProfileScreenNavigate(true)}}>
                         <View style={{alignItems: 'center', justifyContent: 'center', top: 10}}>
                             <Image
-                                source={require('../assets/app_icons/blank_profile_pic.png')}
+                                source={photoUrl? photoUrl : require('../assets/app_icons/blank_profile_pic.png')}
                                 resizeMode = 'contain'
                                 style={{
                                     width: 35,

@@ -13,7 +13,6 @@ import {
 } from '../screens/screenStylings/styling.js';
 import Images from "../posts/images.js";
 import { setSyntheticLeadingComments } from 'typescript';
-import { FindScreen_Posts_Row } from '../posts/FindScreen_Posts_Row.js';
 
 const TermsOfService = ({navigation}) => {
     if (darkModeOn === true) {

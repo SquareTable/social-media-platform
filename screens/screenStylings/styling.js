@@ -791,6 +791,9 @@ export const ReportProfileOptionsView = styled.View`
         align-items: center;
         left: -30000px;
     `}
+    ${(props) => props.post == true && `
+        height: 450px;
+    `}
 `;
 
 export const ReportProfileOptionsViewButtons = styled.TouchableOpacity`

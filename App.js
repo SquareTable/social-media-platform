@@ -82,7 +82,6 @@ const App = () => {
       Notifications.removeNotificationSubscription(responseListener.current);
     };
   }, []);
-
   const storeData = async (value) => {
     try {
       await AsyncStorage.setItem('development_version', value)
@@ -113,8 +112,6 @@ const App = () => {
       alert(e)
     }
   }
-  getData();
-  storeData(development_version);
 
   const [isReady, setIsReady] = useState(false);
 
@@ -149,6 +146,9 @@ const App = () => {
         require('./assets/img/BgImage1.png'),
         require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/114-user.png'),
         require('./assets/img/Toga.jpg'),
+        require('./assets/app_icons/cannot_get_post_lightmode.png'),
+        require('./assets/app_icons/cannot_get_post_darkmode.png'),
+        require('./post_media/code.png'),
       ];
   
       const cacheImages = images.map(image => {
@@ -156,10 +156,15 @@ const App = () => {
       }); 
       return Promise.all(cacheImages);
     }
+    const toDoOnFinish = () => {
+      setIsReady(true);
+      getData();
+      storeData(development_version);
+    }
     return (
       <AppLoading
         startAsync={cacheResourcesAsync}
-        onFinish={() => {setIsReady(true)}}
+        onFinish={toDoOnFinish}
         onError={console.warn}
       />
     ); } else {

@@ -23,7 +23,6 @@ import { NavigationImages } from '../navigation/navigationImages.js';
 import { CredentialsContext } from "../components/CredentialsContext.js";
 import { NavigationContainer } from '@react-navigation/native';
 import FindScreen from "../screens/FindScreen.js";
-import Post from "../posts/post.js";
 import Post_FullScreen from "../posts/post_fullscreen.js";
 import Tabs from "./tabs.js";
 

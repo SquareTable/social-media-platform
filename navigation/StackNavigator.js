@@ -186,9 +186,19 @@ const FindScreen_Stack = () => {
 
 const home_screen_post_to_profile_screen = () => {
   return(
-    <Stack.Navigator screenOptions={screenOptionStyle}>
-      <Stack.Screen name="Profile_Screen" component={ProfileScreen}/> 
-      <Stack.Screen name="Post" component={Post}/>
+    <Stack.Navigator screenOptions={{
+      headerStyle: {
+        backgroundColor: 'transparent',
+      },
+      headerTintColor: tertiary,
+      headerTransparent: true,
+      headerTitle: '',
+      headerLeftContainerStyle: {
+          paddingLeft: 20,
+      },
+    }}>
+      <Stack.Screen name="HomeScreen" component={HomeScreen}/>
+      <Stack.Screen name="Welcome" component={ProfileScreen}/>
     </Stack.Navigator>
   )
 }
