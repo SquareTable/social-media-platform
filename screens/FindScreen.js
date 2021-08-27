@@ -45,6 +45,7 @@ const FindScreen = ({navigation}) => {
     }
 
     const {tertiary} = Colors;
+    const {width, height} = Dimensions.get('window');
     return(
         <SafeAreaView style={Styles.container}>
             <FlatList 
