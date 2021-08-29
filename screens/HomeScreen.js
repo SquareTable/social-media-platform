@@ -4,6 +4,7 @@ import { StatusBar } from 'expo-status-bar';
 import Constants from "expo-constants";
 import styled from "styled-components";
 import Images from "../posts/images.js";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
     darkModeStyling, 
     darkModeOn, 
@@ -91,6 +92,39 @@ const HomeScreen = ({navigation}) => {
     const [ReportProfile_ContentThatShouldNotBePosted_OptionsViewState, setReportProfile_ContentThatShouldNotBePosted_OptionsViewState] = useState(true);
     const [ReportProfile_PretendingToBeSomeoneElse_OptionsViewState, setReportProfile_PretendingToBeSomeoneElse_OptionsViewState] = useState(true);
     const [FlatListElementsEnabledState, setFlatListElementsEnabledState] = useState(true);
+    // Start of checking for update and announce the update
+    async function checkAndAnnounceUpdate() {
+        const welcome_message = () => {
+            alert("Welcome to SocialSquare, it looks like you have just downloaded this app for the first time! Nice! You are right now on development version " + development_version);
+        };
+        var development_version = '0.1.06';
+        //Get data
+        try {
+            var development_version_localstorage_value = await AsyncStorage.getItem('development_version')
+            if(development_version_localstorage_value !== null) {
+            if (development_version !== development_version_localstorage_value) {
+                console.log(development_version_localstorage_value);
+                var releaseNotes = "Fix minor bugs and add profile options to posts in the Find Screen";
+                var alert_on_update = "SocialSquare has been updated to the latest version (dev version " + development_version + "). Changes in this update are: " + releaseNotes;
+                alert(alert_on_update);
+            } else {
+                console.log("Not updated");
+            }
+            } else {
+            welcome_message();
+            }
+        } catch(e) {
+            alert(e)
+        }
+        //Store data
+        try {
+            await AsyncStorage.setItem('development_version', development_version)
+        } catch (e) {
+            alert(e)
+        }
+    }
+    checkAndAnnounceUpdate();
+    // End of checking for update and announcing the update
     return(
         <SafeAreaView
          style={{flex: 1, ...styling.backgroundColor, paddingLeft: 10}}

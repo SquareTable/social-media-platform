@@ -82,36 +82,6 @@ const App = () => {
       Notifications.removeNotificationSubscription(responseListener.current);
     };
   }, []);
-  const storeData = async (value) => {
-    try {
-      await AsyncStorage.setItem('development_version', value)
-    } catch (e) {
-      alert(e)
-    }
-  };
-  const welcome_message = () => {
-    alert("Welcome to SocialSquare, it looks like you have just downloaded this app for the first time! Nice! You are right now on development version " + development_version);
-  };
-  var development_version = '0.1.05';
-  const getData = async () => {
-    try {
-      var development_version_localstorage_value = await AsyncStorage.getItem('development_version')
-      if(development_version_localstorage_value !== null) {
-        if (development_version !== development_version_localstorage_value) {
-          console.log(development_version_localstorage_value);
-          var releaseNotes = "Fix bugs and also updated DMs (added Chat Screen Navigator, made styling updates to Chat Screen, and also added a Chat Information screen";
-          var alert_on_update = "SocialSquare has been updated to the latest version (dev version " + development_version + "). Changes in this update are: " + releaseNotes;
-          alert(alert_on_update);
-        } else {
-          console.log("Not updated");
-        }
-      } else {
-        welcome_message();
-      }
-    } catch(e) {
-      alert(e)
-    }
-  }
 
   const [isReady, setIsReady] = useState(false);
 
@@ -156,10 +126,8 @@ const App = () => {
       }); 
       return Promise.all(cacheImages);
     }
-    const toDoOnFinish = () => {
+    async function toDoOnFinish() {
       setIsReady(true);
-      getData();
-      storeData(development_version);
     }
     return (
       <AppLoading
