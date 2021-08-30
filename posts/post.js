@@ -8,7 +8,7 @@ import ProgressiveImage from './ProgressiveImage.js';
 import { useNavigation } from '@react-navigation/native';
 
 const StatusBarHeight = Constants.statusBarHeight;
-import {darkModeStyling, darkModeOn, lightModeStyling} from '../screens/screenStylings/styling.js';
+import {darkModeStyling, darkModeOn, lightModeStyling, Colors} from '../screens/screenStylings/styling.js';
 
 const Post = (props) => {
     if (darkModeOn === true) {
@@ -22,8 +22,9 @@ const Post = (props) => {
         alert("We need to make it so there is a back button to go back to the homescreen. This was working before, but one of the updates broke what this does. We will be fixing this bug soon hehe :)");
     }
     const { postSource, profilePictureSource, username } = props;
+    const {primary, tertiary} = Colors;
     return(
-        <View style={{minWidth: 500, maxWidth: 500, width: 500, ...styling.backgroundColor, alignSelf: 'center', zIndex: 100}}>
+        <View style={{minWidth: 500, maxWidth: 500, width: 500, backgroundColor: primary, alignSelf: 'center', zIndex: 100}}>
             <View style={{maxWidth: 500, minWidth: 500, width: 500, alignContent: 'center', alignItems: 'center', alignSelf: 'center',}}>
                 <View style={{maxWidth: 400, minWidth: 400}}>
                     <View style={{flex: 2, flexDirection:'row'}}>
@@ -54,7 +55,7 @@ const Post = (props) => {
                             </TouchableOpacity>
                         </View>
                     </View>
-                    <View style={{...styling.backgroundColor, maxWidth: 400, minWidth: 400}}>
+                    <View style={{backgroundColor: primary, maxWidth: 400, minWidth: 400}}>
                         <ProgressiveImage
                             source={postSource}
                             style={{minHeight: 400, minWidth: 400, width: 400, height: 400, maxWidth: 400, maxHeight: 400}}

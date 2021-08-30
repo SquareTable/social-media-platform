@@ -146,38 +146,29 @@ const FindScreen_Stack = () => {
       <Stack.Screen name="FindScreen" component={FindScreen}
         options={{
           headerStyle: {
-            borderBottomWidth: 3,
-            ...styling.navBackgroundColor,
-            ...styling.borderColor
+            backgroundColor: 'transparent',
           },
-          headerTitleStyle: {
-            fontWeight: 'bold',
-            fontSize: 20,
-            textAlign: 'center',
-            ...styling.textColor
+          headerTintColor: tertiary,
+          headerTransparent: true,
+          headerTitle: '',
+          headerLeftContainerStyle: {
+              paddingLeft: 20,
           },
-          headerBackTitleStyle: {
-            ...styling.textColor,
-          },
-          headerTitle: 'FindScreen (Not working yet)',
+          headerLeft: null
         }}
       />
       <Stack.Screen name="Post_FullScreen" component={Post_FullScreen}
         options={{
           headerStyle: {
-            borderBottomWidth: 3,
-            ...styling.navBackgroundColor,
-            ...styling.borderColor
+            backgroundColor: 'transparent',
           },
-          headerTitleStyle: {
-            fontWeight: 'bold',
-            fontSize: 20,
-            textAlign: 'center',
-            ...styling.textColor
+          headerTintColor: tertiary,
+          headerTransparent: true,
+          headerTitle: '',
+          headerLeftContainerStyle: {
+              paddingLeft: 20,
           },
-          headerBackTitleStyle: {
-            ...styling.textColor,
-          },
+          headerLeft: null
         }}
       />
     </Stack.Navigator>

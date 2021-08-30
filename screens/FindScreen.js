@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import { StyleSheet, Text, View, Button, Image, SafeAreaView, ScrollView, Appearance, TouchableOpacity, Dimensions, FlatList } from 'react-native';
 import ProgressiveImage from '../posts/ProgressiveImage.js';
+import SearchBar from "react-native-dynamic-search-bar";
 import {
     darkModeStyling, 
     darkModeOn, 
@@ -44,12 +45,22 @@ const FindScreen = ({navigation}) => {
         navigation.navigate("Post_FullScreen", {post_id, profilePictureSource, username});
     }
 
-    const {tertiary} = Colors;
+    const {tertiary, primary} = Colors;
     const {width, height} = Dimensions.get('window');
     return(
         <SafeAreaView style={Styles.container}>
+            <SearchBar
+                darkMode="true"
+                style={{marginVertical: 10}}
+                placeholder="Search here"
+                onChangeText={(text) => {console.log(text)}}
+                onSearchPress={() => console.log("Search Icon is pressed")}
+                onClearPress={() => console.log("Clear")}
+                onPress={() => console.log("onPress")}
+            />
             <FlatList 
                 data={PostRows}
+                showsVerticalScrollIndicator={false}
                 renderItem={({ item }) => ( 
                     <View style={{flex: 2, flexDirection: 'row', ...styling.backgroundColor, marginTop: 0, marginBottom: postHeight}}>
                         <TouchableOpacity style={{minWidth: '30%', width: '30%', maxWidth: '30%', marginHorizontal: '1.6%'}} onPressOut={() => {navigateToPost(item.post_source_one, item.post_one_profilepicture, item.post_one_username)}}>

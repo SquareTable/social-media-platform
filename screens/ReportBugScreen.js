@@ -44,7 +44,7 @@ import {View, ActivityIndicator, ImageBackground, StyleSheet, Text, Alert} from 
 const {brand, primary, tertiary, darkest} = Colors;
 
 // keyboard avoiding view
-import KeyboardAvoidingWrapper from '../components/KeyboardAvoidingWrapper';
+import KeyboardAvoidingWrapper_NoScrollview from '../components/KeyboardAvoidingWrapper_NoScrollview';
 
 // API client
 import axios from 'axios';
@@ -153,7 +153,7 @@ const ReportBugScreen = ({navigation}) => {
     ]);
 
     return(
-        <KeyboardAvoidingWrapper>
+        <KeyboardAvoidingWrapper_NoScrollview>
             <StyledContainer>
                 
                     <StatusBar style="dark"/>
@@ -276,7 +276,7 @@ const ReportBugScreen = ({navigation}) => {
                     </InnerContainer>
 
             </StyledContainer>
-        </KeyboardAvoidingWrapper>
+        </KeyboardAvoidingWrapper_NoScrollview>
     );
 }
 

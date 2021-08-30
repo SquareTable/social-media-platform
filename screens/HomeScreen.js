@@ -222,6 +222,7 @@ const HomeScreen = ({navigation}) => {
             <FlatList 
                 data={Posts}
                 scrollEnabled={FlatListElementsEnabledState}
+                showsVerticalScrollIndicator={false}
                 renderItem={({ item }) => ( 
                     <View style={{minWidth: 500, maxWidth: 500, width: 500, ...styling.backgroundColor, alignSelf: 'center', zIndex: 100}}>
                         <View style={{maxWidth: 500, minWidth: 500, width: 500, alignContent: 'center', alignItems: 'center', alignSelf: 'center',}}>

@@ -1,0 +1,3 @@
+[submodule "./build-lib/dist/SearchBar.js"] 
+  path = ./build-lib/dist/SearchBar.js 
+  url = github:WrathChaos/react-native-dynamic-search-bar#expo

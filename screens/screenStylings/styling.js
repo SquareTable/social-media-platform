@@ -362,7 +362,7 @@ export const StyledTextInput = styled.TextInput`
     margin-bottom: 10px;
     color: ${tertiary};
     ${(props) => props.bugReport == true && `
-        height: 200px;
+        height: 150px;
     `}
 `;
 
@@ -891,8 +891,8 @@ export const PostHorizontalView = styled.View`
 `;
 
 export const PostTypeSelector = styled.TouchableOpacity`
-    padding-horizontal: 10px;
-    padding-vertical: 10px;
+    padding-horizontal: 12px;
+    padding-vertical: 12px;
     border-width: 3px;
     border-color: ${brand};
     border-radius: 100px;
@@ -1103,4 +1103,16 @@ export const Navigator_BackButton = styled.TouchableOpacity`
     left: 10px;
     padding-top: ${StatusBarHeight + 2}px;
     z-index: 10000;
+`;
+
+export const Post_Fullscreen_Title = styled.View`
+    border-width: 1px;
+    border-color: ${primary};
+    height: 45px;
+`;
+
+export const Post_Fullscreen_Title_BackButton = styled.TouchableOpacity`
+    z-index: 10000;
+    position: absolute;
+    top: -7px;
 `;

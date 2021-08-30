@@ -284,7 +284,7 @@ const ProfileScreen = ({route, navigation}) => {
                     </ScrollView>
                 </ReportProfileOptionsView>
                 <StatusBar style="dark"/>
-                <ScrollView scrollEnabled={!PageElementsState}>
+                <ScrollView showsVerticalScrollIndicator={false} scrollEnabled={!PageElementsState}>
                     <WelcomeContainer>
                         <ProfileHorizontalView>
                             <TouchableOpacity disabled={PageElementsState} style={{marginLeft: '0%', marginRight: '70%'}} onPress={changeProfilesOptionsView}>
