@@ -238,7 +238,7 @@ const Post_FullScreen = ({route, navigation}) => {
                                                 </TouchableOpacity>
                                             </View>
                                         </View>
-                                        <View style={{...styling.backgroundColor, maxWidth: 400, minWidth: 400}}>
+                                        <View style={{backgroundColor: primary, maxWidth: 400, minWidth: 400}}>
                                             <ProgressiveImage
                                                 source={post_id}
                                                 style={{minHeight: 400, minWidth: 400, width: 400, height: 400, maxWidth: 400, maxHeight: 400}}

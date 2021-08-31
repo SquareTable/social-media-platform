@@ -119,6 +119,10 @@ const App = () => {
         require('./assets/app_icons/cannot_get_post_lightmode.png'),
         require('./assets/app_icons/cannot_get_post_darkmode.png'),
         require('./post_media/code.png'),
+        require('./assets/app_icons/back_arrow.png'),
+        require('./post_media/code.png'),
+        require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/269-info.png'),
+        require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/266-question.png'),
       ];
   
       const cacheImages = images.map(image => {
