@@ -1,5 +1,6 @@
 import React, {useContext, useState} from 'react';
 import { StatusBar } from 'expo-status-bar';
+import { useTheme } from '@react-navigation/native';
 
 import {
     InnerContainer,
@@ -41,15 +42,16 @@ import { ImageBackground, ScrollView } from 'react-native';
 
 
 const MultiMediaUploadPage = ({navigation}) => {
+    const {colors} = useTheme();
      //context
     
 
     return(
         <>    
             <StatusBar style="dark"/>
-                <WelcomeContainer postScreen={true}>
+                <WelcomeContainer style={{backgroundColor: colors.primary}} postScreen={true}>
                     <PageTitle>MultiMedia Post Screen</PageTitle>
-                    <SubTitle>Select a format</SubTitle>
+                    <SubTitle style={{color: colors.tertiary}}>Select a format</SubTitle>
                     <StyledButton continueButton={true}>
                         <ButtonText continueButton={true}>
                             Continue

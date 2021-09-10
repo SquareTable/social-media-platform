@@ -6,6 +6,7 @@ import styled from "styled-components";
 import Images from "../posts/images.js";
 import Post from "../posts/post.js";
 import SwitchToggle from "react-native-switch-toggle";
+import {useTheme} from "@react-navigation/native";
 import {
     darkModeStyling, 
     darkModeOn, 
@@ -42,33 +43,34 @@ const ChatInformationScreen = ({navigation}) => {
             alert("Coming soon")
         }
     }
+    const { colors } = useTheme();
     return(
-        <BackgroundDarkColor>
-            <ChatScreenInformation_Title>
+        <BackgroundDarkColor style={{backgroundColor: colors.primary}}>
+            <ChatScreenInformation_Title style={{backgroundColor: colors.primary, borderWidth: 0}}>
                 <Navigator_BackButton onPressIn={() => {navigation.goBack()}}>
                     <Image
                         source={require('../assets/app_icons/back_arrow.png')}
-                        style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2, ...styling.tintColor}}
+                        style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2, tintColor: colors.tertiary}}
                         resizeMode="contain"
                         resizeMethod="resize"
                     />
                 </Navigator_BackButton>
-                <TestText>Details</TestText>
+                <TestText style={{color: colors.tertiary}}>Details</TestText>
             </ChatScreenInformation_Title>
             <ScrollView style={{paddingHorizontal: 10}}>
-                <SubTitle>Notifications</SubTitle>
+                <SubTitle style={{color: colors.tertiary}}>Notifications</SubTitle>
                 <FlexRow_NOJustifyContent>
                     <View style={{marginLeft: 20}}>
-                        <SubTitle BoldOff={true} ChatInformationScreen={true}>Mute messages</SubTitle>
+                        <SubTitle BoldOff={true} ChatInformationScreen={true} style={{color: colors.tertiary}}>Mute messages</SubTitle>
                     </View>
                     <View style={{position: 'absolute', right: 10}}>
                         <SwitchToggle
                             switchOn={muteMessagesState}
                             onPress={changeMuteMessagesState}
-                            circleColorOff={tertiary}
+                            circleColorOff={colors.tertiary}
                             circleColorOn={tertiary}
                             backgroundColorOn={darkestBlue}
-                            backgroundColorOff={darkest}
+                            backgroundColorOff={colors.borderColor}
                             containerStyle={{
                                 width: 50,
                                 height: 28,
@@ -84,13 +86,13 @@ const ChatInformationScreen = ({navigation}) => {
                     </View>
                 </FlexRow_NOJustifyContent>
                 <FlexRow_NOJustifyContent>
-                    <SubTitle>Content</SubTitle>
+                    <SubTitle style={{color: colors.tertiary}}>Content</SubTitle>
                     <TouchableOpacity style={{position: 'absolute', right: 10}} onPress={() => {alert("Coming soon")}}>
                         <SubTitle style={{color: darkestBlue}}>See All</SubTitle>
                     </TouchableOpacity>
                 </FlexRow_NOJustifyContent>
                 <Content source_for_image={require('../assets/app_icons/profile_pic.jpg')}/>
-                <SubTitle>Members</SubTitle>
+                <SubTitle style={{color: colors.tertiary}}>Members</SubTitle>
                 <MemberRow user_profile_pic={Images.posts.background}/>
                 <StyledButton onPress={() => {alert("Coming soon")}}>
                     <ButtonText style={{fontSize: 25, fontWeight: 'bold'}}>Report</ButtonText>

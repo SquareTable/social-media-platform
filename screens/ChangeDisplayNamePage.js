@@ -1,5 +1,6 @@
 import React, {useState, useContext} from 'react';
 import { StatusBar } from 'expo-status-bar';
+import { useTheme } from '@react-navigation/native';
 
 // formik
 import {Formik} from 'formik';
@@ -102,15 +103,18 @@ const ChangeDisplayNamePage = ({navigation}) => {
         })
     }
 
+    const {colors} = useTheme();
+
     return(
         <KeyboardAvoidingWrapper>
-            <StyledContainer>
+            
+            <StyledContainer style={{backgroundColor: colors.primary}}>
                 
-                    <StatusBar style="dark"/>
-                    <InnerContainer>
+                    <StatusBar style={colors.StatusBarColor}/>
+                    <InnerContainer style={{backgroundColor: colors.primary}}>
                         <PageLogo source={require('./../assets/img/Logo.png')} />
                         <PageTitle>SocialSquare</PageTitle>
-                        <SubTitle>Change Display Name</SubTitle>
+                        <SubTitle style={{color: colors.tertiary}}>Change Display Name</SubTitle>
 
                         <Formik
                             initialValues={{password: '', userEmail: email, desiredDisplayName: ''}}
@@ -129,15 +133,16 @@ const ChangeDisplayNamePage = ({navigation}) => {
                                     <UserTextInput
                                         icon="person"
                                         placeholder="Desired Display Name"
-                                        placeholderTextColor={tertiary}
+                                        placeholderTextColor={colors.tertiary}
                                         onChangeText={handleChange('desiredDisplayName')}
                                         onBlur={handleBlur('desiredDisplayName')}
                                         value={values.desiredDisplayName}
+                                        style={{backgroundColor: colors.primary, color: colors.tertiary}}
                                     />
                                     <UserTextInput
                                         icon="lock"
                                         placeholder="Confirm Password"
-                                        placeholderTextColor={tertiary}
+                                        placeholderTextColor={colors.tertiary}
                                         onChangeText={handleChange('password')}
                                         onBlur={handleBlur('password')}
                                         value={values.password}
@@ -145,6 +150,7 @@ const ChangeDisplayNamePage = ({navigation}) => {
                                         isPassword={true}
                                         hidePassword={hidePassword}
                                         setHidePassword={setHidePassword}
+                                        style={{backgroundColor: colors.primary, color: colors.tertiary}}
                                     />
                                     <MsgBox type={messageType}>{message}</MsgBox>
                                     {!isSubmitting && (<StyledButton onPress={handleSubmit}>
@@ -155,8 +161,8 @@ const ChangeDisplayNamePage = ({navigation}) => {
                                         <ActivityIndicator size="large" color={primary} />
                                     </StyledButton>)}
                                     
-                                    <StyledButton signUpButton={true} onPress={() => navigation.navigate("AccountSettings")}>
-                                            <ButtonText signUpButton={true}> Back </ButtonText>
+                                    <StyledButton style={{backgroundColor: colors.primary}} signUpButton={true} onPress={() => navigation.navigate("AccountSettings")}>
+                                            <ButtonText style={{color: colors.tertiary}} signUpButton={true}> Back </ButtonText>
                                     </StyledButton>
                                     <SubTitle disclaimerText={true}>You may have to re-login to view your changes</SubTitle>
                                 </StyledFormArea>)}

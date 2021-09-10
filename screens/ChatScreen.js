@@ -10,11 +10,14 @@ import {
   Chat_Info_Icon_Styling,
   Navigator_BackButton,
   Colors
-} from '../screens/screenStylings/styling.js'
+} from '../screens/screenStylings/styling.js';
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import {useTheme} from "@react-navigation/native";
 
 const ChatScreen = ({navigation}) => {
 
     const [messages, setMessages] = useState([]);
+    const insets = useSafeAreaInsets();
 
     if (darkModeOn === true) {
       var styling = darkModeStyling;
@@ -56,7 +59,7 @@ const ChatScreen = ({navigation}) => {
 
     function renderInputToolbar (props) {
       //Add the extra styles via containerStyle
-     return <InputToolbar {...props} containerStyle={{borderTopWidth: 1.5, borderTopColor: '#333', backgroundColor: primary, color: tertiary}} textInputStyle={{ color: tertiary }} placeholderTextColor={tertiary}/>
+     return <InputToolbar {...props} containerStyle={{borderTopWidth: 1, borderTopColor: colors.borderColor, backgroundColor: colors.primary, color: colors.tertiary}} textInputStyle={{ color: colors.tertiary }} placeholderTextColor={colors.tertiary}/>
     }
 
     function renderBubble(props) {
@@ -64,43 +67,61 @@ const ChatScreen = ({navigation}) => {
                 {...props} 
                 textStyle={{
                   left: {
-                    color: tertiary
+                    color: colors.tertiary
                   },
                   right: {
-                    color: tertiary,
+                    color: colors.tertiary,
                   },
                 }}
                 wrapperStyle={{
                   left: {
-                    borderColor: darkest,
+                    borderColor: colors.darkest,
                     borderWidth: 5,
-                    backgroundColor: primary,
+                    backgroundColor: colors.primary,
                   },
                   right: {
-                    borderColor: darkest,
+                    borderColor: colors.darkest,
                     borderWidth: 5,
-                    backgroundColor: darkestBlue
+                    backgroundColor: colors.brand
                   }
                 }}
               />;
     }
-
+    const {colors} = useTheme();
+    const Styles = StyleSheet.create({
+      giftedChatStyling: {
+        backgroundColor: colors.primary,
+        flex: 1, 
+        ...Platform.select({
+          ios: {
+            marginBottom: 0
+          },
+          android: {
+            marginBottom: 0
+          },
+          default: {
+            // other platforms, web for example
+            marginBottom: 72,
+          }
+        })
+      }
+  });
     return(
       <View style={Styles.giftedChatStyling}>
-        <ChatScreen_Title>
+        <ChatScreen_Title style={{backgroundColor: colors.primary, borderWidth: 0}}>
           <Navigator_BackButton onPress={() => {navigation.goBack()}}>
             <Image
               source={require('../assets/app_icons/back_arrow.png')}
-              style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2, ...styling.tintColor}}
+              style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2, tintColor: colors.tertiary}}
               resizeMode="contain"
               resizeMethod="resize"
             />
           </Navigator_BackButton>
-          <TestText style={{textAlign: 'center'}}>Username goes here</TestText>
+          <TestText style={{textAlign: 'center', color: colors.tertiary}}>Username goes here</TestText>
           <Chat_Info_Icon_Styling onPress={() => {navigation.navigate("ChatInformationScreen")}}>
             <Image
               source={require('../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/269-info.png')}
-              style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2, ...styling.tintColor}}
+              style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2, tintColor: colors.tertiary}}
               resizeMode="contain"
               resizeMethod="resize"
             />
@@ -112,6 +133,7 @@ const ChatScreen = ({navigation}) => {
         onSend={messages => onSend(messages)}
         renderInputToolbar={renderInputToolbar} 
         renderBubble={renderBubble}
+        bottomOffset={75}
         user={{
           _id: 1,
           name: 'Username goes here'
@@ -122,26 +144,3 @@ const ChatScreen = ({navigation}) => {
 };
 
 export default ChatScreen;
-
-const Styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#2E3440' /* Dark mode from Nord Theme */
-    },
-    giftedChatStyling: {
-      backgroundColor: '#3b4252',
-      flex: 1, 
-      ...Platform.select({
-        ios: {
-          marginBottom: 0
-        },
-        android: {
-          marginBottom: 0
-        },
-        default: {
-          // other platforms, web for example
-          marginBottom: 72,
-        }
-      })
-    }
-});

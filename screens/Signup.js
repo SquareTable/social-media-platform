@@ -1,5 +1,6 @@
 import React, {useState, useContext} from 'react';
 import { StatusBar } from 'expo-status-bar';
+import { useTheme } from '@react-navigation/native';
 
 // formik
 import {Formik} from 'formik';
@@ -56,6 +57,8 @@ const Signup = ({navigation}) => {
     } else {
         var styling = lightModeStyling;
     }
+
+    const {colors} = useTheme();
 
     const [hidePassword, setHidePassword] = useState(true);
     const [message, setMessage] = useState();
@@ -121,11 +124,11 @@ const Signup = ({navigation}) => {
 
     return(
         <KeyboardAvoidingWrapper>
-            <StyledContainer>
-                <StatusBar style="dark"/>
-                <InnerContainer>
-                    <PageTitle>SocialSquare</PageTitle>
-                    <SubTitle>Signup Page</SubTitle>
+            <StyledContainer style={{backgroundColor: colors.primary}}>
+                <StatusBar style={colors.StatusBarColor}/>
+                <InnerContainer style={{backgroundColor: colors.primary}}>
+                    <PageTitle style={{color: colors.tertiary}}>SocialSquare</PageTitle>
+                    <SubTitle style={{color: colors.tertiary}}>Signup Page</SubTitle>
 
                     <Formik
                         initialValues={{name: '',email: '', password: '', confirmPassword: ''}}
@@ -147,28 +150,30 @@ const Signup = ({navigation}) => {
                                     label="Username"
                                     icon="person"
                                     placeholder="Eg. PhotosAreCool123"
-                                    placeholderTextColor={tertiary}
+                                    placeholderTextColor={colors.tertiary}
                                     onChangeText={handleChange('name')}
                                     onBlur={handleBlur('name')}
                                     value={values.name}
+                                    style={{backgroundColor: colors.primary, color: colors.tertiary}}
                                 />
 
                                 <UserTextInput
                                     label="Email Address"
                                     icon="mail"
                                     placeholder="example@gmail.com"
-                                    placeholderTextColor={tertiary}
+                                    placeholderTextColor={colors.tertiary}
                                     onChangeText={handleChange('email')}
                                     onBlur={handleBlur('email')}
                                     value={values.email}
                                     keyboardType="email-address"
+                                    style={{backgroundColor: colors.primary, color: colors.tertiary}}
                                 />
 
                                 <UserTextInput
                                     label="Password"
                                     icon="lock"
                                     placeholder="* * * * * * * *"
-                                    placeholderTextColor={tertiary}
+                                    placeholderTextColor={colors.tertiary}
                                     onChangeText={handleChange('password')}
                                     onBlur={handleBlur('password')}
                                     value={values.password}
@@ -176,13 +181,14 @@ const Signup = ({navigation}) => {
                                     isPassword={true}
                                     hidePassword={hidePassword}
                                     setHidePassword={setHidePassword}
+                                    style={{backgroundColor: colors.primary, color: colors.tertiary}}
                                 />
 
                                 <UserTextInput
                                     label="Confirm Password"
                                     icon="lock"
                                     placeholder="* * * * * * * *"
-                                    placeholderTextColor={tertiary}
+                                    placeholderTextColor={colors.tertiary}
                                     onChangeText={handleChange('confirmPassword')}
                                     onBlur={handleBlur('confirmPassword')}
                                     value={values.confirmPassword}
@@ -190,6 +196,7 @@ const Signup = ({navigation}) => {
                                     isPassword={true}
                                     hidePassword={hidePassword}
                                     setHidePassword={setHidePassword}
+                                    style={{backgroundColor: colors.primary, color: colors.tertiary}}
                                 />
                                 <MsgBox type={messageType}>{message}</MsgBox>
                                 {!isSubmitting && (<StyledButton onPress={handleSubmit}>
@@ -200,14 +207,14 @@ const Signup = ({navigation}) => {
                                     <ActivityIndicator size="large" color={primary} />
                                 </StyledButton>)}
                                 <ExtraView>
-                                    <ExtraText>Already have an account? </ExtraText>
+                                    <ExtraText style={{color: colors.tertiary}}>Already have an account? </ExtraText>
                                     <TextLink onPress={goBackToLoginScreen}>
-                                        <TextLinkContent>Login</TextLinkContent>
+                                        <TextLinkContent style={{color: colors.brand}}>Login</TextLinkContent>
                                     </TextLink>
                                 </ExtraView>
-                                <Text style={{textAlign: 'center', ...styling.textColor, marginTop: 20}}>By signing up, you agree to our </Text>
+                                <Text style={{textAlign: 'center', color: colors.tertiary, marginTop: 20}}>By signing up, you agree to our </Text>
                                 <TextLink onPress={goToTermsOfService}>
-                                    <TextLinkContent>Terms of Service</TextLinkContent>
+                                    <TextLinkContent style={{color: colors.brand}}>Terms of Service</TextLinkContent>
                                 </TextLink>
                             </StyledFormArea>)}
                     </Formik>

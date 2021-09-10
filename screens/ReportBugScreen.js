@@ -1,5 +1,6 @@
 import React, {useState, useContext} from 'react';
 import { StatusBar } from 'expo-status-bar';
+import {useTheme} from '@react-navigation/native'
 
 // formik
 import {Formik} from 'formik';
@@ -152,15 +153,17 @@ const ReportBugScreen = ({navigation}) => {
         {label: 'Something not on this list', value: 'Somethign not on this list'},
     ]);
 
+    const {colors} = useTheme();
+
     return(
         <KeyboardAvoidingWrapper_NoScrollview>
-            <StyledContainer>
+            <StyledContainer style={{backgroundColor: colors.primary}}>
                 
-                    <StatusBar style="dark"/>
-                    <InnerContainer>
+                    <StatusBar style={colors.StatusBarColor}/>
+                    <InnerContainer style={{backgroundColor: colors.primary}}>
                         <PageLogo source={require('./../assets/img/Logo.png')} />
                         <PageTitle>SocialSquare</PageTitle>
-                        <SubTitle>Report bug</SubTitle>
+                        <SubTitle style={{color: colors.tertiary}}>Report bug</SubTitle>
                         <Formik
                             initialValues={{bugReport: '', screenThatBugOccuredOn: ''}}
                             onSubmit={(values, {setSubmitting}) => {
@@ -190,12 +193,13 @@ const ReportBugScreen = ({navigation}) => {
                                         <UserTextInput
                                             icon="megaphone"
                                             placeholder="Explain your bug here..."
-                                            placeholderTextColor={tertiary}
+                                            placeholderTextColor={colors.tertiary}
                                             onChangeText={handleChange('bugReport')}
                                             onBlur={handleBlur('bugReport')}
                                             value={values.bugReport}
                                             bugReport={true}
                                             multiline
+                                            style={{backgroundColor: colors.primary, color: colors.tertiary}}
                                         />
                                     </ViewHider>
                                     <ViewHider bugScreenVarNum={BugScreenVarNum} bugScreen={1}>

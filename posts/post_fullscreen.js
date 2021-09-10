@@ -6,6 +6,7 @@ import styled from "styled-components";
 import Images from "../posts/images.js";
 import ProgressiveImage from './ProgressiveImage.js';
 import * as Haptics from 'expo-haptics';
+import { useTheme } from '@react-navigation/native';
 
 const StatusBarHeight = Constants.statusBarHeight;
 import {
@@ -102,11 +103,12 @@ const Post_FullScreen = ({route, navigation}) => {
     }
     const [PageElementsState, setPageElementsState] = useState(true);
     const {tertiary, primary} = Colors;
+    const {colors} = useTheme();
     return(
         <View style={{backgroundColor: primary, height: '100%'}}>
-            <ProfileOptionsView viewHidden={ProfileOptionsViewState}>
-                  <ProfileOptionsViewText>{username || "Couldn't get name"}</ProfileOptionsViewText>
-                  <ProfileOptionsViewSubtitleText>Options</ProfileOptionsViewSubtitleText>
+            <ProfileOptionsView style={{backgroundColor: colors.primary}} viewHidden={ProfileOptionsViewState}>
+                  <ProfileOptionsViewText style={{color: colors.tertiary}}>{username || "Couldn't get name"}</ProfileOptionsViewText>
+                  <ProfileOptionsViewSubtitleText style={{color: colors.tertiary}}>Options</ProfileOptionsViewSubtitleText>
                   <ProfileOptionsViewButtons greyButton={true} onPress={changeProfilesOptionsView}>
                       <ProfileOptionsViewButtonsText greyButton={true}>Cancel</ProfileOptionsViewButtonsText>
                    </ProfileOptionsViewButtons> 
@@ -117,9 +119,9 @@ const Post_FullScreen = ({route, navigation}) => {
                        <ProfileOptionsViewButtonsText redButton={true}>Report</ProfileOptionsViewButtonsText>
                    </ProfileOptionsViewButtons> 
                </ProfileOptionsView>
-               <ReportProfileOptionsView post={true} viewHidden={ReportProfileOptionsViewState}>
-                  <ReportProfileOptionsViewText>{"Report " + username || "Report profile"}</ReportProfileOptionsViewText>
-                  <ReportProfileOptionsViewSubtitleText>Use this page to report this profile. If anyone is in danger immediately call emergency services. Do Not Wait.</ReportProfileOptionsViewSubtitleText>
+               <ReportProfileOptionsView style={{backgroundColor: colors.primary}} post={true} viewHidden={ReportProfileOptionsViewState}>
+                  <ReportProfileOptionsViewText style={{color: colors.tertiary}}>{"Report " + username || "Report profile"}</ReportProfileOptionsViewText>
+                  <ReportProfileOptionsViewSubtitleText style={{color: colors.tertiary}}>Use this page to report this profile. If anyone is in danger immediately call emergency services. Do Not Wait.</ReportProfileOptionsViewSubtitleText>
                   <ReportProfileOptionsViewButtons greyButton={true} onPress={changeReportProfilesOptionsView}>
                       <ReportProfileOptionsViewButtonsText greyButton={true}>Cancel</ReportProfileOptionsViewButtonsText>
                    </ReportProfileOptionsViewButtons>
@@ -130,9 +132,9 @@ const Post_FullScreen = ({route, navigation}) => {
                        <ReportProfileOptionsViewButtonsText redButton={true}>This account is pretending to be someone they're not</ReportProfileOptionsViewButtonsText>
                    </ReportProfileOptionsViewButtons>
                </ReportProfileOptionsView>
-               <ReportProfileOptionsView viewHidden={ReportProfile_ContentThatShouldNotBePosted_OptionsViewState}>
-                  <ReportProfileOptionsViewText>{"Report " + username || "Report profile"}</ReportProfileOptionsViewText>
-                  <ReportProfileOptionsViewSubtitleText>What content are you trying to report?</ReportProfileOptionsViewSubtitleText>
+               <ReportProfileOptionsView style={{backgroundColor: colors.primary}} viewHidden={ReportProfile_ContentThatShouldNotBePosted_OptionsViewState}>
+                  <ReportProfileOptionsViewText style={{color: colors.tertiary}}>{"Report " + username || "Report profile"}</ReportProfileOptionsViewText>
+                  <ReportProfileOptionsViewSubtitleText style={{color: colors.tertiary}}>What content are you trying to report?</ReportProfileOptionsViewSubtitleText>
                   <ReportProfileOptionsViewButtons padding={true} paddingAmount={'100px'}greyButton={true} onPress={changeReportProfiles_ContentThatShouldNotBePosted_OptionsView}>
                       <ReportProfileOptionsViewButtonsText greyButton={true}>Back</ReportProfileOptionsViewButtonsText>
                    </ReportProfileOptionsViewButtons>
@@ -172,9 +174,9 @@ const Post_FullScreen = ({route, navigation}) => {
                        </ReportProfileOptionsViewButtons>
                    </ScrollView>
                </ReportProfileOptionsView>
-               <ReportProfileOptionsView viewHidden={ReportProfile_PretendingToBeSomeoneElse_OptionsViewState}>
-                  <ReportProfileOptionsViewText>{"Report " + username || "Report profile"}</ReportProfileOptionsViewText>
-                  <ReportProfileOptionsViewSubtitleText>User Is Pretending To Be Someone Else</ReportProfileOptionsViewSubtitleText>
+               <ReportProfileOptionsView style={{backgroundColor: colors.primary}} viewHidden={ReportProfile_PretendingToBeSomeoneElse_OptionsViewState}>
+                  <ReportProfileOptionsViewText style={{color: colors.tertiary}}>{"Report " + username || "Report profile"}</ReportProfileOptionsViewText>
+                  <ReportProfileOptionsViewSubtitleText style={{color: colors.tertiary}}>User Is Pretending To Be Someone Else</ReportProfileOptionsViewSubtitleText>
                   <ReportProfileOptionsViewButtons greyButton={true} onPress={changeReportProfiles_PretendingToBeSomeoneElse_OptionsView}>
                       <ReportProfileOptionsViewButtonsText greyButton={true}>Back</ReportProfileOptionsViewButtonsText>
                    </ReportProfileOptionsViewButtons>
@@ -193,21 +195,21 @@ const Post_FullScreen = ({route, navigation}) => {
                        </ReportProfileOptionsViewButtons> 
                    </ScrollView>
                </ReportProfileOptionsView>
-                <View style={{backgroundColor: primary, height: '100%', width: '100%'}}>
-                    <SafeAreaView style={{backgroundColor: primary, height: '100%'}}>
-                        <Post_Fullscreen_Title>
-                            <Post_Fullscreen_Title_BackButton onPress={() => {navigation.goBack()}}>
+                <View style={{backgroundColor: colors.primary, height: '100%', width: '100%'}}>
+                    <SafeAreaView style={{backgroundColor: colors.primary, height: '100%'}}>
+                        <Post_Fullscreen_Title style={{borderWidth: 0}}>
+                            <Post_Fullscreen_Title_BackButton style={{borderColor: colors.tertiary}} onPress={() => {navigation.goBack()}}>
                                 <Image
                                 source={require('../assets/app_icons/back_arrow.png')}
-                                style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2, ...styling.tintColor}}
+                                style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2, tintColor: colors.tertiary}}
                                 resizeMode="contain"
                                 resizeMethod="resize"
                                 />
                             </Post_Fullscreen_Title_BackButton>
-                            <TestText style={{textAlign: 'center'}}>Find</TestText>
+                            <TestText style={{textAlign: 'center', color: colors.tertiary}}>Find</TestText>
                         </Post_Fullscreen_Title>
-                        <ScrollView style={{backgroundColor: primary}} scrollEnabled={PageElementsState}>
-                            <View style={{minWidth: 500, maxWidth: 500, width: 500, backgroundColor: primary, alignSelf: 'center', zIndex: 100}}>
+                        <ScrollView style={{backgroundColor: colors.primary}} scrollEnabled={PageElementsState}>
+                            <View style={{minWidth: 500, maxWidth: 500, width: 500, backgroundColor: colors.primary, alignSelf: 'center', zIndex: 100}}>
                                 <View style={{maxWidth: 500, minWidth: 500, width: 500, alignContent: 'center', alignItems: 'center', alignSelf: 'center',}}>
                                     <View style={{maxWidth: 400, minWidth: 400}}>
                                         <View style={{flex: 2, flexDirection:'row'}}>
@@ -224,21 +226,21 @@ const Post_FullScreen = ({route, navigation}) => {
                                             </View>
                                             <View>
                                                 <TouchableOpacity onPressOut={goToProfileScreen} disabled={!PageElementsState}>
-                                                    <Text style={{...styling.textColor, textAlign: 'left', fontWeight:'bold', fontSize: 20, textAlignVertical:'bottom'}}>{username || "Couldn't get name"}</Text>
+                                                    <Text style={{color: colors.tertiary, textAlign: 'left', fontWeight:'bold', fontSize: 20, textAlignVertical:'bottom'}}>{username || "Couldn't get name"}</Text>
                                                 </TouchableOpacity>
                                             </View>
                                             <View style={{position: 'absolute', right: 20}}>
                                                 <TouchableOpacity onPress={changeProfilesOptionsView} disabled={!PageElementsState}>
                                                     <Image
                                                         source={require('../assets/app_icons/3dots.png')}
-                                                        style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, ...styling.tintColor}}
+                                                        style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, tintColor: colors.tertiary}}
                                                         resizeMode="contain"
                                                         resizeMethod="resize"
                                                     />
                                                 </TouchableOpacity>
                                             </View>
                                         </View>
-                                        <View style={{backgroundColor: primary, maxWidth: 400, minWidth: 400}}>
+                                        <View style={{backgroundColor: colors.primary, maxWidth: 400, minWidth: 400}}>
                                             <ProgressiveImage
                                                 source={post_id}
                                                 style={{minHeight: 400, minWidth: 400, width: 400, height: 400, maxWidth: 400, maxHeight: 400}}
@@ -251,7 +253,7 @@ const Post_FullScreen = ({route, navigation}) => {
                                                 <TouchableOpacity disabled={!PageElementsState} onPress={() => {alert("The Like Button does not work yet. We will add functionality to this very shortly.")}}>
                                                     <Image
                                                         source={Images.posts.heart}
-                                                        style={{...styling.like_comment_save_buttons, ...styling.tintColor}}
+                                                        style={{...styling.like_comment_save_buttons, tintColor: colors.tertiary}}
                                                         resizeMode="contain"
                                                         resizeMethod="resize"
                                                     />
@@ -261,7 +263,7 @@ const Post_FullScreen = ({route, navigation}) => {
                                                 <TouchableOpacity disabled={!PageElementsState} onPress={() => {alert("The Comment Button does not work yet. We will add functionality to this very shortly.")}}>
                                                     <Image
                                                         source={Images.posts.message_bubbles}
-                                                        style={{...styling.like_comment_save_buttons, ...styling.tintColor}}
+                                                        style={{...styling.like_comment_save_buttons, tintColor: colors.tertiary}}
                                                         resizeMode="contain"
                                                         resizeMethod="resize"
                                                     />
@@ -271,7 +273,7 @@ const Post_FullScreen = ({route, navigation}) => {
                                                 <TouchableOpacity disabled={!PageElementsState} onPress={() => {alert("The Save Button does not work yet. We will add functionality to this very shortly.")}}>
                                                     <Image
                                                         source={Images.posts.bookmark}
-                                                        style={{...styling.like_comment_save_buttons, ...styling.tintColor}}
+                                                        style={{...styling.like_comment_save_buttons, tintColor: colors.tertiary}}
                                                         resizeMode="contain"
                                                         resizeMethod="resize"
                                                     />

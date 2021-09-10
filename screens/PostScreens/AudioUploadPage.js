@@ -1,6 +1,7 @@
 import React, {useContext, useState, useEffect} from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { Audio } from 'expo-av';
+import { useTheme } from '@react-navigation/native';
 
 import {
     InnerContainer,
@@ -82,7 +83,9 @@ const AudioUploadPage = ({navigation}) => {
             } catch (err) {
               console.error('Failed to start recording', err);
             }
-          }
+        }
+
+          var [recording_uri, setRecording_uri] = useState('');
         
           async function stopRecording() {
             console.log('Stopping recording..');
@@ -90,25 +93,30 @@ const AudioUploadPage = ({navigation}) => {
             await recording.stopAndUnloadAsync();
             var recording_uri = recording.getURI(); 
             console.log('Recording stopped and stored at', recording_uri);
-            var newLoadedSoundAsync = recording.createNewLoadedSoundAsync();
-            return newLoadedSoundAsync;
+            setRecording_uri(recording_uri);
           }
     
         /* End of audio recording code */
 
         /* Start of audio play and pause code */
         
-        async function playAudio(newLoadedSoundAsync) {  
-
+        async function playAudio(recording_uri) {  
             const sound = new Audio.Sound();
             try {
-                await sound.loadAsync(newLoadedSoundAsync);
+                console.log("Loading sound")
+                await sound.loadAsync(
+                    { uri: recording_uri },
+                    { shouldPlay: true }
+                );
+                await sound.setVolumeAsync(1)
+                console.log('Loaded Sound')
+                console.log("Playing sound")
                 await sound.playAsync();
                 // Your sound is playing!
 
                 // Don't forget to unload the sound from memory
                 // when you are done using the Sound object
-                await sound.unloadAsync();
+                
             } catch (error) {
                 console.log("Error when playing sound:", error);
                 alert("An error has occured. " + error)
@@ -136,6 +144,7 @@ const AudioUploadPage = ({navigation}) => {
         }else{
             console.log("Closed Confirm")
             setProfileOptionsViewState(true)
+            stopRecording();
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
             setNotRecording_RecordIconState(false);
             setRecording_RecordIconState(false);
@@ -156,12 +165,19 @@ const AudioUploadPage = ({navigation}) => {
         }
     }
 
+    const sendAudioSnippet = () => {
+        stopRecording();
+        alert("Coming soon");
+    }
+
+    const {colors, dark} = useTheme();
+
 
     return(
         <>    
             <StatusBar style="dark"/>
-                <BackgroundDarkColor>
-                    <RecordAudio_AudioUploadPage viewHidden={ProfileOptionsViewState}>
+                <BackgroundDarkColor style={{backgroundColor: colors.primary}}>
+                    <RecordAudio_AudioUploadPage style={{backgroundColor: colors.primary}} viewHidden={ProfileOptionsViewState}>
                         <StyledButton continueButton={true} onPress={changeProfilesOptionsView}>
                             <ButtonText continueButton={true}>
                                 Go Back
@@ -169,11 +185,11 @@ const AudioUploadPage = ({navigation}) => {
                         </StyledButton>
                         <FlexRow style={{marginTop: 35}}>
                             <View style={{width: '20%'}}>
-                                <RecordButton_RecordScreen_AudioUploadPage onPress={changeRecordingState}>
+                                <RecordButton_RecordScreen_AudioUploadPage style={{borderColor: colors.tertiary}}onPress={changeRecordingState}>
                                     <RecordButtonChanger_RecordScreen_AudioUploadPage viewHidden={NotRecording_RecordIconState}>
                                         <Image
                                             style={{width: 70, height: 70}}
-                                            source={require("../../assets/record_button.png")}
+                                            source={dark ? require("../../assets/record_button.png") : require('../../assets/lightmode_recordbutton.png')}
                                             resizeMode="contain"
                                             resizeMethod="resize"
                                         />
@@ -181,7 +197,7 @@ const AudioUploadPage = ({navigation}) => {
                                     <RecordButtonChanger_RecordScreen_AudioUploadPage viewHidden={Recording_RecordIconState}>
                                         <Image
                                             style={{width: 70, height: 70}}
-                                            source={require("../../assets/recording_icon.png")}
+                                            source={dark ? require("../../assets/recording_icon.png") : require('../../assets/lightmode_recordingicon.png')}
                                             resizeMode="contain"
                                             resizeMethod="resize"
                                         />
@@ -190,11 +206,11 @@ const AudioUploadPage = ({navigation}) => {
                             </View>
                             <AudioWaveBox_RecordScreen_AudioUploadPage>
                                 <ViewHider viewHidden={Recording_RecordIconState}>
-                                    <Text style={{fontSize: 20, fontWeight: 'bold', ...styling.textColor, textAlign: 'center'}}>Recording functionality coming soon :) (:</Text>
+                                    <Text style={{fontSize: 20, fontWeight: 'bold', color: colors.tertiary, textAlign: 'center'}}>Recording functionality coming soon :) (:</Text>
                                 </ViewHider>
                             </AudioWaveBox_RecordScreen_AudioUploadPage>
                         </FlexRow>
-                        <StyledButton continueButton={true} onPress={playAudio}>
+                        <StyledButton continueButton={true} onPress={() => playAudio(recording_uri)}>
                             <ButtonText continueButton={true}>
                                 Play audio snippet
                             </ButtonText>
@@ -205,7 +221,7 @@ const AudioUploadPage = ({navigation}) => {
                             </ButtonText>
                         </StyledButton>
                     </RecordAudio_AudioUploadPage>
-                    <WelcomeContainer audioPostScreen={true}>
+                    <WelcomeContainer audioPostScreen={true} style={{backgroundColor: colors.primary}}>
                         <PageTitle>Audio Post Screen</PageTitle>
                         <View>
                             <AudioUploadScreenUploadButtons>
@@ -214,22 +230,22 @@ const AudioUploadPage = ({navigation}) => {
                                         <TouchableOpacity onPress={changeProfilesOptionsView}>
                                             <Image
                                                 style={{width: 125, height: 125}}
-                                                source={require("../../assets/record_button.png")}
+                                                source={dark ? require("../../assets/record_button.png") : require('../../assets/lightmode_recordbutton.png')}
                                                 resizeMode="contain"
                                                 resizeMethod="resize"
                                             />
-                                            <Text style={{textAlign: 'center', ...styling.textColor, fontWeight: 'bold', fontSize: 14}}>Record audio</Text>
+                                            <Text style={{textAlign: 'center', color: colors.tertiary, fontWeight: 'bold', fontSize: 14}}>Record audio</Text>
                                         </TouchableOpacity>
                                     </LeftButton_AudioUploadScreen>
                                     <RightButton_AudioUploadScreen>
-                                        <TouchableOpacity onPress={() => {alert("Coming soon")}}>
+                                        <TouchableOpacity onPress={sendAudioSnippet}>
                                             <Image
-                                                style={{width: 125, height: 125, ...styling.tintColor}}
+                                                style={{width: 125, height: 125, tintColor: colors.tertiary}}
                                                 source={require("../../assets/app_icons/upload_arrow.png")}
                                                 resizeMode="contain"
                                                 resizeMethod="resize"
                                             />
-                                            <Text style={{textAlign: 'center', ...styling.textColor, fontWeight: 'bold', fontSize: 14}}>Upload audio file</Text>
+                                            <Text style={{textAlign: 'center', color: colors.tertiary, fontWeight: 'bold', fontSize: 14}}>Upload audio file</Text>
                                         </TouchableOpacity>
                                     </RightButton_AudioUploadScreen>
                                 </FlexRow>

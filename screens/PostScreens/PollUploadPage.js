@@ -38,18 +38,20 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 //credentials context
 import { CredentialsContext } from '../../components/CredentialsContext';
 import { ImageBackground, ScrollView } from 'react-native';
+import { useTheme } from '@react-navigation/native';
 
 
 const MultiMediaUploadPage = ({navigation}) => {
+    const {colors} = useTheme();
      //context
     
 
     return(
         <>    
             <StatusBar style="dark"/>
-                <WelcomeContainer postScreen={true}>
+                <WelcomeContainer style={{backgroundColor: colors.primary}} postScreen={true}>
                     <PageTitle>Poll Post Screen</PageTitle>
-                    <SubTitle>Select a format</SubTitle>
+                    <SubTitle style={{color: colors.tertiary}}>Select a format</SubTitle>
                     <StyledButton continueButton={true}>
                         <ButtonText continueButton={true}>
                             Continue

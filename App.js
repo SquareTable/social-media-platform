@@ -12,8 +12,11 @@ import * as Notifications from "expo-notifications";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AppLoading from 'expo-app-loading';
 import { Asset } from 'expo-asset';
+import { AppearanceProvider, useColorScheme } from 'react-native-appearance';
+import { DefaultTheme, DarkTheme } from '@react-navigation/native';
 
 const Stack = createStackNavigator();
+
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -38,13 +41,13 @@ const App = () => {
         finalStatus = status;
       }
       if (finalStatus !== 'granted') {
-        alert('Failed to get push token for push notification!');
+        console.log('Failed to get push token for push notification!');
         return;
       }
       token = (await Notifications.getExpoPushTokenAsync()).data;
       console.log(token);
     } else {
-      alert('Must use physical device for Push Notifications');
+      console.log('Must use physical device for Push Notifications');
     }
   
     if (Platform.OS === 'android') {
@@ -84,6 +87,48 @@ const App = () => {
   }, []);
 
   const [isReady, setIsReady] = useState(false);
+  const scheme = useColorScheme();
+  console.log(scheme + " from App.js");
+  const AppDarkTheme = {
+    dark: true,
+    colors: {
+      primary: '#3b4252',
+      secondary: '#88c0d0',
+      tertiary: '#eceff4',
+      darkLight: '#4c566a',
+      brand: '#88c0d0',
+      green: '#A3BE8C',
+      red: '#BF616A',
+      darkest: '#2e3440',
+      greyish: '#D8DEE9',
+      bronzeRarity: '#b08d57',
+      darkestBlue: '#5E81AC',
+      StatusBarColor: 'light',
+      navFocusedColor: '#88C0D0',
+      navNonFocusedColor: '#ECEFF4',
+      borderColor: '#2E3440',
+    },
+  };
+  const AppLightTheme = {
+    dark: false,
+    colors: {
+      primary: '#eceff4',
+      secondary: '#88c0d0',
+      tertiary: '#3b4252',
+      darkLight: '#4c566a',
+      brand: '#81A1C1',
+      green: '#A3BE8C',
+      red: '#BF616A',
+      darkest: '#2e3440',
+      greyish: '#D8DEE9',
+      bronzeRarity: '#b08d57',
+      darkestBlue: '#5E81AC',
+      StatusBarColor: 'dark',
+      navFocusedColor: '#5E81AC',
+      navNonFocusedColor: '#2E3440',
+      borderColor: '#D8DEE9',
+    }
+  };
 
   if (isReady == false) {
     async function cacheResourcesAsync() {
@@ -123,6 +168,9 @@ const App = () => {
         require('./post_media/code.png'),
         require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/269-info.png'),
         require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/266-question.png'),
+        require('./assets/lightmode_recordbutton.png'),
+        require('./assets/lightmode_recordingicon.png'),
+        require('./assets/apple_photo.png')
       ];
   
       const cacheImages = images.map(image => {
@@ -134,17 +182,21 @@ const App = () => {
       setIsReady(true);
     }
     return (
-      <AppLoading
-        startAsync={cacheResourcesAsync}
-        onFinish={toDoOnFinish}
-        onError={console.warn}
-      />
+      <NavigationContainer theme={scheme === 'dark' ? AppDarkTheme : AppLightTheme}>
+        <AppLoading
+          startAsync={cacheResourcesAsync}
+          onFinish={toDoOnFinish}
+          onError={console.warn}
+        />
+      </NavigationContainer>
     ); } else {
 
     return (
-      <NavigationContainer>
-        <Start_Stack/>
-      </NavigationContainer>
+      <AppearanceProvider>
+        <NavigationContainer theme={scheme === 'dark' ? AppDarkTheme : AppLightTheme}>
+          <Start_Stack/>
+        </NavigationContainer>
+      </AppearanceProvider>
     );
   }
 };

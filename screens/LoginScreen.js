@@ -1,5 +1,6 @@
 import React, {useState, useContext} from 'react';
 import { StatusBar } from 'expo-status-bar';
+import { useTheme } from '@react-navigation/native';
 
 // formik
 import {Formik} from 'formik';
@@ -28,7 +29,7 @@ import {
     TextLink,
     TextLinkContent,
 } from '../screens/screenStylings/styling.js';
-import {View, ActivityIndicator, ImageBackground, StyleSheet} from 'react-native';
+import {View, ActivityIndicator, ImageBackground, StyleSheet, Text} from 'react-native';
 
 // Colors
 const {brand, primary, tertiary} = Colors;
@@ -48,9 +49,27 @@ import { CredentialsContext } from './../components/CredentialsContext';
 
 
 const LoginScreen = ({navigation}) => {
+    const { colors, dark} = useTheme();
     const [hidePassword, setHidePassword] = useState(true);
     const [message, setMessage] = useState();
     const [messageType, setMessageType] = useState();
+
+    const UserTextInput = ({label, icon, isPassword, hidePassword, setHidePassword, ...props}) => {
+        return(
+            <View>
+                <LeftIcon>
+                    <Octicons name={icon} size={30} color={colors.brand} />
+                </LeftIcon>
+                <StyledInputLabel>{label}</StyledInputLabel>
+                <StyledTextInput {...props} />
+                {isPassword && (
+                    <RightIcon onPress={() => setHidePassword(!hidePassword)}>
+                        <Ionicons name={hidePassword ? 'md-eye-off' : 'md-eye'} size={30} color={brand}/>
+                    </RightIcon>
+                )}
+            </View>
+        )
+    }
 
     //context
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
@@ -88,6 +107,8 @@ const LoginScreen = ({navigation}) => {
         .then(() => {
             handleMessage(message, status);
             setStoredCredentials(credentials);
+            console.log(credentials)
+            console.log(storedCredentials)
         })
         .catch((error) => {
             console.log(error);
@@ -97,13 +118,13 @@ const LoginScreen = ({navigation}) => {
 
     return(
         <KeyboardAvoidingWrapper>
-            <StyledContainer>
+            <StyledContainer style={{backgroundColor: colors.primary}}>
                 
-                    <StatusBar style="dark"/>
-                    <InnerContainer>
+                    <StatusBar style={colors.StatusBarColor}/>
+                    <InnerContainer style={{backgroundColor: colors.primary}}>
                         <PageLogo source={require('./../assets/img/Logo.png')} />
-                        <PageTitle>SocialSquare</PageTitle>
-                        <SubTitle>Login Page</SubTitle>
+                        <PageTitle style={{color: colors.tertiary}}>SocialSquare</PageTitle>
+                        <SubTitle style={{color: colors.tertiary}}>Login Page</SubTitle>
 
                         <Formik
                             initialValues={{email: '', password: ''}}
@@ -121,17 +142,18 @@ const LoginScreen = ({navigation}) => {
                                     <UserTextInput
                                         icon="mail"
                                         placeholder="example@gmail.com"
-                                        placeholderTextColor={tertiary}
+                                        placeholderTextColor={colors.tertiary}
                                         onChangeText={handleChange('email')}
                                         onBlur={handleBlur('email')}
                                         value={values.email}
                                         keyboardType="email-address"
+                                        style={{backgroundColor: colors.primary, color: colors.tertiary}}
                                     />
 
                                     <UserTextInput
                                         icon="lock"
                                         placeholder="* * * * * * * *"
-                                        placeholderTextColor={tertiary}
+                                        placeholderTextColor={colors.tertiary}
                                         onChangeText={handleChange('password')}
                                         onBlur={handleBlur('password')}
                                         value={values.password}
@@ -139,6 +161,7 @@ const LoginScreen = ({navigation}) => {
                                         isPassword={true}
                                         hidePassword={hidePassword}
                                         setHidePassword={setHidePassword}
+                                        style={{backgroundColor: colors.primary, color: colors.tertiary}}
                                     />
                                     <MsgBox type={messageType}>{message}</MsgBox>
                                     {!isSubmitting && (<StyledButton onPress={handleSubmit}>
@@ -149,8 +172,8 @@ const LoginScreen = ({navigation}) => {
                                         <ActivityIndicator size="large" color={primary} />
                                     </StyledButton>)}
                                     
-                                    <StyledButton signUpButton={true} onPress={() => navigation.navigate("Signup")}>
-                                            <ButtonText signUpButton={true}> Signup </ButtonText>
+                                    <StyledButton style={{backgroundColor: colors.primary, color: colors.tertiary}} signUpButton={true} onPress={() => navigation.navigate("Signup")}>
+                                            <ButtonText signUpButton={true} style={{color: colors.tertiary}}> Signup </ButtonText>
                                     </StyledButton>
                                 </StyledFormArea>)}
                         </Formik>
@@ -168,21 +191,6 @@ const styles = StyleSheet.create({
     }
 })
 
-const UserTextInput = ({label, icon, isPassword, hidePassword, setHidePassword, ...props}) => {
-    return(
-        <View>
-            <LeftIcon>
-                <Octicons name={icon} size={30} color={brand} />
-            </LeftIcon>
-            <StyledInputLabel>{label}</StyledInputLabel>
-            <StyledTextInput {...props}/>
-            {isPassword && (
-                <RightIcon onPress={() => setHidePassword(!hidePassword)}>
-                    <Ionicons name={hidePassword ? 'md-eye-off' : 'md-eye'} size={30} color={brand}/>
-                </RightIcon>
-            )}
-        </View>
-    )
-}
+
 
 export default LoginScreen;

@@ -1,10 +1,11 @@
 import React, { useState, useContext } from 'react';
-import { StyleSheet, Text, View, Button, Image, TouchableOpacity, SafeAreaView, ScrollView, FlatList} from 'react-native';
+import { StyleSheet, Text, View, Button, Image, TouchableOpacity, SafeAreaView, ScrollView, FlatList, Alert} from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import Constants from "expo-constants";
 import styled from "styled-components";
 import Images from "../posts/images.js";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useTheme } from '@react-navigation/native';
 import {
     darkModeStyling, 
     darkModeOn, 
@@ -22,33 +23,58 @@ import {
 } from '../screens/screenStylings/styling.js';
 import ProgressiveImage from '../posts/ProgressiveImage.js';
 import { CredentialsContext } from '../components/CredentialsContext.js';
+import VisitingProfileScreen from '../screens/VisitingProfileScreen.js';
+import devModeOn from '../components/devModeOn.js';
 
 
 const HomeScreen = ({navigation}) => {
+    const [usernameToReport, setUsernameToReport] = useState(null);
+    const [ProfileOptionsViewState, setProfileOptionsViewState] = useState(true);
+    const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
+    const {name, displayName, email, photoUrl} = storedCredentials;
     if (darkModeOn === true) {
         var styling = darkModeStyling;
     } else {
         var styling = lightModeStyling;
     }
+    const {colors} = useTheme();
     const [Posts, setPosts] = useState([
-        { postSource: Images.posts.social_studies_1, profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', key: '1' },
-        { postSource: Images.posts.social_studies_2, profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', key: '2' },
-        { postSource: Images.posts.social_studies_3, profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', key: '3' },
-        { postSource: Images.posts.social_studies_4, profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', key: '4' },
-        { postSource: Images.posts.social_studies_5, profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', key: '5' },
+        { postSource: Images.posts.social_studies_1, profilePictureSource: require('../assets/app_icons/profile_pic.jpg'), username: 'sebthemancreator', displayName: 'sebthemancreator', key: '1' },
+        { postSource: Images.posts.social_studies_2, profilePictureSource: require('../assets/app_icons/profile_pic.jpg'), username: 'sebthemancreator', displayName: 'sebthemancreator', key: '2' },
+        { postSource: Images.posts.social_studies_3, profilePictureSource: require('../assets/app_icons/profile_pic.jpg'), username: 'sebthemancreator', displayName: 'sebthemancreator', key: '3' },
+        { postSource: Images.posts.social_studies_4, profilePictureSource: require('../assets/app_icons/profile_pic.jpg'), username: 'sebthemancreator', displayName: 'sebthemancreator', key: '4' },
+        { postSource: Images.posts.social_studies_5, profilePictureSource: require('../assets/app_icons/profile_pic.jpg'), username: 'sebthemancreator', displayName: 'sebthemancreator', key: '5' },
+        { postSource: Images.posts.apple, profilePictureSource: Images.posts.apple, username: 'ILoveApples', displayName: 'AppleKid', key: '6'}
     ]);
-    const goToProfileScreen = () => {
-        navigation.navigate("Welcome");
+    const goToProfileScreen = (name, userToNavigateTo, profilePictureUrl, displayName) => {
+        const devMode = () => {
+            Alert.alert(
+                "Dev mode is on because the username bug has not been fixed.",
+                "What screen do you want to go too?",
+                [
+                {
+                    text: "Profile Screen", onPress: () => navigation.navigate("Welcome") 
+                },
+                { 
+                    text: "Visiting Profile Screen",
+                    onPress: () => navigation.navigate("VisitingProfileScreen", {name: userToNavigateTo, photoUrl: profilePictureUrl, displayName: displayName}),
+                    style: 'cancel',
+                }
+                ]
+            );
+        }
+        name? 
+        name === userToNavigateTo? navigation.navigate("Welcome") : navigation.navigate("VistingProfileScreen", {name: userToNavigateTo, photoUrl: profilePictureUrl, displayName: displayName}) 
+        : devModeOn? devMode() : alert("An error occured");
     }
-    const [ProfileOptionsViewState, setProfileOptionsViewState] = useState(true);
-    const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
-    const {name, displayName, email, photoUrl} = storedCredentials;
-
-    const changeOptionsView = () => {
+    
+    const changeOptionsView = (PostOwner) => {
         if (ProfileOptionsViewState == true) {
+            setUsernameToReport(PostOwner);
             setProfileOptionsViewState(false);
             setFlatListElementsEnabledState(false);
         } else {
+            setUsernameToReport(null);
             setProfileOptionsViewState(true);
             setFlatListElementsEnabledState(true);
         }
@@ -97,14 +123,14 @@ const HomeScreen = ({navigation}) => {
         const welcome_message = () => {
             alert("Welcome to SocialSquare, it looks like you have just downloaded this app for the first time! Nice! You are right now on development version " + development_version);
         };
-        var development_version = '0.1.06';
+        var development_version = '0.1.07';
         //Get data
         try {
             var development_version_localstorage_value = await AsyncStorage.getItem('development_version')
             if(development_version_localstorage_value !== null) {
             if (development_version !== development_version_localstorage_value) {
                 console.log(development_version_localstorage_value);
-                var releaseNotes = "Fix minor bugs and add profile options to posts in the Find Screen";
+                var releaseNotes = "Add Light Mode Support";
                 var alert_on_update = "SocialSquare has been updated to the latest version (dev version " + development_version + "). Changes in this update are: " + releaseNotes;
                 alert(alert_on_update);
             } else {
@@ -127,12 +153,12 @@ const HomeScreen = ({navigation}) => {
     // End of checking for update and announcing the update
     return(
         <SafeAreaView
-         style={{flex: 1, ...styling.backgroundColor, paddingLeft: 10}}
+         style={{flex: 1, backgroundColor: colors.primary, paddingLeft: 10}}
          >
-            <Text style={{fontSize: 30, fontWeight: 'bold', alignContent: 'center', alignItems: 'center', alignSelf: 'center', ...styling.textColor}}>SocialSquare</Text>
-            <ProfileOptionsView viewHidden={ProfileOptionsViewState}>
-                <ProfileOptionsViewText>{name || "Couldn't get name"}</ProfileOptionsViewText>
-                <ProfileOptionsViewSubtitleText>Options</ProfileOptionsViewSubtitleText>
+            <Text style={{fontSize: 30, fontWeight: 'bold', alignContent: 'center', alignItems: 'center', alignSelf: 'center', color: colors.tertiary}}>SocialSquare</Text>
+            <ProfileOptionsView style={{backgroundColor: colors.primary}} viewHidden={ProfileOptionsViewState}>
+                <ProfileOptionsViewText style={{color: colors.tertiary}}>{usernameToReport || "Couldn't get name"}</ProfileOptionsViewText>
+                <ProfileOptionsViewSubtitleText style={{color: colors.tertiary}}>Options</ProfileOptionsViewSubtitleText>
                 <ProfileOptionsViewButtons greyButton={true} onPress={changeOptionsView}>
                     <ProfileOptionsViewButtonsText greyButton={true}>Cancel</ProfileOptionsViewButtonsText>
                 </ProfileOptionsViewButtons> 
@@ -143,9 +169,9 @@ const HomeScreen = ({navigation}) => {
                     <ProfileOptionsViewButtonsText redButton={true}>Report</ProfileOptionsViewButtonsText>
                 </ProfileOptionsViewButtons> 
             </ProfileOptionsView>
-            <ReportProfileOptionsView viewHidden={ReportProfileOptionsViewState} post={true}>
-                   <ReportProfileOptionsViewText>{"Report", name || "Report profile"}</ReportProfileOptionsViewText>
-                   <ReportProfileOptionsViewSubtitleText>Use this page to report this profile. If anyone is in danger immediately call emergency services. Do Not Wait.</ReportProfileOptionsViewSubtitleText>
+            <ReportProfileOptionsView style={{backgroundColor: colors.primary}} viewHidden={ReportProfileOptionsViewState} post={true}>
+                   <ReportProfileOptionsViewText style={{color: colors.tertiary}}>{"Report " + usernameToReport || "Report profile"}</ReportProfileOptionsViewText>
+                   <ReportProfileOptionsViewSubtitleText style={{color: colors.tertiary}}>Use this page to report this profile. If anyone is in danger immediately call emergency services. Do Not Wait.</ReportProfileOptionsViewSubtitleText>
                    <ReportProfileOptionsViewButtons greyButton={true} onPress={changeReportProfilesOptionsView}>
                        <ReportProfileOptionsViewButtonsText greyButton={true}>Cancel</ReportProfileOptionsViewButtonsText>
                     </ReportProfileOptionsViewButtons>
@@ -156,9 +182,9 @@ const HomeScreen = ({navigation}) => {
                         <ReportProfileOptionsViewButtonsText redButton={true}>This post is pretending to be someone they're not</ReportProfileOptionsViewButtonsText>
                     </ReportProfileOptionsViewButtons>
                 </ReportProfileOptionsView>
-                <ReportProfileOptionsView viewHidden={ReportProfile_ContentThatShouldNotBePosted_OptionsViewState}>
-                   <ReportProfileOptionsViewText>{"Report", name || "Report profile"}</ReportProfileOptionsViewText>
-                   <ReportProfileOptionsViewSubtitleText>What content are you trying to report?</ReportProfileOptionsViewSubtitleText>
+                <ReportProfileOptionsView style={{backgroundColor: colors.primary}} viewHidden={ReportProfile_ContentThatShouldNotBePosted_OptionsViewState}>
+                   <ReportProfileOptionsViewText style={{color: colors.tertiary}}>{"Report " + usernameToReport || "Report profile"}</ReportProfileOptionsViewText>
+                   <ReportProfileOptionsViewSubtitleText style={{color: colors.tertiary}}>What content are you trying to report?</ReportProfileOptionsViewSubtitleText>
                    <ReportProfileOptionsViewButtons padding={true} paddingAmount={'100px'}greyButton={true} onPress={changeReportProfiles_ContentThatShouldNotBePosted_OptionsView}>
                        <ReportProfileOptionsViewButtonsText greyButton={true}>Back</ReportProfileOptionsViewButtonsText>
                     </ReportProfileOptionsViewButtons>
@@ -198,9 +224,9 @@ const HomeScreen = ({navigation}) => {
                         </ReportProfileOptionsViewButtons>
                     </ScrollView>
                 </ReportProfileOptionsView>
-                <ReportProfileOptionsView viewHidden={ReportProfile_PretendingToBeSomeoneElse_OptionsViewState}>
-                   <ReportProfileOptionsViewText>{"Report", name || "Report profile"}</ReportProfileOptionsViewText>
-                   <ReportProfileOptionsViewSubtitleText>User Is Pretending To Be Someone Else</ReportProfileOptionsViewSubtitleText>
+                <ReportProfileOptionsView style={{backgroundColor: colors.primary}} viewHidden={ReportProfile_PretendingToBeSomeoneElse_OptionsViewState}>
+                   <ReportProfileOptionsViewText style={{color: colors.tertiary}}>{"Report " + usernameToReport || "Report profile"}</ReportProfileOptionsViewText>
+                   <ReportProfileOptionsViewSubtitleText style={{color: colors.tertiary}}>User Is Pretending To Be Someone Else</ReportProfileOptionsViewSubtitleText>
                    <ReportProfileOptionsViewButtons greyButton={true} onPress={changeReportProfiles_PretendingToBeSomeoneElse_OptionsView}>
                        <ReportProfileOptionsViewButtonsText greyButton={true}>Back</ReportProfileOptionsViewButtonsText>
                     </ReportProfileOptionsViewButtons>
@@ -224,12 +250,12 @@ const HomeScreen = ({navigation}) => {
                 scrollEnabled={FlatListElementsEnabledState}
                 showsVerticalScrollIndicator={false}
                 renderItem={({ item }) => ( 
-                    <View style={{minWidth: 500, maxWidth: 500, width: 500, ...styling.backgroundColor, alignSelf: 'center', zIndex: 100}}>
+                    <View style={{minWidth: 500, maxWidth: 500, width: 500, backgroundColor: colors.primary, alignSelf: 'center', zIndex: 100}}>
                         <View style={{maxWidth: 500, minWidth: 500, width: 500, alignContent: 'center', alignItems: 'center', alignSelf: 'center',}}>
                             <View style={{maxWidth: 400, minWidth: 400}}>
                                 <View style={{flex: 2, flexDirection:'row'}}>
                                     <View style={{width:60}}>
-                                        <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={goToProfileScreen}>
+                                        <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={() => goToProfileScreen(name, item.username, item.profilePictureSource, item.displayName)}>
                                             <Image
                                                 source={item.profilePictureSource || require('../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/266-question.png')}
                                                 style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2, position:'absolute', left:13}}
@@ -240,22 +266,22 @@ const HomeScreen = ({navigation}) => {
                                         </TouchableOpacity>
                                     </View>
                                     <View>
-                                        <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={goToProfileScreen}>
-                                            <Text style={{...styling.textColor, textAlign: 'left', fontWeight:'bold', fontSize: 20, textAlignVertical:'bottom'}}>{item.username || "Couldn't get name"}</Text>
+                                        <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={() => goToProfileScreen(name, item.username, item.profilePictureSource, item.displayName)}>
+                                            <Text style={{color: colors.tertiary, textAlign: 'left', fontWeight:'bold', fontSize: 20, textAlignVertical:'bottom'}}>{item.displayName || item.username || "Couldn't get name"}</Text>
                                         </TouchableOpacity>
                                     </View>
                                     <View style={{position: 'absolute', right: 20}}>
-                                        <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={changeOptionsView}>
+                                        <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={() => changeOptionsView(item.username)}>
                                             <Image
                                                 source={require('../assets/app_icons/3dots.png')}
-                                                style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, ...styling.tintColor}}
+                                                style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, tintColor: colors.tertiary}}
                                                 resizeMode="contain"
                                                 resizeMethod="resize"
                                             />
                                         </TouchableOpacity>
                                     </View>
                                 </View>
-                                <View style={{...styling.backgroundColor, maxWidth: 400, minWidth: 400}}>
+                                <View style={{backgroundColor: colors.primary, maxWidth: 400, minWidth: 400}}>
                                     <ProgressiveImage
                                         source={darkModeOn? item.postSource || require('../assets/app_icons/cannot_get_post_darkmode.png') : item.postSource || require('../assets/app_icons/cannot_get_post_lightmode.png')}
                                         style={{minHeight: 400, minWidth: 400, width: 400, height: 400, maxWidth: 400, maxHeight: 400}}
@@ -268,7 +294,7 @@ const HomeScreen = ({navigation}) => {
                                         <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={() => {alert("The Like Button does not work yet. We will add functionality to this very shortly.")}}>
                                             <Image
                                                 source={Images.posts.heart}
-                                                style={{...styling.like_comment_save_buttons, ...styling.tintColor}}
+                                                style={{...styling.like_comment_save_buttons, tintColor: colors.tertiary}}
                                                 resizeMode="contain"
                                                 resizeMethod="resize"
                                             />
@@ -278,7 +304,7 @@ const HomeScreen = ({navigation}) => {
                                         <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={() => {alert("The Comment Button does not work yet. We will add functionality to this very shortly.")}}>
                                             <Image
                                                 source={Images.posts.message_bubbles}
-                                                style={{...styling.like_comment_save_buttons, ...styling.tintColor}}
+                                                style={{...styling.like_comment_save_buttons, tintColor: colors.tertiary}}
                                                 resizeMode="contain"
                                                 resizeMethod="resize"
                                             />
@@ -288,7 +314,7 @@ const HomeScreen = ({navigation}) => {
                                         <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={() => {alert("The Save Button does not work yet. We will add functionality to this very shortly.")}}>
                                             <Image
                                                 source={Images.posts.bookmark}
-                                                style={{...styling.like_comment_save_buttons, ...styling.tintColor}}
+                                                style={{...styling.like_comment_save_buttons, tintColor: colors.tertiary}}
                                                 resizeMode="contain"
                                                 resizeMethod="resize"
                                             />

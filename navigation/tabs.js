@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
+import { useTheme } from '@react-navigation/native';
 
 import HomeScreen from '../screens/HomeScreen';
 import FindScreen from '../screens/FindScreen';
@@ -10,7 +11,6 @@ import PostScreen from '../screens/PostScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import BadgesScreen from '../screens/BadgesScreen';
 import LoginScreen from '../screens/LoginScreen';
-import settingsButtonTopRight from '../screens/settingsButtonTopRight';
 import ProfileScreen from '../screens/ProfileScreen';
 import {ChatScreen_Stack, ProfileScreenToSettings_StackNavigation, RootStack, SettingsToBadges_StackNavigation, FindScreen_Stack, post_screen_navigator, home_screen_post_to_profile_screen} from '../navigation/StackNavigator.js'
 import AppStyling from '../screens/AppStylingScreen';
@@ -53,6 +53,7 @@ const Tabs = ({navigation}) => {
         var navFocusedColor = lightModeStyling_navFocusedColor;
         var navNonFocusedColor = lightModeStyling_navNonFocusedColor;
     }
+    const {colors} = useTheme();
     const haptic_feedback_options = {
         enableVibrateFallback: true,
         ignoreAndroidSystemSettings: false
@@ -89,8 +90,8 @@ const Tabs = ({navigation}) => {
                     left: 0, /*Change the margin from the left of the screen for the tab navigator*/
                     right: 0, /*Change the margin from the right of the screen for the tab navigator*/
                     elevation: 0,
-                    ...styling.navBackgroundColor,
-                    ...styling.borderColor,
+                    backgroundColor: colors.primary,
+                    borderColor: colors.primary,
                     height: 75,
                     /*...styles.shadow*/
                 }
@@ -106,10 +107,10 @@ const Tabs = ({navigation}) => {
                                 style={{
                                     width: 35,
                                     height: 35,
-                                    tintColor: focused ? navFocusedColor : navNonFocusedColor
+                                    tintColor: focused ? colors.navFocusedColor : colors.navNonFocusedColor
                                 }}
                             />
-                            <Text style={{color: focused ? navFocusedColor : navNonFocusedColor, fontSize: 10,}}>HOME</Text>
+                            <Text style={{color: focused ? colors.navFocusedColor : colors.navNonFocusedColor, fontSize: 10,}}>HOME</Text>
                         </View>
                     </TouchableOpacity>
                 ),
@@ -124,10 +125,10 @@ const Tabs = ({navigation}) => {
                                 style={{
                                     width: 35,
                                     height: 35,
-                                    tintColor: focused ? navFocusedColor : navNonFocusedColor
+                                    tintColor: focused ? colors.navFocusedColor : colors.navNonFocusedColor
                                 }}
                             />
-                            <Text style={{color: focused ? navFocusedColor : navNonFocusedColor, fontSize: 10,}}>FIND</Text>
+                            <Text style={{color: focused ? colors.navFocusedColor : colors.navNonFocusedColor, fontSize: 10,}}>FIND</Text>
                         </View>
                     </TouchableOpacity>
                 ),
@@ -161,10 +162,10 @@ const Tabs = ({navigation}) => {
                                 style={{
                                     width: 35,
                                     height: 35,
-                                    tintColor: focused ? navFocusedColor : navNonFocusedColor
+                                    tintColor: focused ? colors.navFocusedColor : colors.navNonFocusedColor
                                 }}
                             />
-                            <Text style={{color: focused ? navFocusedColor : navNonFocusedColor, fontSize: 10,}}>CHAT</Text>
+                            <Text style={{color: focused ? colors.navFocusedColor : colors.navNonFocusedColor, fontSize: 10,}}>CHAT</Text>
                         </View>
                     </TouchableOpacity>
                 ),
@@ -180,11 +181,11 @@ const Tabs = ({navigation}) => {
                                     width: 35,
                                     height: 35,
                                     borderWidth: 3,
-                                    borderColor: focused ? navFocusedColor : navNonFocusedColor,
+                                    borderColor: focused ? colors.navFocusedColor : colors.navNonFocusedColor,
                                     borderRadius: 40/2
                                 }}
                             />
-                            <Text style={{color: focused ? navFocusedColor : navNonFocusedColor, fontSize: 10,}}>PROFILE</Text>
+                            <Text style={{color: focused ? colors.navFocusedColor : colors.navNonFocusedColor, fontSize: 10,}}>PROFILE</Text>
                         </View>
                     </TouchableOpacity>
                 ),

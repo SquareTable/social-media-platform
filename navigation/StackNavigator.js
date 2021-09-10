@@ -7,12 +7,11 @@ import {Colors} from '../screens/screenStylings/styling.js'
 const {primary, tertiary} = Colors;
 
 import ProfileScreen from "../screens/ProfileScreen";
+import VisitingProfileScreen from "../screens/VisitingProfileScreen.js";
 import SettingsScreen from "../screens/SettingsScreen";
 import HomeScreen from "../screens/HomeScreen";
 import BadgesScreen from "../screens/BadgesScreen";
 import LoginScreen from "../screens/LoginScreen";
-import ChangeUsername from "../screens/ChangeUsername";
-import ChangePassword from "../screens/ChangePassword";
 import AccountSettings from "../screens/AccountSettings";
 import AppStyling from "../screens/AppStylingScreen";
 import ChatScreen from "../screens/ChatScreen";
@@ -21,7 +20,7 @@ import Signup from "../screens/Signup.js";
 import { NavigationImages } from '../navigation/navigationImages.js';
 
 import { CredentialsContext } from "../components/CredentialsContext.js";
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, useTheme } from '@react-navigation/native';
 import FindScreen from "../screens/FindScreen.js";
 import Post from "../posts/post.js";
 import Post_FullScreen from "../posts/post_fullscreen.js";
@@ -59,6 +58,7 @@ const ChatScreen_Stack = () => {
   } else {
     var styling = lightModeStyling;
   }
+  const { colors } = useTheme();
   return (
     <Stack.Navigator screenOptions={screenOptionStyle}>
       <Stack.Screen name="ChatScreenNavigator" component={ChatScreenNavigator}
@@ -66,7 +66,7 @@ const ChatScreen_Stack = () => {
           headerStyle: {
             backgroundColor: 'transparent',
           },
-          headerTintColor: tertiary,
+          headerTintColor: colors.tertiary,
           headerTransparent: true,
           headerTitle: '',
           headerLeftContainerStyle: {
@@ -79,7 +79,7 @@ const ChatScreen_Stack = () => {
           headerStyle: {
             backgroundColor: 'transparent',
           },
-          headerTintColor: tertiary,
+          headerTintColor: colors.tertiary,
           headerTransparent: true,
           headerTitle: '',
           headerLeftContainerStyle: {
@@ -93,7 +93,7 @@ const ChatScreen_Stack = () => {
           headerStyle: {
             backgroundColor: 'transparent',
           },
-          headerTintColor: tertiary,
+          headerTintColor: colors.tertiary,
           headerTransparent: true,
           headerTitle: '',
           headerLeftContainerStyle: {
@@ -107,13 +107,14 @@ const ChatScreen_Stack = () => {
 };
 
 const RootStack = () => {
+  const { colors } = useTheme();
   return(
     <Stack.Navigator
         screenOptions={{
             headerStyle: {
                 backgroundColor: 'transparent',
             },
-            headerTintColor: tertiary,
+            headerTintColor: colors.tertiary,
             headerTransparent: true,
             headerTitle: '',
             headerLeftContainerStyle: {
@@ -141,6 +142,7 @@ const FindScreen_Stack = () => {
   } else {
     var styling = lightModeStyling;
   }
+  const { colors } = useTheme();
   return (
     <Stack.Navigator screenOptions={screenOptionStyle}>
       <Stack.Screen name="FindScreen" component={FindScreen}
@@ -148,7 +150,7 @@ const FindScreen_Stack = () => {
           headerStyle: {
             backgroundColor: 'transparent',
           },
-          headerTintColor: tertiary,
+          headerTintColor: colors.tertiary,
           headerTransparent: true,
           headerTitle: '',
           headerLeftContainerStyle: {
@@ -162,7 +164,7 @@ const FindScreen_Stack = () => {
           headerStyle: {
             backgroundColor: 'transparent',
           },
-          headerTintColor: tertiary,
+          headerTintColor: colors.tertiary,
           headerTransparent: true,
           headerTitle: '',
           headerLeftContainerStyle: {
@@ -176,12 +178,13 @@ const FindScreen_Stack = () => {
 };
 
 const home_screen_post_to_profile_screen = () => {
+  const { colors } = useTheme();
   return(
     <Stack.Navigator screenOptions={{
       headerStyle: {
         backgroundColor: 'transparent',
       },
-      headerTintColor: tertiary,
+      headerTintColor: colors.tertiary,
       headerTransparent: true,
       headerTitle: '',
       headerLeftContainerStyle: {
@@ -190,18 +193,20 @@ const home_screen_post_to_profile_screen = () => {
     }}>
       <Stack.Screen name="HomeScreen" component={HomeScreen}/>
       <Stack.Screen name="Welcome" component={ProfileScreen}/>
+      <Stack.Screen name="VisitingProfileScreen" component={VisitingProfileScreen}/>
     </Stack.Navigator>
   )
 }
 
 const post_screen_navigator = () => {
+  const { colors } = useTheme();
   return(
     <Stack.Navigator 
     screenOptions={{
       headerStyle: {
           backgroundColor: 'transparent',
       },
-      headerTintColor: tertiary,
+      headerTintColor: colors.tertiary,
       headerTransparent: true,
       headerTitle: '',
       headerLeftContainerStyle: {

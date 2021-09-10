@@ -1,5 +1,6 @@
 import React, {useContext, useState} from 'react';
 import { StatusBar } from 'expo-status-bar';
+import { useTheme } from '@react-navigation/native';
 
 import {
     InnerContainer,
@@ -107,12 +108,14 @@ const PostScreen = ({navigation}) => {
         }
     }
 
+    const {colors} = useTheme();
+
     return(
         <>    
             <StatusBar style="dark"/>
-                <WelcomeContainer postScreen={true}>
+                <WelcomeContainer style={{backgroundColor: colors.primary}} postScreen={true}>
                     <PageTitle>Post Screen</PageTitle>
-                    <SubTitle>Select a format</SubTitle>
+                    <SubTitle style={{color: colors.tertiary}}>Select a format</SubTitle>
                     <PostCollectionView>
                         <PostTypeSelector styleForSelected={formatOneSelected} onPress={formatOnePressed}>
                             <PostIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/016-camera.png')}/>

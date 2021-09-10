@@ -17,6 +17,7 @@ import {
     lightModeStyling,
     BackgroundDarkColor
 } from '../screens/screenStylings/styling.js';
+import {useTheme} from "@react-navigation/native";
 
 // async-storage
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -63,14 +64,16 @@ const SettingsPage = ({navigation}) => {
         var styling = lightModeStyling;
     }
 
+    const {colors} = useTheme();
+
     return(
         <> 
-            <StatusBar style="dark"/>   
-            <BackgroundDarkColor>
+            <StatusBar style={colors.StatusBarColor}/>   
+            <BackgroundDarkColor style={{backgroundColor: colors.primary}}>
                 <ScrollView>
-                    <WelcomeContainer>                
-                    <ConfirmLogoutView viewHidden={logoutViewState}>
-                        <ConfirmLogoutText>Are you sure you want to logout?</ConfirmLogoutText>
+                    <WelcomeContainer style={{backgroundColor: colors.primary}}>                
+                    <ConfirmLogoutView style={{backgroundColor: colors.primary}} viewHidden={logoutViewState}>
+                        <ConfirmLogoutText style={{color: colors.tertiary}}>Are you sure you want to logout?</ConfirmLogoutText>
                         <ConfirmLogoutButtons cancelButton={true} onPress={changeLogoutView}>
                             <ConfirmLogoutButtonText cancelButton={true}>Cancel</ConfirmLogoutButtonText>
                             </ConfirmLogoutButtons> 
@@ -80,28 +83,28 @@ const SettingsPage = ({navigation}) => {
                     </ConfirmLogoutView>
                         <Avatar resizeMode="cover" source={AvatarImg} />
                         
-                        <SettingsPageItemTouchableOpacity onPress={() => navigation.navigate("AccountSettings")}>
+                        <SettingsPageItemTouchableOpacity style={{borderColor: colors.borderColor}} onPress={() => navigation.navigate("AccountSettings")}>
                             <SettingsItemImage source={require('./../assets/app_icons/settings.png')}/>
-                            <SettingsItemText>Account Settings</SettingsItemText>
+                            <SettingsItemText style={{color: colors.tertiary}}>Account Settings</SettingsItemText>
                         </SettingsPageItemTouchableOpacity>
-                        <SettingsPageItemTouchableOpacity onPress={() => navigation.navigate("AccountSettings")}>
+                        <SettingsPageItemTouchableOpacity style={{borderColor: colors.borderColor}} onPress={() => navigation.navigate("AccountSettings")}>
                             <SettingsItemImage source={require('./../assets/app_icons/settings.png')}/>
-                            <SettingsItemText>Privacy Settings</SettingsItemText>
+                            <SettingsItemText style={{color: colors.tertiary}}>Privacy Settings</SettingsItemText>
                         </SettingsPageItemTouchableOpacity>
-                        <SettingsPageItemTouchableOpacity onPress={() => {navigation.navigate('ReportBugScreen')}}>
+                        <SettingsPageItemTouchableOpacity style={{borderColor: colors.borderColor}} onPress={() => {navigation.navigate('ReportBugScreen')}}>
                             <SettingsItemImage source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/265-notification.png')}/>
-                            <SettingsItemText>Report bug</SettingsItemText>
+                            <SettingsItemText style={{color: colors.tertiary}}>Report bug</SettingsItemText>
                         </SettingsPageItemTouchableOpacity>
-                        <SettingsPageItemTouchableOpacity onPressOut={changeLogoutView}>
+                        <SettingsPageItemTouchableOpacity style={{borderColor: colors.borderColor}} onPressOut={changeLogoutView}>
                             <SettingsItemImage source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/277-exit.png')}/>
-                            <SettingsItemText>Logout</SettingsItemText>
+                            <SettingsItemText style={{color: colors.tertiary}}>Logout</SettingsItemText>
                         </SettingsPageItemTouchableOpacity>
-                        <Text style={{...styling.textColor, fontSize: 24, textAlign: 'center'}}>© SquareTable 2021</Text>
-                        <Text style={{...styling.textColor, fontSize: 24, textAlign: 'center', marginBottom: 10}}>All Rights Reserved</Text>
-                        <Text style={{...styling.textColor, fontSize: 18, textAlign: 'center', marginBottom: 10}}>Made by Sebastian Webster, Kovid Dev, and Jacob Bowden</Text>
-                        <TouchableOpacity style={{marginHorizontal: '20%', ...styling.borderColor, borderWidth: 5, borderRadius: 20/2}} onPressOut={() => {Linking.openURL('https://github.com/SquareTable/social-media-platform')}}>
+                        <Text style={{color: colors.tertiary, fontSize: 24, textAlign: 'center'}}>© SquareTable 2021</Text>
+                        <Text style={{color: colors.tertiary, fontSize: 24, textAlign: 'center', marginBottom: 10}}>All Rights Reserved</Text>
+                        <Text style={{color: colors.tertiary, fontSize: 18, textAlign: 'center', marginBottom: 10}}>Made by Sebastian Webster, Kovid Dev, and Jacob Bowden</Text>
+                        <TouchableOpacity style={{marginHorizontal: '20%', borderColor: colors.borderColor, borderWidth: 5, borderRadius: 20/2}} onPressOut={() => {Linking.openURL('https://github.com/SquareTable/social-media-platform')}}>
                             <View>
-                                <Text style={{...styling.textColor, fontSize: 16, textAlign: 'center', padding: 7}}>Press here to visit the SocialSquare GitHub repo</Text>
+                                <Text style={{color: colors.tertiary, fontSize: 16, textAlign: 'center', padding: 7}}>Press here to visit the SocialSquare GitHub repo</Text>
                             </View>
                         </TouchableOpacity>
                     </WelcomeContainer>

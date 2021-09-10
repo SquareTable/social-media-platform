@@ -1,5 +1,6 @@
 import React, {useState, useContext} from 'react';
 import { StatusBar } from 'expo-status-bar';
+import {useTheme} from '@react-navigation/native';
 
 // formik
 import {Formik} from 'formik';
@@ -28,7 +29,7 @@ import {
     TextLink,
     TextLinkContent,
 } from '../screens/screenStylings/styling.js';
-import {View, ActivityIndicator, ImageBackground, StyleSheet} from 'react-native';
+import {View, ActivityIndicator, ImageBackground, StyleSheet, useColorScheme} from 'react-native';
 
 // Colors
 const {brand, primary, tertiary} = Colors;
@@ -102,15 +103,17 @@ const ChangeEmailPage = ({navigation}) => {
         })
     }
 
+    const {colors} = useTheme();
+
     return(
         <KeyboardAvoidingWrapper>
-            <StyledContainer>
+            <StyledContainer style={{backgroundColor: colors.primary}}>
                 
-                    <StatusBar style="dark"/>
-                    <InnerContainer>
+                    <StatusBar style={colors.StatusBarColor}/>
+                    <InnerContainer style={{backgroundColor: colors.primary}}>
                         <PageLogo source={require('./../assets/img/Logo.png')} />
                         <PageTitle>SocialSquare</PageTitle>
-                        <SubTitle>Change Email</SubTitle>
+                        <SubTitle style={{color: colors.teritary}}>Change Email</SubTitle>
 
                         <Formik
                             initialValues={{password: '', userEmail: email, desiredEmail: ''}}
@@ -129,15 +132,16 @@ const ChangeEmailPage = ({navigation}) => {
                                     <UserTextInput
                                         icon="person"
                                         placeholder="Desired Email"
-                                        placeholderTextColor={tertiary}
+                                        placeholderTextColor={colors.tertiary}
                                         onChangeText={handleChange('desiredEmail')}
                                         onBlur={handleBlur('desiredEmail')}
                                         value={values.desiredEmail}
+                                        style={{backgroundColor: colors.primary, color: colors.tertiary}}
                                     />
                                     <UserTextInput
                                         icon="lock"
                                         placeholder="Confirm Password"
-                                        placeholderTextColor={tertiary}
+                                        placeholderTextColor={colors.tertiary}
                                         onChangeText={handleChange('password')}
                                         onBlur={handleBlur('password')}
                                         value={values.password}
@@ -145,6 +149,7 @@ const ChangeEmailPage = ({navigation}) => {
                                         isPassword={true}
                                         hidePassword={hidePassword}
                                         setHidePassword={setHidePassword}
+                                        style={{backgroundColor: colors.primary, color: colors.tertiary}}
                                     />
                                     <MsgBox type={messageType}>{message}</MsgBox>
                                     {!isSubmitting && (<StyledButton onPress={handleSubmit}>
@@ -155,8 +160,8 @@ const ChangeEmailPage = ({navigation}) => {
                                         <ActivityIndicator size="large" color={primary} />
                                     </StyledButton>)}
                                     
-                                    <StyledButton signUpButton={true} onPress={() => navigation.navigate("AccountSettings")}>
-                                            <ButtonText signUpButton={true}> Back </ButtonText>
+                                    <StyledButton style={{backgroundColor: colors.primary}} signUpButton={true} onPress={() => navigation.navigate("AccountSettings")}>
+                                            <ButtonText style={{color: colors.tertiary}} signUpButton={true}> Back </ButtonText>
                                     </StyledButton>
                                     <SubTitle disclaimerText={true}>You may have to re-login to view your changes</SubTitle>
                                 </StyledFormArea>)}

@@ -11,8 +11,6 @@ import SettingsScreen from "../screens/SettingsScreen";
 import HomeScreen from "../screens/HomeScreen";
 import BadgesScreen from "../screens/BadgesScreen";
 import LoginScreen from "../screens/LoginScreen";
-import ChangeUsername from "../screens/ChangeUsername";
-import ChangePassword from "../screens/ChangePassword";
 import AccountSettings from "../screens/AccountSettings";
 import AppStyling from "../screens/AppStylingScreen";
 import ChatScreen from "../screens/ChatScreen";

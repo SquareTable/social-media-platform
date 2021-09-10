@@ -2,6 +2,8 @@ import React, {useState} from 'react';
 import { StyleSheet, Text, View, Button, Image, SafeAreaView, ScrollView, Appearance, TouchableOpacity, Dimensions, FlatList } from 'react-native';
 import ProgressiveImage from '../posts/ProgressiveImage.js';
 import SearchBar from "react-native-dynamic-search-bar";
+import { useTheme } from '@react-navigation/native';
+
 import {
     darkModeStyling, 
     darkModeOn, 
@@ -22,20 +24,6 @@ const FindScreen = ({navigation}) => {
     var postWidth = deviceWidth / 3.1
     var postHeight = postWidth
 
-    const colorScheme = Appearance.getColorScheme();
-    if (colorScheme === 'dark') {
-        //Dark mode is on
-    } else {
-        //Dark mode is off
-    }
-
-    const Styles = StyleSheet.create({
-        container: {
-            flex: 1,
-            ...styling.backgroundColor
-        },
-    });
-
     const [PostRows, setPostRows] = useState([
         { post_source_one: Images.posts.profile_picture, post_one_profilepicture: Images.posts.profile_picture, post_one_username: 'sebthemancreator', post_source_two: Images.posts.background, post_two_profilepicture: Images.posts.profile_picture, post_two_username: 'sebthemancreator', post_source_three: Images.posts.clock, post_three_profilepicture: Images.posts.profile_picture, post_three_username: 'sebthemancreator', key: '1' },
         { post_source_one: Images.posts.profile_picture, post_one_profilepicture: Images.posts.profile_picture, post_one_username: 'sebthemancreator', post_source_two: Images.posts.background, post_two_profilepicture: Images.posts.profile_picture, post_two_username: 'sebthemancreator', post_source_three: Images.posts.clock, post_three_profilepicture: Images.posts.profile_picture, post_three_username: 'sebthemancreator', key: '2' },
@@ -47,10 +35,11 @@ const FindScreen = ({navigation}) => {
 
     const {tertiary, primary} = Colors;
     const {width, height} = Dimensions.get('window');
+    const {colors, dark} = useTheme();
     return(
-        <SafeAreaView style={Styles.container}>
+        <SafeAreaView style={{flex: 1, backgroundColor: colors.primary}}>
             <SearchBar
-                darkMode="true"
+                darkMode={dark? true : false}
                 style={{marginVertical: 10}}
                 placeholder="Search here"
                 onChangeText={(text) => {console.log(text)}}
@@ -62,11 +51,11 @@ const FindScreen = ({navigation}) => {
                 data={PostRows}
                 showsVerticalScrollIndicator={false}
                 renderItem={({ item }) => ( 
-                    <View style={{flex: 2, flexDirection: 'row', ...styling.backgroundColor, marginTop: 0, marginBottom: postHeight}}>
+                    <View style={{flex: 2, flexDirection: 'row', justifyContent: 'space-evenly', backgroundColor: colors.primary, marginTop: 0, marginBottom: postHeight}}>
                         <TouchableOpacity style={{minWidth: '30%', width: '30%', maxWidth: '30%', marginHorizontal: '1.6%'}} onPressOut={() => {navigateToPost(item.post_source_one, item.post_one_profilepicture, item.post_one_username)}}>
                             <ProgressiveImage
                                 source={item.post_source_one}
-                                style={{width: postWidth, height: postHeight, position: 'absolute'}}
+                                style={{width: postWidth, height: postHeight, position: 'absolute', resizeMode: 'contain', aspectRatio: 1, flex: 1}}
                                 resizeMode="contain"
                                 resizeMethod="resize"
                             />
@@ -74,7 +63,7 @@ const FindScreen = ({navigation}) => {
                         <TouchableOpacity style={{minWidth: '30%', width: '30%', maxWidth: '30%', marginHorizontal: '1.6%'}} onPressOut={() => {navigateToPost(item.post_source_two, item.post_two_profilepicture, item.post_two_username)}}>
                             <ProgressiveImage
                                 source={item.post_source_two}
-                                style={{width: postWidth, height: postHeight, position: 'absolute'}}
+                                style={{width: postWidth, height: postHeight, position: 'absolute', resizeMode: 'contain', aspectRatio: 1, flex: 1}}
                                 resizeMode="contain"
                                 resizeMethod="resize"
                             />
@@ -82,11 +71,12 @@ const FindScreen = ({navigation}) => {
                         <TouchableOpacity style={{minWidth: '30%', width: '30%', maxWidth: '30%', marginHorizontal: '1.6%'}} onPressOut={() => {navigateToPost(item.post_source_three, item.post_three_profilepicture, item.post_three_username)}}>
                             <ProgressiveImage
                                 source={item.post_source_three}
-                                style={{width: postWidth, height: postHeight, position: 'absolute'}}
+                                style={{width: postWidth, height: postHeight, position: 'absolute', resizeMode: 'contain', aspectRatio: 1, flex: 1}}
                                 resizeMode="contain"
                                 resizeMethod="resize"
                             />
                         </TouchableOpacity>
+                        <View style={{marginTop: 10}}/>
                     </View>
                 )}
             />

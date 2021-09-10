@@ -3,6 +3,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, Button, Image, SafeAreaView, ScrollView, Appearance, TouchableOpacity, Dimensions } from 'react-native';
 import ProgressiveImage from '../posts/ProgressiveImage.js';
+import { useTheme } from '@react-navigation/native';
 import {
     darkModeStyling, 
     darkModeOn, 
@@ -39,13 +40,15 @@ const TermsOfService = ({navigation}) => {
         navigation.navigate("Signup");
     }
 
+    const {colors} = useTheme();
+
     return(
-        <TermsOfServiceBackground>
-            <Text style={{textAlign: 'center', fontSize: 30, ...styling.textColor, fontWeight: 'bold', marginBottom: 30}}>Terms of Service</Text>
+        <TermsOfServiceBackground style={{backgroundColor: colors.primary}}>
+            <Text style={{textAlign: 'center', fontSize: 30, color: colors.tertiary, fontWeight: 'bold', marginBottom: 30}}>Terms of Service</Text>
             <ScrollView style={{marginHorizontal: 10}}>
-                <Text style={{...styling.textColor}}>Terms of Service coming soon hehehhehehe :)</Text> 
-                <TermsOfServiceGoBackButton onPress={goBackToSignupScreen}>
-                       <TermsOfServiceGoBackButtonText>Go back</TermsOfServiceGoBackButtonText>
+                <Text style={{color: colors.tertiary}}>Terms of Service coming soon hehehhehehe :)</Text> 
+                <TermsOfServiceGoBackButton style={{backgroundColor: colors.primary, borderColor: colors.tertiary}}onPress={goBackToSignupScreen}>
+                       <TermsOfServiceGoBackButtonText style={{color: colors.tertiary}}>Go back</TermsOfServiceGoBackButtonText>
                 </TermsOfServiceGoBackButton>  
             </ScrollView>
         </TermsOfServiceBackground>

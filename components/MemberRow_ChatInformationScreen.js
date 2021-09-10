@@ -6,6 +6,7 @@ import styled from "styled-components";
 import Images from "../posts/images.js";
 import Post from "../posts/post.js";
 import SwitchToggle from "react-native-switch-toggle";
+import {useTheme} from "@react-navigation/native";
 import {
     darkModeStyling, 
     darkModeOn, 
@@ -25,6 +26,7 @@ import {
 
 const MemberRow = ({navigation}, props) => {
     const { username, user_profile_pic } = props;
+    const { colors } = useTheme();
     return(
         <FlexRow_NOJustifyContent style={{marginBottom: 15}}>
             <Image
@@ -33,7 +35,7 @@ const MemberRow = ({navigation}, props) => {
                 resizeMode="contain"
                 resizeMethod="resize"
             />
-            <TestText style={{marginLeft: 15, marginTop: 13}}>{username || "Couldn't get name"}</TestText>
+            <TestText style={{marginLeft: 15, marginTop: 13, color: colors.tertiary}}>{username || "Couldn't get name"}</TestText>
         </FlexRow_NOJustifyContent>
     );
 };

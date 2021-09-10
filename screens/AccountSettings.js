@@ -1,5 +1,6 @@
 import React, {useContext, useState} from 'react';
 import { StatusBar } from 'expo-status-bar';
+import {useTheme} from "@react-navigation/native";
 
 import {
     WelcomeContainer,
@@ -25,6 +26,7 @@ import { ImageBackground, ScrollView, Settings } from 'react-native';
 
 
 const AccountSettings = ({navigation}) => {
+    const {colors, dark} = useTheme();
      //context
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
     const {name, displayName, email, photoUrl} = storedCredentials;
@@ -50,27 +52,27 @@ const AccountSettings = ({navigation}) => {
 
     return(
         <> 
-            <StatusBar style="dark"/>   
-            <WelcomeContainer>                
+            <StatusBar style={colors.StatusBarColor}/>   
+            <WelcomeContainer style={{backgroundColor: colors.primary}}>                
                 <Avatar resizeMode="cover" source={AvatarImg} />
                 <TextLink>
-                    <TextLinkContent>Change Profile Picture</TextLinkContent>
+                    <TextLinkContent style={{color: dark? colors.brand : colors.darkestBlue}}>Change Profile Picture</TextLinkContent>
                 </TextLink>
-                <SettingsPageItemTouchableOpacity onPress={() => navigation.navigate("ChangeDisplayNamePage")}>
-                    <SettingsItemText titleIfSubTitle={true}>Change Display Name</SettingsItemText>
-                    <SettingsItemText subTitle={true}>Current: {displayName|| "Couldn't Get Or None"}</SettingsItemText>
+                <SettingsPageItemTouchableOpacity style={{borderColor: colors.borderColor}} onPress={() => navigation.navigate("ChangeDisplayNamePage")}>
+                    <SettingsItemText style={{color: colors.tertiary}} titleIfSubTitle={true}>Change Display Name</SettingsItemText>
+                    <SettingsItemText style={{color: colors.tertiary}} subTitle={true}>Current: {displayName|| "Couldn't Get Or None"}</SettingsItemText>
                 </SettingsPageItemTouchableOpacity>
-                <SettingsPageItemTouchableOpacity onPress={() => navigation.navigate("ChangeUsernamePage")}>
-                    <SettingsItemText titleIfSubTitle={true}>Change User Name</SettingsItemText>
-                    <SettingsItemText subTitle={true}>Current: {name || "Couldn't get name"}</SettingsItemText>
+                <SettingsPageItemTouchableOpacity style={{borderColor: colors.borderColor}} onPress={() => navigation.navigate("ChangeUsernamePage")}>
+                    <SettingsItemText style={{color: colors.tertiary}} titleIfSubTitle={true}>Change User Name</SettingsItemText>
+                    <SettingsItemText style={{color: colors.tertiary}} subTitle={true}>Current: {name || "Couldn't get name"}</SettingsItemText>
                 </SettingsPageItemTouchableOpacity>
-                <SettingsPageItemTouchableOpacity onPress={() => navigation.navigate("ChangeEmailPage")}>
-                    <SettingsItemText titleIfSubTitle={true}>Change Email</SettingsItemText>
-                    <SettingsItemText subTitle={true}>Current: {email || "Couldn't get email"}</SettingsItemText>
+                <SettingsPageItemTouchableOpacity style={{borderColor: colors.borderColor}} onPress={() => navigation.navigate("ChangeEmailPage")}>
+                    <SettingsItemText style={{color: colors.tertiary}} titleIfSubTitle={true}>Change Email</SettingsItemText>
+                    <SettingsItemText style={{color: colors.tertiary}} subTitle={true}>Current: {email || "Couldn't get email"}</SettingsItemText>
                 </SettingsPageItemTouchableOpacity>
-                <SettingsPageItemTouchableOpacity onPress={changeLogoutView}>
-                    <SettingsItemText titleIfSubTitle={true}>Change Password</SettingsItemText>
-                    <SettingsItemText subTitle={true}>Last Changed: {null || "Couldn't get date"}</SettingsItemText>
+                <SettingsPageItemTouchableOpacity style={{borderColor: colors.borderColor}} onPress={changeLogoutView}>
+                    <SettingsItemText style={{color: colors.tertiary}} titleIfSubTitle={true}>Change Password</SettingsItemText>
+                    <SettingsItemText style={{color: colors.tertiary}} subTitle={true}>Last Changed: {null || "Couldn't get date"}</SettingsItemText>
                 </SettingsPageItemTouchableOpacity>
             </WelcomeContainer>
         </>
