@@ -102,13 +102,14 @@ const LoginScreen = ({navigation}) => {
         setMessageType(type);
     }
 
+
     const persistLogin = (credentials, message, status) => {
         AsyncStorage.setItem('socialSquareCredentials', JSON.stringify(credentials))
         .then(() => {
             handleMessage(message, status);
             setStoredCredentials(credentials);
-            console.log(credentials)
-            console.log(storedCredentials)
+            /*console.log(credentials)
+            console.log(storedCredentials)*/
         })
         .catch((error) => {
             console.log(error);

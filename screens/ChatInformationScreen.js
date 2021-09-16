@@ -45,28 +45,9 @@ const ChatInformationScreen = ({navigation, route}) => {
     const { colors } = useTheme();
     const { username, user_profile_pic, displayName } = route.params;
     const goToProfileScreen = (name, userToNavigateTo, profilePictureUrl, displayName) => {
-        const devMode = () => {
-            Alert.alert(
-                "Dev mode is on because the username bug has not been fixed.",
-                "What screen do you want to go too?",
-                [
-                    {
-                        text: "Cancel"
-                    },
-                    {
-                        text: "Profile Screen", onPress: () => navigation.navigate("Welcome", {backButtonHidden: false}) 
-                    },
-                    { 
-                        text: "Visiting Profile Screen",
-                        onPress: () => navigation.navigate("VisitingProfileScreen", {name: userToNavigateTo, photoUrl: profilePictureUrl, displayName: displayName}),
-                        style: 'cancel',
-                    }
-                ]
-            );
-        }
         name? 
-        name === userToNavigateTo? navigation.navigate("Welcome", {backButtonHidden: false}) : navigation.navigate("VistingProfileScreen", {name: userToNavigateTo, photoUrl: profilePictureUrl, displayName: displayName}) 
-        : devModeOn? devMode() : alert("An error occured");
+        name === userToNavigateTo? navigation.navigate("Welcome", {backButtonHidden: false}) : navigation.navigate("VisitingProfileScreen", {name: userToNavigateTo, photoUrl: profilePictureUrl, displayName: displayName}) 
+        : alert("An error occured");
     }
     return(
         <BackgroundDarkColor style={{backgroundColor: colors.primary}}>

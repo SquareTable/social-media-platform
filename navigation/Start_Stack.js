@@ -29,7 +29,6 @@ import TermsOfService from "../screens/TermsOfService.js";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import IntroScreen from "../screens/IntroductionScreens/IntroScreen.js";
 import PrivacyPolicy from "../screens/PrivacyPolicy.js";
-import styledComponentsNativeCjs from "styled-components/native";
 
 const Stack = createStackNavigator();
 
@@ -83,6 +82,13 @@ const Start_Stack = () => {
                             <Stack.Screen 
                                 name="Terms of Service" 
                                 component={TermsOfService}
+                                options={{
+                                    animationEnabled: false,
+                                }}
+                            />
+                            <Stack.Screen 
+                                name="PrivacyPolicy" 
+                                component={PrivacyPolicy}
                                 options={{
                                     animationEnabled: false,
                                 }}

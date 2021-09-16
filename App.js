@@ -14,6 +14,7 @@ import AppLoading from 'expo-app-loading';
 import { Asset } from 'expo-asset';
 import { AppearanceProvider, useColorScheme } from 'react-native-appearance';
 import { DefaultTheme, DarkTheme } from '@react-navigation/native';
+import { CredentialsContext } from './components/CredentialsContext';
 
 const Stack = createStackNavigator();
 
@@ -27,6 +28,7 @@ Notifications.setNotificationHandler({
 });
 
 const App = () => {
+  const [storedCredentials, setStoredCredentials] = useState('');
   const clearAsyncStorageOnLogin = false;
   if (clearAsyncStorageOnLogin === true) {
     AsyncStorage.clear();
@@ -132,6 +134,13 @@ const App = () => {
 
   if (isReady == false) {
     async function cacheResourcesAsync() {
+      AsyncStorage.getItem('socialSquareCredentials').then((result) => {
+        if (result !== null) {
+          setStoredCredentials(JSON.parse(result));
+        } else {
+          setStoredCredentials(null);
+        }
+      }).catch((error) => console.log(error));
       const images = [
         require('./assets/img/Logo.png'),
         require('./assets/app_icons/test3.png'),
@@ -193,11 +202,13 @@ const App = () => {
     ); } else {
 
     return (
-      <AppearanceProvider>
-        <NavigationContainer theme={scheme === 'dark' ? AppDarkTheme : AppLightTheme}>
-          <Start_Stack/>
-        </NavigationContainer>
-      </AppearanceProvider>
+      <CredentialsContext.Provider value={{storedCredentials, setStoredCredentials}}>
+        <AppearanceProvider>
+          <NavigationContainer theme={scheme === 'dark' ? AppDarkTheme : AppLightTheme}>
+            <Start_Stack/>
+          </NavigationContainer>
+        </AppearanceProvider>
+      </CredentialsContext.Provider>
     );
   }
 };

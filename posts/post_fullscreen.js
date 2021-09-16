@@ -47,7 +47,7 @@ const Post_FullScreen = ({route, navigation}) => {
     const goToProfileScreen = () => {
         name ?
         navigation.navigate('ProfileScreen_FromFindScreenPost', { backButtonHidden: false })
-        : devModeOn ? alert("DevMode is on") : alert("Error occured")
+        : alert("Error occured")
     }
     const [ProfileOptionsViewState, setProfileOptionsViewState] = useState(true);
     const [ReportProfileOptionsViewState, setReportProfileOptionsViewState] = useState(true);

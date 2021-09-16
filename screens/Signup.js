@@ -121,6 +121,9 @@ const Signup = ({navigation}) => {
     const goToTermsOfService = () => {
         navigation.navigate("Terms of Service");
     }
+    const goToPrivacyPolicy = () => {
+        navigation.navigate("PrivacyPolicy");
+    }
 
     return(
         <KeyboardAvoidingWrapper>
@@ -215,6 +218,10 @@ const Signup = ({navigation}) => {
                                 <Text style={{textAlign: 'center', color: colors.tertiary, marginTop: 20}}>By signing up, you agree to our </Text>
                                 <TextLink onPress={goToTermsOfService}>
                                     <TextLinkContent style={{color: colors.brand}}>Terms of Service</TextLinkContent>
+                                </TextLink>
+                                <Text style={{textAlign: 'center', color: colors.tertiary}}>and</Text>
+                                <TextLink onPress={goToPrivacyPolicy}>
+                                    <TextLinkContent style={{color: colors.brand}}>Privacy Policy</TextLinkContent>
                                 </TextLink>
                             </StyledFormArea>)}
                     </Formik>
