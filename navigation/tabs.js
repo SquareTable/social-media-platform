@@ -71,11 +71,14 @@ const Tabs = ({navigation}) => {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     }
     const onChatScreenNavigate = () => {
-        navigation.navigate("Chat");
+        navigation.navigate('Chat');
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     }
-    const onProfileScreenNavigate = (ownerStatus) => {
-        navigation.navigate("Profile", {owner: ownerStatus});
+    const onProfileScreenNavigate = () => {
+        navigation.navigate('Profile', {
+            screen: 'Welcome',
+            params: { backButtonHidden: true },
+        });
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     }
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
@@ -91,7 +94,8 @@ const Tabs = ({navigation}) => {
                     right: 0, /*Change the margin from the right of the screen for the tab navigator*/
                     elevation: 0,
                     backgroundColor: colors.primary,
-                    borderColor: colors.primary,
+                    borderColor: colors.borderColor,
+                    borderWidth: 0.5,
                     height: 75,
                     /*...styles.shadow*/
                 }
@@ -172,7 +176,7 @@ const Tabs = ({navigation}) => {
             }}/>
             <Tab.Screen name="Profile" component={RootStack} options={{
                 tabBarIcon: ({focused}) => (
-                    <TouchableOpacity onPressIn={() => {onProfileScreenNavigate(true)}}>
+                    <TouchableOpacity onPressIn={onProfileScreenNavigate}>
                         <View style={{alignItems: 'center', justifyContent: 'center', top: 10}}>
                             <Image
                                 source={photoUrl? photoUrl : require('../assets/app_icons/blank_profile_pic.png')}

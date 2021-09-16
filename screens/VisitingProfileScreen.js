@@ -292,17 +292,17 @@ const VisitingProfileScreen = ({route, navigation}) => {
                 <ScrollView showsVerticalScrollIndicator={false} scrollEnabled={!PageElementsState}>
                     <WelcomeContainer style={{backgroundColor: colors.primary}}>
                         <ProfileHorizontalView>
-                            <TouchableOpacity disabled={PageElementsState} style={{marginLeft: '0%', marginRight: '70%'}} onPress={changeProfilesOptionsView}>
+                            <TouchableOpacity style={{marginRight: '65%'}} disabled={PageElementsState} onPress={() => {navigation.goBack()}}>
                                 <Image
-                                    source={require('../assets/app_icons/3dots.png')}
+                                    source={require('../assets/app_icons/back_arrow.png')}
                                     style={{ width: 40, height: 40, tintColor: colors.tertiary}}
                                     resizeMode="contain"
                                     resizeMethod="resize"
                                 />
                             </TouchableOpacity>
-                            <TouchableOpacity disabled={PageElementsState} onPress={goToSettingsScreen}>
+                            <TouchableOpacity disabled={PageElementsState} onPress={changeProfilesOptionsView}>
                                 <Image
-                                    source={require('../assets/app_icons/settings.png')}
+                                    source={require('../assets/app_icons/3dots.png')}
                                     style={{ width: 40, height: 40, tintColor: colors.tertiary}}
                                     resizeMode="contain"
                                     resizeMethod="resize"

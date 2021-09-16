@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { StyleSheet, Text, View, Button, Image, TouchableOpacity, SafeAreaView, ScrollView, TouchableNativeFeedbackBase} from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import Constants from "expo-constants";
@@ -7,6 +7,7 @@ import Images from "../posts/images.js";
 import ProgressiveImage from './ProgressiveImage.js';
 import * as Haptics from 'expo-haptics';
 import { useTheme } from '@react-navigation/native';
+import { CredentialsContext } from '../components/CredentialsContext.js';
 
 const StatusBarHeight = Constants.statusBarHeight;
 import {
@@ -32,6 +33,7 @@ import {
     Post_Fullscreen_Title_BackButton,
     Chat_Info_Icon_Styling
 } from '../screens/screenStylings/styling.js';
+import devModeOn from '../components/devModeOn.js';
 
 const Post_FullScreen = ({route, navigation}) => {
     if (darkModeOn === true) {
@@ -40,8 +42,12 @@ const Post_FullScreen = ({route, navigation}) => {
         var styling = lightModeStyling;
     }
     const {post_id, profilePictureSource, username} = route.params;
+    const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
+    const {name} = storedCredentials;
     const goToProfileScreen = () => {
-        navigation.navigate("Welcome");
+        name ?
+        navigation.navigate('ProfileScreen_FromFindScreenPost', { backButtonHidden: false })
+        : devModeOn ? alert("DevMode is on") : alert("Error occured")
     }
     const [ProfileOptionsViewState, setProfileOptionsViewState] = useState(true);
     const [ReportProfileOptionsViewState, setReportProfileOptionsViewState] = useState(true);
@@ -103,7 +109,7 @@ const Post_FullScreen = ({route, navigation}) => {
     }
     const [PageElementsState, setPageElementsState] = useState(true);
     const {tertiary, primary} = Colors;
-    const {colors} = useTheme();
+    const {colors, dark} = useTheme();
     return(
         <View style={{backgroundColor: primary, height: '100%'}}>
             <ProfileOptionsView style={{backgroundColor: colors.primary}} viewHidden={ProfileOptionsViewState}>
@@ -241,12 +247,25 @@ const Post_FullScreen = ({route, navigation}) => {
                                             </View>
                                         </View>
                                         <View style={{backgroundColor: colors.primary, maxWidth: 400, minWidth: 400}}>
-                                            <ProgressiveImage
-                                                source={post_id}
-                                                style={{minHeight: 400, minWidth: 400, width: 400, height: 400, maxWidth: 400, maxHeight: 400}}
-                                                resizeMode="contain"
-                                                resizeMethod="resize"
-                                            />
+                                            {
+                                                devModeOn?
+                                                /* Image.resolveAssetSource(post_id).height*/
+                                                    <ProgressiveImage
+                                                        source={dark? post_id || require('../assets/app_icons/cannot_get_post_darkmode.png') : post_id || require('../assets/app_icons/cannot_get_post_lightmode.png')}
+                                                        style={{height: 400, width: 400}}
+                                                        resizeMode="contain"
+                                                        resizeMethod="resize"
+                                                    />
+                                                :
+                                                Image.getSize(post_id, (width, height) => {
+                                                    <ProgressiveImage
+                                                        source={dark? post_id || require('../assets/app_icons/cannot_get_post_darkmode.png') : post_id || require('../assets/app_icons/cannot_get_post_lightmode.png')}
+                                                        style={{minHeight: height, minWidth: width, width: width, height: height, maxWidth: width, maxHeight: height}}
+                                                        resizeMode="contain"
+                                                        resizeMethod="resize"
+                                                    />
+                                                })
+                                            }
                                         </View>
                                         <View style={{flex: 2, flexDirection: 'row', marginTop: 10, marginBottom: 10}}>
                                             <View style={{height: 50, width: 65}}>

@@ -14,7 +14,8 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {useTheme} from "@react-navigation/native";
 
-const ChatScreen = ({navigation}) => {
+const ChatScreen = ({navigation, route}) => {
+    const {username, user_profile_pic, displayName} = route.params;
 
     const [messages, setMessages] = useState([]);
     const insets = useSafeAreaInsets();
@@ -35,7 +36,7 @@ const ChatScreen = ({navigation}) => {
           user: {
             _id: 2,
             name: 'React Native',
-            avatar: 'https://placeimg.com/140/140/any',
+            avatar: user_profile_pic,
           },
         },
       ])
@@ -117,8 +118,8 @@ const ChatScreen = ({navigation}) => {
               resizeMethod="resize"
             />
           </Navigator_BackButton>
-          <TestText style={{textAlign: 'center', color: colors.tertiary}}>Username goes here</TestText>
-          <Chat_Info_Icon_Styling onPress={() => {navigation.navigate("ChatInformationScreen")}}>
+          <TestText style={{textAlign: 'center', color: colors.tertiary}}>{username || "Couldn't get name"}</TestText>
+          <Chat_Info_Icon_Styling onPress={() => {navigation.navigate("ChatInformationScreen", {username: username, user_profile_pic: user_profile_pic, displayName: displayName})}}>
             <Image
               source={require('../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/269-info.png')}
               style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2, tintColor: colors.tertiary}}

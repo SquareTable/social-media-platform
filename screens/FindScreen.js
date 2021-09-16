@@ -25,8 +25,10 @@ const FindScreen = ({navigation}) => {
     var postHeight = postWidth
 
     const [PostRows, setPostRows] = useState([
-        { post_source_one: Images.posts.profile_picture, post_one_profilepicture: Images.posts.profile_picture, post_one_username: 'sebthemancreator', post_source_two: Images.posts.background, post_two_profilepicture: Images.posts.profile_picture, post_two_username: 'sebthemancreator', post_source_three: Images.posts.clock, post_three_profilepicture: Images.posts.profile_picture, post_three_username: 'sebthemancreator', key: '1' },
-        { post_source_one: Images.posts.profile_picture, post_one_profilepicture: Images.posts.profile_picture, post_one_username: 'sebthemancreator', post_source_two: Images.posts.background, post_two_profilepicture: Images.posts.profile_picture, post_two_username: 'sebthemancreator', post_source_three: Images.posts.clock, post_three_profilepicture: Images.posts.profile_picture, post_three_username: 'sebthemancreator', key: '2' },
+        { post_source_one: Images.posts.profile_picture, post_one_profilepicture: Images.posts.profile_picture, post_one_username: 'sebthemancreator', post_source_two: Images.posts.background, post_two_profilepicture: Images.posts.profile_picture, post_two_username: 'sebthemancreator', post_source_three: Images.posts.sad_pepe, post_three_profilepicture: Images.posts.profile_picture, post_three_username: 'sebthemancreator', key: '1' },
+        { post_source_one: Images.posts.profile_picture, post_one_profilepicture: Images.posts.profile_picture, post_one_username: 'sebthemancreator', post_source_two: Images.posts.background, post_two_profilepicture: Images.posts.profile_picture, post_two_username: 'sebthemancreator', post_source_three: Images.posts.sad_pepe, post_three_profilepicture: Images.posts.profile_picture, post_three_username: 'sebthemancreator', key: '2' },
+        { post_source_one: Images.posts.profile_picture, post_one_profilepicture: Images.posts.profile_picture, post_one_username: 'sebthemancreator', post_source_two: Images.posts.background, post_two_profilepicture: Images.posts.profile_picture, post_two_username: 'sebthemancreator', post_source_three: Images.posts.sad_pepe, post_three_profilepicture: Images.posts.profile_picture, post_three_username: 'sebthemancreator', key: '3' },
+        { post_source_one: Images.posts.profile_picture, post_one_profilepicture: Images.posts.profile_picture, post_one_username: 'sebthemancreator', post_source_two: Images.posts.background, post_two_profilepicture: Images.posts.profile_picture, post_two_username: 'sebthemancreator', post_source_three: Images.posts.sad_pepe, post_three_profilepicture: Images.posts.profile_picture, post_three_username: 'sebthemancreator', key: '4' },
     ]);
 
     const navigateToPost = (post_id, profilePictureSource, username) => {
@@ -51,28 +53,28 @@ const FindScreen = ({navigation}) => {
                 data={PostRows}
                 showsVerticalScrollIndicator={false}
                 renderItem={({ item }) => ( 
-                    <View style={{flex: 2, flexDirection: 'row', justifyContent: 'space-evenly', backgroundColor: colors.primary, marginTop: 0, marginBottom: postHeight}}>
-                        <TouchableOpacity style={{minWidth: '30%', width: '30%', maxWidth: '30%', marginHorizontal: '1.6%'}} onPressOut={() => {navigateToPost(item.post_source_one, item.post_one_profilepicture, item.post_one_username)}}>
+                    <View style={{flex: 2, flexDirection: 'row', justifyContent: 'space-evenly', backgroundColor: colors.primary, marginTop: 0, marginBottom: postHeight - 8}}>
+                        <TouchableOpacity style={{width: postWidth}} onPressOut={() => {navigateToPost(item.post_source_one, item.post_one_profilepicture, item.post_one_username)}}>
                             <ProgressiveImage
                                 source={item.post_source_one}
                                 style={{width: postWidth, height: postHeight, position: 'absolute', resizeMode: 'contain', aspectRatio: 1, flex: 1}}
-                                resizeMode="contain"
+                                resizeMode="cover"
                                 resizeMethod="resize"
                             />
                         </TouchableOpacity>
-                        <TouchableOpacity style={{minWidth: '30%', width: '30%', maxWidth: '30%', marginHorizontal: '1.6%'}} onPressOut={() => {navigateToPost(item.post_source_two, item.post_two_profilepicture, item.post_two_username)}}>
+                        <TouchableOpacity style={{width: postWidth}} onPressOut={() => {navigateToPost(item.post_source_two, item.post_two_profilepicture, item.post_two_username)}}>
                             <ProgressiveImage
                                 source={item.post_source_two}
                                 style={{width: postWidth, height: postHeight, position: 'absolute', resizeMode: 'contain', aspectRatio: 1, flex: 1}}
-                                resizeMode="contain"
+                                resizeMode="cover"
                                 resizeMethod="resize"
                             />
                         </TouchableOpacity>
-                        <TouchableOpacity style={{minWidth: '30%', width: '30%', maxWidth: '30%', marginHorizontal: '1.6%'}} onPressOut={() => {navigateToPost(item.post_source_three, item.post_three_profilepicture, item.post_three_username)}}>
+                        <TouchableOpacity style={{width: postWidth}} onPressOut={() => {navigateToPost(item.post_source_three, item.post_three_profilepicture, item.post_three_username)}}>
                             <ProgressiveImage
                                 source={item.post_source_three}
                                 style={{width: postWidth, height: postHeight, position: 'absolute', resizeMode: 'contain', aspectRatio: 1, flex: 1}}
-                                resizeMode="contain"
+                                resizeMode="cover"
                                 resizeMethod="resize"
                             />
                         </TouchableOpacity>

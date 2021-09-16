@@ -39,6 +39,7 @@ const SettingsPage = ({navigation}) => {
             setStoredCredentials("");
         })
         .catch(error => console.log(error))
+        AsyncStorage.removeItem('SocialSquareDMsList');
         navigation.reset({
             index: 0,
             routes: [{ name: 'LoginScreen' }],

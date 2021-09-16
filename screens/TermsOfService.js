@@ -37,7 +37,7 @@ const TermsOfService = ({navigation}) => {
     });
 
     const goBackToSignupScreen = () => {
-        navigation.navigate("Signup");
+        navigation.goBack();
     }
 
     const {colors} = useTheme();

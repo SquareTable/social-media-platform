@@ -1,4 +1,4 @@
-import React, {useState, useContext} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { useTheme } from '@react-navigation/native';
 
@@ -115,6 +115,10 @@ const LoginScreen = ({navigation}) => {
             handleMessage('Persisting login failed');
         })
     }
+
+    useEffect(() => {
+        AsyncStorage.setItem('HasOpenedSocialSquare', 'true');
+    })
 
     return(
         <KeyboardAvoidingWrapper>

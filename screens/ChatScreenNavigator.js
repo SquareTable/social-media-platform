@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect, useLayoutEffect } from 'react'
-import { StyleSheet, Text, View, Button, Image, TouchableOpacity, SafeAreaView, ScrollView, Platform, FlatList} from 'react-native';
+import { StyleSheet, Text, View, Button, Image, TouchableOpacity, SafeAreaView, ScrollView, Platform, FlatList, Dimensions} from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import Images from "../posts/images.js";
 import {
@@ -50,32 +50,34 @@ import {
 } from '../screens/screenStylings/styling.js';
 import AppStyling from './AppStylingScreen.js';
 import { useNavigation, useTheme } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const ChatScreenNavigator_Row = (props) => {
+    var deviceWidth = Dimensions.get('window').width
+    var pictureSize = deviceWidth / 100 * 11
     if (darkModeOn === true) {
         var styling = darkModeStyling;
     } else {
         var styling = lightModeStyling;
     }
-    const { username, user_profile_pic } = props;
+    const { username, user_profile_pic, displayName } = props;
     const navigation = useNavigation();
-    const navigateToChatScreen = () => {
-        navigation.navigate('Chat')
-    }
     const {colors} = useTheme();
     return(
-        <ChatScreenNavigator_Row_Styling style={{backgroundColor: colors.primary, borderWidth: 0}} onPress={navigateToChatScreen}>
+        <ChatScreenNavigator_Row_Styling style={{backgroundColor: colors.primary, borderWidth: 0}} onPress={() => {navigation.navigate('Chat', {username: username, user_profile_pic: user_profile_pic, displayName: displayName});}}>
             <Image
                 source={user_profile_pic || require('../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/266-question.png')}
-                style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2, marginLeft: 10, marginTop: 10}}
-                resizeMode="contain"
+                style={{minHeight: pictureSize, minWidth: pictureSize, width: pictureSize, height: pictureSize, maxWidth: pictureSize, maxHeight: pictureSize, borderRadius: 10000/2, marginLeft: 10, marginTop: 10, flex: 2}}
+                resizeMode="cover"
                 resizeMethod="resize"
             />
-            <TestText style={{marginLeft: 15, marginTop: 15, color: colors.tertiary}}>{username || "Couldn't get name"}</TestText>
-            <TouchableOpacity style={{position: 'absolute', right: 10, marginTop: 10}}onPress={() => {alert("Coming soon")}}>
+            <View style={{width: '86%'}}>
+                <TestText numberOfLines={1} ellipsizeMode='tail' style={{marginTop: 15, color: colors.tertiary, flex: 1, marginLeft: '3%', marginRight: '15%', textAlign: 'left'}}>{username || "Couldn't get name"}</TestText>
+            </View>
+            <TouchableOpacity style={{position: 'absolute', right: 10, marginTop: 10, flex: 2}}onPress={() => {alert("Coming soon")}}>
                 <Image
                     source={require('../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/016-camera.png')}
-                    style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, tintColor: colors.tertiary}}
+                    style={{minHeight: pictureSize, minWidth: pictureSize, width: pictureSize, height: pictureSize, maxWidth: pictureSize, maxHeight: pictureSize, tintColor: colors.tertiary, flex: 2}}
                     resizeMode="contain"
                     resizeMethod="resize"
                 />
@@ -86,26 +88,23 @@ export const ChatScreenNavigator_Row = (props) => {
 
 
 const ChatScreenNavigator = ({navigation}) => {
-    if (darkModeOn === true) {
-        var styling = darkModeStyling;
-    } else {
-        var styling = lightModeStyling;
-    }
-    const [directMessages, setDirectMessages] = useState([
-        { username: "sebthemancreator", user_profile_pic: Images.posts.profile_picture, key: '1' },
-        { username: "sebthemancreator", user_profile_pic: Images.posts.profile_picture, key: '2' },
-        { username: "sebthemancreator", user_profile_pic: Images.posts.profile_picture, key: '3' },
-        { username: "sebthemancreator", user_profile_pic: Images.posts.profile_picture, key: '4' },
-        { username: ":TCR:Itsblip", user_profile_pic: Images.posts.clock, key: '5' },
-    ]);
+    const [directMessages, setDirectMessages] = useState();
+    useEffect(() => {
+        async function GetChatList() {
+            var DMsList = await AsyncStorage.getItem('SocialSquareDMsList')
+            DMsList == null? setDirectMessages([]) : setDirectMessages(JSON.parse(DMsList))
+        }
+        GetChatList();
+    });
     const {colors} = useTheme();
+
 
     return(
         <BackgroundDarkColor_SafeAreaView style={{backgroundColor: colors.primary}}>
             <ChatScreenNavigator_Title style={{borderWidth: 0}}>
                 <FlexRow_NOJustifyContent>
                     <SubTitle marginLeft={'10px'} style={{color: colors.tertiary}}>SocialSquare DMs</SubTitle>
-                    <TouchableOpacity style={{position: 'absolute', right: 10}}onPress={() => {alert("Coming soon")}}>
+                    <TouchableOpacity style={{position: 'absolute', right: 10}}onPress={() => {navigation.navigate("CreateChatScreen")}}>
                         <Image
                             source={require('../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/074-compass.png')}
                             style={{minHeight: 30, minWidth: 30, width: 30, height: 30, maxWidth: 30, maxHeight: 30, tintColor: colors.tertiary}}
@@ -116,9 +115,18 @@ const ChatScreenNavigator = ({navigation}) => {
                 </FlexRow_NOJustifyContent>
             </ChatScreenNavigator_Title>
             <FlatList 
-                data={directMessages} 
+                data={directMessages}
+                keyExtractor={(item, index) => 'key'+index}
+                ListEmptyComponent={
+                    <View style={{marginTop: '80%'}}>
+                        <TestText style={{color: colors.tertiary, fontSize: 25}}>No messages to show here</TestText>
+                        <StyledButton onPress={() => {navigation.navigate('CreateChatScreen')}} style={{width: '75%', marginLeft: '12.5%'}}>
+                            <ButtonText>Create a new message</ButtonText>
+                        </StyledButton>
+                    </View>
+                }
                 renderItem={({ item }) => ( 
-                    <ChatScreenNavigator_Row username={item.username} user_profile_pic={item.user_profile_pic}/>
+                    <ChatScreenNavigator_Row username={item.username} user_profile_pic={item.user_profile_pic} displayName={item.displayName}/>
                 )}
             />
         </BackgroundDarkColor_SafeAreaView>

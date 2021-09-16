@@ -21,7 +21,7 @@ const Stack = createStackNavigator();
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
-    shouldPlaySound: false,
+    shouldPlaySound: true,
     shouldSetBadge: false,
   }),
 });
@@ -170,7 +170,8 @@ const App = () => {
         require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/266-question.png'),
         require('./assets/lightmode_recordbutton.png'),
         require('./assets/lightmode_recordingicon.png'),
-        require('./assets/apple_photo.png')
+        require('./assets/apple_photo.png'),
+        require('./assets/sad_pepe.jpg'),
       ];
   
       const cacheImages = images.map(image => {

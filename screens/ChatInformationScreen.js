@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View, Button, Image, TouchableOpacity, SafeAreaView, ScrollView, FlatList} from 'react-native';
+import React, { useState, useContext } from 'react';
+import { StyleSheet, Text, View, Button, Image, TouchableOpacity, SafeAreaView, ScrollView, FlatList, Touchable, Alert} from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import Constants from "expo-constants";
 import styled from "styled-components";
@@ -24,14 +24,13 @@ import {
 } from '../screens/screenStylings/styling.js';
 import MemberRow from '../components/MemberRow_ChatInformationScreen.js';
 import Content from '../components/Content_ChatInformationScreen.js';
+import { CredentialsContext } from '../components/CredentialsContext.js';
+import devModeOn from '../components/devModeOn.js';
 
 
-const ChatInformationScreen = ({navigation}) => {
-    if (darkModeOn === true) {
-        var styling = darkModeStyling;
-    } else {
-        var styling = lightModeStyling;
-    }
+const ChatInformationScreen = ({navigation, route}) => {
+    const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
+    const {name} = storedCredentials;
     const {primary, secondary,tertiary, darkLight, brand, green, red, darkest, greyish, bronzeRarity, darkestBlue} = Colors;
     const [muteMessagesState, setMuteMessagesState] = useState(false);
     const changeMuteMessagesState = () => {
@@ -44,6 +43,31 @@ const ChatInformationScreen = ({navigation}) => {
         }
     }
     const { colors } = useTheme();
+    const { username, user_profile_pic, displayName } = route.params;
+    const goToProfileScreen = (name, userToNavigateTo, profilePictureUrl, displayName) => {
+        const devMode = () => {
+            Alert.alert(
+                "Dev mode is on because the username bug has not been fixed.",
+                "What screen do you want to go too?",
+                [
+                    {
+                        text: "Cancel"
+                    },
+                    {
+                        text: "Profile Screen", onPress: () => navigation.navigate("Welcome", {backButtonHidden: false}) 
+                    },
+                    { 
+                        text: "Visiting Profile Screen",
+                        onPress: () => navigation.navigate("VisitingProfileScreen", {name: userToNavigateTo, photoUrl: profilePictureUrl, displayName: displayName}),
+                        style: 'cancel',
+                    }
+                ]
+            );
+        }
+        name? 
+        name === userToNavigateTo? navigation.navigate("Welcome", {backButtonHidden: false}) : navigation.navigate("VistingProfileScreen", {name: userToNavigateTo, photoUrl: profilePictureUrl, displayName: displayName}) 
+        : devModeOn? devMode() : alert("An error occured");
+    }
     return(
         <BackgroundDarkColor style={{backgroundColor: colors.primary}}>
             <ChatScreenInformation_Title style={{backgroundColor: colors.primary, borderWidth: 0}}>
@@ -93,7 +117,19 @@ const ChatInformationScreen = ({navigation}) => {
                 </FlexRow_NOJustifyContent>
                 <Content source_for_image={require('../assets/app_icons/profile_pic.jpg')}/>
                 <SubTitle style={{color: colors.tertiary}}>Members</SubTitle>
-                <MemberRow user_profile_pic={Images.posts.background}/>
+                <FlexRow_NOJustifyContent style={{marginBottom: 15}}>
+                    <TouchableOpacity onPress={() => {goToProfileScreen(name, username, user_profile_pic, displayName)}}>
+                        <Image
+                            source={user_profile_pic || require('../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/266-question.png')}
+                            style={{minHeight: 50, minWidth: 50, width: 50, height: 50, maxWidth: 50, maxHeight: 50, borderRadius: 70/2}}
+                            resizeMode="cover"
+                            resizeMethod="resize"
+                        />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => {goToProfileScreen(name, username, user_profile_pic, displayName)}}>
+                        <TestText style={{marginLeft: 15, marginTop: 13, color: colors.tertiary}}>{username? username : "Couldn't get name"}</TestText>
+                    </TouchableOpacity>
+            </FlexRow_NOJustifyContent>
                 <StyledButton onPress={() => {alert("Coming soon")}}>
                     <ButtonText style={{fontSize: 25, fontWeight: 'bold'}}>Report</ButtonText>
                 </StyledButton>

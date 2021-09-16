@@ -35,7 +35,7 @@ const MemberRow = ({navigation}, props) => {
                 resizeMode="contain"
                 resizeMethod="resize"
             />
-            <TestText style={{marginLeft: 15, marginTop: 13, color: colors.tertiary}}>{username || "Couldn't get name"}</TestText>
+            <TestText style={{marginLeft: 15, marginTop: 13, color: colors.tertiary}}>{username? username : "Couldn't get name"}</TestText>
         </FlexRow_NOJustifyContent>
     );
 };

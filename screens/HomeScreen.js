@@ -37,14 +37,14 @@ const HomeScreen = ({navigation}) => {
     } else {
         var styling = lightModeStyling;
     }
-    const {colors} = useTheme();
+    const {colors, dark} = useTheme();
     const [Posts, setPosts] = useState([
-        { postSource: Images.posts.social_studies_1, profilePictureSource: require('../assets/app_icons/profile_pic.jpg'), username: 'sebthemancreator', displayName: 'sebthemancreator', key: '1' },
-        { postSource: Images.posts.social_studies_2, profilePictureSource: require('../assets/app_icons/profile_pic.jpg'), username: 'sebthemancreator', displayName: 'sebthemancreator', key: '2' },
-        { postSource: Images.posts.social_studies_3, profilePictureSource: require('../assets/app_icons/profile_pic.jpg'), username: 'sebthemancreator', displayName: 'sebthemancreator', key: '3' },
-        { postSource: Images.posts.social_studies_4, profilePictureSource: require('../assets/app_icons/profile_pic.jpg'), username: 'sebthemancreator', displayName: 'sebthemancreator', key: '4' },
-        { postSource: Images.posts.social_studies_5, profilePictureSource: require('../assets/app_icons/profile_pic.jpg'), username: 'sebthemancreator', displayName: 'sebthemancreator', key: '5' },
-        { postSource: Images.posts.apple, profilePictureSource: Images.posts.apple, username: 'ILoveApples', displayName: 'AppleKid', key: '6'}
+        { postSource: Images.posts.social_studies_1, profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', displayName: 'sebthemancreator' },
+        { postSource: Images.posts.social_studies_2, profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', displayName: 'sebthemancreator' },
+        { postSource: Images.posts.social_studies_3, profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', displayName: 'sebthemancreator' },
+        { postSource: Images.posts.social_studies_4, profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', displayName: 'sebthemancreator' },
+        { postSource: Images.posts.social_studies_5, profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', displayName: 'sebthemancreator' },
+        { postSource: Images.posts.apple, profilePictureSource: Images.posts.apple, username: 'ILoveApples', displayName: 'AppleKid' }
     ]);
     const goToProfileScreen = (name, userToNavigateTo, profilePictureUrl, displayName) => {
         const devMode = () => {
@@ -52,19 +52,22 @@ const HomeScreen = ({navigation}) => {
                 "Dev mode is on because the username bug has not been fixed.",
                 "What screen do you want to go too?",
                 [
-                {
-                    text: "Profile Screen", onPress: () => navigation.navigate("Welcome") 
-                },
-                { 
-                    text: "Visiting Profile Screen",
-                    onPress: () => navigation.navigate("VisitingProfileScreen", {name: userToNavigateTo, photoUrl: profilePictureUrl, displayName: displayName}),
-                    style: 'cancel',
-                }
+                    {
+                        text: "Cancel"
+                    },
+                    {
+                        text: "Profile Screen", onPress: () => navigation.navigate("Welcome", {backButtonHidden: false}) 
+                    },
+                    { 
+                        text: "Visiting Profile Screen",
+                        onPress: () => navigation.navigate("VisitingProfileScreen", {name: userToNavigateTo, photoUrl: profilePictureUrl, displayName: displayName}),
+                        style: 'cancel',
+                    }
                 ]
             );
         }
         name? 
-        name === userToNavigateTo? navigation.navigate("Welcome") : navigation.navigate("VistingProfileScreen", {name: userToNavigateTo, photoUrl: profilePictureUrl, displayName: displayName}) 
+        name === userToNavigateTo? navigation.navigate("Welcome", {backButtonHidden: false}) : navigation.navigate("VistingProfileScreen", {name: userToNavigateTo, photoUrl: profilePictureUrl, displayName: displayName}) 
         : devModeOn? devMode() : alert("An error occured");
     }
     
@@ -123,14 +126,14 @@ const HomeScreen = ({navigation}) => {
         const welcome_message = () => {
             alert("Welcome to SocialSquare, it looks like you have just downloaded this app for the first time! Nice! You are right now on development version " + development_version);
         };
-        var development_version = '0.1.07';
+        var development_version = '0.1.10';
         //Get data
         try {
             var development_version_localstorage_value = await AsyncStorage.getItem('development_version')
             if(development_version_localstorage_value !== null) {
             if (development_version !== development_version_localstorage_value) {
                 console.log(development_version_localstorage_value);
-                var releaseNotes = "Add Light Mode Support";
+                var releaseNotes = "Add App Introduction Screens and also revamp the Audio Post Page";
                 var alert_on_update = "SocialSquare has been updated to the latest version (dev version " + development_version + "). Changes in this update are: " + releaseNotes;
                 alert(alert_on_update);
             } else {
@@ -249,6 +252,7 @@ const HomeScreen = ({navigation}) => {
                 data={Posts}
                 scrollEnabled={FlatListElementsEnabledState}
                 showsVerticalScrollIndicator={false}
+                keyExtractor={(item, index) => 'key'+index}
                 renderItem={({ item }) => ( 
                     <View style={{minWidth: 500, maxWidth: 500, width: 500, backgroundColor: colors.primary, alignSelf: 'center', zIndex: 100}}>
                         <View style={{maxWidth: 500, minWidth: 500, width: 500, alignContent: 'center', alignItems: 'center', alignSelf: 'center',}}>
@@ -283,7 +287,7 @@ const HomeScreen = ({navigation}) => {
                                 </View>
                                 <View style={{backgroundColor: colors.primary, maxWidth: 400, minWidth: 400}}>
                                     <ProgressiveImage
-                                        source={darkModeOn? item.postSource || require('../assets/app_icons/cannot_get_post_darkmode.png') : item.postSource || require('../assets/app_icons/cannot_get_post_lightmode.png')}
+                                        source={dark? item.postSource || require('../assets/app_icons/cannot_get_post_darkmode.png') : item.postSource || require('../assets/app_icons/cannot_get_post_lightmode.png')}
                                         style={{minHeight: 400, minWidth: 400, width: 400, height: 400, maxWidth: 400, maxHeight: 400}}
                                         resizeMode="contain"
                                         resizeMethod="resize"

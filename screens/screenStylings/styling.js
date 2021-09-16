@@ -277,7 +277,7 @@ export const Avatar = styled.Image`
     width: 100px;
     height: 100px;
     margin: auto;
-    border-radius: 50px;
+    border-radius: 1000px;
     border-width: 2px;
     border-color: ${secondary};
     margin-bottom: 10px;

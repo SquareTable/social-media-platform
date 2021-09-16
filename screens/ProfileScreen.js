@@ -40,6 +40,7 @@ import {
     ReportProfileOptionsViewButtonsText,
     ReportProfileOptionsViewSubtitleText,
     ReportProfileOptionsViewText,
+    ViewHider
 } from '../screens/screenStylings/styling.js';
 
 // async-storage
@@ -53,7 +54,9 @@ import * as Haptics from 'expo-haptics';
 import {useTheme} from "@react-navigation/native"
 
 
-const ProfileScreen = ({route, navigation}) => {
+const ProfileScreen = ({navigation, route}) => {
+    const {backButtonHidden} = route.params;
+    console.log(backButtonHidden)
      //context
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
     const {name, displayName, email, photoUrl} = storedCredentials;
@@ -289,14 +292,19 @@ const ProfileScreen = ({route, navigation}) => {
                 <ScrollView showsVerticalScrollIndicator={false} scrollEnabled={!PageElementsState}>
                     <WelcomeContainer style={{backgroundColor: colors.primary}}>
                         <ProfileHorizontalView>
-                            <TouchableOpacity disabled={PageElementsState} style={{marginLeft: '0%', marginRight: '70%'}} onPress={changeProfilesOptionsView}>
-                                <Image
-                                    source={require('../assets/app_icons/3dots.png')}
-                                    style={{ width: 40, height: 40, tintColor: colors.tertiary}}
-                                    resizeMode="contain"
-                                    resizeMethod="resize"
-                                />
-                            </TouchableOpacity>
+                            <ViewHider viewHidden={backButtonHidden}>
+                                <TouchableOpacity style={{marginRight: '65%'}} disabled={PageElementsState} onPress={() => {navigation.goBack()}}>
+                                    <Image
+                                        source={require('../assets/app_icons/back_arrow.png')}
+                                        style={{ width: 40, height: 40, tintColor: colors.tertiary}}
+                                        resizeMode="contain"
+                                        resizeMethod="resize"
+                                    />
+                                </TouchableOpacity>
+                            </ViewHider>
+                            <ViewHider viewHidden={!backButtonHidden}>
+                                <View style={{minWidth: 40, marginRight: '65%'}}/>
+                            </ViewHider>
                             <TouchableOpacity disabled={PageElementsState} onPress={goToSettingsScreen}>
                                 <Image
                                     source={require('../assets/app_icons/settings.png')}

@@ -39,6 +39,9 @@ import ChangeEmailPage from "../screens/ChangeEmailPage";
 import ReportBugScreen from "../screens/ReportBugScreen.js";
 import ChatScreenNavigator from "../screens/ChatScreenNavigator.js";
 import ChatInformationScreen from "../screens/ChatInformationScreen.js";
+import CreateChatScreen from "../screens/CreateChatScreen.js";
+import RecordAudioPage from "../screens/PostScreens/RecordAudioPage.js";
+import SendAudioPage from "../screens/PostScreens/SendAudioPage.js";
 
 const Stack = createStackNavigator();
 
@@ -102,6 +105,48 @@ const ChatScreen_Stack = () => {
           headerLeft: null
         }}
       />
+      <Stack.Screen name="CreateChatScreen" component={CreateChatScreen}
+        options={{
+          headerStyle: {
+            backgroundColor: 'transparent',
+          },
+          headerTintColor: colors.tertiary,
+          headerTransparent: true,
+          headerTitle: '',
+          headerLeftContainerStyle: {
+              paddingLeft: 20,
+          },
+          headerLeft: null
+        }}
+      />
+      <Stack.Screen name="Welcome" component={ProfileScreen}
+        options={{
+          headerStyle: {
+            backgroundColor: 'transparent',
+          },
+          headerTintColor: colors.tertiary,
+          headerTransparent: true,
+          headerTitle: '',
+          headerLeftContainerStyle: {
+              paddingLeft: 20,
+          },
+          headerLeft: null
+        }}
+      />
+      <Stack.Screen name="VisitingProfileScreen" component={VisitingProfileScreen}
+        options={{
+          headerStyle: {
+            backgroundColor: 'transparent',
+          },
+          headerTintColor: colors.tertiary,
+          headerTransparent: true,
+          headerTitle: '',
+          headerLeftContainerStyle: {
+              paddingLeft: 20,
+          },
+          headerLeft: null
+        }}
+      />
     </Stack.Navigator>
   );
 };
@@ -121,7 +166,6 @@ const RootStack = () => {
                 paddingLeft: 20,
             },
         }}
-        initialRouteName="ProfileScreen"
     >
                 <Stack.Screen name="Welcome" component={ProfileScreen}/>
                 <Stack.Screen name="SettingsScreen" component={SettingsScreen}/>
@@ -173,6 +217,20 @@ const FindScreen_Stack = () => {
           headerLeft: null
         }}
       />
+      <Stack.Screen name="ProfileScreen_FromFindScreenPost" component={ProfileScreen}
+        options={{
+          headerStyle: {
+            backgroundColor: 'transparent',
+          },
+          headerTintColor: colors.tertiary,
+          headerTransparent: true,
+          headerTitle: '',
+          headerLeftContainerStyle: {
+              paddingLeft: 20,
+          },
+          headerLeft: null
+        }}
+      />
     </Stack.Navigator>
   );
 };
@@ -187,6 +245,7 @@ const home_screen_post_to_profile_screen = () => {
       headerTintColor: colors.tertiary,
       headerTransparent: true,
       headerTitle: '',
+      headerLeft: null,
       headerLeftContainerStyle: {
           paddingLeft: 20,
       },
@@ -201,24 +260,93 @@ const home_screen_post_to_profile_screen = () => {
 const post_screen_navigator = () => {
   const { colors } = useTheme();
   return(
-    <Stack.Navigator 
-    screenOptions={{
-      headerStyle: {
-          backgroundColor: 'transparent',
-      },
-      headerTintColor: colors.tertiary,
-      headerTransparent: true,
-      headerTitle: '',
-      headerLeftContainerStyle: {
-          paddingLeft: 20,
-      },
-  }}
-  >
-      <Stack.Screen name="PostScreen" component={PostScreen}/>
-      <Stack.Screen name="MultiMediaUploadPage" component={MultiMediaUploadPage}/>
-      <Stack.Screen name="ThreadUploadPage" component={ThreadUploadPage}/>
-      <Stack.Screen name="PollUploadPage" component={PollUploadPage}/>
-      <Stack.Screen name="AudioUploadPage" component={AudioUploadPage}/>
+    <Stack.Navigator>
+      <Stack.Screen name="PostScreen" component={PostScreen}
+      options={{
+        headerStyle: {
+            backgroundColor: 'transparent',
+        },
+        headerTintColor: colors.tertiary,
+        headerTransparent: true,
+        headerTitle: '',
+        headerLeftContainerStyle: {
+            paddingLeft: 20,
+        },
+    }}/>
+      <Stack.Screen name="MultiMediaUploadPage" component={MultiMediaUploadPage}
+      options={{
+        headerStyle: {
+            backgroundColor: 'transparent',
+        },
+        headerTintColor: colors.tertiary,
+        headerTransparent: true,
+        headerTitle: '',
+        headerLeftContainerStyle: {
+            paddingLeft: 20,
+        },
+    }}/>
+      <Stack.Screen name="ThreadUploadPage" component={ThreadUploadPage}
+      options={{
+        headerStyle: {
+            backgroundColor: 'transparent',
+        },
+        headerTintColor: colors.tertiary,
+        headerTransparent: true,
+        headerTitle: '',
+        headerLeftContainerStyle: {
+            paddingLeft: 20,
+        },
+    }}/>
+      <Stack.Screen name="PollUploadPage" component={PollUploadPage}
+      options={{
+        headerStyle: {
+            backgroundColor: 'transparent',
+        },
+        headerTintColor: colors.tertiary,
+        headerTransparent: true,
+        headerTitle: '',
+        headerLeftContainerStyle: {
+            paddingLeft: 20,
+        },
+    }}/>
+      <Stack.Screen name="AudioUploadPage" component={AudioUploadPage}
+      options={{
+        headerStyle: {
+            backgroundColor: 'transparent',
+        },
+        headerTintColor: colors.tertiary,
+        headerTransparent: true,
+        headerTitle: '',
+        headerLeftContainerStyle: {
+            paddingLeft: 20,
+        },
+    }}/>
+      <Stack.Screen name="RecordAudioPage" component={RecordAudioPage}
+      options={{
+        headerStyle: {
+            backgroundColor: 'transparent',
+        },
+        headerTintColor: colors.tertiary,
+        headerTransparent: true,
+        headerTitle: '',
+        headerLeftContainerStyle: {
+            paddingLeft: 20,
+        },
+        headerLeft: null
+    }}/>
+    <Stack.Screen name="SendAudioPage" component={SendAudioPage}
+      options={{
+        headerStyle: {
+            backgroundColor: 'transparent',
+        },
+        headerTintColor: colors.tertiary,
+        headerTransparent: true,
+        headerTitle: '',
+        headerLeftContainerStyle: {
+            paddingLeft: 20,
+        },
+        headerLeft: null
+    }}/>
     </Stack.Navigator>
   )
 }
