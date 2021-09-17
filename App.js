@@ -208,7 +208,8 @@ const App = () => {
             <Start_Stack/>
           </NavigationContainer>
         </AppearanceProvider>
-      </CredentialsContext.Provider>
+        </CredentialsContext.Provider>
+
     );
   }
 };

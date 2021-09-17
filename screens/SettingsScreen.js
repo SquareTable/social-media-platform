@@ -36,18 +36,10 @@ const SettingsPage = ({navigation}) => {
 
     const clearLogin = () => {
         AsyncStorage.removeItem('socialSquareCredentials').then(() => {
-            setStoredCredentials("");
+            setStoredCredentials(null);
         })
-        .catch(error => console.log(error))
+        .catch(error => console.log(error));
         AsyncStorage.removeItem('SocialSquareDMsList');
-        navigation.reset({
-            index: 0,
-            routes: [{ name: 'LoginScreen' }],
-        });
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
-        setTimeout(() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy); }, 60);
-        setTimeout(() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy); }, 120);
-        setTimeout(() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy); }, 180);
     }
 
     const changeLogoutView = () => {
@@ -57,12 +49,6 @@ const SettingsPage = ({navigation}) => {
             console.log("Closed Confirm")
             setLogoutViewState(true)
         }
-    }
-    
-    if (darkModeOn === true) {
-        var styling = darkModeStyling;
-    } else {
-        var styling = lightModeStyling;
     }
 
     const {colors} = useTheme();

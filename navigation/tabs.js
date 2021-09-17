@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -44,15 +44,7 @@ const CustomTabBarButton = ({children, onPress}) => (
 
 
 const Tabs = ({navigation}) => {
-    if (darkModeOn === true) {
-        var styling = darkModeStyling;
-        var navFocusedColor = darkModeStyling_navFocusedColor;
-        var navNonFocusedColor = darkModeStyling_navNonFocusedColor;
-    } else {
-        var styling = lightModeStyling;
-        var navFocusedColor = lightModeStyling_navFocusedColor;
-        var navNonFocusedColor = lightModeStyling_navNonFocusedColor;
-    }
+
     const {colors} = useTheme();
     const haptic_feedback_options = {
         enableVibrateFallback: true,
@@ -81,8 +73,8 @@ const Tabs = ({navigation}) => {
         });
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     }
-    const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
-    const {name, displayName, email, photoUrl} = storedCredentials;
+        const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
+        var {photoUrl} = storedCredentials;
     return(
         <Tab.Navigator
             tabBarOptions={{
@@ -179,7 +171,7 @@ const Tabs = ({navigation}) => {
                     <TouchableOpacity onPressIn={onProfileScreenNavigate}>
                         <View style={{alignItems: 'center', justifyContent: 'center', top: 10}}>
                             <Image
-                                source={photoUrl? photoUrl : require('../assets/app_icons/blank_profile_pic.png')}
+                                source={photoUrl ? {uri: photoUrl} : require('./../assets/img/Logo.png')}
                                 resizeMode = 'contain'
                                 style={{
                                     width: 35,

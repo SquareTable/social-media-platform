@@ -107,14 +107,14 @@ const HomeScreen = ({navigation}) => {
         const welcome_message = () => {
             alert("Welcome to SocialSquare, it looks like you have just downloaded this app for the first time! Nice! You are right now on development version " + development_version);
         };
-        var development_version = '0.1.10';
+        var development_version = '0.1.11';
         //Get data
         try {
             var development_version_localstorage_value = await AsyncStorage.getItem('development_version')
             if(development_version_localstorage_value !== null) {
             if (development_version !== development_version_localstorage_value) {
                 console.log(development_version_localstorage_value);
-                var releaseNotes = "Add App Introduction Screens and also revamp the Audio Post Page";
+                var releaseNotes = "Temporary fix for big bug";
                 var alert_on_update = "SocialSquare has been updated to the latest version (dev version " + development_version + "). Changes in this update are: " + releaseNotes;
                 alert(alert_on_update);
             } else {
