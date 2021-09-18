@@ -211,10 +211,15 @@ const ReportBugScreen = ({navigation}) => {
                                             value={value}
                                             items={items}
                                             setOpen={setOpen}
-                                            setValue={setValue}
+                                            setValue={(value) => {
+                                                values.screenThatBugOccuredOn = value;
+                                                setValue(value);
+                                            }}
                                             setItems={setItems}
                                             onChangeValue={(value) => {
                                                 console.log("Value chosen in bug report screen dropdown box is " + value);
+                                                setValue(value);
+                                                values.screenThatBugOccuredOn = value
                                             }}
                                             style={{
                                                 backgroundColor: brand,

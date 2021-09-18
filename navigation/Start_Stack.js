@@ -59,7 +59,6 @@ const Start_Stack = () => {
                             paddingLeft: 20,
                         },
                     }}
-                    initialRouteName="LoginScreen"
                 >
                     {HasOpened == 'true' ?
                     storedCredentials ? (

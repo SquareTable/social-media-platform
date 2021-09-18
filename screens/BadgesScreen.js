@@ -1,5 +1,12 @@
-import React, {useContext, useState} from 'react';
+import React, { Component, useContext ,useState } from 'react';
+
+import { AppRegistry, StyleSheet, FlatList, Text, View, Alert, Platform, ScrollView } from 'react-native';
+
+import imagesArray from './../assets/badgeimages/imageDir';
+
 import { StatusBar } from 'expo-status-bar';
+
+import { useTheme } from '@react-navigation/native';
 
 import {
     WelcomeContainer,
@@ -12,52 +19,75 @@ import {
     ConfirmLogoutButtons,
     ConfirmLogoutButtonText,
     PageTitle,
-    BadgeGridLayout
-} from '../screens/screenStylings/styling.js';
+    BadgeGridLayout,
+    BadgeGridViewBlockStyle,
+    GridViewInsideTextItemStyle,
+    BadgeGridViewImage
+} from './screenStylings/styling.js';
+
+
 
 // async-storage
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 //credentials context
 import { CredentialsContext } from '../components/CredentialsContext';
-import { ImageBackground, ScrollView } from 'react-native';
+import { set } from 'react-native-reanimated';
 
-
-const BadgesScreen = ({navigation}) => {
-     //context
+const AccountBadges = () => {
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
-    const {name, email, photoUrl} = storedCredentials;
+    if (storedCredentials) {var {name, email, photoUrl, badges} = storedCredentials;}
     const AvatarImg = photoUrl ? {uri: photoUrl} : require('./../assets/img/Logo.png');
     const [logoutViewState, setLogoutViewState] = useState("false")
+    const [badgeValue, setBadgeValue] = useState("")
+    const [badgeDebounce, setBadgeDebounce] = useState("")
+    const [rarity, setRarity] = useState("")
+    const [badgeText, setBadgeText] = useState("")
+    const [badgeDescription, setBadgeDescription] = useState("")
+    const {colors, dark} = useTheme();
 
-    const clearLogin = () => {
-        AsyncStorage.removeItem('socialSquareCredentials').then(() => {
-            setStoredCredentials("");
-        })
-        .catch(error => console.log(error))
-    }
-
-    const changeLogoutView = () => {
-        if (logoutViewState==true) {
-            setLogoutViewState(false)
-        }else{
-            console.log("Closed Confirm")
-            setLogoutViewState(true)
+    const changeBadgeValue = (badgeName) => {
+        if (badgeName == "onSignUpBadge") {
+            if (badgeDebounce !== "onSignUpBadge") {
+                console.log("User Has On Sign Up Badge")
+                setBadgeText("Welcome To Hell")
+                setBadgeDescription("Made an account")
+                setRarity("Bronze")
+                setBadgeValue(imagesArray.onSignupBadge)
+                setBadgeDebounce("onSignUpBadge")
+            }
         }
     }
-    
 
     return(
-        <> 
-            <StatusBar style="dark"/>   
-            <WelcomeContainer>                
-            <PageTitle>Badges</PageTitle>
-            <BadgeGridLayout>
-                
-            </BadgeGridLayout>
+            <> 
+                <StatusBar style={colors.StatusBarColor}/>   
+                <WelcomeContainer>                
+                    <PageTitle badges={true}>{name} Badges</PageTitle>
+                    <BadgeGridLayout>
+                        <React.Fragment>
+                            <ScrollView>  
+                                <BadgeGridViewBlockStyle>
+                                    {badges.map((badge) => (
+                                            
+                                            <React.Fragment>
+
+                                                <GridViewInsideTextItemStyle key={rarity} onload={changeBadgeValue(badge)} rarityForTextColor={rarity}>{rarity}</GridViewInsideTextItemStyle>
+                                                <BadgeGridViewImage key={imagesArray} source={badgeValue}/>
+                                                <GridViewInsideTextItemStyle key={badge} badgeTitle={true}>{badgeText}</GridViewInsideTextItemStyle>
+                                                <GridViewInsideTextItemStyle key={badgeDescription} bottomText={true}>{badgeDescription}</GridViewInsideTextItemStyle>
+                                                
+                                            </React.Fragment>
+                                    
+                                        
+                                    ))}
+                                </BadgeGridViewBlockStyle>
+                            </ScrollView>
+                        </React.Fragment>
+                </BadgeGridLayout>
             </WelcomeContainer>
         </>
     );
 }
 
-export default BadgesScreen;
+export default AccountBadges
