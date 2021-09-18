@@ -259,9 +259,6 @@ export const WelcomeContainer = styled(InnerContainer)`
     ${props => props.postScreen == true &&`
         justify-content: center;
     `}
-    ${props => props.audioPostScreen == true &&`
-        padding-top: ${StatusBarHeight + 50}px;
-    `}
     ${props => props.reportBugScreenScreen == true &&`
         padding-top: ${StatusBarHeight + 40}px;
         justify-content: center;

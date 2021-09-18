@@ -320,6 +320,8 @@ const post_screen_navigator = () => {
         headerLeftContainerStyle: {
             paddingLeft: 20,
         },
+        headerLeft: null,
+        gestureEnabled: false
     }}/>
       <Stack.Screen name="RecordAudioPage" component={RecordAudioPage}
       options={{
@@ -332,7 +334,8 @@ const post_screen_navigator = () => {
         headerLeftContainerStyle: {
             paddingLeft: 20,
         },
-        headerLeft: null
+        headerLeft: null,
+        gestureEnabled: false
     }}/>
     <Stack.Screen name="SendAudioPage" component={SendAudioPage}
       options={{
@@ -345,7 +348,8 @@ const post_screen_navigator = () => {
         headerLeftContainerStyle: {
             paddingLeft: 20,
         },
-        headerLeft: null
+        headerLeft: null,
+        gestureEnabled: false
     }}/>
     </Stack.Navigator>
   )

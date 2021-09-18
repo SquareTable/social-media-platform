@@ -2,6 +2,7 @@ import React, {useContext, useState, useEffect} from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { Audio } from 'expo-av';
 import { useTheme } from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/AntDesign';
 
 import {
     InnerContainer,
@@ -60,9 +61,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 //credentials context
 import { CredentialsContext } from './../../components/CredentialsContext';
-import { ImageBackground, ScrollView, Image, TouchableOpacity, Text, View, SafeAreaView } from 'react-native';
+import { ImageBackground, ScrollView, Image, TouchableOpacity, Text, View, SafeAreaView, Alert } from 'react-native';
 import AppStyling from '../AppStylingScreen.js';
 import * as Haptics from 'expo-haptics';
+import { convertCompilerOptionsFromJson } from 'typescript';
 
 
 
@@ -71,6 +73,13 @@ const RecordAudioPage = ({navigation}) => {
 
         /* Start of audio recording code */
         const [timeSpentRecording, setTimeSpentRecording] = useState(null);
+        const [secondsDisplay, setSecondsDisplay] = useState(null);
+        const [minutesDisplay, setMinutesDisplay] = useState(null);
+        const [hoursDisplay, setHoursDisplay] = useState(null);
+        const [playRecording, setPlayRecording] = useState();
+        const [playbackStatus, setPlaybackStatus] = useState(undefined);
+        const [isAudioPlaying, setIsAudioPlaying] = useState(false);
+        const [recordButtonDisabled, setRecordButtonDisabled] = useState(false);
         console.log(timeSpentRecording);
 
         const onChangeRecordingStatus = (status) => {
@@ -79,6 +88,14 @@ const RecordAudioPage = ({navigation}) => {
             recordingDuration = recordingDuration / 1000;
             console.log("Recording has gone on for " + recordingDuration);
             setTimeSpentRecording(recordingDuration);
+            var d = Number(status.durationMillis / 1000);
+            var h = Math.floor(d / 3600);
+            var m = Math.floor(d % 3600 / 60);
+            var s = Math.floor(d % 3600 % 60);
+        
+            setHoursDisplay(h > 0 ? h + (h == 1 ? m == '' ? " hour " : " hour, " : m != '' ? " hours " : " hours, ") : "")
+            setMinutesDisplay(m > 0 ? m + (m == 1 ? s == '' ? " minute " : " minute, and " : s != '' ? " minutes" : "minutes, and ") : "")
+            setSecondsDisplay(s > 0 ? s + (s == 1 ? " second" : " seconds") : "")
         }
 
         const [recording, setRecording] = React.useState();
@@ -86,28 +103,40 @@ const RecordAudioPage = ({navigation}) => {
 
         async function startRecording() {
             try {
-              console.log('Requesting permissions..');
-              await Audio.requestPermissionsAsync();
-              await Audio.setAudioModeAsync({
-                allowsRecordingIOS: true,
-                playsInSilentModeIOS: true,
-              }); 
-              console.log('Starting recording..');
-              const { recording, status } = await Audio.Recording.createAsync(
-                 Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY
-              );
-              setRecording(recording);
-              setRecordingStatus(true);
-              recording.setOnRecordingStatusUpdate((status) => {onChangeRecordingStatus(status)});
-              console.log('Recording started');
+                setRecordButtonDisabled(true);
+                if (playbackStatus && isAudioPlaying == true) {
+                    alert("Stop the audio from playing before making a new recording");
+                    setRecordButtonDisabled(false);
+                    setRecordingStatus(false);
+                    return;
+                }
+                console.log('Requesting permissions..');
+                await Audio.requestPermissionsAsync();
+                await Audio.setAudioModeAsync({
+                    allowsRecordingIOS: true,
+                    playsInSilentModeIOS: true,
+                }); 
+                console.log('Starting recording..');
+                setPlaybackStatus(undefined);
+                setPlayRecording(undefined);
+                const { recording, status } = await Audio.Recording.createAsync(
+                    Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY
+                );
+                setRecording(recording);
+                setRecordingStatus(true);
+                recording.setOnRecordingStatusUpdate((status) => {onChangeRecordingStatus(status)});
+                setRecordButtonDisabled(false);
+                console.log('Recording started');
             } catch (err) {
-              console.error('Failed to start recording', err);
+                console.error('Failed to start recording', err);
+                setRecordButtonDisabled(false);
             }
         }
 
-          var [recording_uri, setRecording_uri] = useState('');
-        
-          async function stopRecording() {
+        var [recording_uri, setRecording_uri] = useState('');
+    
+        async function stopRecording() {
+            setRecordButtonDisabled(true);
             console.log('Stopping recording..');
             setRecording(undefined);
             await recording.stopAndUnloadAsync();
@@ -117,38 +146,67 @@ const RecordAudioPage = ({navigation}) => {
             }); 
             var recording_uri = recording.getURI(); 
             console.log('Recording stopped and stored at', recording_uri);
+            setRecordButtonDisabled(false);
             setRecordingStatus(false);
             setRecording_uri(recording_uri);
-          }
+        }
     
         /* End of audio recording code */
 
         /* Start of audio play and pause code */
         
-        async function playAudio(recording_uri) {  
-            const sound = new Audio.Sound();
-            try {
-                console.log("Loading sound")
-                recordingStatus == true? stopRecording() : null
-                await sound.loadAsync(
-                    { uri: recording_uri },
-                    { shouldPlay: true },
-                );
-                await sound.setVolumeAsync(1);
-                console.log('Loaded Sound');
-                console.log("Playing sound");
-                sound.setOnPlaybackStatusUpdate(async (status) => {
-                    if (status.didJustFinish === true) {
-                      // audio has finished!
-                      await sound.unloadAsync()
-                    }
-                  })
-                await sound.playAsync();
-                
-            } catch (error) {
-                console.log("Error when playing sound:", error);
-                alert("An error has occured. " + error)
+        async function playAudio(recording_uri) {
+            if (playbackStatus != null) {
+                if (playbackStatus.isLoaded && !playbackStatus.isPlaying) {
+                    const status = await playRecording.playAsync()
+                    setPlaybackStatus(status);
+                    setIsAudioPlaying(true);
+                }
             }
+            if (!playbackStatus && !playRecording) {
+                var play_sound = new Audio.Sound();
+                setPlayRecording(play_sound);
+                let status_update_num = 0;
+                try {
+                    console.log("Loading sound")
+                    if (recordingStatus == true) {
+                        alert("Please stop the recording before playing a recording");
+                        setPlayRecording(undefined);
+                        return;
+                    }
+                    await play_sound.loadAsync(
+                        { uri: recording_uri },
+                        { shouldPlay: true },
+                        { progressUpdateIntervalMillis: 100 }
+                    );
+                    await play_sound.setVolumeAsync(1);
+                    console.log('Loaded Sound');
+                    console.log("Playing sound");
+                    play_sound.setOnPlaybackStatusUpdate(async (status) => {
+                        setPlaybackStatus(status);
+                        status_update_num += 1;
+                        console.log("Playback status update num = " + status_update_num);
+                        if (status.didJustFinish === true) {
+                        // audio has finished!
+                        await play_sound.unloadAsync()
+                        setIsAudioPlaying(false);
+                        setPlaybackStatus(undefined);
+                        setPlayRecording(undefined);
+                        }
+                    })
+                    await play_sound.playAsync();
+                    setIsAudioPlaying(true);
+                    
+                } catch (error) {
+                    console.log("Error when playing sound:", error);
+                    alert("An error has occured. " + error)
+                }
+            }
+        }
+
+        async function pauseAudio() {
+            await playRecording.pauseAsync();
+            setIsAudioPlaying(false);
         }
 
         /* End of audio play and pause code */
@@ -188,7 +246,14 @@ const RecordAudioPage = ({navigation}) => {
     }
 
     const sendAudioSnippet = () => {
-        recordingStatus == true? stopRecording() : null
+        if (recordingStatus == true) {
+            alert("Please stop the recording before continuing")
+            return;
+        }
+        if (playbackStatus && isAudioPlaying == true) {
+            alert("Please stop the audio from playing before continuing")
+            return;
+        }
         recording_uri? navigation.navigate("SendAudioPage") : alert("Create a recording first");
     }
 
@@ -205,13 +270,43 @@ const RecordAudioPage = ({navigation}) => {
         }
     }
 
+    const goBack_Navigation = () => {
+        if (timeSpentRecording && recording_uri) {
+            Alert.alert(
+                "You are trying to leave this screen with a recording still in memory",
+                "If you leave this screen, the recording will be deleted and you will not be able to get it back. Are you sure you want to continue?",
+                [
+                  {
+                    text: "Yes, delete my recording and go back",
+                    onPress: () => {navigation.goBack()}
+                  },
+                  {
+                    text: "No, keep my recording",
+                    onPress: () => {return},
+                    style: "cancel"
+                  },
+                ]
+              );
+        } else {
+            if (recordingStatus == true && recording) {
+                alert("Stop the recording before leaving this screen");
+                return;
+            }
+            if (playbackStatus && isAudioPlaying == true) {
+                alert("Stop the audio from playing before leaving this screen");
+                return;
+            }
+            navigation.goBack();
+        }
+    }
+
 
     return(
         <>    
             <StatusBar style={colors.StatusBarColor}/>
                 <BackgroundDarkColor style={{backgroundColor: colors.primary}}>
                     <ChatScreen_Title style={{backgroundColor: colors.primary, borderWidth: 0}}>
-                        <Navigator_BackButton onPress={() => {navigation.goBack()}}>
+                        <Navigator_BackButton onPress={goBack_Navigation}>
                             <Image
                             source={require('../../assets/app_icons/back_arrow.png')}
                             style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2, tintColor: colors.tertiary}}
@@ -223,20 +318,31 @@ const RecordAudioPage = ({navigation}) => {
                     </ChatScreen_Title>
                         <View>
                             <View style={{alignItems: 'center'}}>
-                                <TouchableOpacity onPress={changeRecordingStatus}>
+                                <TouchableOpacity disabled={recordButtonDisabled} onPress={changeRecordingStatus}>
                                     <Image style={{width: 100, height: 100}} source={recordingStatus == false? 
                                         dark? require('../../assets/record_button.png') : require('../../assets/lightmode_recordbutton.png') 
                                         : dark? require('../../assets/recording_icon.png') : require('../../assets/lightmode_recordingicon.png')}
                                     />
                                 </TouchableOpacity>
                             </View>
-                            <TestText style={{color: colors.tertiary}}>{timeSpentRecording || null}</TestText>
-                            <StyledButton onPress={() => recording_uri? playAudio(recording_uri) : alert("Create a recording first")}>
-                                <ButtonText>Play Audio Snippet</ButtonText>
-                            </StyledButton>
-                            <StyledButton onPress={sendAudioSnippet}>
-                                <ButtonText>Send Audio Snippet</ButtonText>
-                            </StyledButton>
+                            {!recording_uri && !recording && !recordingStatus && hoursDisplay == null && minutesDisplay == null && secondsDisplay == null ? <TestText style={{marginTop: 20}}>Press the recording button to get started</TestText> : null}
+                            <TestText style={{color: colors.tertiary, marginTop: 20}}>{hoursDisplay == null & minutesDisplay == null & secondsDisplay == null ? null : "Recording for " + hoursDisplay + minutesDisplay + secondsDisplay}</TestText>
+                            <View style={{alignItems: 'center', marginVertical: 20}}>
+                                {recording_uri ?
+                                    isAudioPlaying == true?
+                                        <TouchableOpacity onPress={pauseAudio}>
+                                            <Icon name="pausecircleo" color={colors.tertiary} size={80}/>
+                                        </TouchableOpacity> :
+                                        <TouchableOpacity onPress={() => recording_uri? playAudio(recording_uri) : alert("Create a recording first")}>
+                                            <Icon name="playcircleo" color={colors.tertiary} size={80}/>
+                                        </TouchableOpacity> : null
+                                }
+                            </View>
+                            {recording_uri? 
+                                <StyledButton onPress={sendAudioSnippet}>
+                                    <ButtonText>Send Audio Snippet</ButtonText>
+                                </StyledButton> : null
+                            }
                         </View>
                 </BackgroundDarkColor>
         </>

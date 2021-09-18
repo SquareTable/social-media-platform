@@ -45,7 +45,10 @@ import {
     RecordButton_RecordScreen_AudioUploadPage,
     RecordButtonChanger_RecordScreen_AudioUploadPage,
     AudioWaveBox_RecordScreen_AudioUploadPage,
-    ViewHider
+    ViewHider,
+    ChatScreen_Title,
+    Navigator_BackButton,
+    TestText
 } from '../screenStylings/styling.js';
 
 // async-storage
@@ -68,9 +71,18 @@ const AudioUploadPage = ({navigation}) => {
         <>    
             <StatusBar style={colors.StatusBarColor}/>
                 <BackgroundDarkColor style={{backgroundColor: colors.primary}}>
-                    <WelcomeContainer audioPostScreen={true} style={{backgroundColor: colors.primary}}>
-                        <PageTitle>Audio Post Screen</PageTitle>
-                        <View>
+                    <ChatScreen_Title style={{backgroundColor: colors.primary, borderWidth: 0}}>
+                        <Navigator_BackButton onPress={() => {navigation.goBack()}}>
+                            <Image
+                            source={require('../../assets/app_icons/back_arrow.png')}
+                            style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2, tintColor: colors.tertiary}}
+                            resizeMode="contain"
+                            resizeMethod="resize"
+                            />
+                        </Navigator_BackButton>
+                        <TestText style={{textAlign: 'center', color: colors.tertiary}}>Audio Post Screen</TestText>
+                    </ChatScreen_Title>
+                        <View style={{backgroundColor: colors.primary}}>
                             <AudioUploadScreenUploadButtons>
                                 <FlexRow>
                                     <LeftButton_AudioUploadScreen>
@@ -98,7 +110,6 @@ const AudioUploadPage = ({navigation}) => {
                                 </FlexRow>
                             </AudioUploadScreenUploadButtons>
                         </View>
-                    </WelcomeContainer>
                 </BackgroundDarkColor>
         </>
     );
