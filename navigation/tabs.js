@@ -74,7 +74,7 @@ const Tabs = ({navigation}) => {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     }
         const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
-        var {photoUrl} = storedCredentials;
+        if (storedCredentials) {var {photoUrl} = storedCredentials}
     return(
         <Tab.Navigator
             tabBarOptions={{

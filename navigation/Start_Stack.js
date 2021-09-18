@@ -71,6 +71,13 @@ const Start_Stack = () => {
                                     animationEnabled: false,
                                 }}
                             />
+                            <Stack.Screen 
+                                name="LoginScreen" 
+                                component={LoginScreen}
+                                options={{
+                                    animationEnabled: false,
+                                }}
+                            />
                         </>
                     ) : ( 
                         <>

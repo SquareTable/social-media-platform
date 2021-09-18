@@ -25,12 +25,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 //credentials context
 import { CredentialsContext } from '../components/CredentialsContext';
 import { ImageBackground, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import * as Linking from 'expo-linking';
 
 
 const SettingsPage = ({navigation}) => {
      //context
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
-    const {name, email, photoUrl} = storedCredentials;
+    if (storedCredentials) {var {name, email, photoUrl} = storedCredentials}
     const AvatarImg = photoUrl ? {uri: photoUrl} : require('./../assets/img/Logo.png');
     const [logoutViewState, setLogoutViewState] = useState("false")
 
@@ -40,6 +41,14 @@ const SettingsPage = ({navigation}) => {
         })
         .catch(error => console.log(error));
         AsyncStorage.removeItem('SocialSquareDMsList');
+        try {
+            navigation.reset({
+                index: 0,
+                routes: [{ name: 'LoginScreen' }],
+            });
+        } catch (e) {
+            console.log(e + "Error with resetting navigation after logout from SettingsScreen.js");
+        }
     }
 
     const changeLogoutView = () => {
