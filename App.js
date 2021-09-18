@@ -4,7 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState, useRef } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Alert, SafeAreaView} from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Alert, SafeAreaView, Platform} from 'react-native';
 import styled from "styled-components";
 import LoginScreen from './screens/LoginScreen.js';
 import { Start_Stack } from './navigation/Start_Stack.js';
@@ -15,6 +15,7 @@ import { Asset } from 'expo-asset';
 import { AppearanceProvider, useColorScheme } from 'react-native-appearance';
 import { DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { CredentialsContext } from './components/CredentialsContext';
+import { AdIDContext } from './components/AdIDContext.js';
 
 const Stack = createStackNavigator();
 
@@ -28,6 +29,13 @@ Notifications.setNotificationHandler({
 });
 
 const App = () => {
+  const [AdID, setAdID] = useState('');
+  const testID = Platform.OS == "ios" ? 'ca-app-pub-3940256099942544/2934735716' : 'ca-app-pub-3940256099942544/6300978111';
+  const productionID = Platform.OS == 'ios' ? 'ca-app-pub-6980968247752885~4685804835' : 'ca-app-pub-6980968247752885~2757645493';
+  // Is a real device and running in production.
+  const adUnitID = Constants.isDevice && !__DEV__ ? productionID : testID;
+
+
   const [storedCredentials, setStoredCredentials] = useState('');
   const clearAsyncStorageOnLogin = false;
   if (clearAsyncStorageOnLogin === true) {
@@ -141,6 +149,7 @@ const App = () => {
           setStoredCredentials(null);
         }
       }).catch((error) => console.log(error));
+      setAdID(adUnitID);
       const images = [
         require('./assets/img/Logo.png'),
         require('./assets/app_icons/test3.png'),
@@ -192,39 +201,27 @@ const App = () => {
       setIsReady(true);
     }
     return (
-      <NavigationContainer theme={scheme === 'dark' ? AppDarkTheme : AppLightTheme}>
-        <AppLoading
-          startAsync={cacheResourcesAsync}
-          onFinish={toDoOnFinish}
-          onError={console.warn}
-        />
-      </NavigationContainer>
+      <AppLoading
+        startAsync={cacheResourcesAsync}
+        onFinish={toDoOnFinish}
+        onError={console.warn}
+      />
     ); } else {
 
     return (
       <CredentialsContext.Provider value={{storedCredentials, setStoredCredentials}}>
-        <AppearanceProvider>
-          <NavigationContainer theme={scheme === 'dark' ? AppDarkTheme : AppLightTheme}>
-            <Start_Stack/>
-          </NavigationContainer>
-        </AppearanceProvider>
+        <AdIDContext.Provider value={{AdID, setAdID}}>
+          <AppearanceProvider>
+            <NavigationContainer theme={scheme === 'dark' ? AppDarkTheme : AppLightTheme}>
+              <Start_Stack/>
+            </NavigationContainer>
+          </AppearanceProvider>
+        </AdIDContext.Provider>
       </CredentialsContext.Provider>
+
     );
   }
 };
 
 export default App;
 
-const styles = StyleSheet.create({
-  body_style: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  test_container: {
-    backgroundColor: '#192717',
-    color: "white",
-    fontWeight: "bold",
-  },
-});

@@ -25,29 +25,30 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 //credentials context
 import { CredentialsContext } from '../components/CredentialsContext';
 import { ImageBackground, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import * as Linking from 'expo-linking';
 
 
 const SettingsPage = ({navigation}) => {
      //context
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
-    const {name, email, photoUrl} = storedCredentials;
+    if (storedCredentials) {var {name, email, photoUrl} = storedCredentials}
     const AvatarImg = photoUrl ? {uri: photoUrl} : require('./../assets/img/Logo.png');
     const [logoutViewState, setLogoutViewState] = useState("false")
 
     const clearLogin = () => {
         AsyncStorage.removeItem('socialSquareCredentials').then(() => {
-            setStoredCredentials("");
+            setStoredCredentials(null);
         })
-        .catch(error => console.log(error))
+        .catch(error => console.log(error));
         AsyncStorage.removeItem('SocialSquareDMsList');
-        navigation.reset({
-            index: 0,
-            routes: [{ name: 'LoginScreen' }],
-        });
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
-        setTimeout(() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy); }, 60);
-        setTimeout(() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy); }, 120);
-        setTimeout(() => { Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy); }, 180);
+        try {
+            navigation.reset({
+                index: 0,
+                routes: [{ name: 'LoginScreen' }],
+            });
+        } catch (e) {
+            console.log(e + "Error with resetting navigation after logout from SettingsScreen.js");
+        }
     }
 
     const changeLogoutView = () => {
@@ -57,12 +58,6 @@ const SettingsPage = ({navigation}) => {
             console.log("Closed Confirm")
             setLogoutViewState(true)
         }
-    }
-    
-    if (darkModeOn === true) {
-        var styling = darkModeStyling;
-    } else {
-        var styling = lightModeStyling;
     }
 
     const {colors} = useTheme();

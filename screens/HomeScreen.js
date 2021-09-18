@@ -23,15 +23,23 @@ import {
 } from '../screens/screenStylings/styling.js';
 import ProgressiveImage from '../posts/ProgressiveImage.js';
 import { CredentialsContext } from '../components/CredentialsContext.js';
+import { AdIDContext } from '../components/AdIDContext.js';
 import VisitingProfileScreen from '../screens/VisitingProfileScreen.js';
 import devModeOn from '../components/devModeOn.js';
-
+import {
+    AdMobBanner,
+    AdMobInterstitial,
+    PublisherBanner,
+    AdMobRewarded,
+    setTestDeviceIDAsync,
+} from 'expo-ads-admob';
 
 const HomeScreen = ({navigation}) => {
     const [usernameToReport, setUsernameToReport] = useState(null);
     const [ProfileOptionsViewState, setProfileOptionsViewState] = useState(true);
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
-    const {name, displayName, email, photoUrl} = storedCredentials;
+    const {AdID, setAdID} = useContext(AdIDContext);
+    if (storedCredentials) {var {name, displayName, email, photoUrl} = storedCredentials}
     if (darkModeOn === true) {
         var styling = darkModeStyling;
     } else {
@@ -107,14 +115,14 @@ const HomeScreen = ({navigation}) => {
         const welcome_message = () => {
             alert("Welcome to SocialSquare, it looks like you have just downloaded this app for the first time! Nice! You are right now on development version " + development_version);
         };
-        var development_version = '0.1.10';
+        var development_version = '0.1.11';
         //Get data
         try {
             var development_version_localstorage_value = await AsyncStorage.getItem('development_version')
             if(development_version_localstorage_value !== null) {
             if (development_version !== development_version_localstorage_value) {
                 console.log(development_version_localstorage_value);
-                var releaseNotes = "Add App Introduction Screens and also revamp the Audio Post Page";
+                var releaseNotes = "Temporary fix for big bug";
                 var alert_on_update = "SocialSquare has been updated to the latest version (dev version " + development_version + "). Changes in this update are: " + releaseNotes;
                 alert(alert_on_update);
             } else {
@@ -234,80 +242,91 @@ const HomeScreen = ({navigation}) => {
                 scrollEnabled={FlatListElementsEnabledState}
                 showsVerticalScrollIndicator={false}
                 keyExtractor={(item, index) => 'key'+index}
-                renderItem={({ item }) => ( 
-                    <View style={{minWidth: 500, maxWidth: 500, width: 500, backgroundColor: colors.primary, alignSelf: 'center', zIndex: 100}}>
-                        <View style={{maxWidth: 500, minWidth: 500, width: 500, alignContent: 'center', alignItems: 'center', alignSelf: 'center',}}>
-                            <View style={{maxWidth: 400, minWidth: 400}}>
-                                <View style={{flex: 2, flexDirection:'row'}}>
-                                    <View style={{width:60}}>
-                                        <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={() => goToProfileScreen(name, item.username, item.profilePictureSource, item.displayName)}>
-                                            <Image
-                                                source={item.profilePictureSource || require('../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/266-question.png')}
-                                                style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2, position:'absolute', left:13}}
-                                                resizeMode="contain"
-                                                resizeMethod="resize"
-                                            />
-                                            <View style={{width:'100%', minHeight:42, height:42}}/>
-                                        </TouchableOpacity>
+                renderItem={({ item, index }) => ( 
+                    <View>
+                        <View style={{minWidth: 500, maxWidth: 500, width: 500, backgroundColor: colors.primary, alignSelf: 'center', zIndex: 100}}>
+                            <View style={{maxWidth: 500, minWidth: 500, width: 500, alignContent: 'center', alignItems: 'center', alignSelf: 'center',}}>
+                                <View style={{maxWidth: 400, minWidth: 400}}>
+                                    <View style={{flex: 2, flexDirection:'row', marginTop: 10}}>
+                                        <View style={{width:60}}>
+                                            <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={() => goToProfileScreen(name, item.username, item.profilePictureSource, item.displayName)}>
+                                                <Image
+                                                    source={item.profilePictureSource || require('../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/266-question.png')}
+                                                    style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2, position:'absolute', left:13}}
+                                                    resizeMode="contain"
+                                                    resizeMethod="resize"
+                                                />
+                                                <View style={{width:'100%', minHeight:42, height:42}}/>
+                                            </TouchableOpacity>
+                                        </View>
+                                        <View>
+                                            <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={() => goToProfileScreen(name, item.username, item.profilePictureSource, item.displayName)}>
+                                                <Text style={{color: colors.tertiary, textAlign: 'left', fontWeight:'bold', fontSize: 20, textAlignVertical:'bottom'}}>{item.displayName || item.username || "Couldn't get name"}</Text>
+                                            </TouchableOpacity>
+                                        </View>
+                                        <View style={{position: 'absolute', right: 20}}>
+                                            <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={() => changeOptionsView(item.username)}>
+                                                <Image
+                                                    source={require('../assets/app_icons/3dots.png')}
+                                                    style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, tintColor: colors.tertiary}}
+                                                    resizeMode="contain"
+                                                    resizeMethod="resize"
+                                                />
+                                            </TouchableOpacity>
+                                        </View>
                                     </View>
-                                    <View>
-                                        <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={() => goToProfileScreen(name, item.username, item.profilePictureSource, item.displayName)}>
-                                            <Text style={{color: colors.tertiary, textAlign: 'left', fontWeight:'bold', fontSize: 20, textAlignVertical:'bottom'}}>{item.displayName || item.username || "Couldn't get name"}</Text>
-                                        </TouchableOpacity>
+                                    <View style={{backgroundColor: colors.primary, maxWidth: 400, minWidth: 400}}>
+                                        <ProgressiveImage
+                                            source={dark? item.postSource || require('../assets/app_icons/cannot_get_post_darkmode.png') : item.postSource || require('../assets/app_icons/cannot_get_post_lightmode.png')}
+                                            style={{minHeight: 400, minWidth: 400, width: 400, height: 400, maxWidth: 400, maxHeight: 400}}
+                                            resizeMode="contain"
+                                            resizeMethod="resize"
+                                        />
                                     </View>
-                                    <View style={{position: 'absolute', right: 20}}>
-                                        <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={() => changeOptionsView(item.username)}>
-                                            <Image
-                                                source={require('../assets/app_icons/3dots.png')}
-                                                style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, tintColor: colors.tertiary}}
-                                                resizeMode="contain"
-                                                resizeMethod="resize"
-                                            />
-                                        </TouchableOpacity>
-                                    </View>
-                                </View>
-                                <View style={{backgroundColor: colors.primary, maxWidth: 400, minWidth: 400}}>
-                                    <ProgressiveImage
-                                        source={dark? item.postSource || require('../assets/app_icons/cannot_get_post_darkmode.png') : item.postSource || require('../assets/app_icons/cannot_get_post_lightmode.png')}
-                                        style={{minHeight: 400, minWidth: 400, width: 400, height: 400, maxWidth: 400, maxHeight: 400}}
-                                        resizeMode="contain"
-                                        resizeMethod="resize"
-                                    />
-                                </View>
-                                <View style={{flex: 2, flexDirection: 'row', marginTop: 10, marginBottom: 10}}>
-                                    <View style={{height: 50, width: 65}}>
-                                        <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={() => {alert("The Like Button does not work yet. We will add functionality to this very shortly.")}}>
-                                            <Image
-                                                source={Images.posts.heart}
-                                                style={{...styling.like_comment_save_buttons, tintColor: colors.tertiary}}
-                                                resizeMode="contain"
-                                                resizeMethod="resize"
-                                            />
-                                        </TouchableOpacity>
-                                    </View>
-                                    <View style={{width: 50}}>
-                                        <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={() => {alert("The Comment Button does not work yet. We will add functionality to this very shortly.")}}>
-                                            <Image
-                                                source={Images.posts.message_bubbles}
-                                                style={{...styling.like_comment_save_buttons, tintColor: colors.tertiary}}
-                                                resizeMode="contain"
-                                                resizeMethod="resize"
-                                            />
-                                        </TouchableOpacity>
-                                    </View>
-                                    <View style={{width:50, position:'absolute', right: 20}}>
-                                        <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={() => {alert("The Save Button does not work yet. We will add functionality to this very shortly.")}}>
-                                            <Image
-                                                source={Images.posts.bookmark}
-                                                style={{...styling.like_comment_save_buttons, tintColor: colors.tertiary}}
-                                                resizeMode="contain"
-                                                resizeMethod="resize"
-                                            />
-                                        </TouchableOpacity>
+                                    <View style={{flex: 2, flexDirection: 'row', marginTop: 10, marginBottom: 10}}>
+                                        <View style={{height: 50, width: 65}}>
+                                            <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={() => {alert("The Like Button does not work yet. We will add functionality to this very shortly.")}}>
+                                                <Image
+                                                    source={Images.posts.heart}
+                                                    style={{...styling.like_comment_save_buttons, tintColor: colors.tertiary}}
+                                                    resizeMode="contain"
+                                                    resizeMethod="resize"
+                                                />
+                                            </TouchableOpacity>
+                                        </View>
+                                        <View style={{width: 50}}>
+                                            <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={() => {alert("The Comment Button does not work yet. We will add functionality to this very shortly.")}}>
+                                                <Image
+                                                    source={Images.posts.message_bubbles}
+                                                    style={{...styling.like_comment_save_buttons, tintColor: colors.tertiary}}
+                                                    resizeMode="contain"
+                                                    resizeMethod="resize"
+                                                />
+                                            </TouchableOpacity>
+                                        </View>
+                                        <View style={{width:50, position:'absolute', right: 20}}>
+                                            <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={() => {alert("The Save Button does not work yet. We will add functionality to this very shortly.")}}>
+                                                <Image
+                                                    source={Images.posts.bookmark}
+                                                    style={{...styling.like_comment_save_buttons, tintColor: colors.tertiary}}
+                                                    resizeMode="contain"
+                                                    resizeMethod="resize"
+                                                />
+                                            </TouchableOpacity>
+                                        </View>
                                     </View>
                                 </View>
                             </View>
                         </View>
+                        {index % 4 == 0 && index != 0 ? 
+                        <View style={{alignSelf: 'center'}}>
+                            <AdMobBanner
+                                bannerSize="mediumRectangle"
+                                adUnitID={AdID}
+                                servePersonalizedAds={false}
+                                onDidFailToReceiveAdWithError={(e) => {console.log(e)}}
+                            />
+                        </View> : null}
                     </View>
                 )}
             />

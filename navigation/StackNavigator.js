@@ -353,7 +353,15 @@ const post_screen_navigator = () => {
 
 
 
-export { ChatScreen_Stack, AppStyling, RootStack, FindScreen_Stack, home_screen_post_to_profile_screen, post_screen_navigator};
+
+export { 
+  ChatScreen_Stack, 
+  AppStyling, 
+  RootStack, 
+  FindScreen_Stack, 
+  home_screen_post_to_profile_screen, 
+  post_screen_navigator,
+};
 
 /* OLD ROOTSTACK
 

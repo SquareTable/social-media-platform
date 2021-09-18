@@ -89,13 +89,11 @@ export const ChatScreenNavigator_Row = (props) => {
 
 const ChatScreenNavigator = ({navigation}) => {
     const [directMessages, setDirectMessages] = useState();
-    useEffect(() => {
-        async function GetChatList() {
-            var DMsList = await AsyncStorage.getItem('SocialSquareDMsList')
-            DMsList == null? setDirectMessages([]) : setDirectMessages(JSON.parse(DMsList))
-        }
-        GetChatList();
-    });
+    async function GetChatList() {
+        var DMsList = await AsyncStorage.getItem('SocialSquareDMsList')
+        DMsList == null? setDirectMessages([]) : setDirectMessages(JSON.parse(DMsList))
+    }
+    GetChatList();
     const {colors} = useTheme();
 
 

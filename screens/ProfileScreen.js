@@ -59,7 +59,7 @@ const ProfileScreen = ({navigation, route}) => {
     console.log(backButtonHidden)
      //context
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
-    const {name, displayName, email, photoUrl} = storedCredentials;
+    if (storedCredentials) {var {name, displayName, email, photoUrl} = storedCredentials;}
     const AvatarImg = photoUrl ? {uri: photoUrl} : require('./../assets/img/Logo.png');
     const [gridViewState, setGridViewState] = useState("flex");
     const [featuredViewState, setFeaturedViewState] = useState("none");

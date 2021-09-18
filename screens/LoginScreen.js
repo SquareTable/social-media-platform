@@ -108,8 +108,6 @@ const LoginScreen = ({navigation}) => {
         .then(() => {
             handleMessage(message, status);
             setStoredCredentials(credentials);
-            /*console.log(credentials)
-            console.log(storedCredentials)*/
         })
         .catch((error) => {
             console.log(error);

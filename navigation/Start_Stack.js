@@ -65,6 +65,23 @@ const Start_Stack = () => {
                     storedCredentials ? (
                         <>
                             <Stack.Screen 
+                                name="Tabs" 
+                                component={Tabs}
+                                options={{
+                                    animationEnabled: false,
+                                }}
+                            />
+                            <Stack.Screen 
+                                name="LoginScreen" 
+                                component={LoginScreen}
+                                options={{
+                                    animationEnabled: false,
+                                }}
+                            />
+                        </>
+                    ) : ( 
+                        <>
+                            <Stack.Screen 
                                 name="LoginScreen" 
                                 component={LoginScreen}
                                 options={{
@@ -93,10 +110,6 @@ const Start_Stack = () => {
                                     animationEnabled: false,
                                 }}
                             />
-                        </>
-                    ) : ( 
-                        <>
-                            <Stack.Screen name="Tabs" component={Tabs}/>
                         </>
                     ) : (
                         <>
