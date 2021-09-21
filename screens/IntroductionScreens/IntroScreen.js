@@ -69,7 +69,7 @@ const IntroScreen = ({navigation}) => {
         {
           key: 'two',
           title: 'Security',
-          text: 'Security and Privacy is our top priority at SocialSquare.\n\nAll chats within SocialSquare will use 4096-bit end-to-end encryption, making sure that only you can read your messages and no one else, including SocialSquare.',
+          text: 'Security and Privacy is our top priority at SocialSquare.\n\nAll chats within SocialSquare use 4096-bit end-to-end encryption, making sure that only you can read your messages and no one else. Even SocialSquare cannot read them.',
           image: require('../../assets/favicon.png'),
           backgroundColor: '#febe29',
           comingSoon: true

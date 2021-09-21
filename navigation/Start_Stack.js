@@ -35,13 +35,11 @@ const Stack = createStackNavigator();
 
 const Start_Stack = () => {
     const [HasOpened, setHasOpened] = useState();
-    useEffect(() => {
-        async function GetHasOpenedSocialSquareKey() {
-            var HasOpened = await AsyncStorage.getItem('HasOpenedSocialSquare');
-            setHasOpened(HasOpened);
-        }
-        GetHasOpenedSocialSquareKey();
-    });
+    async function GetHasOpenedSocialSquareKey() {
+        var HasOpened = await AsyncStorage.getItem('HasOpenedSocialSquare');
+        setHasOpened(HasOpened);
+    }
+    GetHasOpenedSocialSquareKey();
     console.log("HasOpened variable is " + HasOpened);
   return(
       <CredentialsContext.Consumer>

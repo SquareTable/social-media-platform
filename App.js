@@ -31,9 +31,9 @@ Notifications.setNotificationHandler({
 const App = () => {
   const [AdID, setAdID] = useState('');
   const testID = Platform.OS == "ios" ? 'ca-app-pub-3940256099942544/2934735716' : 'ca-app-pub-3940256099942544/6300978111';
-  // REAL AD ID const productionID = Platform.OS == 'ios' ? 'ca-app-pub-6980968247752885~4685804835' : 'ca-app-pub-6980968247752885~2757645493';
+  const productionID = Platform.OS == 'ios' ? 'ca-app-pub-6980968247752885/8710919560' : 'ca-app-pub-6980968247752885/3057291726';
   // Is a real device and running in production.
-  const adUnitID = Constants.isDevice && !__DEV__ ? /*Change this to productionID when in production*/testID : testID;
+  const adUnitID = Constants.isDevice && !__DEV__ ? productionID : testID;
 
 
   const [storedCredentials, setStoredCredentials] = useState('');

@@ -80,6 +80,7 @@ const RecordAudioPage = ({navigation}) => {
         const [playbackStatus, setPlaybackStatus] = useState(undefined);
         const [isAudioPlaying, setIsAudioPlaying] = useState(false);
         const [recordButtonDisabled, setRecordButtonDisabled] = useState(false);
+        const [playButtonDisabled, setPlayButtonDisabled] = useState(false);
         console.log(timeSpentRecording);
 
         const onChangeRecordingStatus = (status) => {
@@ -98,7 +99,7 @@ const RecordAudioPage = ({navigation}) => {
             setSecondsDisplay(s > 0 ? s + (s == 1 ? " second" : " seconds") : "")
         }
 
-        const [recording, setRecording] = React.useState();
+        const [recording, setRecording] = useState();
         const [recordingStatus, setRecordingStatus] = useState(false);
 
         async function startRecording() {
@@ -156,14 +157,17 @@ const RecordAudioPage = ({navigation}) => {
         /* Start of audio play and pause code */
         
         async function playAudio(recording_uri) {
-            if (playbackStatus != null) {
+            if (playbackStatus != null && playRecording) {
                 if (playbackStatus.isLoaded && !playbackStatus.isPlaying) {
+                    setPlayButtonDisabled(true);
                     const status = await playRecording.playAsync()
                     setPlaybackStatus(status);
                     setIsAudioPlaying(true);
+                    setPlayButtonDisabled(false);
                 }
             }
             if (!playbackStatus && !playRecording) {
+                setPlayButtonDisabled(true);
                 var play_sound = new Audio.Sound();
                 setPlayRecording(play_sound);
                 let status_update_num = 0;
@@ -172,6 +176,7 @@ const RecordAudioPage = ({navigation}) => {
                     if (recordingStatus == true) {
                         alert("Please stop the recording before playing a recording");
                         setPlayRecording(undefined);
+                        setPlayButtonDisabled(false);
                         return;
                     }
                     await play_sound.loadAsync(
@@ -196,6 +201,7 @@ const RecordAudioPage = ({navigation}) => {
                     })
                     await play_sound.playAsync();
                     setIsAudioPlaying(true);
+                    setPlayButtonDisabled(false);
                     
                 } catch (error) {
                     console.log("Error when playing sound:", error);
@@ -205,8 +211,15 @@ const RecordAudioPage = ({navigation}) => {
         }
 
         async function pauseAudio() {
-            await playRecording.pauseAsync();
-            setIsAudioPlaying(false);
+            setPlayButtonDisabled(true);
+            if (playRecording) {
+                setPlayButtonDisabled(false);
+                setIsAudioPlaying(false);
+                await playRecording.pauseAsync();
+            } else {
+                setIsAudioPlaying(false);
+                setPlayButtonDisabled(false);
+            }
         }
 
         /* End of audio play and pause code */
@@ -271,7 +284,13 @@ const RecordAudioPage = ({navigation}) => {
     }
 
     const goBack_Navigation = () => {
-        if (timeSpentRecording && recording_uri) {
+        if (recordingStatus == true && recording) {
+            alert("Stop the recording before leaving this screen");
+            return;
+        } else if (playbackStatus && isAudioPlaying == true) {
+            alert("Stop the audio from playing before leaving this screen");
+            return;
+        } else if (timeSpentRecording && recording_uri) {
             Alert.alert(
                 "You are trying to leave this screen with a recording still in memory",
                 "If you leave this screen, the recording will be deleted and you will not be able to get it back. Are you sure you want to continue?",
@@ -286,16 +305,8 @@ const RecordAudioPage = ({navigation}) => {
                     style: "cancel"
                   },
                 ]
-              );
+            );
         } else {
-            if (recordingStatus == true && recording) {
-                alert("Stop the recording before leaving this screen");
-                return;
-            }
-            if (playbackStatus && isAudioPlaying == true) {
-                alert("Stop the audio from playing before leaving this screen");
-                return;
-            }
             navigation.goBack();
         }
     }
@@ -330,10 +341,10 @@ const RecordAudioPage = ({navigation}) => {
                             <View style={{alignItems: 'center', marginVertical: 20}}>
                                 {recording_uri ?
                                     isAudioPlaying == true?
-                                        <TouchableOpacity onPress={pauseAudio}>
+                                        <TouchableOpacity disabled={playButtonDisabled} onPress={pauseAudio}>
                                             <Icon name="pausecircleo" color={colors.tertiary} size={80}/>
                                         </TouchableOpacity> :
-                                        <TouchableOpacity onPress={() => recording_uri? playAudio(recording_uri) : alert("Create a recording first")}>
+                                        <TouchableOpacity disabled={playButtonDisabled} onPress={() => recording_uri? playAudio(recording_uri) : alert("Create a recording first")}>
                                             <Icon name="playcircleo" color={colors.tertiary} size={80}/>
                                         </TouchableOpacity> : null
                                 }

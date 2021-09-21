@@ -1,11 +1,12 @@
 import React, { useState, useContext } from 'react';
-import { StyleSheet, Text, View, Button, Image, TouchableOpacity, SafeAreaView, ScrollView, FlatList, Alert} from 'react-native';
+import { StyleSheet, Text, View, Button, Image, TouchableOpacity, SafeAreaView, ScrollView, FlatList, Alert, Dimensions} from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import Constants from "expo-constants";
 import styled from "styled-components";
 import Images from "../posts/images.js";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTheme } from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/Ionicons';
 import {
     darkModeStyling, 
     darkModeOn, 
@@ -33,6 +34,7 @@ import {
     AdMobRewarded,
     setTestDeviceIDAsync,
 } from 'expo-ads-admob';
+import ScalableProgressiveImage from '../components/ScalableProgressiveImage.js';
 
 const HomeScreen = ({navigation}) => {
     const [usernameToReport, setUsernameToReport] = useState(null);
@@ -47,12 +49,13 @@ const HomeScreen = ({navigation}) => {
     }
     const {colors, dark} = useTheme();
     const [Posts, setPosts] = useState([
-        { postSource: Images.posts.social_studies_1, profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', displayName: 'sebthemancreator' },
-        { postSource: Images.posts.social_studies_2, profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', displayName: 'sebthemancreator' },
-        { postSource: Images.posts.social_studies_3, profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', displayName: 'sebthemancreator' },
-        { postSource: Images.posts.social_studies_4, profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', displayName: 'sebthemancreator' },
-        { postSource: Images.posts.social_studies_5, profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', displayName: 'sebthemancreator' },
-        { postSource: Images.posts.apple, profilePictureSource: Images.posts.apple, username: 'ILoveApples', displayName: 'AppleKid' }
+        { postSource: Images.posts.social_studies_1, profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', displayName: 'sebthemancreator', type: 'post', timeUploadedAgo: '4 hours ago', bio: 'Seb and Kovid are cool' },
+        { postSource: Images.posts.social_studies_2, profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', displayName: 'sebthemancreator', type: 'post', timeUploadedAgo: '4 hours ago', bio: 'Seb and Kovid are cool' },
+        { postSource: Images.posts.social_studies_3, profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', displayName: 'sebthemancreator', type: 'post', timeUploadedAgo: '4 hours ago', bio: 'Seb and Kovid are cool' },
+        { postSource: Images.posts.social_studies_4, profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', displayName: 'sebthemancreator', type: 'post', timeUploadedAgo: '4 hours ago', bio: 'Seb and Kovid are cool' },
+        { postSource: Images.posts.social_studies_5, profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', displayName: 'sebthemancreator', type: 'post', timeUploadedAgo: '4 hours ago', bio: 'Seb and Kovid are cool' },
+        { postSource: Images.posts.apple, profilePictureSource: Images.posts.apple, username: 'ILoveApples', displayName: 'AppleKid', type: 'post', timeUploadedAgo: '4 hours ago', bio: 'Seb and Kovid are cool' },
+        { postSource: Images.posts.apple, profilePictureSource: Images.posts.profile_picture, username: 'testing_audio', displayName: 'testing_audio', type: 'audio', timeUploadedAgo: '1 sec ago', bio: "Audio posts will be coming soon hehe :) Testing audio posts :) This will probably be buggy hehe" },
     ]);
     const goToProfileScreen = (name, userToNavigateTo, profilePictureUrl, displayName) => {
         name? 
@@ -143,6 +146,10 @@ const HomeScreen = ({navigation}) => {
     }
     checkAndAnnounceUpdate();
     // End of checking for update and announcing the update
+
+    var deviceWidth = Dimensions.get('window').width
+
+    const [showEndOfListMessage, setShowEndOfListMessage] = useState(false);
     return(
         <SafeAreaView
          style={{flex: 1, backgroundColor: colors.primary, paddingLeft: 10}}
@@ -242,82 +249,138 @@ const HomeScreen = ({navigation}) => {
                 scrollEnabled={FlatListElementsEnabledState}
                 showsVerticalScrollIndicator={false}
                 keyExtractor={(item, index) => 'key'+index}
+                onEndReached={() => {setShowEndOfListMessage(true)}}
+                ListFooterComponent={<Text style={{color: colors.tertiary, borderColor: colors.borderColor, borderWidth: 3, fontSize: 20, fontWeight: 'bold', textAlign: 'center', paddingVertical: 10}}>It looks like you have reached the end</Text>}
                 renderItem={({ item, index }) => ( 
                     <View>
-                        <View style={{minWidth: 500, maxWidth: 500, width: 500, backgroundColor: colors.primary, alignSelf: 'center', zIndex: 100}}>
-                            <View style={{maxWidth: 500, minWidth: 500, width: 500, alignContent: 'center', alignItems: 'center', alignSelf: 'center',}}>
-                                <View style={{maxWidth: 400, minWidth: 400}}>
-                                    <View style={{flex: 2, flexDirection:'row', marginTop: 10}}>
-                                        <View style={{width:60}}>
-                                            <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={() => goToProfileScreen(name, item.username, item.profilePictureSource, item.displayName)}>
-                                                <Image
-                                                    source={item.profilePictureSource || require('../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/266-question.png')}
-                                                    style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2, position:'absolute', left:13}}
-                                                    resizeMode="contain"
-                                                    resizeMethod="resize"
-                                                />
-                                                <View style={{width:'100%', minHeight:42, height:42}}/>
-                                            </TouchableOpacity>
-                                        </View>
-                                        <View>
-                                            <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={() => goToProfileScreen(name, item.username, item.profilePictureSource, item.displayName)}>
-                                                <Text style={{color: colors.tertiary, textAlign: 'left', fontWeight:'bold', fontSize: 20, textAlignVertical:'bottom'}}>{item.displayName || item.username || "Couldn't get name"}</Text>
-                                            </TouchableOpacity>
-                                        </View>
-                                        <View style={{position: 'absolute', right: 20}}>
-                                            <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={() => changeOptionsView(item.username)}>
-                                                <Image
-                                                    source={require('../assets/app_icons/3dots.png')}
-                                                    style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, tintColor: colors.tertiary}}
-                                                    resizeMode="contain"
-                                                    resizeMethod="resize"
-                                                />
-                                            </TouchableOpacity>
-                                        </View>
-                                    </View>
-                                    <View style={{backgroundColor: colors.primary, maxWidth: 400, minWidth: 400}}>
-                                        <ProgressiveImage
-                                            source={dark? item.postSource || require('../assets/app_icons/cannot_get_post_darkmode.png') : item.postSource || require('../assets/app_icons/cannot_get_post_lightmode.png')}
-                                            style={{minHeight: 400, minWidth: 400, width: 400, height: 400, maxWidth: 400, maxHeight: 400}}
+                        {item.type == 'post' ?
+                        <View style={{marginBottom: 20}}>
+                            <View style={{flex: 2, flexDirection: 'row', justifyContent: 'flex-start', marginTop: 10}}>
+                                <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={() => goToProfileScreen(name, item.username, item.profilePictureSource, item.displayName)}>
+                                    <Image
+                                        source={item.profilePictureSource || require('../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/266-question.png')}
+                                        style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2}}
+                                        resizeMode="contain"
+                                        resizeMethod="resize"
+                                    />
+                                </TouchableOpacity>
+                                <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={() => goToProfileScreen(name, item.username, item.profilePictureSource, item.displayName)}>
+                                    <Text numberOfLines={1} style={{color: colors.tertiary, textAlign: 'left', fontWeight:'bold', fontSize: 20, textAlignVertical:'bottom', marginLeft: 10, marginRight: 100, flex: 1}}>{item.displayName || item.username || "Couldn't get name"}</Text>
+                                </TouchableOpacity>
+                                <View style={{position: 'absolute', right: 10}}>
+                                    <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={() => changeOptionsView(item.username)}>
+                                        <Image
+                                            source={require('../assets/app_icons/3dots.png')}
+                                            style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, tintColor: colors.tertiary}}
                                             resizeMode="contain"
                                             resizeMethod="resize"
                                         />
-                                    </View>
-                                    <View style={{flex: 2, flexDirection: 'row', marginTop: 10, marginBottom: 10}}>
-                                        <View style={{height: 50, width: 65}}>
-                                            <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={() => {alert("The Like Button does not work yet. We will add functionality to this very shortly.")}}>
-                                                <Image
-                                                    source={Images.posts.heart}
-                                                    style={{...styling.like_comment_save_buttons, tintColor: colors.tertiary}}
-                                                    resizeMode="contain"
-                                                    resizeMethod="resize"
-                                                />
-                                            </TouchableOpacity>
-                                        </View>
-                                        <View style={{width: 50}}>
-                                            <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={() => {alert("The Comment Button does not work yet. We will add functionality to this very shortly.")}}>
-                                                <Image
-                                                    source={Images.posts.message_bubbles}
-                                                    style={{...styling.like_comment_save_buttons, tintColor: colors.tertiary}}
-                                                    resizeMode="contain"
-                                                    resizeMethod="resize"
-                                                />
-                                            </TouchableOpacity>
-                                        </View>
-                                        <View style={{width:50, position:'absolute', right: 20}}>
-                                            <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={() => {alert("The Save Button does not work yet. We will add functionality to this very shortly.")}}>
-                                                <Image
-                                                    source={Images.posts.bookmark}
-                                                    style={{...styling.like_comment_save_buttons, tintColor: colors.tertiary}}
-                                                    resizeMode="contain"
-                                                    resizeMethod="resize"
-                                                />
-                                            </TouchableOpacity>
-                                        </View>
-                                    </View>
+                                    </TouchableOpacity>
                                 </View>
                             </View>
+                            <View>
+                                <ScalableProgressiveImage
+                                    source={dark? item.postSource || require('../assets/app_icons/cannot_get_post_darkmode.png') : item.postSource || require('../assets/app_icons/cannot_get_post_lightmode.png')}
+                                    width={deviceWidth}
+                                    height={1000}
+                                />
+                            </View>
+                            <View style={{flex: 2, flexDirection: 'row', marginTop: 10}}>
+                                <TouchableOpacity style={{marginLeft: '1%'}} disabled={!FlatListElementsEnabledState} onPress={() => {alert("The Like Button does not work yet. We will add functionality to this very shortly.")}}>
+                                    <Image
+                                        source={Images.posts.heart}
+                                        style={{width: 40, height: 40, tintColor: colors.tertiary}}
+                                        resizeMode="contain"
+                                        resizeMethod="resize"
+                                    />
+                                </TouchableOpacity>
+                                <TouchableOpacity style={{marginHorizontal: '8%'}} disabled={!FlatListElementsEnabledState} onPress={() => {alert("The Comment Button does not work yet. We will add functionality to this very shortly.")}}>
+                                    <Image
+                                        source={Images.posts.message_bubbles}
+                                        style={{width: 40, height: 40, tintColor: colors.tertiary}}
+                                        resizeMode="contain"
+                                        resizeMethod="resize"
+                                    />
+                                </TouchableOpacity>
+                                <TouchableOpacity style={{marginLeft: '50%'}} disabled={!FlatListElementsEnabledState} onPress={() => {alert("The Save Button does not work yet. We will add functionality to this very shortly.")}}>
+                                    <Image
+                                        source={Images.posts.bookmark}
+                                        style={{width: 40, height: 40, tintColor: colors.tertiary}}
+                                        resizeMode="contain"
+                                        resizeMethod="resize"
+                                    />
+                                </TouchableOpacity>
+                            </View>
+                            <View style={{flex: 2, flexDirection: 'row', justifyContent: 'flex-start', marginTop: 10}}>
+                                <Text style={{color: colors.tertiary, fontSize: 16, marginLeft: 2, fontWeight: 'bold'}}>{item.timeUploadedAgo}</Text>
+                                <Text style={{color: colors.tertiary, fontSize: 16, marginLeft: 10, flex: 1, marginRight: 5}}>{item.bio}</Text>
+                            </View>
                         </View>
+                        : null}
+                        {item.type == 'audio' ?
+                            <View style={{marginBottom: 20}}>
+                                <View style={{flex: 2, flexDirection: 'row', justifyContent: 'flex-start', marginTop: 10, marginHorizontal: 10}}>
+                                    <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={() => goToProfileScreen(name, item.username, item.profilePictureSource, item.displayName)}>
+                                        <Image
+                                            source={item.profilePictureSource || require('../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/266-question.png')}
+                                            style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2}}
+                                            resizeMode="cover"
+                                            resizeMethod="resize"
+                                        />
+                                    </TouchableOpacity>
+                                    <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={() => goToProfileScreen(name, item.username, item.profilePictureSource, item.displayName)}>
+                                        <Text numberOfLines={1} style={{color: colors.tertiary, textAlign: 'left', fontWeight:'bold', fontSize: 20, textAlignVertical:'bottom', marginLeft: 10, marginRight: 100, flex: 1}}>{item.displayName || item.username || "Couldn't get name"}</Text>
+                                    </TouchableOpacity>
+                                    <View style={{position: 'absolute', right: 10}}>
+                                        <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={() => changeOptionsView(item.username)}>
+                                            <Image
+                                                source={require('../assets/app_icons/3dots.png')}
+                                                style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, tintColor: colors.tertiary}}
+                                                resizeMode="contain"
+                                                resizeMethod="resize"
+                                            />
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                                <View style={{backgroundColor: colors.borderColor, flex: 2, justifyContent: 'center', alignItems: 'center', marginTop: 10, paddingVertical: 100}}>
+                                    <Icon 
+                                        name="musical-notes-sharp"
+                                        size={200}
+                                        color={colors.tertiary}
+                                    />
+                                </View>
+                                <View style={{flex: 2, flexDirection: 'row', marginTop: 10}}>
+                                    <TouchableOpacity style={{marginHorizontal: '1%'}} disabled={!FlatListElementsEnabledState} onPress={() => {alert("The Like Button does not work yet. We will add functionality to this very shortly.")}}>
+                                        <Image
+                                            source={Images.posts.heart}
+                                            style={{width: 40, height: 40, tintColor: colors.tertiary}}
+                                            resizeMode="contain"
+                                            resizeMethod="resize"
+                                        />
+                                    </TouchableOpacity>
+                                    <TouchableOpacity style={{marginHorizontal: '8%'}} disabled={!FlatListElementsEnabledState} onPress={() => {alert("The Comment Button does not work yet. We will add functionality to this very shortly.")}}>
+                                        <Image
+                                            source={Images.posts.message_bubbles}
+                                            style={{width: 40, height: 40, tintColor: colors.tertiary}}
+                                            resizeMode="contain"
+                                            resizeMethod="resize"
+                                        />
+                                    </TouchableOpacity>
+                                    <TouchableOpacity style={{marginLeft: '50%'}} disabled={!FlatListElementsEnabledState} onPress={() => {alert("The Save Button does not work yet. We will add functionality to this very shortly.")}}>
+                                        <Image
+                                            source={Images.posts.bookmark}
+                                            style={{width: 40, height: 40, tintColor: colors.tertiary}}
+                                            resizeMode="contain"
+                                            resizeMethod="resize"
+                                        />
+                                    </TouchableOpacity>
+                                </View>
+                                <View style={{flex: 2, flexDirection: 'row', justifyContent: 'flex-start', marginTop: 10}}>
+                                    <Text style={{color: colors.tertiary, fontSize: 16, marginLeft: 2, fontWeight: 'bold'}}>{item.timeUploadedAgo}</Text>
+                                    <Text style={{color: colors.tertiary, fontSize: 16, marginLeft: 10, flex: 1}}>{item.bio}</Text>
+                                </View>
+                            </View>        
+                        : null}
                         {index % 4 == 0 && index != 0 ? 
                         <View style={{alignSelf: 'center'}}>
                             <AdMobBanner

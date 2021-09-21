@@ -150,6 +150,7 @@ const LoginScreen = ({navigation}) => {
                                         onBlur={handleBlur('email')}
                                         value={values.email}
                                         keyboardType="email-address"
+                                        autoCapitalize="none"
                                         style={{backgroundColor: colors.primary, color: colors.tertiary}}
                                     />
 

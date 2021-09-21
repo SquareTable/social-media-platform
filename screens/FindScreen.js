@@ -25,14 +25,13 @@ const FindScreen = ({navigation}) => {
     var postHeight = postWidth
 
     const [PostRows, setPostRows] = useState([
-        { post_source_one: Images.posts.profile_picture, post_one_profilepicture: Images.posts.profile_picture, post_one_username: 'sebthemancreator', post_source_two: Images.posts.background, post_two_profilepicture: Images.posts.profile_picture, post_two_username: 'sebthemancreator', post_source_three: Images.posts.sad_pepe, post_three_profilepicture: Images.posts.profile_picture, post_three_username: 'sebthemancreator', key: '1' },
-        { post_source_one: Images.posts.profile_picture, post_one_profilepicture: Images.posts.profile_picture, post_one_username: 'sebthemancreator', post_source_two: Images.posts.background, post_two_profilepicture: Images.posts.profile_picture, post_two_username: 'sebthemancreator', post_source_three: Images.posts.sad_pepe, post_three_profilepicture: Images.posts.profile_picture, post_three_username: 'sebthemancreator', key: '2' },
-        { post_source_one: Images.posts.profile_picture, post_one_profilepicture: Images.posts.profile_picture, post_one_username: 'sebthemancreator', post_source_two: Images.posts.background, post_two_profilepicture: Images.posts.profile_picture, post_two_username: 'sebthemancreator', post_source_three: Images.posts.sad_pepe, post_three_profilepicture: Images.posts.profile_picture, post_three_username: 'sebthemancreator', key: '3' },
-        { post_source_one: Images.posts.profile_picture, post_one_profilepicture: Images.posts.profile_picture, post_one_username: 'sebthemancreator', post_source_two: Images.posts.background, post_two_profilepicture: Images.posts.profile_picture, post_two_username: 'sebthemancreator', post_source_three: Images.posts.sad_pepe, post_three_profilepicture: Images.posts.profile_picture, post_three_username: 'sebthemancreator', key: '4' },
+        { post_source_one: Images.posts.profile_picture, post_one_profilepicture: Images.posts.profile_picture, post_one_username: 'sebthemancreator', post_one_displayName: 'sebthesussyman', post_one_bio: 'This is a bio', post_one_timeUploadedAgo: '5 years ago', post_source_two: Images.posts.background, post_two_profilepicture: Images.posts.profile_picture, post_two_username: 'sebthemancreator', post_two_displayName: 'sebthesussyman', post_two_bio: 'This is a bio lollolollololol', post_two_timeUploadedAgo: '69 years ago', post_source_three: Images.posts.sad_pepe, post_three_profilepicture: Images.posts.profile_picture, post_three_username: 'sebthemancreator', post_three_displayName: 'sebthesussyman', post_three_bio: 'Hi I am a bio and I am very cool', post_three_timeUploadedAgo: '420 years ago', key: '1' },
+        { post_source_one: Images.posts.profile_picture, post_one_profilepicture: Images.posts.profile_picture, post_one_username: 'sebthemancreator', post_one_displayName: 'sebthesussyman', post_one_bio: 'This is a bio', post_one_timeUploadedAgo: '5 years ago', post_source_two: Images.posts.background, post_two_profilepicture: Images.posts.profile_picture, post_two_username: 'sebthemancreator', post_two_displayName: 'sebthesussyman', post_two_bio: 'This is a bio lollolollololol', post_two_timeUploadedAgo: '69 years ago', post_source_three: Images.posts.sad_pepe, post_three_profilepicture: Images.posts.profile_picture, post_three_username: 'sebthemancreator', post_three_displayName: 'sebthesussyman', post_three_bio: 'Hi I am a bio and I am very cool', post_three_timeUploadedAgo: '420 years ago', key: '2' },
+        { post_source_one: Images.posts.profile_picture, post_one_profilepicture: Images.posts.profile_picture, post_one_username: 'sebthemancreator', post_one_displayName: 'sebthesussyman', post_one_bio: 'This is a bio', post_one_timeUploadedAgo: '5 years ago', post_source_two: Images.posts.background, post_two_profilepicture: Images.posts.profile_picture, post_two_username: 'sebthemancreator', post_two_displayName: 'sebthesussyman', post_two_bio: 'This is a bio lollolollololol', post_two_timeUploadedAgo: '69 years ago', post_source_three: Images.posts.sad_pepe, post_three_profilepicture: Images.posts.profile_picture, post_three_username: 'sebthemancreator', post_three_displayName: 'sebthesussyman', post_three_bio: 'Hi I am a bio and I am very cool', post_three_timeUploadedAgo: '420 years ago', key: '3' },
     ]);
 
-    const navigateToPost = (post_id, profilePictureSource, username) => {
-        navigation.navigate("Post_FullScreen", {post_id, profilePictureSource, username});
+    const navigateToPost = (post_id, profilePictureSource, username, displayName, bio, timeUploadedAgo) => {
+        navigation.navigate("Post_FullScreen", {post_id, profilePictureSource, username, displayName, bio, timeUploadedAgo});
     }
 
     const {tertiary, primary} = Colors;
@@ -52,9 +51,10 @@ const FindScreen = ({navigation}) => {
             <FlatList 
                 data={PostRows}
                 showsVerticalScrollIndicator={false}
+                ListFooterComponent={<Text style={{color: colors.tertiary, fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>Search functionality coming soon :)</Text>}
                 renderItem={({ item }) => ( 
                     <View style={{flex: 2, flexDirection: 'row', justifyContent: 'space-evenly', backgroundColor: colors.primary, marginTop: 0, marginBottom: postHeight - 8}}>
-                        <TouchableOpacity style={{width: postWidth}} onPressOut={() => {navigateToPost(item.post_source_one, item.post_one_profilepicture, item.post_one_username)}}>
+                        <TouchableOpacity style={{width: postWidth}} onPressOut={() => {navigateToPost(item.post_source_one, item.post_one_profilepicture, item.post_one_username, item.post_one_displayName, item.post_one_bio, item.post_one_timeUploadedAgo)}}>
                             <ProgressiveImage
                                 source={item.post_source_one}
                                 style={{width: postWidth, height: postHeight, position: 'absolute', resizeMode: 'contain', aspectRatio: 1, flex: 1}}
@@ -62,7 +62,7 @@ const FindScreen = ({navigation}) => {
                                 resizeMethod="resize"
                             />
                         </TouchableOpacity>
-                        <TouchableOpacity style={{width: postWidth}} onPressOut={() => {navigateToPost(item.post_source_two, item.post_two_profilepicture, item.post_two_username)}}>
+                        <TouchableOpacity style={{width: postWidth}} onPressOut={() => {navigateToPost(item.post_source_two, item.post_two_profilepicture, item.post_two_username, item.post_two_displayName, item.post_two_bio, item.post_two_timeUploadedAgo)}}>
                             <ProgressiveImage
                                 source={item.post_source_two}
                                 style={{width: postWidth, height: postHeight, position: 'absolute', resizeMode: 'contain', aspectRatio: 1, flex: 1}}
@@ -70,7 +70,7 @@ const FindScreen = ({navigation}) => {
                                 resizeMethod="resize"
                             />
                         </TouchableOpacity>
-                        <TouchableOpacity style={{width: postWidth}} onPressOut={() => {navigateToPost(item.post_source_three, item.post_three_profilepicture, item.post_three_username)}}>
+                        <TouchableOpacity style={{width: postWidth}} onPressOut={() => {navigateToPost(item.post_source_three, item.post_three_profilepicture, item.post_three_username, item.post_three_displayName, item.post_three_bio, item.post_three_timeUploadedAgo)}}>
                             <ProgressiveImage
                                 source={item.post_source_three}
                                 style={{width: postWidth, height: postHeight, position: 'absolute', resizeMode: 'contain', aspectRatio: 1, flex: 1}}
