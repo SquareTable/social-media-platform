@@ -20,6 +20,7 @@
     "@react-navigation/bottom-tabs": "^5.11.13",
     "@react-navigation/native": "^5.9.6",
     "@react-navigation/stack": "^5.14.7",
+    "@skele/components": "^1.0.0-alpha.40",
     "apisauce": "^2.1.1",
     "axios": "^0.21.1",
     "browserslist": "^4.16.6",

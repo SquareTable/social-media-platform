@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useRef } from 'react';
 import { StyleSheet, Text, View, Button, Image, TouchableOpacity, SafeAreaView, ScrollView, FlatList, Alert, Dimensions} from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import Constants from "expo-constants";
@@ -35,6 +35,8 @@ import {
     setTestDeviceIDAsync,
 } from 'expo-ads-admob';
 import ScalableProgressiveImage from '../components/ScalableProgressiveImage.js';
+import { Viewport } from '@skele/components';
+import { Audio } from 'expo-av';
 
 const HomeScreen = ({navigation}) => {
     const [usernameToReport, setUsernameToReport] = useState(null);
@@ -55,7 +57,7 @@ const HomeScreen = ({navigation}) => {
         { postSource: Images.posts.social_studies_4, profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', displayName: 'sebthemancreator', type: 'post', timeUploadedAgo: '4 hours ago', bio: 'Seb and Kovid are cool' },
         { postSource: Images.posts.social_studies_5, profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', displayName: 'sebthemancreator', type: 'post', timeUploadedAgo: '4 hours ago', bio: 'Seb and Kovid are cool' },
         { postSource: Images.posts.apple, profilePictureSource: Images.posts.apple, username: 'ILoveApples', displayName: 'AppleKid', type: 'post', timeUploadedAgo: '4 hours ago', bio: 'Seb and Kovid are cool' },
-        { postSource: Images.posts.apple, profilePictureSource: Images.posts.profile_picture, username: 'testing_audio', displayName: 'testing_audio', type: 'audio', timeUploadedAgo: '1 sec ago', bio: "Audio posts will be coming soon hehe :) Testing audio posts :) This will probably be buggy hehe" },
+        { postSource: 'https://github.com/SquareTable/social-media-platform/raw/main/assets/test_audio.mp3', profilePictureSource: Images.posts.profile_picture, username: 'testing_audio', displayName: 'sebthemancreator', type: 'audio', timeUploadedAgo: '1 sec ago', bio: "Hello! This is an audio post. There are quite a few bugs with it right now, but we will be fixing those shortly :) For now just listen to me say hi until I run out of breath lol" },
     ]);
     const goToProfileScreen = (name, userToNavigateTo, profilePictureUrl, displayName) => {
         name? 
@@ -150,6 +152,76 @@ const HomeScreen = ({navigation}) => {
     var deviceWidth = Dimensions.get('window').width
 
     const [showEndOfListMessage, setShowEndOfListMessage] = useState(false);
+
+    const ViewportAwareView = Viewport.Aware(View);
+
+    // Audio play and pause code
+    const [playbackStatus, setPlaybackStatus] = useState(null);
+    const [isAudioPlaying, setIsAudioPlaying] = useState(false);
+    const [playRecording, setPlayRecording] = useState(undefined)
+    async function playAudio(recording_uri) {
+            setIntentionallyPaused(false);
+            if (playbackStatus != null && playRecording) {
+                if (playbackStatus.isLoaded && !playbackStatus.isPlaying) {
+                    const status = await playRecording.playAsync()
+                    setPlaybackStatus(status);
+                    setIsAudioPlaying(true);
+                }
+            }
+            if (!playbackStatus && !playRecording) {
+                var play_sound = new Audio.Sound();
+                setPlayRecording(play_sound);
+                let status_update_num = 0;
+                try {
+                    console.log("Loading sound")
+                    await play_sound.loadAsync(
+                        { uri: recording_uri },
+                        { shouldPlay: true },
+                        { progressUpdateIntervalMillis: 100 }
+                    );
+                    await play_sound.setVolumeAsync(1);
+                    console.log('Loaded Sound');
+                    console.log("Playing sound");
+                    play_sound.setOnPlaybackStatusUpdate(async (status) => {
+                        setPlaybackStatus(status);
+                        status_update_num += 1;
+                        console.log("Playback status update num = " + status_update_num);
+                        if (status.didJustFinish === true) {
+                        // audio has finished!
+                        await play_sound.unloadAsync()
+                        setIsAudioPlaying(false);
+                        setPlaybackStatus(null);
+                        setPlayRecording(undefined);
+                        }
+                    })
+                    await play_sound.playAsync();
+                    setIsAudioPlaying(true);
+                    
+                } catch (error) {
+                    console.log("Error when playing sound:", error);
+                    alert("An error has occured. " + error)
+                }
+            }
+        }
+
+        async function pauseAudio(intentionallyPaused) {
+            if (intentionallyPaused == true) {
+                setIntentionallyPaused(true);
+            } else {
+                setIntentionallyPaused(false);
+            }
+            if (playRecording) {
+                setIsAudioPlaying(false);
+                await playRecording.pauseAsync();
+            } else {
+                setIsAudioPlaying(false);
+            }
+        }
+
+    //End of Audio play and pause code
+
+    const [intentionallyPaused, setIntentionallyPaused] = useState(false);
+
     return(
         <SafeAreaView
          style={{flex: 1, backgroundColor: colors.primary, paddingLeft: 10}}
@@ -169,162 +241,99 @@ const HomeScreen = ({navigation}) => {
                 </ProfileOptionsViewButtons> 
             </ProfileOptionsView>
             <ReportProfileOptionsView style={{backgroundColor: colors.primary}} viewHidden={ReportProfileOptionsViewState} post={true}>
-                   <ReportProfileOptionsViewText style={{color: colors.tertiary}}>{"Report " + usernameToReport || "Report profile"}</ReportProfileOptionsViewText>
-                   <ReportProfileOptionsViewSubtitleText style={{color: colors.tertiary}}>Use this page to report this profile. If anyone is in danger immediately call emergency services. Do Not Wait.</ReportProfileOptionsViewSubtitleText>
-                   <ReportProfileOptionsViewButtons greyButton={true} onPress={changeReportProfilesOptionsView}>
-                       <ReportProfileOptionsViewButtonsText greyButton={true}>Cancel</ReportProfileOptionsViewButtonsText>
+                <ReportProfileOptionsViewText style={{color: colors.tertiary}}>{"Report " + usernameToReport || "Report profile"}</ReportProfileOptionsViewText>
+                <ReportProfileOptionsViewSubtitleText style={{color: colors.tertiary}}>Use this page to report this profile. If anyone is in danger immediately call emergency services. Do Not Wait.</ReportProfileOptionsViewSubtitleText>
+                <ReportProfileOptionsViewButtons greyButton={true} onPress={changeReportProfilesOptionsView}>
+                    <ReportProfileOptionsViewButtonsText greyButton={true}>Cancel</ReportProfileOptionsViewButtonsText>
+                </ReportProfileOptionsViewButtons>
+                <ReportProfileOptionsViewButtons redButton={true} onPress={changeReportProfiles_ContentThatShouldNotBePosted_OptionsView}>
+                    <ReportProfileOptionsViewButtonsText redButton={true}>This post is content that should not be on SocialSquare.</ReportProfileOptionsViewButtonsText>
+                </ReportProfileOptionsViewButtons>
+                <ReportProfileOptionsViewButtons redButton={true} onPress={changeReportProfiles_PretendingToBeSomeoneElse_OptionsView}>
+                    <ReportProfileOptionsViewButtonsText redButton={true}>This post is pretending to be someone they're not</ReportProfileOptionsViewButtonsText>
+                </ReportProfileOptionsViewButtons>
+            </ReportProfileOptionsView>
+            <ReportProfileOptionsView style={{backgroundColor: colors.primary}} viewHidden={ReportProfile_ContentThatShouldNotBePosted_OptionsViewState}>
+                <ReportProfileOptionsViewText style={{color: colors.tertiary}}>{"Report " + usernameToReport || "Report profile"}</ReportProfileOptionsViewText>
+                <ReportProfileOptionsViewSubtitleText style={{color: colors.tertiary}}>What content are you trying to report?</ReportProfileOptionsViewSubtitleText>
+                <ReportProfileOptionsViewButtons padding={true} paddingAmount={'100px'}greyButton={true} onPress={changeReportProfiles_ContentThatShouldNotBePosted_OptionsView}>
+                    <ReportProfileOptionsViewButtonsText greyButton={true}>Back</ReportProfileOptionsViewButtonsText>
+                </ReportProfileOptionsViewButtons>
+                <ScrollView style={{width: '100%'}}>
+                    <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                        <ReportProfileOptionsViewButtonsText redButton={true}>It's spam</ReportProfileOptionsViewButtonsText>
                     </ReportProfileOptionsViewButtons>
-                    <ReportProfileOptionsViewButtons redButton={true} onPress={changeReportProfiles_ContentThatShouldNotBePosted_OptionsView}>
-                        <ReportProfileOptionsViewButtonsText redButton={true}>This post is content that should not be on SocialSquare.</ReportProfileOptionsViewButtonsText>
+                    <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                        <ReportProfileOptionsViewButtonsText redButton={true}>Nudity or sexual activity</ReportProfileOptionsViewButtonsText>
+                    </ReportProfileOptionsViewButtons> 
+                    <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                        <ReportProfileOptionsViewButtonsText redButton={true}>I just don't like it</ReportProfileOptionsViewButtonsText>
+                    </ReportProfileOptionsViewButtons> 
+                    <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                        <ReportProfileOptionsViewButtonsText redButton={true}>Hate speech or symbols</ReportProfileOptionsViewButtonsText>
+                    </ReportProfileOptionsViewButtons> 
+                    <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                        <ReportProfileOptionsViewButtonsText redButton={true}>Suicide, self-injury or eating disorders</ReportProfileOptionsViewButtonsText>
+                    </ReportProfileOptionsViewButtons> 
+                    <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                        <ReportProfileOptionsViewButtonsText redButton={true}>Sale of illegal or regulated goods</ReportProfileOptionsViewButtonsText>
+                    </ReportProfileOptionsViewButtons> 
+                    <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                        <ReportProfileOptionsViewButtonsText redButton={true}>Violence or dangerous organizations</ReportProfileOptionsViewButtonsText>
+                    </ReportProfileOptionsViewButtons> 
+                    <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                        <ReportProfileOptionsViewButtonsText redButton={true}>Bullying or harassment</ReportProfileOptionsViewButtonsText>
+                    </ReportProfileOptionsViewButtons> 
+                    <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                        <ReportProfileOptionsViewButtonsText redButton={true}>Intellectual property violation</ReportProfileOptionsViewButtonsText>
+                    </ReportProfileOptionsViewButtons> 
+                    <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                        <ReportProfileOptionsViewButtonsText redButton={true}>Scam or fraud</ReportProfileOptionsViewButtonsText>
+                    </ReportProfileOptionsViewButtons> 
+                    <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                        <ReportProfileOptionsViewButtonsText redButton={true}>False information</ReportProfileOptionsViewButtonsText>
                     </ReportProfileOptionsViewButtons>
-                    <ReportProfileOptionsViewButtons redButton={true} onPress={changeReportProfiles_PretendingToBeSomeoneElse_OptionsView}>
-                        <ReportProfileOptionsViewButtonsText redButton={true}>This post is pretending to be someone they're not</ReportProfileOptionsViewButtonsText>
-                    </ReportProfileOptionsViewButtons>
-                </ReportProfileOptionsView>
-                <ReportProfileOptionsView style={{backgroundColor: colors.primary}} viewHidden={ReportProfile_ContentThatShouldNotBePosted_OptionsViewState}>
-                   <ReportProfileOptionsViewText style={{color: colors.tertiary}}>{"Report " + usernameToReport || "Report profile"}</ReportProfileOptionsViewText>
-                   <ReportProfileOptionsViewSubtitleText style={{color: colors.tertiary}}>What content are you trying to report?</ReportProfileOptionsViewSubtitleText>
-                   <ReportProfileOptionsViewButtons padding={true} paddingAmount={'100px'}greyButton={true} onPress={changeReportProfiles_ContentThatShouldNotBePosted_OptionsView}>
-                       <ReportProfileOptionsViewButtonsText greyButton={true}>Back</ReportProfileOptionsViewButtonsText>
-                    </ReportProfileOptionsViewButtons>
-                    <ScrollView style={{width: '100%'}}>
-                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
-                            <ReportProfileOptionsViewButtonsText redButton={true}>It's spam</ReportProfileOptionsViewButtonsText>
-                        </ReportProfileOptionsViewButtons>
-                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
-                            <ReportProfileOptionsViewButtonsText redButton={true}>Nudity or sexual activity</ReportProfileOptionsViewButtonsText>
-                        </ReportProfileOptionsViewButtons> 
-                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
-                            <ReportProfileOptionsViewButtonsText redButton={true}>I just don't like it</ReportProfileOptionsViewButtonsText>
-                        </ReportProfileOptionsViewButtons> 
-                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
-                            <ReportProfileOptionsViewButtonsText redButton={true}>Hate speech or symbols</ReportProfileOptionsViewButtonsText>
-                        </ReportProfileOptionsViewButtons> 
-                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
-                            <ReportProfileOptionsViewButtonsText redButton={true}>Suicide, self-injury or eating disorders</ReportProfileOptionsViewButtonsText>
-                        </ReportProfileOptionsViewButtons> 
-                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
-                            <ReportProfileOptionsViewButtonsText redButton={true}>Sale of illegal or regulated goods</ReportProfileOptionsViewButtonsText>
-                        </ReportProfileOptionsViewButtons> 
-                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
-                            <ReportProfileOptionsViewButtonsText redButton={true}>Violence or dangerous organizations</ReportProfileOptionsViewButtonsText>
-                        </ReportProfileOptionsViewButtons> 
-                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
-                            <ReportProfileOptionsViewButtonsText redButton={true}>Bullying or harassment</ReportProfileOptionsViewButtonsText>
-                        </ReportProfileOptionsViewButtons> 
-                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
-                            <ReportProfileOptionsViewButtonsText redButton={true}>Intellectual property violation</ReportProfileOptionsViewButtonsText>
-                        </ReportProfileOptionsViewButtons> 
-                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
-                            <ReportProfileOptionsViewButtonsText redButton={true}>Scam or fraud</ReportProfileOptionsViewButtonsText>
-                        </ReportProfileOptionsViewButtons> 
-                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
-                            <ReportProfileOptionsViewButtonsText redButton={true}>False information</ReportProfileOptionsViewButtonsText>
-                        </ReportProfileOptionsViewButtons>
-                    </ScrollView>
-                </ReportProfileOptionsView>
-                <ReportProfileOptionsView style={{backgroundColor: colors.primary}} viewHidden={ReportProfile_PretendingToBeSomeoneElse_OptionsViewState}>
-                   <ReportProfileOptionsViewText style={{color: colors.tertiary}}>{"Report " + usernameToReport || "Report profile"}</ReportProfileOptionsViewText>
-                   <ReportProfileOptionsViewSubtitleText style={{color: colors.tertiary}}>User Is Pretending To Be Someone Else</ReportProfileOptionsViewSubtitleText>
-                   <ReportProfileOptionsViewButtons greyButton={true} onPress={changeReportProfiles_PretendingToBeSomeoneElse_OptionsView}>
-                       <ReportProfileOptionsViewButtonsText greyButton={true}>Back</ReportProfileOptionsViewButtonsText>
-                    </ReportProfileOptionsViewButtons>
-                    <ScrollView style={{width: '100%'}}>
-                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
-                            <ReportProfileOptionsViewButtonsText redButton={true}>This account is pretending to be me</ReportProfileOptionsViewButtonsText>
-                        </ReportProfileOptionsViewButtons> 
-                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
-                            <ReportProfileOptionsViewButtonsText redButton={true}>This account is pretending to be someone I know</ReportProfileOptionsViewButtonsText>
-                        </ReportProfileOptionsViewButtons> 
-                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
-                            <ReportProfileOptionsViewButtonsText redButton={true}>This account is pretending to be a celebrity or public figure</ReportProfileOptionsViewButtonsText>
-                        </ReportProfileOptionsViewButtons> 
-                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
-                            <ReportProfileOptionsViewButtonsText redButton={true}>This account is pretending to be a business or organisation</ReportProfileOptionsViewButtonsText>
-                        </ReportProfileOptionsViewButtons> 
-                    </ScrollView>
-                </ReportProfileOptionsView>
-            <FlatList 
-                data={Posts}
-                scrollEnabled={FlatListElementsEnabledState}
-                showsVerticalScrollIndicator={false}
-                keyExtractor={(item, index) => 'key'+index}
-                onEndReached={() => {setShowEndOfListMessage(true)}}
-                ListFooterComponent={<Text style={{color: colors.tertiary, borderColor: colors.borderColor, borderWidth: 3, fontSize: 20, fontWeight: 'bold', textAlign: 'center', paddingVertical: 10}}>It looks like you have reached the end</Text>}
-                renderItem={({ item, index }) => ( 
-                    <View>
-                        {item.type == 'post' ?
-                        <View style={{marginBottom: 20}}>
-                            <View style={{flex: 2, flexDirection: 'row', justifyContent: 'flex-start', marginTop: 10}}>
-                                <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={() => goToProfileScreen(name, item.username, item.profilePictureSource, item.displayName)}>
-                                    <Image
-                                        source={item.profilePictureSource || require('../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/266-question.png')}
-                                        style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2}}
-                                        resizeMode="contain"
-                                        resizeMethod="resize"
-                                    />
-                                </TouchableOpacity>
-                                <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={() => goToProfileScreen(name, item.username, item.profilePictureSource, item.displayName)}>
-                                    <Text numberOfLines={1} style={{color: colors.tertiary, textAlign: 'left', fontWeight:'bold', fontSize: 20, textAlignVertical:'bottom', marginLeft: 10, marginRight: 100, flex: 1}}>{item.displayName || item.username || "Couldn't get name"}</Text>
-                                </TouchableOpacity>
-                                <View style={{position: 'absolute', right: 10}}>
-                                    <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={() => changeOptionsView(item.username)}>
-                                        <Image
-                                            source={require('../assets/app_icons/3dots.png')}
-                                            style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, tintColor: colors.tertiary}}
-                                            resizeMode="contain"
-                                            resizeMethod="resize"
-                                        />
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
-                            <View>
-                                <ScalableProgressiveImage
-                                    source={dark? item.postSource || require('../assets/app_icons/cannot_get_post_darkmode.png') : item.postSource || require('../assets/app_icons/cannot_get_post_lightmode.png')}
-                                    width={deviceWidth}
-                                    height={1000}
-                                />
-                            </View>
-                            <View style={{flex: 2, flexDirection: 'row', marginTop: 10}}>
-                                <TouchableOpacity style={{marginLeft: '1%'}} disabled={!FlatListElementsEnabledState} onPress={() => {alert("The Like Button does not work yet. We will add functionality to this very shortly.")}}>
-                                    <Image
-                                        source={Images.posts.heart}
-                                        style={{width: 40, height: 40, tintColor: colors.tertiary}}
-                                        resizeMode="contain"
-                                        resizeMethod="resize"
-                                    />
-                                </TouchableOpacity>
-                                <TouchableOpacity style={{marginHorizontal: '8%'}} disabled={!FlatListElementsEnabledState} onPress={() => {alert("The Comment Button does not work yet. We will add functionality to this very shortly.")}}>
-                                    <Image
-                                        source={Images.posts.message_bubbles}
-                                        style={{width: 40, height: 40, tintColor: colors.tertiary}}
-                                        resizeMode="contain"
-                                        resizeMethod="resize"
-                                    />
-                                </TouchableOpacity>
-                                <TouchableOpacity style={{marginLeft: '50%'}} disabled={!FlatListElementsEnabledState} onPress={() => {alert("The Save Button does not work yet. We will add functionality to this very shortly.")}}>
-                                    <Image
-                                        source={Images.posts.bookmark}
-                                        style={{width: 40, height: 40, tintColor: colors.tertiary}}
-                                        resizeMode="contain"
-                                        resizeMethod="resize"
-                                    />
-                                </TouchableOpacity>
-                            </View>
-                            <View style={{flex: 2, flexDirection: 'row', justifyContent: 'flex-start', marginTop: 10}}>
-                                <Text style={{color: colors.tertiary, fontSize: 16, marginLeft: 2, fontWeight: 'bold'}}>{item.timeUploadedAgo}</Text>
-                                <Text style={{color: colors.tertiary, fontSize: 16, marginLeft: 10, flex: 1, marginRight: 5}}>{item.bio}</Text>
-                            </View>
-                        </View>
-                        : null}
-                        {item.type == 'audio' ?
+                </ScrollView>
+            </ReportProfileOptionsView>
+            <ReportProfileOptionsView style={{backgroundColor: colors.primary}} viewHidden={ReportProfile_PretendingToBeSomeoneElse_OptionsViewState}>
+                <ReportProfileOptionsViewText style={{color: colors.tertiary}}>{"Report " + usernameToReport || "Report profile"}</ReportProfileOptionsViewText>
+                <ReportProfileOptionsViewSubtitleText style={{color: colors.tertiary}}>User Is Pretending To Be Someone Else</ReportProfileOptionsViewSubtitleText>
+                <ReportProfileOptionsViewButtons greyButton={true} onPress={changeReportProfiles_PretendingToBeSomeoneElse_OptionsView}>
+                    <ReportProfileOptionsViewButtonsText greyButton={true}>Back</ReportProfileOptionsViewButtonsText>
+                </ReportProfileOptionsViewButtons>
+                <ScrollView style={{width: '100%'}}>
+                    <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                        <ReportProfileOptionsViewButtonsText redButton={true}>This account is pretending to be me</ReportProfileOptionsViewButtonsText>
+                    </ReportProfileOptionsViewButtons> 
+                    <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                        <ReportProfileOptionsViewButtonsText redButton={true}>This account is pretending to be someone I know</ReportProfileOptionsViewButtonsText>
+                    </ReportProfileOptionsViewButtons> 
+                    <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                        <ReportProfileOptionsViewButtonsText redButton={true}>This account is pretending to be a celebrity or public figure</ReportProfileOptionsViewButtonsText>
+                    </ReportProfileOptionsViewButtons> 
+                    <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                        <ReportProfileOptionsViewButtonsText redButton={true}>This account is pretending to be a business or organisation</ReportProfileOptionsViewButtonsText>
+                    </ReportProfileOptionsViewButtons> 
+                </ScrollView>
+            </ReportProfileOptionsView>
+            <Viewport.Tracker>
+                <FlatList 
+                    data={Posts}
+                    scrollEnabled={FlatListElementsEnabledState}
+                    showsVerticalScrollIndicator={false}
+                    keyExtractor={(item, index) => 'key'+index}
+                    onEndReached={() => {setShowEndOfListMessage(true)}}
+                    ListFooterComponent={<Text style={{color: colors.tertiary, borderColor: colors.borderColor, borderWidth: 3, fontSize: 20, fontWeight: 'bold', textAlign: 'center', paddingVertical: 10}}>It looks like you have reached the end</Text>}
+                    renderItem={({ item, index }) => ( 
+                        <View>
+                            {item.type == 'post' ?
                             <View style={{marginBottom: 20}}>
-                                <View style={{flex: 2, flexDirection: 'row', justifyContent: 'flex-start', marginTop: 10, marginHorizontal: 10}}>
+                                <View style={{flex: 2, flexDirection: 'row', justifyContent: 'flex-start', marginTop: 10}}>
                                     <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={() => goToProfileScreen(name, item.username, item.profilePictureSource, item.displayName)}>
                                         <Image
                                             source={item.profilePictureSource || require('../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/266-question.png')}
                                             style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2}}
-                                            resizeMode="cover"
+                                            resizeMode="contain"
                                             resizeMethod="resize"
                                         />
                                     </TouchableOpacity>
@@ -342,15 +351,15 @@ const HomeScreen = ({navigation}) => {
                                         </TouchableOpacity>
                                     </View>
                                 </View>
-                                <View style={{backgroundColor: colors.borderColor, flex: 2, justifyContent: 'center', alignItems: 'center', marginTop: 10, paddingVertical: 100}}>
-                                    <Icon 
-                                        name="musical-notes-sharp"
-                                        size={200}
-                                        color={colors.tertiary}
+                                <View>
+                                    <ScalableProgressiveImage
+                                        source={dark? item.postSource || require('../assets/app_icons/cannot_get_post_darkmode.png') : item.postSource || require('../assets/app_icons/cannot_get_post_lightmode.png')}
+                                        width={deviceWidth}
+                                        height={1000}
                                     />
                                 </View>
                                 <View style={{flex: 2, flexDirection: 'row', marginTop: 10}}>
-                                    <TouchableOpacity style={{marginHorizontal: '1%'}} disabled={!FlatListElementsEnabledState} onPress={() => {alert("The Like Button does not work yet. We will add functionality to this very shortly.")}}>
+                                    <TouchableOpacity style={{marginLeft: '1%'}} disabled={!FlatListElementsEnabledState} onPress={() => {alert("The Like Button does not work yet. We will add functionality to this very shortly.")}}>
                                         <Image
                                             source={Images.posts.heart}
                                             style={{width: 40, height: 40, tintColor: colors.tertiary}}
@@ -377,22 +386,123 @@ const HomeScreen = ({navigation}) => {
                                 </View>
                                 <View style={{flex: 2, flexDirection: 'row', justifyContent: 'flex-start', marginTop: 10}}>
                                     <Text style={{color: colors.tertiary, fontSize: 16, marginLeft: 2, fontWeight: 'bold'}}>{item.timeUploadedAgo}</Text>
-                                    <Text style={{color: colors.tertiary, fontSize: 16, marginLeft: 10, flex: 1}}>{item.bio}</Text>
+                                    <Text style={{color: colors.tertiary, fontSize: 16, marginLeft: 10, flex: 1, marginRight: 5}}>{item.bio}</Text>
                                 </View>
-                            </View>        
-                        : null}
-                        {index % 4 == 0 && index != 0 ? 
-                        <View style={{alignSelf: 'center'}}>
-                            <AdMobBanner
-                                bannerSize="mediumRectangle"
-                                adUnitID={AdID}
-                                servePersonalizedAds={false}
-                                onDidFailToReceiveAdWithError={(e) => {console.log(e)}}
-                            />
-                        </View> : null}
-                    </View>
-                )}
-            />
+                            </View>
+                            : null}
+                            {item.type == 'audio' ?
+                                <ViewportAwareView
+                                    onViewportEnter={() => {intentionallyPaused? null : playAudio(item.postSource)}}
+                                    onViewportLeave={() => {pauseAudio(false)}}
+                                    preTriggerRatio={-0.5} // Makes it so half of the element has to be shown before it triggers onViewportEnter
+                                >
+                                    <View style={{marginBottom: 20}}>
+                                        <View style={{flex: 2, flexDirection: 'row', justifyContent: 'flex-start', marginTop: 10, marginHorizontal: 10}}>
+                                            <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={() => goToProfileScreen(name, item.username, item.profilePictureSource, item.displayName)}>
+                                                <Image
+                                                    source={item.profilePictureSource || require('../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/266-question.png')}
+                                                    style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2}}
+                                                    resizeMode="cover"
+                                                    resizeMethod="resize"
+                                                />
+                                            </TouchableOpacity>
+                                            <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={() => goToProfileScreen(name, item.username, item.profilePictureSource, item.displayName)}>
+                                                <Text numberOfLines={1} style={{color: colors.tertiary, textAlign: 'left', fontWeight:'bold', fontSize: 20, textAlignVertical:'bottom', marginLeft: 10, marginRight: 100, flex: 1}}>{item.displayName || item.username || "Couldn't get name"}</Text>
+                                            </TouchableOpacity>
+                                            <View style={{position: 'absolute', right: 10}}>
+                                                <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={() => changeOptionsView(item.username)}>
+                                                    <Image
+                                                        source={require('../assets/app_icons/3dots.png')}
+                                                        style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, tintColor: colors.tertiary}}
+                                                        resizeMode="contain"
+                                                        resizeMethod="resize"
+                                                    />
+                                                </TouchableOpacity>
+                                            </View>
+                                        </View>
+                                        <View style={{backgroundColor: colors.borderColor, flex: 2, justifyContent: 'center', alignItems: 'center', marginTop: 10, height: deviceWidth, width: deviceWidth}}>
+                                            {playbackStatus ? 
+                                            playbackStatus.isBuffering? 
+                                            <View>
+                                                <Text style={{color: colors.tertiary, fontSize: 24, textAlign: 'center', fontWeight: 'bold'}}>BUFFERING</Text> 
+                                                <Icon
+                                                    name="musical-notes-sharp"
+                                                    size={200}
+                                                    color={colors.tertiary}
+                                                />
+                                            </View>
+                                            : playbackStatus.isPlaying? 
+                                            <TouchableOpacity onPress={() => {pauseAudio(true)}}>
+                                                <Icon 
+                                                    name="pause-circle-outline"
+                                                    size={200}
+                                                    color={colors.tertiary}
+                                                />
+                                            </TouchableOpacity>
+                                            :
+                                            <TouchableOpacity onPress={() => {playAudio(item.postSource)}}>
+                                                <Icon 
+                                                    name="play-circle-outline"
+                                                    size={200}
+                                                    color={colors.tertiary}
+                                                /> 
+                                            </TouchableOpacity>
+                                            : 
+                                            <View>
+                                                <Text style={{color: colors.tertiary, fontSize: 24, textAlign: 'center', fontWeight: 'bold'}}>BUFFERING</Text> 
+                                                <Icon
+                                                    name="musical-notes-sharp"
+                                                    size={200}
+                                                    color={colors.tertiary}
+                                                />
+                                            </View>}
+                                        </View>
+                                        <View style={{flex: 2, flexDirection: 'row', marginTop: 10}}>
+                                            <TouchableOpacity style={{marginHorizontal: '1%'}} disabled={!FlatListElementsEnabledState} onPress={() => {alert("The Like Button does not work yet. We will add functionality to this very shortly.")}}>
+                                                <Image
+                                                    source={Images.posts.heart}
+                                                    style={{width: 40, height: 40, tintColor: colors.tertiary}}
+                                                    resizeMode="contain"
+                                                    resizeMethod="resize"
+                                                />
+                                            </TouchableOpacity>
+                                            <TouchableOpacity style={{marginHorizontal: '8%'}} disabled={!FlatListElementsEnabledState} onPress={() => {alert("The Comment Button does not work yet. We will add functionality to this very shortly.")}}>
+                                                <Image
+                                                    source={Images.posts.message_bubbles}
+                                                    style={{width: 40, height: 40, tintColor: colors.tertiary}}
+                                                    resizeMode="contain"
+                                                    resizeMethod="resize"
+                                                />
+                                            </TouchableOpacity>
+                                            <TouchableOpacity style={{marginLeft: '50%'}} disabled={!FlatListElementsEnabledState} onPress={() => {alert("The Save Button does not work yet. We will add functionality to this very shortly.")}}>
+                                                <Image
+                                                    source={Images.posts.bookmark}
+                                                    style={{width: 40, height: 40, tintColor: colors.tertiary}}
+                                                    resizeMode="contain"
+                                                    resizeMethod="resize"
+                                                />
+                                            </TouchableOpacity>
+                                        </View>
+                                        <View style={{flex: 2, flexDirection: 'row', justifyContent: 'flex-start', marginTop: 10}}>
+                                            <Text style={{color: colors.tertiary, fontSize: 16, marginLeft: 2, fontWeight: 'bold'}}>{item.timeUploadedAgo}</Text>
+                                            <Text style={{color: colors.tertiary, fontSize: 16, marginLeft: 10, flex: 1}}>{item.bio}</Text>
+                                        </View>
+                                    </View>
+                                </ViewportAwareView>     
+                            : null}
+                            {index % 4 == 0 && index != 0 ? 
+                            <View style={{alignSelf: 'center'}}>
+                                <AdMobBanner
+                                    bannerSize="mediumRectangle"
+                                    adUnitID={AdID}
+                                    servePersonalizedAds={false}
+                                    onDidFailToReceiveAdWithError={(e) => {console.log(e)}}
+                                />
+                            </View> : null}
+                        </View>
+                    )}
+                />
+            </Viewport.Tracker>
         </SafeAreaView>
     );
 };

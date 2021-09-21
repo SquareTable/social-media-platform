@@ -43,6 +43,8 @@ import CreateChatScreen from "../screens/CreateChatScreen.js";
 import RecordAudioPage from "../screens/PostScreens/RecordAudioPage.js";
 import SendAudioPage from "../screens/PostScreens/SendAudioPage.js";
 
+
+
 const Stack = createStackNavigator();
 
 const screenOptionStyle = {
