@@ -58,6 +58,7 @@ const HomeScreen = ({navigation}) => {
         { postSource: Images.posts.social_studies_5, profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', displayName: 'sebthemancreator', type: 'post', timeUploadedAgo: '4 hours ago', bio: 'Seb and Kovid are cool' },
         { postSource: Images.posts.apple, profilePictureSource: Images.posts.apple, username: 'ILoveApples', displayName: 'AppleKid', type: 'post', timeUploadedAgo: '4 hours ago', bio: 'Seb and Kovid are cool' },
         { postSource: 'https://github.com/SquareTable/social-media-platform/raw/main/assets/test_audio.mp3', profilePictureSource: Images.posts.profile_picture, username: 'testing_audio', displayName: 'sebthemancreator', type: 'audio', timeUploadedAgo: '1 sec ago', bio: "Hello! This is an audio post. There are quite a few bugs with it right now, but we will be fixing those shortly :) For now just listen to me say hi until I run out of breath lol" },
+        { postSource: 'https://github.com/SquareTable/social-media-platform/raw/main/assets/sussy_baka_jacob.mp3', profilePictureSource: Images.posts.profile_picture, username: 'testing_audio', displayName: 'sebthemancreator', type: 'audio', timeUploadedAgo: '1 sec ago', bio: "Why does Jacob have to be such a sussy baka! :( Also we are aware that sometimes the posts play the wrong audio and we will be fixing that shortly lol" },
     ]);
     const goToProfileScreen = (name, userToNavigateTo, profilePictureUrl, displayName) => {
         name? 
@@ -218,6 +219,13 @@ const HomeScreen = ({navigation}) => {
             }
         }
 
+        async function unloadAudio() {
+            await playRecording.unloadAsync();
+            setIsAudioPlaying(false);
+            setPlaybackStatus(null);
+            setPlayRecording(undefined);
+        }
+
     //End of Audio play and pause code
 
     const [intentionallyPaused, setIntentionallyPaused] = useState(false);
@@ -226,7 +234,7 @@ const HomeScreen = ({navigation}) => {
         <SafeAreaView
          style={{flex: 1, backgroundColor: colors.primary, paddingLeft: 10}}
          >
-            <Text style={{fontSize: 30, fontWeight: 'bold', alignContent: 'center', alignItems: 'center', alignSelf: 'center', color: colors.tertiary}}>SocialSquare</Text>
+            <Text style={{fontSize: 30, fontWeight: 'bold', alignContent: 'center', alignItems: 'center', alignSelf: 'center', color: colors.tertiary}}>SocialSquare BETA</Text>
             <ProfileOptionsView style={{backgroundColor: colors.primary}} viewHidden={ProfileOptionsViewState}>
                 <ProfileOptionsViewText style={{color: colors.tertiary}}>{usernameToReport || "Couldn't get name"}</ProfileOptionsViewText>
                 <ProfileOptionsViewSubtitleText style={{color: colors.tertiary}}>Options</ProfileOptionsViewSubtitleText>
@@ -393,7 +401,7 @@ const HomeScreen = ({navigation}) => {
                             {item.type == 'audio' ?
                                 <ViewportAwareView
                                     onViewportEnter={() => {intentionallyPaused? null : playAudio(item.postSource)}}
-                                    onViewportLeave={() => {pauseAudio(false)}}
+                                    onViewportLeave={() => {unloadAudio()}}
                                     preTriggerRatio={-0.5} // Makes it so half of the element has to be shown before it triggers onViewportEnter
                                 >
                                     <View style={{marginBottom: 20}}>
