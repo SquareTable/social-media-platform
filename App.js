@@ -188,7 +188,7 @@ const App = () => {
         require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/266-question.png'),
         require('./assets/lightmode_recordbutton.png'),
         require('./assets/lightmode_recordingicon.png'),
-        require('./assets/apple_photo.png'),
+        require('./assets/apple_photo.jpg'),
         require('./assets/sad_pepe.jpg'),
       ];
   

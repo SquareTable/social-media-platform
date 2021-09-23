@@ -1,4 +1,4 @@
-image_path = 'assets/testing_progressive_images/compressed_worldview.jpeg'
+image_path = 'assets/apple_photo.jpg'
 #Import required Image library
 from PIL import Image, ImageFilter
 
@@ -7,8 +7,8 @@ OriImage = Image.open(image_path)
 OriImage.show()
 
 #Applying GaussianBlur filter
-gaussImage = OriImage.filter(ImageFilter.GaussianBlur(30))
+gaussImage = OriImage.filter(ImageFilter.GaussianBlur(10))
 gaussImage.show()
 
 #Save Gaussian Blur Image
-gaussImage.save('assets/testing_progressive_images/compressed_blurred_worldview.jpeg')
+gaussImage.save('assets/blurred_apple_photo.jpg')
