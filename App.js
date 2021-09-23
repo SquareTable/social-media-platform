@@ -4,7 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState, useRef } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Alert, SafeAreaView, Platform} from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Alert, SafeAreaView, Platform, Image} from 'react-native';
 import styled from "styled-components";
 import LoginScreen from './screens/LoginScreen.js';
 import { Start_Stack } from './navigation/Start_Stack.js';
@@ -190,10 +190,16 @@ const App = () => {
         require('./assets/lightmode_recordingicon.png'),
         require('./assets/apple_photo.jpg'),
         require('./assets/sad_pepe.jpg'),
+        require('./assets/transparent_image.png')
       ];
   
       const cacheImages = images.map(image => {
-        return Asset.fromModule(image).downloadAsync();
+        if (typeof image === 'string') {
+          console.log('Loaded uri');
+          return Image.prefetch(image);
+        } else {
+          return Asset.fromModule(image).downloadAsync();
+        }
       }); 
       return Promise.all(cacheImages);
     }
