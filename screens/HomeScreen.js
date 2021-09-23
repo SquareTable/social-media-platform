@@ -51,6 +51,7 @@ const HomeScreen = ({navigation}) => {
     }
     const {colors, dark} = useTheme();
     const [Posts, setPosts] = useState([
+        { postSource: Images.posts.social_studies_1, profilePictureSource: Images.posts.profile_picture, username: 'testing_progressive_images', displayName: 'testing_progressive_imgs', type: 'post', timeUploadedAgo: '1 sec ago', bio: 'We are currently testing posts with progressive images, so if your internet is slow it will show a thumbnail image while the post is downloading. This post is the only post that will have a progressive image on it, and once we have finished testing it we will put it on all posts.' },
         { postSource: Images.posts.social_studies_1, profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', displayName: 'sebthemancreator', type: 'post', timeUploadedAgo: '4 hours ago', bio: 'Seb and Kovid are cool' },
         { postSource: Images.posts.social_studies_2, profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', displayName: 'sebthemancreator', type: 'post', timeUploadedAgo: '4 hours ago', bio: 'Seb and Kovid are cool' },
         { postSource: Images.posts.social_studies_3, profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', displayName: 'sebthemancreator', type: 'post', timeUploadedAgo: '4 hours ago', bio: 'Seb and Kovid are cool' },
@@ -170,6 +171,9 @@ const HomeScreen = ({navigation}) => {
                 }
             }
             if (!playbackStatus && !playRecording) {
+                await Audio.setAudioModeAsync({
+                    playsInSilentModeIOS: true,
+                }); 
                 var play_sound = new Audio.Sound();
                 setPlayRecording(play_sound);
                 let status_update_num = 0;
@@ -178,7 +182,7 @@ const HomeScreen = ({navigation}) => {
                     await play_sound.loadAsync(
                         { uri: recording_uri },
                         { shouldPlay: true },
-                        { progressUpdateIntervalMillis: 100 }
+                        { progressUpdateIntervalMillis: 100 },
                     );
                     await play_sound.setVolumeAsync(1);
                     console.log('Loaded Sound');
@@ -457,7 +461,6 @@ const HomeScreen = ({navigation}) => {
                                             </TouchableOpacity>
                                             : 
                                             <View>
-                                                <Text style={{color: colors.tertiary, fontSize: 24, textAlign: 'center', fontWeight: 'bold'}}>BUFFERING</Text> 
                                                 <Icon
                                                     name="musical-notes-sharp"
                                                     size={200}

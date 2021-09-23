@@ -83,9 +83,9 @@ const SettingsPage = ({navigation}) => {
                             <SettingsItemImage source={require('./../assets/app_icons/settings.png')}/>
                             <SettingsItemText style={{color: colors.tertiary}}>Account Settings</SettingsItemText>
                         </SettingsPageItemTouchableOpacity>
-                        <SettingsPageItemTouchableOpacity style={{borderColor: colors.borderColor}} onPress={() => navigation.navigate("AccountSettings")}>
+                        <SettingsPageItemTouchableOpacity style={{borderColor: colors.borderColor}} onPress={() => navigation.navigate("AppBehaviour")}>
                             <SettingsItemImage source={require('./../assets/app_icons/settings.png')}/>
-                            <SettingsItemText style={{color: colors.tertiary}}>Privacy Settings</SettingsItemText>
+                            <SettingsItemText style={{color: colors.tertiary}}>App Behaviour</SettingsItemText>
                         </SettingsPageItemTouchableOpacity>
                         <SettingsPageItemTouchableOpacity style={{borderColor: colors.borderColor}} onPress={() => {navigation.navigate('ReportBugScreen')}}>
                             <SettingsItemImage source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/265-notification.png')}/>

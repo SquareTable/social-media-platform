@@ -42,6 +42,7 @@ import ChatInformationScreen from "../screens/ChatInformationScreen.js";
 import CreateChatScreen from "../screens/CreateChatScreen.js";
 import RecordAudioPage from "../screens/PostScreens/RecordAudioPage.js";
 import SendAudioPage from "../screens/PostScreens/SendAudioPage.js";
+import AppBehaviour from "../screens/AppBehaviour.js";
 
 
 
@@ -178,6 +179,21 @@ const RootStack = () => {
                 <Stack.Screen name="ChangeUsernamePage" component={ChangeUsernamePage}/>
                 <Stack.Screen name="ChangeEmailPage" component={ChangeEmailPage}/>
                 <Stack.Screen name="ReportBugScreen" component={ReportBugScreen}/>
+                <Stack.Screen 
+                  name="AppBehaviour" 
+                  component={AppBehaviour}
+                  options={{
+                    headerStyle: {
+                      backgroundColor: 'transparent',
+                    },
+                    headerTintColor: colors.tertiary,
+                    headerTransparent: true,
+                    headerTitle: '',
+                    headerLeftContainerStyle: {
+                        paddingLeft: 20,
+                    },
+                    headerLeft: null
+                  }}/>
     </Stack.Navigator>
   );
 };
