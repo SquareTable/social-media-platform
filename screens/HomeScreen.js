@@ -51,12 +51,12 @@ const HomeScreen = ({navigation}) => {
     }
     const {colors, dark} = useTheme();
     const [Posts, setPosts] = useState([
-        { postSource: 'https://github.com/SquareTable/social-media-platform/raw/main/post_media/social_studies_images/image_1.png', blurredPostSource: 'https://github.com/SquareTable/social-media-platform/raw/main/post_media/social_studies_images/image_1_blurred.png', profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', displayName: 'sebthemancreator', type: 'post', timeUploadedAgo: '4 hours ago', bio: 'Seb and Kovid are cool' },
-        { postSource: 'https://github.com/SquareTable/social-media-platform/raw/main/post_media/social_studies_images/image_2.png', blurredPostSource: 'https://github.com/SquareTable/social-media-platform/raw/main/post_media/social_studies_images/image_2_blurred.png', profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', displayName: 'sebthemancreator', type: 'post', timeUploadedAgo: '4 hours ago', bio: 'Seb and Kovid are cool' },
-        { postSource: 'https://github.com/SquareTable/social-media-platform/raw/main/post_media/social_studies_images/image_3.png', blurredPostSource: 'https://github.com/SquareTable/social-media-platform/raw/main/post_media/social_studies_images/image_3_blurred.png', profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', displayName: 'sebthemancreator', type: 'post', timeUploadedAgo: '4 hours ago', bio: 'Seb and Kovid are cool' },
-        { postSource: 'https://github.com/SquareTable/social-media-platform/raw/main/post_media/social_studies_images/image_4.png', blurredPostSource: 'https://github.com/SquareTable/social-media-platform/raw/main/post_media/social_studies_images/image_4_blurred.png', profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', displayName: 'sebthemancreator', type: 'post', timeUploadedAgo: '4 hours ago', bio: 'Seb and Kovid are cool' },
-        { postSource: 'https://github.com/SquareTable/social-media-platform/raw/main/post_media/social_studies_images/image_5.png', blurredPostSource: 'https://github.com/SquareTable/social-media-platform/raw/main/post_media/social_studies_images/image_5_blurred.png', profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', displayName: 'sebthemancreator', type: 'post', timeUploadedAgo: '4 hours ago', bio: 'Seb and Kovid are cool' },
-        { postSource: 'https://github.com/SquareTable/social-media-platform/raw/main/assets/apple_photo.jpg', blurredPostSource: 'https://github.com/SquareTable/social-media-platform/raw/main/assets/blurred_apple_photo.jpg', profilePictureSource: Images.posts.apple, username: 'ILoveApples', displayName: 'AppleKid', type: 'post', timeUploadedAgo: '4 hours ago', bio: 'Seb and Kovid are cool' },
+        { postSource: Images.posts.social_studies_1, profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', displayName: 'sebthemancreator', type: 'post', timeUploadedAgo: '4 hours ago', bio: 'Seb and Kovid are cool' },
+        { postSource: Images.posts.social_studies_2, profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', displayName: 'sebthemancreator', type: 'post', timeUploadedAgo: '4 hours ago', bio: 'Seb and Kovid are cool' },
+        { postSource: Images.posts.social_studies_3, profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', displayName: 'sebthemancreator', type: 'post', timeUploadedAgo: '4 hours ago', bio: 'Seb and Kovid are cool' },
+        { postSource: Images.posts.social_studies_4, profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', displayName: 'sebthemancreator', type: 'post', timeUploadedAgo: '4 hours ago', bio: 'Seb and Kovid are cool' },
+        { postSource: Images.posts.social_studies_5, profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', displayName: 'sebthemancreator', type: 'post', timeUploadedAgo: '4 hours ago', bio: 'Seb and Kovid are cool' },
+        { postSource: Images.posts.apple, profilePictureSource: Images.posts.apple, username: 'ILoveApples', displayName: 'AppleKid', type: 'post', timeUploadedAgo: '4 hours ago', bio: 'Seb and Kovid are cool' },
         { postSource: 'https://github.com/SquareTable/social-media-platform/raw/main/assets/test_audio.mp3', profilePictureSource: Images.posts.profile_picture, username: 'testing_audio', displayName: 'sebthemancreator', type: 'audio', timeUploadedAgo: '1 sec ago', bio: "Hello! This is an audio post. There are quite a few bugs with it right now, but we will be fixing those shortly :) For now just listen to me say hi until I run out of breath lol" },
         { postSource: 'https://github.com/SquareTable/social-media-platform/raw/main/assets/sussy_baka_jacob.mp3', profilePictureSource: Images.posts.profile_picture, username: 'testing_audio', displayName: 'sebthemancreator', type: 'audio', timeUploadedAgo: '1 sec ago', bio: "Why does Jacob have to be such a sussy baka! :( Also we are aware that sometimes the posts play the wrong audio and we will be fixing that shortly lol" },
     ]);
@@ -172,7 +172,7 @@ const HomeScreen = ({navigation}) => {
             if (!playbackStatus && !playRecording) {
                 await Audio.setAudioModeAsync({
                     playsInSilentModeIOS: true,
-                }); 
+                });
                 var play_sound = new Audio.Sound();
                 setPlayRecording(play_sound);
                 let status_update_num = 0;
@@ -181,7 +181,7 @@ const HomeScreen = ({navigation}) => {
                     await play_sound.loadAsync(
                         { uri: recording_uri },
                         { shouldPlay: true },
-                        { progressUpdateIntervalMillis: 100 },
+                        { progressUpdateIntervalMillis: 100 }
                     );
                     await play_sound.setVolumeAsync(1);
                     console.log('Loaded Sound');
@@ -336,79 +336,75 @@ const HomeScreen = ({navigation}) => {
                     onEndReached={() => {setShowEndOfListMessage(true)}}
                     ListFooterComponent={<Text style={{color: colors.tertiary, borderColor: colors.borderColor, borderWidth: 3, fontSize: 20, fontWeight: 'bold', textAlign: 'center', paddingVertical: 10}}>It looks like you have reached the end</Text>}
                     renderItem={({ item, index }) => ( 
-                    <View>
-                        {item.type == 'post' ?
-                            <ViewportAwareView>
-                                <View style={{marginBottom: 20}}>
-                                    <View style={{flex: 2, flexDirection: 'row', justifyContent: 'flex-start', marginTop: 10}}>
-                                        <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={() => goToProfileScreen(name, item.username, item.profilePictureSource, item.displayName)}>
-                                            <Image
-                                                source={item.profilePictureSource || require('../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/266-question.png')}
-                                                style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2}}
-                                                resizeMode="contain"
-                                                resizeMethod="resize"
-                                            />
-                                        </TouchableOpacity>
-                                        <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={() => goToProfileScreen(name, item.username, item.profilePictureSource, item.displayName)}>
-                                            <Text numberOfLines={1} style={{color: colors.tertiary, textAlign: 'left', fontWeight:'bold', fontSize: 20, textAlignVertical:'bottom', marginLeft: 10, marginRight: 100, flex: 1}}>{item.displayName || item.username || "Couldn't get name"}</Text>
-                                        </TouchableOpacity>
-                                        <View style={{position: 'absolute', right: 10}}>
-                                            <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={() => changeOptionsView(item.username)}>
-                                                <Image
-                                                    source={require('../assets/app_icons/3dots.png')}
-                                                    style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, tintColor: colors.tertiary}}
-                                                    resizeMode="contain"
-                                                    resizeMethod="resize"
-                                                />
-                                            </TouchableOpacity>
-                                        </View>
-                                    </View>
-                                    <View>
-                                        <ScalableProgressiveImage
-                                            source={dark? {uri: item.postSource} || require('../assets/app_icons/cannot_get_post_darkmode.png') : {uri: item.postSource} || require('../assets/app_icons/cannot_get_post_lightmode.png')}
-                                            width={deviceWidth}
-                                            height={1000}
-                                            style={{backgroundColor: colors.borderColor}}
-                                            thumbnailSource={dark? {uri: item.blurredPostSource} || require('../assets/app_icons/cannot_get_post_darkmode.png') : {uri: item.blurredPostSource} || require('../assets/app_icons/cannot_get_post_lightmode.png')}
+                        <View>
+                            {item.type == 'post' ?
+                            <View style={{marginBottom: 20}}>
+                                <View style={{flex: 2, flexDirection: 'row', justifyContent: 'flex-start', marginTop: 10}}>
+                                    <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={() => goToProfileScreen(name, item.username, item.profilePictureSource, item.displayName)}>
+                                        <Image
+                                            source={item.profilePictureSource || require('../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/266-question.png')}
+                                            style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2}}
+                                            resizeMode="contain"
+                                            resizeMethod="resize"
                                         />
-                                    </View>
-                                    <View style={{flex: 2, flexDirection: 'row', marginTop: 10}}>
-                                        <TouchableOpacity style={{marginLeft: '1%'}} disabled={!FlatListElementsEnabledState} onPress={() => {alert("The Like Button does not work yet. We will add functionality to this very shortly.")}}>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={() => goToProfileScreen(name, item.username, item.profilePictureSource, item.displayName)}>
+                                        <Text numberOfLines={1} style={{color: colors.tertiary, textAlign: 'left', fontWeight:'bold', fontSize: 20, textAlignVertical:'bottom', marginLeft: 10, marginRight: 100, flex: 1}}>{item.displayName || item.username || "Couldn't get name"}</Text>
+                                    </TouchableOpacity>
+                                    <View style={{position: 'absolute', right: 10}}>
+                                        <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={() => changeOptionsView(item.username)}>
                                             <Image
-                                                source={Images.posts.heart}
-                                                style={{width: 40, height: 40, tintColor: colors.tertiary}}
+                                                source={require('../assets/app_icons/3dots.png')}
+                                                style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, tintColor: colors.tertiary}}
                                                 resizeMode="contain"
                                                 resizeMethod="resize"
                                             />
                                         </TouchableOpacity>
-                                        <TouchableOpacity style={{marginHorizontal: '8%'}} disabled={!FlatListElementsEnabledState} onPress={() => {alert("The Comment Button does not work yet. We will add functionality to this very shortly.")}}>
-                                            <Image
-                                                source={Images.posts.message_bubbles}
-                                                style={{width: 40, height: 40, tintColor: colors.tertiary}}
-                                                resizeMode="contain"
-                                                resizeMethod="resize"
-                                            />
-                                        </TouchableOpacity>
-                                        <TouchableOpacity style={{marginLeft: '50%'}} disabled={!FlatListElementsEnabledState} onPress={() => {alert("The Save Button does not work yet. We will add functionality to this very shortly.")}}>
-                                            <Image
-                                                source={Images.posts.bookmark}
-                                                style={{width: 40, height: 40, tintColor: colors.tertiary}}
-                                                resizeMode="contain"
-                                                resizeMethod="resize"
-                                            />
-                                        </TouchableOpacity>
-                                    </View>
-                                    <View style={{flex: 2, flexDirection: 'row', justifyContent: 'flex-start', marginTop: 10}}>
-                                        <Text style={{color: colors.tertiary, fontSize: 16, marginLeft: 2, fontWeight: 'bold'}}>{item.timeUploadedAgo}</Text>
-                                        <Text style={{color: colors.tertiary, fontSize: 16, marginLeft: 10, flex: 1, marginRight: 5}}>{item.bio}</Text>
                                     </View>
                                 </View>
-                            </ViewportAwareView>
-                        : null}
+                                <View>
+                                    <ScalableProgressiveImage
+                                        source={dark? item.postSource || require('../assets/app_icons/cannot_get_post_darkmode.png') : item.postSource || require('../assets/app_icons/cannot_get_post_lightmode.png')}
+                                        width={deviceWidth}
+                                        height={1000}
+                                    />
+                                </View>
+                                <View style={{flex: 2, flexDirection: 'row', marginTop: 10}}>
+                                    <TouchableOpacity style={{marginLeft: '1%'}} disabled={!FlatListElementsEnabledState} onPress={() => {alert("The Like Button does not work yet. We will add functionality to this very shortly.")}}>
+                                        <Image
+                                            source={Images.posts.heart}
+                                            style={{width: 40, height: 40, tintColor: colors.tertiary}}
+                                            resizeMode="contain"
+                                            resizeMethod="resize"
+                                        />
+                                    </TouchableOpacity>
+                                    <TouchableOpacity style={{marginHorizontal: '8%'}} disabled={!FlatListElementsEnabledState} onPress={() => {alert("The Comment Button does not work yet. We will add functionality to this very shortly.")}}>
+                                        <Image
+                                            source={Images.posts.message_bubbles}
+                                            style={{width: 40, height: 40, tintColor: colors.tertiary}}
+                                            resizeMode="contain"
+                                            resizeMethod="resize"
+                                        />
+                                    </TouchableOpacity>
+                                    <TouchableOpacity style={{marginLeft: '50%'}} disabled={!FlatListElementsEnabledState} onPress={() => {alert("The Save Button does not work yet. We will add functionality to this very shortly.")}}>
+                                        <Image
+                                            source={Images.posts.bookmark}
+                                            style={{width: 40, height: 40, tintColor: colors.tertiary}}
+                                            resizeMode="contain"
+                                            resizeMethod="resize"
+                                        />
+                                    </TouchableOpacity>
+                                </View>
+                                <View style={{flex: 2, flexDirection: 'row', justifyContent: 'flex-start', marginTop: 10}}>
+                                    <Text style={{color: colors.tertiary, fontSize: 16, marginLeft: 2, fontWeight: 'bold'}}>{item.timeUploadedAgo}</Text>
+                                    <Text style={{color: colors.tertiary, fontSize: 16, marginLeft: 10, flex: 1, marginRight: 5}}>{item.bio}</Text>
+                                </View>
+                            </View>
+                            : null}
                             {item.type == 'audio' ?
                                 <ViewportAwareView
                                     onViewportEnter={() => {intentionallyPaused? null : playAudio(item.postSource)}}
-                                    onViewportLeave={() => {playRecording ? unloadAudio() : null}}
+                                    onViewportLeave={() => {unloadAudio()}}
                                     preTriggerRatio={-0.5} // Makes it so half of the element has to be shown before it triggers onViewportEnter
                                 >
                                     <View style={{marginBottom: 20}}>
@@ -464,6 +460,7 @@ const HomeScreen = ({navigation}) => {
                                             </TouchableOpacity>
                                             : 
                                             <View>
+                                                <Text style={{color: colors.tertiary, fontSize: 24, textAlign: 'center', fontWeight: 'bold'}}>BUFFERING</Text> 
                                                 <Icon
                                                     name="musical-notes-sharp"
                                                     size={200}

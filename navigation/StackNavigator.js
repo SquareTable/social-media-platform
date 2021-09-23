@@ -42,7 +42,8 @@ import ChatInformationScreen from "../screens/ChatInformationScreen.js";
 import CreateChatScreen from "../screens/CreateChatScreen.js";
 import RecordAudioPage from "../screens/PostScreens/RecordAudioPage.js";
 import SendAudioPage from "../screens/PostScreens/SendAudioPage.js";
-import AppBehaviour from "../screens/AppBehaviour.js";
+
+import AppBehaviour from '../screens/AppBehaviour.js';
 
 
 
@@ -184,7 +185,7 @@ const RootStack = () => {
                   component={AppBehaviour}
                   options={{
                     headerStyle: {
-                      backgroundColor: 'transparent',
+                        backgroundColor: 'transparent',
                     },
                     headerTintColor: colors.tertiary,
                     headerTransparent: true,
@@ -193,7 +194,8 @@ const RootStack = () => {
                         paddingLeft: 20,
                     },
                     headerLeft: null
-                  }}/>
+                }}
+                />
     </Stack.Navigator>
   );
 };
