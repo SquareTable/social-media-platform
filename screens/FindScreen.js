@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import { StyleSheet, Text, View, Button, Image, SafeAreaView, ScrollView, Appearance, TouchableOpacity, Dimensions, FlatList } from 'react-native';
 import ProgressiveImage from '../posts/ProgressiveImage.js';
 import SearchBar from "react-native-dynamic-search-bar";
-import { useTheme } from '@react-navigation/native';
+import {useTheme} from '@react-navigation/native';
 
 import {
     darkModeStyling, 

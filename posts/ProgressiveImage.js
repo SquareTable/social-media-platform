@@ -1,10 +1,8 @@
 import React from 'react';
 import { View, StyleSheet, Image } from 'react-native';
-import {useTheme} from "@react-navigation/native";
 
 class ProgressiveImage extends React.Component {
     render() {
-        const {colors, dark} = useTheme();
         const Styles = StyleSheet.create({
             imageOverlay: {
                 position: 'absolute',
@@ -14,7 +12,7 @@ class ProgressiveImage extends React.Component {
                 top: 0,
               },
               container: {
-                backgroundColor: colors.borderColor
+                backgroundColor: 'yellow'
               },
         });
         return (
