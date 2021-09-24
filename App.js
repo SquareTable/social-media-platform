@@ -16,6 +16,7 @@ import { AppearanceProvider, useColorScheme } from 'react-native-appearance';
 import { DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { CredentialsContext } from './components/CredentialsContext';
 import { AdIDContext } from './components/AdIDContext.js';
+import { AppBehaviourContext } from './components/AppBehaviourContext.js';
 
 const Stack = createStackNavigator();
 
@@ -35,6 +36,7 @@ const App = () => {
   // Is a real device and running in production.
   const adUnitID = Constants.isDevice && !__DEV__ ? productionID : testID;
 
+  const [AppBehaviour_Context, setAppBehaviour_Context] = useState('');
 
   const [storedCredentials, setStoredCredentials] = useState('');
   const clearAsyncStorageOnLogin = false;
@@ -149,6 +151,15 @@ const App = () => {
           setStoredCredentials(null);
         }
       }).catch((error) => console.log(error));
+      AsyncStorage.getItem('AppBehaviour').then((result) => {
+        if (result !== null) {
+          setAppBehaviour_Context(JSON.parse(result))
+        } else {
+          const AppBehaviour = {PlayAudioOnSilentMode: false};
+          setAppBehaviour_Context(AppBehaviour);
+          AsyncStorage.setItem('AppBehaviour', JSON.stringify(AppBehaviour))
+        }
+      }).catch((error) => console.log(error));
       setAdID(adUnitID);
       const images = [
         require('./assets/img/Logo.png'),
@@ -211,11 +222,13 @@ const App = () => {
     return (
       <CredentialsContext.Provider value={{storedCredentials, setStoredCredentials}}>
         <AdIDContext.Provider value={{AdID, setAdID}}>
-          <AppearanceProvider>
-            <NavigationContainer theme={scheme === 'dark' ? AppDarkTheme : AppLightTheme}>
-              <Start_Stack/>
-            </NavigationContainer>
-          </AppearanceProvider>
+          <AppBehaviourContext.Provider value={{AppBehaviour_Context, setAppBehaviour_Context}}>
+            <AppearanceProvider>
+              <NavigationContainer theme={scheme === 'dark' ? AppDarkTheme : AppLightTheme}>
+                <Start_Stack/>
+              </NavigationContainer>
+            </AppearanceProvider>
+          </AppBehaviourContext.Provider>
         </AdIDContext.Provider>
       </CredentialsContext.Provider>
 

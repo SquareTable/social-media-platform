@@ -404,7 +404,7 @@ const HomeScreen = ({navigation}) => {
                             {item.type == 'audio' ?
                                 <ViewportAwareView
                                     onViewportEnter={() => {intentionallyPaused? null : playAudio(item.postSource)}}
-                                    onViewportLeave={() => {unloadAudio()}}
+                                    onViewportLeave={() => {playRecording? unloadAudio() : null}}
                                     preTriggerRatio={-0.5} // Makes it so half of the element has to be shown before it triggers onViewportEnter
                                 >
                                     <View style={{marginBottom: 20}}>
@@ -460,7 +460,6 @@ const HomeScreen = ({navigation}) => {
                                             </TouchableOpacity>
                                             : 
                                             <View>
-                                                <Text style={{color: colors.tertiary, fontSize: 24, textAlign: 'center', fontWeight: 'bold'}}>BUFFERING</Text> 
                                                 <Icon
                                                     name="musical-notes-sharp"
                                                     size={200}

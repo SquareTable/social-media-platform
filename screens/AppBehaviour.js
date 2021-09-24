@@ -8,10 +8,28 @@ import {
     TestText,
 } from '../screens/screenStylings/styling.js';
 import {View, ActivityIndicator, ImageBackground, StyleSheet, useColorScheme, SafeAreaView, Image, Text} from 'react-native';
+import SwitchToggle from "react-native-switch-toggle";
+import { AppBehaviourContext } from '../components/AppBehaviourContext.js';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const AppBehaviour = ({navigation}) => {
     const {colors} = useTheme();
+    const {AppBehaviour_Context, setAppBehaviour_Context} = useContext(AppBehaviourContext);
+    const {PlayAudioInSilentMode} = AppBehaviour_Context
+    const [PlayAudioInSilentMode_useState, setPlayAudioInSilentMode_useState] = useState(PlayAudioInSilentMode);
+    const setContextAndAsyncStorage = (type) => {
+        if (type == 'PlayAudioInSilentMode') {
+            if (PlayAudioInSilentMode_useState == true) {
+                setPlayAudioInSilentMode_useState(false);
+            } else {
+                setPlayAudioInSilentMode_useState(true);
+            }
+        }
+        const list = {PlayAudioOnSilentMode: PlayAudioInSilentMode_useState};
+        
+        setAppBehaviour_Context(list);
+    }
     return(
         <View style={{backgroundColor: colors.primary, height: '100%'}}>
             <ChatScreen_Title style={{backgroundColor: colors.primary, borderWidth: 0}}>
@@ -25,7 +43,30 @@ const AppBehaviour = ({navigation}) => {
                 </Navigator_BackButton>
                 <TestText style={{textAlign: 'center', color: colors.tertiary}}>App Behaviour</TestText>
             </ChatScreen_Title>
+            <View style={{flex: 2, flexDirection: 'row', marginHorizontal: 10, justifyContent: 'flex-start'}}>
+                <Text style={{color: colors.tertiary, fontSize: 18, fontWeight: 'bold'}}>Play audio on silent mode</Text>
+                <SwitchToggle
+                    switchOn={PlayAudioInSilentMode_useState}
+                    onPress={() => {setContextAndAsyncStorage('PlayAudioInSilentMode')}}
+                    circleColorOff={colors.tertiary}
+                    circleColorOn={colors.tertiary}
+                    backgroundColorOn={colors.darkestBlue}
+                    backgroundColorOff={colors.borderColor}
+                    containerStyle={{
+                        width: 50,
+                        height: 28,
+                        borderRadius: 25,
+                        padding: 5,
+                    }}
+                    circleStyle={{
+                        width: 20,
+                        height: 20,
+                        borderRadius: 20,
+                    }}
+                />
+            </View>
             <Text style={{color: colors.tertiary, fontSize: 30, fontWeight: 'bold', textAlign: 'center'}}>Coming soon :)</Text>
+            <Text style={{color: colors.tertiary, fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>Not working at the moment</Text>
         </View>
     );
 }
