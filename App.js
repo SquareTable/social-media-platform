@@ -201,6 +201,9 @@ const App = () => {
         require('./assets/lightmode_recordingicon.png'),
         require('./assets/apple_photo.png'),
         require('./assets/sad_pepe.jpg'),
+        require('./post_media/seb_and_azaria_1.jpeg'),
+        require('./post_media/seb_and_azaria_2.jpeg'),
+        require('./post_media/seb_and_azaria_3.jpeg'),
       ];
   
       const cacheImages = images.map(image => {
