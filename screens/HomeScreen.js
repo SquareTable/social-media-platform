@@ -1,11 +1,11 @@
-import React, { useState, useContext, useRef } from 'react';
+import React, { useState, useContext, useRef, useEffect, useCallback } from 'react';
 import { StyleSheet, Text, View, Button, Image, TouchableOpacity, SafeAreaView, ScrollView, FlatList, Alert, Dimensions} from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import Constants from "expo-constants";
 import styled from "styled-components";
 import Images from "../posts/images.js";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useTheme } from '@react-navigation/native';
+import { useTheme, useFocusEffect, useIsFocused } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {
     darkModeStyling, 
@@ -43,6 +43,9 @@ const HomeScreen = ({navigation}) => {
     const [ProfileOptionsViewState, setProfileOptionsViewState] = useState(true);
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
     const {AdID, setAdID} = useContext(AdIDContext);
+    async function unloadAudioFunction() {
+        playRecording.unloadAsync;
+    }
     if (storedCredentials) {var {name, displayName, email, photoUrl} = storedCredentials}
     if (darkModeOn === true) {
         var styling = darkModeStyling;
@@ -57,8 +60,8 @@ const HomeScreen = ({navigation}) => {
         { postSource: Images.posts.seb_and_azaria_3, profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', displayName: 'sebthemancreator', type: 'post', timeUploadedAgo: '4 hours ago', bio: 'Seb and Kovid are cool' },
         { postSource: Images.posts.background, profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', displayName: 'sebthemancreator', type: 'post', timeUploadedAgo: '4 hours ago', bio: 'Seb and Kovid are cool' },
         { postSource: Images.posts.apple, profilePictureSource: Images.posts.apple, username: 'ILoveApples', displayName: 'AppleKid', type: 'post', timeUploadedAgo: '4 hours ago', bio: 'Seb and Kovid are cool' },
-        { postSource: 'https://github.com/SquareTable/social-media-platform/raw/main/assets/test_audio.mp3', profilePictureSource: Images.posts.profile_picture, username: 'testing_audio', displayName: 'sebthemancreator', type: 'audio', timeUploadedAgo: '1 sec ago', bio: "Hello! This is an audio post. There are quite a few bugs with it right now, but we will be fixing those shortly :) For now just listen to me say hi until I run out of breath lol" },
-        { postSource: 'https://github.com/SquareTable/social-media-platform/raw/main/assets/sussy_baka_jacob.mp3', profilePictureSource: Images.posts.profile_picture, username: 'testing_audio', displayName: 'sebthemancreator', type: 'audio', timeUploadedAgo: '1 sec ago', bio: "Why does Jacob have to be such a sussy baka! :( Also we are aware that sometimes the posts play the wrong audio and we will be fixing that shortly lol" },
+        { postSource: 'https://github.com/SquareTable/social-media-platform/raw/main/assets/MorningMood_song.mp3', profilePictureSource: Images.posts.profile_picture, username: 'testing_audio', displayName: 'sebthemancreator', type: 'audio', timeUploadedAgo: '1 sec ago', bio: "Hello! This is an audio post. There are quite a few bugs with it right now, but we will be fixing those shortly :) For now just listen to this peaceful song" },
+        { postSource: 'https://github.com/SquareTable/social-media-platform/raw/main/assets/ComputerSong.mp3', profilePictureSource: Images.posts.profile_picture, username: 'testing_audio', displayName: 'sebthemancreator', type: 'audio', timeUploadedAgo: '1 sec ago', bio: "Computer error song :) Also we are aware that sometimes the posts play the wrong audio and we will be fixing that shortly lol" },
     ]);
     const goToProfileScreen = (name, userToNavigateTo, profilePictureUrl, displayName) => {
         name? 
@@ -160,7 +163,27 @@ const HomeScreen = ({navigation}) => {
     const [playbackStatus, setPlaybackStatus] = useState(null);
     const [isAudioPlaying, setIsAudioPlaying] = useState(false);
     const [playRecording, setPlayRecording] = useState(undefined)
-    async function playAudio(recording_uri) {
+    const [PlayAudioInSilentMode, setPlayAudioInSilentMode] = useState(undefined)
+    useEffect(() => {
+        async function runCode() {
+            const value = await AsyncStorage.getItem('PlayAudioInSilentMode_AppBehaviour_AsyncStorage')
+            console.log('HomeScreen.js value of PlayAudioInSilentMode_AppBehaviour_AsyncStorage key is: ' + value)
+            if (value == null) {
+                setPlayAudioInSilentMode(false)
+                AsyncStorage.setItem('PlayAudioInSilentMode_AppBehaviour_AsyncStorage', 'false')
+            } else if (value == 'true') {
+                setPlayAudioInSilentMode(true)
+                AsyncStorage.setItem('PlayAudioInSilentMode_AppBehaviour_AsyncStorage', 'true')
+            } else if (value == 'false') {
+                setPlayAudioInSilentMode(false)
+                AsyncStorage.setItem('PlayAudioInSilentMode_AppBehaviour_AsyncStorage', 'false')
+            } else {
+                console.log('Error occured in setUp() function in HomeScreen.js')
+            }
+        }
+        runCode()
+    })
+        async function playAudio(recording_uri) {
             setIntentionallyPaused(false);
             if (playbackStatus != null && playRecording) {
                 if (playbackStatus.isLoaded && !playbackStatus.isPlaying) {
@@ -171,7 +194,7 @@ const HomeScreen = ({navigation}) => {
             }
             if (!playbackStatus && !playRecording) {
                 await Audio.setAudioModeAsync({
-                    playsInSilentModeIOS: true,
+                    playsInSilentModeIOS: PlayAudioInSilentMode,
                 });
                 var play_sound = new Audio.Sound();
                 setPlayRecording(play_sound);
@@ -227,7 +250,12 @@ const HomeScreen = ({navigation}) => {
             setIsAudioPlaying(false);
             setPlaybackStatus(null);
             setPlayRecording(undefined);
+            console.log('Unloaded audio')
         }
+
+        const isFocused = useIsFocused()
+        isFocused ? null : playRecording ? unloadAudio() : null
+
 
     //End of Audio play and pause code
 
@@ -237,6 +265,7 @@ const HomeScreen = ({navigation}) => {
         <SafeAreaView
          style={{flex: 1, backgroundColor: colors.primary, paddingLeft: 10}}
          >
+             <StatusBar color={colors.StatusBarColor}/>
             <Text style={{fontSize: 30, fontWeight: 'bold', alignContent: 'center', alignItems: 'center', alignSelf: 'center', color: colors.tertiary}}>SocialSquare BETA</Text>
             <ProfileOptionsView style={{backgroundColor: colors.primary}} viewHidden={ProfileOptionsViewState}>
                 <ProfileOptionsViewText style={{color: colors.tertiary}}>{usernameToReport || "Couldn't get name"}</ProfileOptionsViewText>
@@ -403,7 +432,7 @@ const HomeScreen = ({navigation}) => {
                             : null}
                             {item.type == 'audio' ?
                                 <ViewportAwareView
-                                    onViewportEnter={() => {intentionallyPaused? null : playAudio(item.postSource)}}
+                                    onViewportEnter={() => {intentionallyPaused? null : isFocused ? playAudio(item.postSource) : null}}
                                     onViewportLeave={() => {playRecording? unloadAudio() : null}}
                                     preTriggerRatio={-0.5} // Makes it so half of the element has to be shown before it triggers onViewportEnter
                                 >
@@ -517,4 +546,4 @@ const HomeScreen = ({navigation}) => {
     );
 };
 
-export default HomeScreen;
+export {HomeScreen};

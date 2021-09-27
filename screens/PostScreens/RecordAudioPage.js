@@ -336,7 +336,7 @@ const RecordAudioPage = ({navigation}) => {
                                     />
                                 </TouchableOpacity>
                             </View>
-                            {!recording_uri && !recording && !recordingStatus && hoursDisplay == null && minutesDisplay == null && secondsDisplay == null ? <TestText style={{marginTop: 20}}>Press the recording button to get started</TestText> : null}
+                            {!recording_uri && !recording && !recordingStatus && hoursDisplay == null && minutesDisplay == null && secondsDisplay == null ? <TestText style={{marginTop: 20, color: colors.tertiary}}>Press the recording button to get started</TestText> : null}
                             <TestText style={{color: colors.tertiary, marginTop: 20}}>{hoursDisplay == null & minutesDisplay == null & secondsDisplay == null ? null : "Recording for " + hoursDisplay + minutesDisplay + secondsDisplay}</TestText>
                             <View style={{alignItems: 'center', marginVertical: 20}}>
                                 {recording_uri ?

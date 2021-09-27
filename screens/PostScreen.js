@@ -112,7 +112,7 @@ const PostScreen = ({navigation}) => {
 
     return(
         <>    
-            <StatusBar style="dark"/>
+            <StatusBar style={colors.StatusBarColor}/>
                 <WelcomeContainer style={{backgroundColor: colors.primary}} postScreen={true}>
                     <PageTitle>Post Screen</PageTitle>
                     <SubTitle style={{color: colors.tertiary}}>Select a format</SubTitle>

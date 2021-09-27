@@ -76,7 +76,7 @@ const CreateChatScreen = ({navigation, route}) => {
                     <SettingsItemImage source={Images.posts.sad_pepe} style={{borderRadius: 1000/2}}/>
                     <SettingsItemText style={{color: colors.tertiary}}>Toggle Beta Chat Screen</SettingsItemText>
                 </SettingsPageItemTouchableOpacity>
-                <TestText>Search functionality coming soon :)</TestText>
+                <TestText style={{color: colors.tertiary}}>Search functionality coming soon :)</TestText>
             </BackgroundDarkColor>
         </KeyboardAvoidingWrapper>
     );

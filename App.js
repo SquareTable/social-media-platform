@@ -16,7 +16,6 @@ import { AppearanceProvider, useColorScheme } from 'react-native-appearance';
 import { DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { CredentialsContext } from './components/CredentialsContext';
 import { AdIDContext } from './components/AdIDContext.js';
-import { AppBehaviourContext } from './components/AppBehaviourContext.js';
 
 const Stack = createStackNavigator();
 
@@ -225,13 +224,11 @@ const App = () => {
     return (
       <CredentialsContext.Provider value={{storedCredentials, setStoredCredentials}}>
         <AdIDContext.Provider value={{AdID, setAdID}}>
-          <AppBehaviourContext.Provider value={{AppBehaviour_Context, setAppBehaviour_Context}}>
-            <AppearanceProvider>
-              <NavigationContainer theme={scheme === 'dark' ? AppDarkTheme : AppLightTheme}>
-                <Start_Stack/>
-              </NavigationContainer>
-            </AppearanceProvider>
-          </AppBehaviourContext.Provider>
+          <AppearanceProvider>
+            <NavigationContainer theme={scheme === 'dark' ? AppDarkTheme : AppLightTheme} onStateChange={() => {console.log('Screen changed')}}>
+              <Start_Stack/>
+            </NavigationContainer>
+          </AppearanceProvider>
         </AdIDContext.Provider>
       </CredentialsContext.Provider>
 

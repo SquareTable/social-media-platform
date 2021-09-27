@@ -41,6 +41,7 @@ const SettingsPage = ({navigation}) => {
         })
         .catch(error => console.log(error));
         AsyncStorage.removeItem('SocialSquareDMsList');
+        AsyncStorage.removeItem('PlayAudioInSilentMode_AppBehaviour_AsyncStorage');
         try {
             navigation.reset({
                 index: 0,

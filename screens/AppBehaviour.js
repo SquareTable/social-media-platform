@@ -1,4 +1,4 @@
-import React, {useState, useContext} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import { StatusBar } from 'expo-status-bar';
 import {useTheme} from '@react-navigation/native';
 
@@ -9,26 +9,42 @@ import {
 } from '../screens/screenStylings/styling.js';
 import {View, ActivityIndicator, ImageBackground, StyleSheet, useColorScheme, SafeAreaView, Image, Text} from 'react-native';
 import SwitchToggle from "react-native-switch-toggle";
-import { AppBehaviourContext } from '../components/AppBehaviourContext.js';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const AppBehaviour = ({navigation}) => {
     const {colors} = useTheme();
-    const {AppBehaviour_Context, setAppBehaviour_Context} = useContext(AppBehaviourContext);
-    const {PlayAudioInSilentMode} = AppBehaviour_Context
-    const [PlayAudioInSilentMode_useState, setPlayAudioInSilentMode_useState] = useState(PlayAudioInSilentMode);
+    const [PlayAudioInSilentMode_useState, setPlayAudioInSilentMode_useState] = useState(undefined);
+    useEffect(() => {
+        async function setUp() {
+            const value = await AsyncStorage.getItem('PlayAudioInSilentMode_AppBehaviour_AsyncStorage')
+            console.log('Value of PlayAudioInSilentMode_AppBehaviour_AsyncStorage key is: ' + value)
+            if (value == null) {
+                setPlayAudioInSilentMode_useState(false)
+                AsyncStorage.setItem('PlayAudioInSilentMode_AppBehaviour_AsyncStorage', 'false')
+            } else if (value == 'true') {
+                setPlayAudioInSilentMode_useState(true)
+                AsyncStorage.setItem('PlayAudioInSilentMode_AppBehaviour_AsyncStorage', 'true')
+            } else if (value == 'false') {
+                setPlayAudioInSilentMode_useState(false)
+                AsyncStorage.setItem('PlayAudioInSilentMode_AppBehaviour_AsyncStorage', 'false')
+            } else {
+                console.log('Error occured in setUp() function in AppBehaviour.js')
+            }
+        }
+        setUp()
+    })
+   
     const setContextAndAsyncStorage = (type) => {
         if (type == 'PlayAudioInSilentMode') {
             if (PlayAudioInSilentMode_useState == true) {
-                setPlayAudioInSilentMode_useState(false);
+                setPlayAudioInSilentMode_useState(false)
+                AsyncStorage.setItem('PlayAudioInSilentMode_AppBehaviour_AsyncStorage', 'false')
             } else {
-                setPlayAudioInSilentMode_useState(true);
+                setPlayAudioInSilentMode_useState(true)
+                AsyncStorage.setItem('PlayAudioInSilentMode_AppBehaviour_AsyncStorage', 'true')
             }
         }
-        const list = {PlayAudioOnSilentMode: PlayAudioInSilentMode_useState};
-        
-        setAppBehaviour_Context(list);
     }
     return(
         <View style={{backgroundColor: colors.primary, height: '100%'}}>
@@ -65,8 +81,7 @@ const AppBehaviour = ({navigation}) => {
                     }}
                 />
             </View>
-            <Text style={{color: colors.tertiary, fontSize: 30, fontWeight: 'bold', textAlign: 'center'}}>Coming soon :)</Text>
-            <Text style={{color: colors.tertiary, fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>Not working at the moment</Text>
+            <Text style={{color: colors.tertiary, fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>More options coming soon :)</Text>
         </View>
     );
 }
