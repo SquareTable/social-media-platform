@@ -44,6 +44,7 @@ import RecordAudioPage from "../screens/PostScreens/RecordAudioPage.js";
 import SendAudioPage from "../screens/PostScreens/SendAudioPage.js";
 
 import AppBehaviour from '../screens/AppBehaviour.js';
+import AppBehaviour_HomeScreen from "../screens/AppBehaviour_HomeScreen.js";
 
 
 
@@ -183,6 +184,22 @@ const RootStack = () => {
                 <Stack.Screen 
                   name="AppBehaviour" 
                   component={AppBehaviour}
+                  options={{
+                    headerStyle: {
+                        backgroundColor: 'transparent',
+                    },
+                    headerTintColor: colors.tertiary,
+                    headerTransparent: true,
+                    headerTitle: '',
+                    headerLeftContainerStyle: {
+                        paddingLeft: 20,
+                    },
+                    headerLeft: null
+                }}
+                />
+                <Stack.Screen 
+                  name="AppBehaviour_HomeScreen" 
+                  component={AppBehaviour_HomeScreen}
                   options={{
                     headerStyle: {
                         backgroundColor: 'transparent',

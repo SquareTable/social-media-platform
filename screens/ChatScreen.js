@@ -13,6 +13,7 @@ import {
 } from '../screens/screenStylings/styling.js';
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {useTheme} from "@react-navigation/native";
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 
 const ChatScreen = ({navigation, route}) => {
     const {username, user_profile_pic, displayName} = route.params;
@@ -95,10 +96,10 @@ const ChatScreen = ({navigation, route}) => {
         flex: 1, 
         ...Platform.select({
           ios: {
-            marginBottom: 0
+            marginBottom: 75
           },
           android: {
-            marginBottom: 0
+            marginBottom: 75
           },
           default: {
             // other platforms, web for example
@@ -107,6 +108,7 @@ const ChatScreen = ({navigation, route}) => {
         })
       }
   });
+  const bottomTabBarHeight = useBottomTabBarHeight();
     return(
       <View style={Styles.giftedChatStyling}>
         <ChatScreen_Title style={{backgroundColor: colors.primary, borderWidth: 0}}>
@@ -140,6 +142,7 @@ const ChatScreen = ({navigation, route}) => {
           name: 'Username goes here'
         }}
       />
+      <View style={{backgroundColor: colors.primary, height: 75, minHeight: 75, maxHeight: 75, position: 'absolute', left: 0, right: 0, bottom: -75}}/>
     </View>
     );
 };

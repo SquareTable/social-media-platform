@@ -35,7 +35,7 @@ const CustomTabBarButton = ({children, onPress}) => (
             width: 50,
             height: 50,
             borderRadius: 35,
-            backgroundColor: '#e32f45'
+            backgroundColor: 'transparent',
         }}>
             {children}
         </View>
@@ -80,14 +80,12 @@ const Tabs = ({navigation}) => {
             tabBarOptions={{
                 showLabel: false,
                 style: {
-                    position: 'fixed',
+                    position: 'absolute',
                     bottom: 0, /*Change the margin from the bottom of the screen for the tab navigator*/
                     left: 0, /*Change the margin from the left of the screen for the tab navigator*/
                     right: 0, /*Change the margin from the right of the screen for the tab navigator*/
                     elevation: 0,
-                    backgroundColor: colors.primary,
-                    borderColor: colors.borderColor,
-                    borderWidth: 0.5,
+                    backgroundColor: 'transparent',
                     height: 75,
                     /*...styles.shadow*/
                 }
@@ -95,7 +93,7 @@ const Tabs = ({navigation}) => {
         >
             <Tab.Screen name="Home" component={home_screen_post_to_profile_screen} options={{
                 tabBarIcon: ({focused}) => (
-                    <TouchableOpacity onPressIn={() => {onHomeScreenNavigate()}}>
+                    <TouchableOpacity style={{backgroundColor: colors.primary, width: '100%', height: 75, marginTop: 30}} onPressIn={() => {onHomeScreenNavigate()}}>
                         <View style={{alignItems: 'center', justifyContent: 'center', top: 10}}>
                             <Image
                                 source={require('../assets/app_icons/home.png')}
@@ -113,7 +111,7 @@ const Tabs = ({navigation}) => {
             }} />
             <Tab.Screen name="Find" component={FindScreen_Stack} options={{
                 tabBarIcon: ({focused}) => (
-                    <TouchableOpacity onPressIn={() => {onFindScreenNavigate()}}>
+                    <TouchableOpacity style={{backgroundColor: colors.primary, width: '100%', height: 75, marginTop: 30}} onPressIn={() => {onFindScreenNavigate()}}>
                         <View style={{alignItems: 'center', justifyContent: 'center', top: 10}}>
                             <Image
                                 source={require('../assets/app_icons/find.png')}
@@ -150,7 +148,7 @@ const Tabs = ({navigation}) => {
             }}/>
             <Tab.Screen name="Chat" component={ChatScreen_Stack} options={{
                 tabBarIcon: ({focused}) => (
-                    <TouchableOpacity onPressIn={() => {onChatScreenNavigate()}}>
+                    <TouchableOpacity style={{backgroundColor: colors.primary, width: '100%', height: 75, marginTop: 30}} onPressIn={() => {onChatScreenNavigate()}}>
                         <View style={{alignItems: 'center', justifyContent: 'center', top: 10}}>
                             <Image
                                 source={require('../assets/app_icons/chat.png')}
@@ -168,7 +166,7 @@ const Tabs = ({navigation}) => {
             }}/>
             <Tab.Screen name="Profile" component={RootStack} options={{
                 tabBarIcon: ({focused}) => (
-                    <TouchableOpacity onPressIn={onProfileScreenNavigate}>
+                    <TouchableOpacity style={{backgroundColor: colors.primary, width: '100%', height: 75, marginTop: 30}} onPressIn={onProfileScreenNavigate}>
                         <View style={{alignItems: 'center', justifyContent: 'center', top: 10}}>
                             <Image
                                 source={photoUrl ? {uri: photoUrl} : require('./../assets/img/Logo.png')}

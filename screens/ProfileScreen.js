@@ -55,8 +55,12 @@ import {useTheme} from "@react-navigation/native"
 
 
 const ProfileScreen = ({navigation, route}) => {
-    const {backButtonHidden} = route.params;
-    console.log(backButtonHidden)
+    if (route.params) {
+        var {backButtonHidden} = route.params;
+        console.log(backButtonHidden)
+    } else {
+        var backButtonHidden = false;
+    }
      //context
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
     if (storedCredentials) {var {name, displayName, email, photoUrl} = storedCredentials;}

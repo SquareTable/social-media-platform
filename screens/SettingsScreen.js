@@ -63,6 +63,11 @@ const SettingsPage = ({navigation}) => {
 
     const {colors} = useTheme();
 
+    const seeAppIntroductionScreenAgainButtonOnPress = () => {
+        AsyncStorage.removeItem('HasOpenedSocialSquare');
+        alert('The next time you reload the app the introduction screen will show :)')
+    }
+
     return(
         <> 
             <StatusBar style={colors.StatusBarColor}/>   
@@ -102,6 +107,11 @@ const SettingsPage = ({navigation}) => {
                         <TouchableOpacity style={{marginHorizontal: '20%', borderColor: colors.borderColor, borderWidth: 5, borderRadius: 20/2}} onPressOut={() => {Linking.openURL('https://github.com/SquareTable/social-media-platform')}}>
                             <View>
                                 <Text style={{color: colors.tertiary, fontSize: 16, textAlign: 'center', padding: 7}}>Press here to visit the SocialSquare GitHub repo</Text>
+                            </View>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={{marginHorizontal: '20%', borderColor: colors.borderColor, borderWidth: 5, borderRadius: 20/2, marginTop: 20}} onPress={seeAppIntroductionScreenAgainButtonOnPress}>
+                            <View>
+                                <Text style={{color: colors.tertiary, fontSize: 16, textAlign: 'center', padding: 7}}>See app introduction screen again</Text>
                             </View>
                         </TouchableOpacity>
                     </WelcomeContainer>

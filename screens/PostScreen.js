@@ -39,6 +39,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 //credentials context
 import { CredentialsContext } from '../components/CredentialsContext';
 import { ImageBackground, ScrollView } from 'react-native';
+import OfflineNotice from '../components/OfflineNotice.js';
 
 
 const PostScreen = ({navigation}) => {

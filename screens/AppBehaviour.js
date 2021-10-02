@@ -1,13 +1,14 @@
 import React, {useState, useContext, useEffect} from 'react';
 import { StatusBar } from 'expo-status-bar';
 import {useTheme} from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/AntDesign';
 
 import {
     ChatScreen_Title,
     Navigator_BackButton,
     TestText,
 } from '../screens/screenStylings/styling.js';
-import {View, ActivityIndicator, ImageBackground, StyleSheet, useColorScheme, SafeAreaView, Image, Text} from 'react-native';
+import {View, Image, Text, TouchableOpacity} from 'react-native';
 import SwitchToggle from "react-native-switch-toggle";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -59,7 +60,7 @@ const AppBehaviour = ({navigation}) => {
                 </Navigator_BackButton>
                 <TestText style={{textAlign: 'center', color: colors.tertiary}}>App Behaviour</TestText>
             </ChatScreen_Title>
-            <View style={{flex: 2, flexDirection: 'row', marginHorizontal: 10, justifyContent: 'flex-start'}}>
+            <View style={{flex: 2, flexDirection: 'row', marginHorizontal: 10, marginVertical: 20, justifyContent: 'flex-start', minHeight: 30, height: 30, maxHeight: 30}}>
                 <Text style={{color: colors.tertiary, fontSize: 18, fontWeight: 'bold'}}>Play audio on silent mode</Text>
                 <SwitchToggle
                     switchOn={PlayAudioInSilentMode_useState}
@@ -81,7 +82,16 @@ const AppBehaviour = ({navigation}) => {
                     }}
                 />
             </View>
-            <Text style={{color: colors.tertiary, fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>More options coming soon :)</Text>
+            <TouchableOpacity onPress={() => {navigation.navigate('AppBehaviour_HomeScreen')}} style={{flex: 2, flexDirection: 'row', marginTop: 60, justifyContent: 'flex-start', minHeight: 30, height: 30, maxHeight: 30, borderColor: colors.borderColor, borderWidth: 3}}>
+                <Text style={{color: colors.tertiary, marginHorizontal: 10, fontSize: 18, fontWeight: 'bold'}}>Home Screen options</Text>
+                <Icon 
+                    name="right"
+                    size={20}
+                    color={colors.tertiary}
+                    style={{position: 'absolute', right: 10}}
+                />
+            </TouchableOpacity>
+            <Text style={{color: colors.tertiary, fontSize: 20, fontWeight: 'bold', textAlign: 'center', marginTop: 80, marginBottom: 10}}>More options coming soon :)</Text>
         </View>
     );
 }

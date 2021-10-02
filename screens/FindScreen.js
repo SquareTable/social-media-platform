@@ -12,6 +12,7 @@ import {
 } from '../screens/screenStylings/styling.js';
 import Images from "../posts/images.js";
 import { setSyntheticLeadingComments } from 'typescript';
+import OfflineNotice from '../components/OfflineNotice.js';
 
 const FindScreen = ({navigation}) => {
     if (darkModeOn === true) {

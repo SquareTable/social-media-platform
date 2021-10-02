@@ -1,12 +1,12 @@
 import React, { useState, useContext, useRef, useEffect, useCallback } from 'react';
 import { StyleSheet, Text, View, Button, Image, TouchableOpacity, SafeAreaView, ScrollView, FlatList, Alert, Dimensions} from 'react-native';
 import { StatusBar } from 'expo-status-bar';
-import Constants from "expo-constants";
 import styled from "styled-components";
 import Images from "../posts/images.js";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useTheme, useFocusEffect, useIsFocused } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import Constants from "expo-constants";
 import {
     darkModeStyling, 
     darkModeOn, 
@@ -37,12 +37,14 @@ import {
 import ScalableProgressiveImage from '../components/ScalableProgressiveImage.js';
 import { Viewport } from '@skele/components';
 import { Audio } from 'expo-av';
+import OfflineNotice from '../components/OfflineNotice.js';
 
 const HomeScreen = ({navigation}) => {
     const [usernameToReport, setUsernameToReport] = useState(null);
     const [ProfileOptionsViewState, setProfileOptionsViewState] = useState(true);
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
     const {AdID, setAdID} = useContext(AdIDContext);
+    const StatusBarHeight = Constants.statusBarHeight;
     async function unloadAudioFunction() {
         playRecording.unloadAsync;
     }
@@ -162,8 +164,12 @@ const HomeScreen = ({navigation}) => {
     // Audio play and pause code
     const [playbackStatus, setPlaybackStatus] = useState(null);
     const [isAudioPlaying, setIsAudioPlaying] = useState(false);
-    const [playRecording, setPlayRecording] = useState(undefined)
-    const [PlayAudioInSilentMode, setPlayAudioInSilentMode] = useState(undefined)
+    const [playRecording, setPlayRecording] = useState(undefined);
+    const [PlayAudioInSilentMode, setPlayAudioInSilentMode] = useState(undefined);
+    const [ShowPhotosAndVideos, setShowPhotosAndVideos] = useState(undefined);
+    const [ShowPolls, setShowPolls] = useState(undefined);
+    const [showThreads, setShowThreads] = useState(undefined);
+    const [showAudio, setShowAudio] = useState(undefined);
     useEffect(() => {
         async function runCode() {
             const value = await AsyncStorage.getItem('PlayAudioInSilentMode_AppBehaviour_AsyncStorage')
@@ -262,11 +268,12 @@ const HomeScreen = ({navigation}) => {
     const [intentionallyPaused, setIntentionallyPaused] = useState(false);
 
     return(
-        <SafeAreaView
-         style={{flex: 1, backgroundColor: colors.primary, paddingLeft: 10}}
+        <View
+         style={{flex: 1, backgroundColor: colors.primary, paddingTop: StatusBarHeight}}
          >
              <StatusBar color={colors.StatusBarColor}/>
             <Text style={{fontSize: 30, fontWeight: 'bold', alignContent: 'center', alignItems: 'center', alignSelf: 'center', color: colors.tertiary}}>SocialSquare BETA</Text>
+            <OfflineNotice bottom={true}/>
             <ProfileOptionsView style={{backgroundColor: colors.primary}} viewHidden={ProfileOptionsViewState}>
                 <ProfileOptionsViewText style={{color: colors.tertiary}}>{usernameToReport || "Couldn't get name"}</ProfileOptionsViewText>
                 <ProfileOptionsViewSubtitleText style={{color: colors.tertiary}}>Options</ProfileOptionsViewSubtitleText>
@@ -366,7 +373,7 @@ const HomeScreen = ({navigation}) => {
                     ListFooterComponent={<Text style={{color: colors.tertiary, borderColor: colors.borderColor, borderWidth: 3, fontSize: 20, fontWeight: 'bold', textAlign: 'center', paddingVertical: 10}}>It looks like you have reached the end</Text>}
                     renderItem={({ item, index }) => ( 
                         <View>
-                            {item.type == 'post' ?
+                            {item.type == 'post'?
                             <View style={{marginBottom: 20}}>
                                 <View style={{flex: 2, flexDirection: 'row', justifyContent: 'flex-start', marginTop: 10}}>
                                     <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={() => goToProfileScreen(name, item.username, item.profilePictureSource, item.displayName)}>
@@ -430,7 +437,7 @@ const HomeScreen = ({navigation}) => {
                                 </View>
                             </View>
                             : null}
-                            {item.type == 'audio' ?
+                            {item.type == 'audio'?
                                 <ViewportAwareView
                                     onViewportEnter={() => {intentionallyPaused? null : isFocused ? playAudio(item.postSource) : null}}
                                     onViewportLeave={() => {playRecording? unloadAudio() : null}}
@@ -542,7 +549,7 @@ const HomeScreen = ({navigation}) => {
                     )}
                 />
             </Viewport.Tracker>
-        </SafeAreaView>
+        </View>
     );
 };
 
