@@ -36,8 +36,8 @@ const Content = ({navigation}, props) => {
         <TouchableOpacity onPress={() => {alert("Coming soon")}}>
             <Image
                 source={source_for_image || require('../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/266-question.png')}
-                style={{minHeight: 60, minWidth: 60, width: 60, height: 60, maxWidth: 60, maxHeight: 60, borderWidth: 8, borderColor: darkest}}
-                resizeMode="contain"
+                style={source_for_image ? {minHeight: 60, minWidth: 60, width: 60, height: 60, maxWidth: 60, maxHeight: 60, borderWidth: 8, borderColor: darkest} : {minHeight: 60, minWidth: 60, width: 60, height: 60, maxWidth: 60, maxHeight: 60}}
+                resizeMode="cover"
                 resizeMethod="resize"
             />
         </TouchableOpacity>

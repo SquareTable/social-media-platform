@@ -80,12 +80,12 @@ const Tabs = ({navigation}) => {
             tabBarOptions={{
                 showLabel: false,
                 style: {
-                    position: 'absolute',
+                    /*position: 'absolute',*/
                     bottom: 0, /*Change the margin from the bottom of the screen for the tab navigator*/
                     left: 0, /*Change the margin from the left of the screen for the tab navigator*/
                     right: 0, /*Change the margin from the right of the screen for the tab navigator*/
                     elevation: 0,
-                    backgroundColor: 'transparent',
+                    backgroundColor: colors.primary,
                     height: 75,
                     /*...styles.shadow*/
                 }

@@ -3,6 +3,7 @@ import { StatusBar } from 'expo-status-bar';
 import { Audio } from 'expo-av';
 import { useTheme } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/AntDesign';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 
 import {
     InnerContainer,
@@ -61,7 +62,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 //credentials context
 import { CredentialsContext } from './../../components/CredentialsContext';
-import { ImageBackground, ScrollView, Image, TouchableOpacity, Text, View, SafeAreaView, Alert } from 'react-native';
+import { ImageBackground, ScrollView, Image, TouchableOpacity, Text, View, SafeAreaView, Alert, Dimensions } from 'react-native';
 import AppStyling from '../AppStylingScreen.js';
 import * as Haptics from 'expo-haptics';
 import { convertCompilerOptionsFromJson } from 'typescript';
@@ -311,20 +312,27 @@ const RecordAudioPage = ({navigation}) => {
         }
     }
 
+    const tabBarHeight = useBottomTabBarHeight();
+    const windowHeight = Dimensions.get('window').height
+
+    
+
 
     return(
         <>    
             <StatusBar style={colors.StatusBarColor}/>
                 <BackgroundDarkColor style={{backgroundColor: colors.primary}}>
                     <ChatScreen_Title style={{backgroundColor: colors.primary, borderWidth: 0}}>
-                        <Navigator_BackButton onPress={goBack_Navigation}>
-                            <Image
-                            source={require('../../assets/app_icons/back_arrow.png')}
-                            style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2, tintColor: colors.tertiary}}
-                            resizeMode="contain"
-                            resizeMethod="resize"
-                            />
-                        </Navigator_BackButton>
+                        {!recordingStatus && !recording &&
+                            <Navigator_BackButton onPress={goBack_Navigation}>
+                                <Image
+                                source={require('../../assets/app_icons/back_arrow.png')}
+                                style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2, tintColor: colors.tertiary}}
+                                resizeMode="contain"
+                                resizeMethod="resize"
+                                />
+                            </Navigator_BackButton>
+                        }
                         <TestText style={{textAlign: 'center', color: colors.tertiary}}>Record Audio</TestText>
                     </ChatScreen_Title>
                         <View>
@@ -340,19 +348,26 @@ const RecordAudioPage = ({navigation}) => {
                             <TestText style={{color: colors.tertiary, marginTop: 20}}>{hoursDisplay == null & minutesDisplay == null & secondsDisplay == null ? null : "Recording for " + hoursDisplay + minutesDisplay + secondsDisplay}</TestText>
                             <View style={{alignItems: 'center', marginVertical: 20}}>
                                 {recording_uri ?
-                                    isAudioPlaying == true?
-                                        <TouchableOpacity disabled={playButtonDisabled} onPress={pauseAudio}>
-                                            <Icon name="pausecircleo" color={colors.tertiary} size={80}/>
-                                        </TouchableOpacity> :
-                                        <TouchableOpacity disabled={playButtonDisabled} onPress={() => recording_uri? playAudio(recording_uri) : alert("Create a recording first")}>
-                                            <Icon name="playcircleo" color={colors.tertiary} size={80}/>
-                                        </TouchableOpacity> : null
+                                    !recording && !recordingStatus ?
+                                        isAudioPlaying == true?
+                                            <TouchableOpacity disabled={playButtonDisabled} onPress={pauseAudio}>
+                                                <Icon name="pausecircleo" color={colors.tertiary} size={80}/>
+                                            </TouchableOpacity> 
+                                            :
+                                            <TouchableOpacity disabled={playButtonDisabled} onPress={() => recording_uri? playAudio(recording_uri) : alert("Create a recording first")}>
+                                                <Icon name="playcircleo" color={colors.tertiary} size={80}/>
+                                            </TouchableOpacity> 
+                                        : null 
+                                    : null
                                 }
                             </View>
                             {recording_uri? 
-                                <StyledButton onPress={sendAudioSnippet}>
-                                    <ButtonText>Send Audio Snippet</ButtonText>
-                                </StyledButton> : null
+                                !recordingStatus && !recording ?
+                                    <StyledButton onPress={sendAudioSnippet}>
+                                        <ButtonText>Send Audio Snippet</ButtonText>
+                                    </StyledButton> 
+                                : null
+                            : null
                             }
                         </View>
                 </BackgroundDarkColor>
