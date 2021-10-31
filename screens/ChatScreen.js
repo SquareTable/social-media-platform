@@ -158,12 +158,16 @@ const ChatScreen = ({navigation, route}) => {
           <Composer 
             {...props} 
             textInputProps={{
-              returnKeyType: 'send',
+              //returnKeyType: 'default',
               multiline: true,
-              onSubmitEditing: event => {
+              /*onSubmitEditing: event => {
                 props.onSend({ text: event.nativeEvent.text.trim() }, true);
-              },
+              },*/
             }}
+          />
+          <Send 
+            {...props}
+            containerStyle={{borderWidth: 0}}
           />
           <TouchableOpacity style={{minHeight: 40, height: 40, maxHeight: 40, minWidth: 40, width: 40, maxWidth: 40}} onPress={pickImage}>
             <Icon name='camera' size={40} color={colors.tertiary}/>
@@ -257,7 +261,6 @@ const ChatScreen = ({navigation, route}) => {
         onSend={messages => onSend(messages)}
         renderInputToolbar={renderInputToolbar} 
         renderBubble={renderBubble}
-        renderSend={renderSend}
         renderComposer={renderComposer}
         bottomOffset={70}
         onPressAvatar={() => {goToProfileScreen(name, username, user_profile_pic, displayName)}}

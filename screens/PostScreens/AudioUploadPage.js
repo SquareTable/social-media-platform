@@ -67,6 +67,7 @@ const AudioUploadPage = ({navigation}) => {
     const uploadAudioSnippetFromFile = () => {
         alert("Coming soon")
     }
+    alert('Audio posting functionality coming soon')
     return(
         <>    
             <StatusBar style={colors.StatusBarColor}/>

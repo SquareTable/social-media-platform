@@ -41,6 +41,7 @@ import OfflineNotice from '../components/OfflineNotice.js';
 
 const HomeScreen = ({navigation}) => {
     const [usernameToReport, setUsernameToReport] = useState(null);
+    const [postEncrypted, setPostEncrypted] = useState(null);
     const [ProfileOptionsViewState, setProfileOptionsViewState] = useState(true);
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
     const {AdID, setAdID} = useContext(AdIDContext);
@@ -56,14 +57,14 @@ const HomeScreen = ({navigation}) => {
     }
     const {colors, dark} = useTheme();
     const [Posts, setPosts] = useState([
-        { postSource: Images.posts.social_studies_1, profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', displayName: 'sebthemancreator', type: 'post', timeUploadedAgo: '4 hours ago', bio: 'Seb and Kovid are cool' },
-        { postSource: Images.posts.seb_and_azaria_1, profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', displayName: 'sebthemancreator', type: 'post', timeUploadedAgo: '4 hours ago', bio: 'Seb and Kovid are cool' },
-        { postSource: Images.posts.seb_and_azaria_2, profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', displayName: 'sebthemancreator', type: 'post', timeUploadedAgo: '4 hours ago', bio: 'Seb and Kovid are cool' },
-        { postSource: Images.posts.seb_and_azaria_3, profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', displayName: 'sebthemancreator', type: 'post', timeUploadedAgo: '4 hours ago', bio: 'Seb and Kovid are cool' },
-        { postSource: Images.posts.background, profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', displayName: 'sebthemancreator', type: 'post', timeUploadedAgo: '4 hours ago', bio: 'Seb and Kovid are cool' },
-        { postSource: Images.posts.apple, profilePictureSource: Images.posts.apple, username: 'ILoveApples', displayName: 'AppleKid', type: 'post', timeUploadedAgo: '4 hours ago', bio: 'Seb and Kovid are cool' },
-        { postSource: 'https://github.com/SquareTable/social-media-platform/raw/main/assets/MorningMood_song.mp3', profilePictureSource: Images.posts.profile_picture, username: 'testing_audio', displayName: 'sebthemancreator', type: 'audio', timeUploadedAgo: '1 sec ago', bio: "Hello! This is an audio post. There are quite a few bugs with it right now, but we will be fixing those shortly :) For now just listen to this peaceful song" },
-        { postSource: 'https://github.com/SquareTable/social-media-platform/raw/main/assets/ComputerSong.mp3', profilePictureSource: Images.posts.profile_picture, username: 'testing_audio', displayName: 'sebthemancreator', type: 'audio', timeUploadedAgo: '1 sec ago', bio: "Computer error song :) Also we are aware that sometimes the posts play the wrong audio and we will be fixing that shortly lol" },
+        { postSource: Images.posts.social_studies_1, profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', displayName: 'sebthemancreator', type: 'post', timeUploadedAgo: '4 hours ago', bio: 'Seb and Kovid are cool', encrypted: 'true' },
+        { postSource: Images.posts.seb_and_azaria_1, profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', displayName: 'sebthemancreator', type: 'post', timeUploadedAgo: '4 hours ago', bio: 'Seb and Kovid are cool', encrypted: 'true' },
+        { postSource: Images.posts.seb_and_azaria_2, profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', displayName: 'sebthemancreator', type: 'post', timeUploadedAgo: '4 hours ago', bio: 'Seb and Kovid are cool', encrypted: 'true' },
+        { postSource: Images.posts.seb_and_azaria_3, profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', displayName: 'sebthemancreator', type: 'post', timeUploadedAgo: '4 hours ago', bio: 'Seb and Kovid are cool', encrypted: 'true' },
+        { postSource: Images.posts.background, profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', displayName: 'sebthemancreator', type: 'post', timeUploadedAgo: '4 hours ago', bio: 'Seb and Kovid are cool', encrypted: 'true' },
+        { postSource: Images.posts.apple, profilePictureSource: Images.posts.apple, username: 'ILoveApples', displayName: 'AppleKid', type: 'post', timeUploadedAgo: '4 hours ago', bio: 'Seb and Kovid are cool', encrypted: 'false' },
+        { postSource: 'https://github.com/SquareTable/social-media-platform/raw/main/assets/MorningMood_song.mp3', profilePictureSource: Images.posts.profile_picture, username: 'testing_audio', displayName: 'sebthemancreator', type: 'audio', timeUploadedAgo: '1 sec ago', bio: "Hello! This is an audio post. There are quite a few bugs with it right now, but we will be fixing those shortly :) For now just listen to this peaceful song", encrypted: 'false' },
+        { postSource: 'https://github.com/SquareTable/social-media-platform/raw/main/assets/ComputerSong.mp3', profilePictureSource: Images.posts.profile_picture, username: 'testing_audio', displayName: 'sebthemancreator', type: 'audio', timeUploadedAgo: '1 sec ago', bio: "Computer error song :) Also we are aware that sometimes the posts play the wrong audio and we will be fixing that shortly lol", encrypted: 'true' },
     ]);
     const goToProfileScreen = (name, userToNavigateTo, profilePictureUrl, displayName) => {
         name? 
@@ -71,13 +72,15 @@ const HomeScreen = ({navigation}) => {
         : alert("An error occured");
     }
     
-    const changeOptionsView = (PostOwner) => {
+    const changeOptionsView = (PostOwner, PostEncrypted) => {
         if (ProfileOptionsViewState == true) {
             setUsernameToReport(PostOwner);
+            setPostEncrypted(PostEncrypted)
             setProfileOptionsViewState(false);
             setFlatListElementsEnabledState(false);
         } else {
             setUsernameToReport(null);
+            setPostEncrypted(null);
             setProfileOptionsViewState(true);
             setFlatListElementsEnabledState(true);
         }
@@ -287,19 +290,29 @@ const HomeScreen = ({navigation}) => {
                     <ProfileOptionsViewButtonsText redButton={true}>Report</ProfileOptionsViewButtonsText>
                 </ProfileOptionsViewButtons> 
             </ProfileOptionsView>
-            <ReportProfileOptionsView style={{backgroundColor: colors.primary}} viewHidden={ReportProfileOptionsViewState} post={true}>
-                <ReportProfileOptionsViewText style={{color: colors.tertiary}}>{"Report " + usernameToReport || "Report profile"}</ReportProfileOptionsViewText>
-                <ReportProfileOptionsViewSubtitleText style={{color: colors.tertiary}}>Use this page to report this profile. If anyone is in danger immediately call emergency services. Do Not Wait.</ReportProfileOptionsViewSubtitleText>
-                <ReportProfileOptionsViewButtons greyButton={true} onPress={changeReportProfilesOptionsView}>
-                    <ReportProfileOptionsViewButtonsText greyButton={true}>Cancel</ReportProfileOptionsViewButtonsText>
-                </ReportProfileOptionsViewButtons>
-                <ReportProfileOptionsViewButtons redButton={true} onPress={changeReportProfiles_ContentThatShouldNotBePosted_OptionsView}>
-                    <ReportProfileOptionsViewButtonsText redButton={true}>This post is content that should not be on SocialSquare.</ReportProfileOptionsViewButtonsText>
-                </ReportProfileOptionsViewButtons>
-                <ReportProfileOptionsViewButtons redButton={true} onPress={changeReportProfiles_PretendingToBeSomeoneElse_OptionsView}>
-                    <ReportProfileOptionsViewButtonsText redButton={true}>This post is pretending to be someone they're not</ReportProfileOptionsViewButtonsText>
-                </ReportProfileOptionsViewButtons>
-            </ReportProfileOptionsView>
+                {postEncrypted == 'false' ?
+                    <ReportProfileOptionsView style={{backgroundColor: colors.primary}} viewHidden={ReportProfileOptionsViewState} post={true}>
+                        <ReportProfileOptionsViewText style={{color: colors.tertiary}}>{"Report " + usernameToReport || "Report profile"}</ReportProfileOptionsViewText>
+                        <ReportProfileOptionsViewSubtitleText style={{color: colors.tertiary}}>Use this page to report this profile. If anyone is in danger immediately call emergency services. Do Not Wait.</ReportProfileOptionsViewSubtitleText>
+                        <ReportProfileOptionsViewButtons greyButton={true} onPress={changeReportProfilesOptionsView}>
+                            <ReportProfileOptionsViewButtonsText greyButton={true}>Cancel</ReportProfileOptionsViewButtonsText>
+                        </ReportProfileOptionsViewButtons>
+                        <ReportProfileOptionsViewButtons redButton={true} onPress={changeReportProfiles_ContentThatShouldNotBePosted_OptionsView}>
+                            <ReportProfileOptionsViewButtonsText redButton={true}>This post is content that should not be on SocialSquare.</ReportProfileOptionsViewButtonsText>
+                        </ReportProfileOptionsViewButtons>
+                        <ReportProfileOptionsViewButtons redButton={true} onPress={changeReportProfiles_PretendingToBeSomeoneElse_OptionsView}>
+                            <ReportProfileOptionsViewButtonsText redButton={true}>This post is pretending to be someone they're not</ReportProfileOptionsViewButtonsText>
+                        </ReportProfileOptionsViewButtons>
+                    </ReportProfileOptionsView>
+                :
+                    <ReportProfileOptionsView style={{backgroundColor: colors.primary}} viewHidden={ReportProfileOptionsViewState} post={true}>
+                        <ReportProfileOptionsViewButtons greyButton={true} onPress={changeReportProfilesOptionsView}>
+                            <ReportProfileOptionsViewButtonsText greyButton={true}>Cancel</ReportProfileOptionsViewButtonsText>
+                        </ReportProfileOptionsViewButtons>
+                        <Text style={{fontSize: 24, color: colors.tertiary, textAlign: 'center', marginVertical: 30}}>This post is encrypted. Because this post is encrypted, SocialSquare cannot look at the post and therefore we can not take any action on it.</Text>
+                        <Text style={{fontStyle: 'italic', color: 'red', fontSize: 18, fontWeight: 'bold', textAlign: 'center'}}>If anyone is in immediate danger, call emergency services. Do Not Wait.</Text>
+                    </ReportProfileOptionsView>
+                }
             <ReportProfileOptionsView style={{backgroundColor: colors.primary}} viewHidden={ReportProfile_ContentThatShouldNotBePosted_OptionsViewState}>
                 <ReportProfileOptionsViewText style={{color: colors.tertiary}}>{"Report " + usernameToReport || "Report profile"}</ReportProfileOptionsViewText>
                 <ReportProfileOptionsViewSubtitleText style={{color: colors.tertiary}}>What content are you trying to report?</ReportProfileOptionsViewSubtitleText>
@@ -385,10 +398,22 @@ const HomeScreen = ({navigation}) => {
                                         />
                                     </TouchableOpacity>
                                     <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={() => goToProfileScreen(name, item.username, item.profilePictureSource, item.displayName)}>
-                                        <Text numberOfLines={1} style={{color: colors.tertiary, textAlign: 'left', fontWeight:'bold', fontSize: 20, textAlignVertical:'bottom', marginLeft: 10, marginRight: 100, flex: 1}}>{item.displayName || item.username || "Couldn't get name"}</Text>
+                                        <Text numberOfLines={1} style={{color: colors.tertiary, textAlign: 'left', fontWeight:'bold', fontSize: 20, textAlignVertical:'bottom', marginLeft: 10, marginRight: item.encrypted ? 135 : 100, flex: 1}}>{item.displayName || item.username || "Couldn't get name"}</Text>
                                     </TouchableOpacity>
+                                    {item.encrypted == 'true' ?
+                                        <View style={{position: 'absolute', right: 55}}>
+                                            <TouchableOpacity onPress={() => {alert('This icon being next to the post means that the post is encrypted. Encryption is coming soon.')}}>
+                                                <Icon
+                                                    name="lock-closed-outline"
+                                                    size={35}
+                                                    color={colors.tertiary}
+                                                />
+                                            </TouchableOpacity>
+                                        </View>
+                                    : null
+                                    }
                                     <View style={{position: 'absolute', right: 10}}>
-                                        <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={() => changeOptionsView(item.username)}>
+                                        <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={() => changeOptionsView(item.username, item.encrypted)}>
                                             <Image
                                                 source={require('../assets/app_icons/3dots.png')}
                                                 style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, tintColor: colors.tertiary}}
@@ -456,8 +481,20 @@ const HomeScreen = ({navigation}) => {
                                             <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={() => goToProfileScreen(name, item.username, item.profilePictureSource, item.displayName)}>
                                                 <Text numberOfLines={1} style={{color: colors.tertiary, textAlign: 'left', fontWeight:'bold', fontSize: 20, textAlignVertical:'bottom', marginLeft: 10, marginRight: 100, flex: 1}}>{item.displayName || item.username || "Couldn't get name"}</Text>
                                             </TouchableOpacity>
+                                            {item.encrypted == 'true' ?
+                                                <View style={{position: 'absolute', right: 55}}>
+                                                    <TouchableOpacity onPress={() => {alert('This icon being next to the post means that the post is encrypted. Encryption is coming soon.')}}>
+                                                        <Icon
+                                                            name="lock-closed-outline"
+                                                            size={35}
+                                                            color={colors.tertiary}
+                                                        />
+                                                    </TouchableOpacity>
+                                                </View>
+                                            : null
+                                            }
                                             <View style={{position: 'absolute', right: 10}}>
-                                                <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={() => changeOptionsView(item.username)}>
+                                                <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={() => changeOptionsView(item.username, item.encrypted)}>
                                                     <Image
                                                         source={require('../assets/app_icons/3dots.png')}
                                                         style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, tintColor: colors.tertiary}}

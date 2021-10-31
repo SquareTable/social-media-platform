@@ -19,7 +19,7 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.squaretabledevlopment.social-media-platform",
+      "bundleIdentifier": "com.squaretabledevlopment.socialsquare",
       "userInterfaceStyle": "automatic",
       "config": {
         "googleMobileAdsAppId": "ca-app-pub-6980968247752885~4685804835"
