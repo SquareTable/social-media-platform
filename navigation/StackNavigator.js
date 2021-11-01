@@ -48,6 +48,12 @@ import SendAudioPage from "../screens/PostScreens/SendAudioPage.js";
 import AppBehaviour from '../screens/AppBehaviour.js';
 import AppBehaviour_HomeScreen from "../screens/AppBehaviour_HomeScreen.js";
 
+import CategoryViewPage from '../screens/CategoryViewPage'
+import CommentViewPage from '../screens/CommentViewPage'
+import ThreadViewPage from '../screens/ThreadViewPage'
+import ViewImagePostPage from '../screens/ViewImagePostPage'
+import ViewPollPostPage from '../screens/ViewPollPostPage'
+
 
 
 const Stack = createStackNavigator();
@@ -183,6 +189,11 @@ const RootStack = () => {
                 <Stack.Screen name="ChangeUsernamePage" component={ChangeUsernamePage}/>
                 <Stack.Screen name="ChangeEmailPage" component={ChangeEmailPage}/>
                 <Stack.Screen name="ReportBugScreen" component={ReportBugScreen}/>
+                <Stack.Screen name="CategoryViewPage" component={CategoryViewPage}/>
+                <Stack.Screen name="CommentViewPage" component={CommentViewPage}/>
+                <Stack.Screen name="ThreadViewPage" component={ThreadViewPage}/>
+                <Stack.Screen name="ViewImagePostPage" component={ViewImagePostPage}/>
+                <Stack.Screen name="ViewPollPostPage" component={ViewPollPostPage}/>
                 <Stack.Screen 
                   name="AppBehaviour" 
                   component={AppBehaviour}
