@@ -13,7 +13,6 @@ import { HomeScreen } from "../screens/HomeScreen";
 import BadgesScreen from "../screens/BadgesScreen";
 import LoginScreen from "../screens/LoginScreen";
 import AccountSettings from "../screens/AccountSettings";
-import AppStyling from "../screens/AppStylingScreen";
 import ChatScreen from "../screens/ChatScreen";
 import Signup from "../screens/Signup.js";
 
@@ -46,8 +45,7 @@ import CreateChatScreen from "../screens/CreateChatScreen.js";
 import RecordAudioPage from "../screens/PostScreens/RecordAudioPage.js";
 import SendAudioPage from "../screens/PostScreens/SendAudioPage.js";
 
-import AppBehaviour from '../screens/AppBehaviour.js';
-import AppBehaviour_HomeScreen from "../screens/AppBehaviour_HomeScreen.js";
+import AppStyling from '../screens/AppStyling.js';
 
 import CategoryViewPage from '../screens/CategoryViewPage'
 import CommentViewPage from '../screens/CommentViewPage'
@@ -200,8 +198,8 @@ const RootStack = () => {
                 <Stack.Screen name="CategoryHome" component={CategoryHome}/>
                 <Stack.Screen name="CategoryCreationPage" component={CategoryCreationPage}/>
                 <Stack.Screen 
-                  name="AppBehaviour" 
-                  component={AppBehaviour}
+                  name="AppStyling" 
+                  component={AppStyling}
                   options={{
                     headerStyle: {
                         backgroundColor: 'transparent',
@@ -212,23 +210,6 @@ const RootStack = () => {
                     headerLeftContainerStyle: {
                         paddingLeft: 20,
                     },
-                    headerLeft: null
-                }}
-                />
-                <Stack.Screen 
-                  name="AppBehaviour_HomeScreen" 
-                  component={AppBehaviour_HomeScreen}
-                  options={{
-                    headerStyle: {
-                        backgroundColor: 'transparent',
-                    },
-                    headerTintColor: colors.tertiary,
-                    headerTransparent: true,
-                    headerTitle: '',
-                    headerLeftContainerStyle: {
-                        paddingLeft: 20,
-                    },
-                    headerLeft: null
                 }}
                 />
     </Stack.Navigator>
@@ -298,6 +279,71 @@ const FindScreen_Stack = () => {
               paddingLeft: 20,
           },
           headerLeft: null
+        }}
+      />
+      <Stack.Screen name="CategoryViewPage" component={CategoryViewPage}
+        options={{
+          headerStyle: {
+            backgroundColor: 'transparent',
+          },
+          headerTintColor: colors.tertiary,
+          headerTransparent: true,
+          headerTitle: '',
+          headerLeftContainerStyle: {
+              paddingLeft: 20,
+          },
+        }}
+      />
+      <Stack.Screen name="CommentviewPage" component={CommentViewPage}
+        options={{
+          headerStyle: {
+            backgroundColor: 'transparent',
+          },
+          headerTintColor: colors.tertiary,
+          headerTransparent: true,
+          headerTitle: '',
+          headerLeftContainerStyle: {
+              paddingLeft: 20,
+          },
+        }}
+      />
+      <Stack.Screen name="ThreadViewPage" component={ThreadViewPage}
+        options={{
+          headerStyle: {
+            backgroundColor: 'transparent',
+          },
+          headerTintColor: colors.tertiary,
+          headerTransparent: true,
+          headerTitle: '',
+          headerLeftContainerStyle: {
+              paddingLeft: 20,
+          },
+        }}
+      />
+      <Stack.Screen name="ViewImagePostPage" component={ViewImagePostPage}
+        options={{
+          headerStyle: {
+            backgroundColor: 'transparent',
+          },
+          headerTintColor: colors.tertiary,
+          headerTransparent: true,
+          headerTitle: '',
+          headerLeftContainerStyle: {
+              paddingLeft: 20,
+          },
+        }}
+      />
+      <Stack.Screen name="ViewPollPostPage" component={ViewPollPostPage}
+        options={{
+          headerStyle: {
+            backgroundColor: 'transparent',
+          },
+          headerTintColor: colors.tertiary,
+          headerTransparent: true,
+          headerTitle: '',
+          headerLeftContainerStyle: {
+              paddingLeft: 20,
+          },
         }}
       />
     </Stack.Navigator>
@@ -452,8 +498,7 @@ const post_screen_navigator = () => {
 
 
 export { 
-  ChatScreen_Stack, 
-  AppStyling, 
+  ChatScreen_Stack,
   RootStack, 
   FindScreen_Stack, 
   home_screen_post_to_profile_screen, 

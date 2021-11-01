@@ -48,7 +48,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 //credentials context
 import { CredentialsContext } from './../components/CredentialsContext';
-import AppStyling from './AppStylingScreen.js';
 
 
 const Signup = ({navigation}) => {

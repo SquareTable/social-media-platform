@@ -57,7 +57,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 //credentials context
 import { CredentialsContext } from './../../components/CredentialsContext';
 import { ImageBackground, ScrollView, Image, TouchableOpacity, Text, View } from 'react-native';
-import AppStyling from '../AppStylingScreen.js';
 import * as Haptics from 'expo-haptics';
 
 

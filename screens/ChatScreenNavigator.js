@@ -48,7 +48,6 @@ import {
     ViewHider,
     ChatScreenNavigator_Row_Styling
 } from '../screens/screenStylings/styling.js';
-import AppStyling from './AppStylingScreen.js';
 import { useNavigation, useTheme } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 

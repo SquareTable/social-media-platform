@@ -103,7 +103,7 @@ const IntroScreen = ({navigation}) => {
     const renderSlide = ({item}) => {
         return (
             <SafeAreaView style={{backgroundColor: colors.primary, height: '100%'}}>
-                <Text style={{color: colors.tertiary, fontWeight: 'bold', fontSize: 24, textAlign: 'center'}}>{item.title}</Text>
+                <Text style={{color: colors.tertiary, fontWeight: 'bold', fontSize: 24, textAlign: 'center', marginTop: 30}}>{item.title}</Text>
                 {item.key == "two"? <Icon name="lock" size={200} color={colors.tertiary} style={{alignSelf: 'center'}}/> :
                 item.key == "three"? <Icon name="Safety" size={200} color={colors.tertiary} style={{alignSelf: 'center'}}/> :
                 item.key == "four"? <Icon name="check" size={200} color={colors.tertiary} style={{alignSelf: 'center'}}/> :

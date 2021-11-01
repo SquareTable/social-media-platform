@@ -20,7 +20,9 @@ import {
     ReportProfileOptionsViewButtons,
     ReportProfileOptionsViewButtonsText,
     ReportProfileOptionsViewSubtitleText,
-    ReportProfileOptionsViewText
+    ReportProfileOptionsViewText,
+    ChatScreen_Title,
+    Navigator_BackButton
 } from '../screens/screenStylings/styling.js';
 import ProgressiveImage from '../posts/ProgressiveImage.js';
 import { CredentialsContext } from '../components/CredentialsContext.js';
@@ -38,8 +40,195 @@ import ScalableProgressiveImage from '../components/ScalableProgressiveImage.js'
 import { Viewport } from '@skele/components';
 import { Audio } from 'expo-av';
 import OfflineNotice from '../components/OfflineNotice.js';
+import SwitchToggle from "react-native-switch-toggle";
 
 const HomeScreen = ({navigation}) => {
+    // Filter code
+    const [showPhotos, setShowPhotos] = useState(undefined);
+    const [showVideos, setShowVideos] = useState(undefined);
+    const [showAudio, setShowAudio] = useState(undefined);
+    const [showThreads, setShowThreads] = useState(undefined);
+    const [showPolls, setShowPolls] = useState(undefined);
+    const [showCategories, setShowCategories] = useState(undefined)
+    useEffect(() => {
+        async function setUp() {
+            const showPhotosValue = await AsyncStorage.getItem('ShowPhotos_AppBehaviour_AsyncStorage')
+            console.log('ShowPhotos_AppBehaviour_AsyncStorage key is: ' + showPhotosValue)
+            if (showPhotosValue == null) {
+                setShowPhotos(true)
+                AsyncStorage.setItem('ShowPhotos_AppBehaviour_AsyncStorage', 'true')
+            } else if (showPhotosValue == 'true') {
+                setShowPhotos(true)
+                AsyncStorage.setItem('ShowPhotos_AppBehaviour_AsyncStorage', 'true')
+            } else if (showPhotosValue == 'false') {
+                setShowPhotos(false)
+                AsyncStorage.setItem('ShowPhotos_AppBehaviour_AsyncStorage', 'false')
+            } else {
+                console.log('Error occured while getting ShowPhotos value in setUp() function in AppBehaviour_HomeScreen.js')
+            }
+
+            const showVideosValue = await AsyncStorage.getItem('ShowVideos_AppBehaviour_AsyncStorage')
+            console.log('ShowVideos_AppBehaviour_AsyncStorage key is: ' + showVideosValue)
+            if (showVideosValue == null) {
+                setShowVideos(true)
+                AsyncStorage.setItem('ShowVideos_AppBehaviour_AsyncStorage', 'true')
+            } else if (showVideosValue == 'true') {
+                setShowVideos(true)
+                AsyncStorage.setItem('ShowVideos_AppBehaviour_AsyncStorage', 'true')
+            } else if (showVideosValue == 'false') {
+                setShowVideos(false)
+                AsyncStorage.setItem('ShowVideos_AppBehaviour_AsyncStorage', 'false')
+            } else {
+                console.log('Error occured while getting ShowVideos value in setUp() function in AppBehaviour_HomeScreen.js')
+            }
+
+            const showAudioValue = await AsyncStorage.getItem('ShowAudio_AppBehaviour_AsyncStorage')
+            console.log('ShowAudio_AppBehaviour_AsyncStorage key is: ' + showAudioValue)
+            if (showAudioValue == null) {
+                setShowAudio(true)
+                AsyncStorage.setItem('ShowAudio_AppBehaviour_AsyncStorage', 'true')
+            } else if (showAudioValue == 'true') {
+                setShowAudio(true)
+                AsyncStorage.setItem('ShowAudio_AppBehaviour_AsyncStorage', 'true')
+            } else if (showAudioValue == 'false') {
+                setShowAudio(false)
+                AsyncStorage.setItem('ShowAudio_AppBehaviour_AsyncStorage', 'false')
+            } else {
+                console.log('Error occured while getting ShowAudio value in setUp() function in AppBehaviour_HomeScreen.js')
+            }
+
+            const showPollsValue = await AsyncStorage.getItem('ShowPolls_AppBehaviour_AsyncStorage')
+            console.log('ShowPolls_AppBehaviour_AsyncStorage key is: ' + showPollsValue)
+            if (showPollsValue == null) {
+                setShowPolls(true)
+                AsyncStorage.setItem('ShowPolls_AppBehaviour_AsyncStorage', 'true')
+            } else if (showPollsValue == 'true') {
+                setShowPolls(true)
+                AsyncStorage.setItem('ShowPolls_AppBehaviour_AsyncStorage', 'true')
+            } else if (showPollsValue == 'false') {
+                setShowPolls(false)
+                AsyncStorage.setItem('ShowPolls_AppBehaviour_AsyncStorage', 'false')
+            } else {
+                console.log('Error occured while getting ShowPolls value in setUp() function in AppBehaviour_HomeScreen.js')
+            }
+
+            const showThreadsValue = await AsyncStorage.getItem('ShowThreads_AppBehaviour_AsyncStorage')
+            console.log('ShowThreads_AppBehaviour_AsyncStorage key is: ' + showThreadsValue)
+            if (showThreadsValue == null) {
+                setShowThreads(true)
+                AsyncStorage.setItem('ShowThreads_AppBehaviour_AsyncStorage', 'true')
+            } else if (showThreadsValue == 'true') {
+                setShowThreads(true)
+                AsyncStorage.setItem('ShowThreads_AppBehaviour_AsyncStorage', 'true')
+            } else if (showThreadsValue == 'false') {
+                setShowThreads(false)
+                AsyncStorage.setItem('ShowThreads_AppBehaviour_AsyncStorage', 'false')
+            } else {
+                console.log('Error occured while getting ShowThreads value in setUp() function in AppBehaviour_HomeScreen.js')
+            }
+
+            const value = await AsyncStorage.getItem('PlayAudioInSilentMode_AppBehaviour_AsyncStorage')
+            console.log('HomeScreen.js value of PlayAudioInSilentMode_AppBehaviour_AsyncStorage key is: ' + value)
+            if (value == null) {
+                setPlayAudioInSilentMode(false)
+                AsyncStorage.setItem('PlayAudioInSilentMode_AppBehaviour_AsyncStorage', 'false')
+            } else if (value == 'true') {
+                setPlayAudioInSilentMode(true)
+                AsyncStorage.setItem('PlayAudioInSilentMode_AppBehaviour_AsyncStorage', 'true')
+            } else if (value == 'false') {
+                setPlayAudioInSilentMode(false)
+                AsyncStorage.setItem('PlayAudioInSilentMode_AppBehaviour_AsyncStorage', 'false')
+            } else {
+                console.log('Error occured in setUp() function in HomeScreen.js')
+            }
+
+            const showCategoriesValue = await AsyncStorage.getItem('ShowCategories_AppBehaviour_AsyncStorage')
+            console.log('ShowCategories_AppBehaviour_AsyncStorage key is: ' + showCategoriesValue)
+            if (showCategoriesValue == null) {
+                setShowCategories(true)
+                AsyncStorage.setItem('ShowCategories_AppBehaviour_AsyncStorage', 'true')
+            } else if (showCategoriesValue == 'true') {
+                setShowCategories(true)
+                AsyncStorage.setItem('ShowCategories_AppBehaviour_AsyncStorage', 'true')
+            } else if (showCategoriesValue == 'false') {
+                setShowCategories(false)
+                AsyncStorage.setItem('ShowCategories_AppBehaviour_AsyncStorage', 'false')
+            } else {
+                console.log('Error occured while getting ShowCategories value in setUp() function in AppBehaviour_HomeScreen.js')
+            }
+        }
+        setUp()
+    })
+   
+    const setContextAndAsyncStorage = (type) => {
+        if (type == 'ShowPhotos') {
+            if (showPhotos == true) {
+                setShowPhotos(false)
+                AsyncStorage.setItem('ShowPhotos_AppBehaviour_AsyncStorage', 'false')
+            } else {
+                setShowPhotos(true)
+                AsyncStorage.setItem('ShowPhotos_AppBehaviour_AsyncStorage', 'true')
+            }
+        }
+        else if (type == 'ShowVideos') {
+            if (showVideos == true) {
+                setShowVideos(false)
+                AsyncStorage.setItem('ShowVideos_AppBehaviour_AsyncStorage', 'false')
+            } else {
+                setShowVideos(true)
+                AsyncStorage.setItem('ShowVideos_AppBehaviour_AsyncStorage', 'true')
+            }
+        }
+        else if (type == 'ShowAudio') {
+            if (showAudio == true) {
+                setShowAudio(false)
+                AsyncStorage.setItem('ShowAudio_AppBehaviour_AsyncStorage', 'false')
+            } else {
+                setShowAudio(true)
+                AsyncStorage.setItem('ShowAudio_AppBehaviour_AsyncStorage', 'true')
+            }
+        }
+        else if (type == 'ShowPolls') {
+            if (showPolls == true) {
+                setShowPolls(false)
+                AsyncStorage.setItem('ShowPolls_AppBehaviour_AsyncStorage', 'false')
+            } else {
+                setShowPolls(true)
+                AsyncStorage.setItem('ShowPolls_AppBehaviour_AsyncStorage', 'true')
+            }
+        }
+        else if (type == 'ShowThreads') {
+            if (showThreads == true) {
+                setShowThreads(false)
+                AsyncStorage.setItem('ShowThreads_AppBehaviour_AsyncStorage', 'false')
+            } else {
+                setShowThreads(true)
+                AsyncStorage.setItem('ShowThreads_AppBehaviour_AsyncStorage', 'true')
+            }
+        }
+        else if (type == 'ShowCategories') {
+            if (showCategories == true) {
+                setShowCategories(false)
+                AsyncStorage.setItem('ShowCategories_AppBehaviour_AsyncStorage', 'false')
+            } else {
+                setShowCategories(true)
+                AsyncStorage.setItem('ShowCategories_AppBehaviour_AsyncStorage', 'true')
+            }
+        }
+        else if (type == 'PlayAudioInSilentMode') {
+            if (PlayAudioInSilentMode_useState == true) {
+                setPlayAudioInSilentMode_useState(false)
+                AsyncStorage.setItem('PlayAudioInSilentMode_AppBehaviour_AsyncStorage', 'false')
+            } else {
+                setPlayAudioInSilentMode_useState(true)
+                AsyncStorage.setItem('PlayAudioInSilentMode_AppBehaviour_AsyncStorage', 'true')
+            }
+        }
+        else {
+            console.error('Wrong value entered')
+        }
+    }
+    // End of filter code
     const [usernameToReport, setUsernameToReport] = useState(null);
     const [postEncrypted, setPostEncrypted] = useState(null);
     const [ProfileOptionsViewState, setProfileOptionsViewState] = useState(true);
@@ -169,29 +358,6 @@ const HomeScreen = ({navigation}) => {
     const [isAudioPlaying, setIsAudioPlaying] = useState(false);
     const [playRecording, setPlayRecording] = useState(undefined);
     const [PlayAudioInSilentMode, setPlayAudioInSilentMode] = useState(undefined);
-    const [ShowPhotosAndVideos, setShowPhotosAndVideos] = useState(undefined);
-    const [ShowPolls, setShowPolls] = useState(undefined);
-    const [showThreads, setShowThreads] = useState(undefined);
-    const [showAudio, setShowAudio] = useState(undefined);
-    useEffect(() => {
-        async function runCode() {
-            const value = await AsyncStorage.getItem('PlayAudioInSilentMode_AppBehaviour_AsyncStorage')
-            console.log('HomeScreen.js value of PlayAudioInSilentMode_AppBehaviour_AsyncStorage key is: ' + value)
-            if (value == null) {
-                setPlayAudioInSilentMode(false)
-                AsyncStorage.setItem('PlayAudioInSilentMode_AppBehaviour_AsyncStorage', 'false')
-            } else if (value == 'true') {
-                setPlayAudioInSilentMode(true)
-                AsyncStorage.setItem('PlayAudioInSilentMode_AppBehaviour_AsyncStorage', 'true')
-            } else if (value == 'false') {
-                setPlayAudioInSilentMode(false)
-                AsyncStorage.setItem('PlayAudioInSilentMode_AppBehaviour_AsyncStorage', 'false')
-            } else {
-                console.log('Error occured in setUp() function in HomeScreen.js')
-            }
-        }
-        runCode()
-    })
         async function playAudio(recording_uri) {
             setIntentionallyPaused(false);
             if (playbackStatus != null && playRecording) {
@@ -270,13 +436,235 @@ const HomeScreen = ({navigation}) => {
 
     const [intentionallyPaused, setIntentionallyPaused] = useState(false);
 
+    const [filterMenuShown, setFilterMenuShown] = useState(true)
+
+    const changeFilterView = () => {
+        if (filterMenuShown == false) {
+            setFilterMenuShown(true)
+            setFlatListElementsEnabledState(true)
+        } else {
+            setFilterMenuShown(false)
+            setFlatListElementsEnabledState(false)
+        }
+    }
+
+    const [homeScreenSettingsMenuShown, setHomeScreenSettingsMenuShown] = useState(true)
+
+    const changeHomeScreenSettingsMenuView = () => {
+        if (homeScreenSettingsMenuShown == false) {
+            setHomeScreenSettingsMenuShown(true)
+            setFlatListElementsEnabledState(true)
+        } else {
+            setHomeScreenSettingsMenuShown(false)
+            setFlatListElementsEnabledState(false)
+        }
+    }
+
     return(
         <View
          style={{flex: 1, backgroundColor: colors.primary, paddingTop: StatusBarHeight}}
          >
              <StatusBar color={colors.StatusBarColor}/>
-            <Text style={{fontSize: 30, fontWeight: 'bold', alignContent: 'center', alignItems: 'center', alignSelf: 'center', color: colors.tertiary}}>SocialSquare BETA</Text>
+            <View style={{flexDirection:'row'}}>
+                <Text style={{fontSize: 28, fontWeight: 'bold', textAlign: 'center', color: colors.tertiary, marginLeft: 3}}>SocialSquare BETA</Text>
+                <TouchableOpacity style={{position: 'absolute', right: 55}} disabled={!FlatListElementsEnabledState} onPress={changeHomeScreenSettingsMenuView}>
+                    <Image
+                        source={require('../assets/app_icons/settings.png')}
+                        style={{ width: 32, height: 32, tintColor: colors.tertiary}}
+                        resizeMode="contain"
+                        resizeMethod="resize"
+                    />
+                </TouchableOpacity>
+                <TouchableOpacity style={{position: 'absolute', right: 10}} disabled={!FlatListElementsEnabledState} onPress={changeFilterView}>
+                    <Image source={require('../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/348-filter.png')} style={{width: 32, height: 32, tintColor: colors.tertiary}}/>
+                </TouchableOpacity>
+            </View>
             <OfflineNotice bottom={true}/>
+            <ProfileOptionsView style={{backgroundColor: colors.primary}} viewHidden={filterMenuShown}>
+                <View style={{flexDirection: 'row', width: '100%', justifyContent: 'center'}}>
+                    <TouchableOpacity style={{position: 'absolute', left: 10}} onPress={changeFilterView}>
+                        <Image
+                        source={require('../assets/app_icons/back_arrow.png')}
+                        style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, tintColor: colors.tertiary}}
+                        resizeMode="contain"
+                        resizeMethod="resize"
+                        />
+                    </TouchableOpacity>
+                    <Text style={{textAlign: 'center', color: colors.tertiary, fontSize: 30, alignSelf: 'center'}}>Filter</Text>
+                </View>
+                <ProfileOptionsViewSubtitleText style={{color: colors.tertiary}}>Coming soon</ProfileOptionsViewSubtitleText>
+                <ScrollView style={{width: '100%'}}>
+                    <View style={{flex: 2, flexDirection: 'row', marginHorizontal: 30, marginVertical: 20, justifyContent: 'space-evenly', minHeight: 30, height: 30, maxHeight: 30}}>
+                        <Text style={{color: colors.tertiary, fontSize: 18, fontWeight: 'bold'}}>Photos</Text>
+                        <SwitchToggle
+                            switchOn={showPhotos}
+                            onPress={() => {setContextAndAsyncStorage('ShowPhotos')}}
+                            circleColorOff={colors.tertiary}
+                            circleColorOn={colors.tertiary}
+                            backgroundColorOn={colors.darkestBlue}
+                            backgroundColorOff={colors.borderColor}
+                            containerStyle={{
+                                width: 50,
+                                height: 28,
+                                borderRadius: 25,
+                                padding: 5,
+                            }}
+                            circleStyle={{
+                                width: 20,
+                                height: 20,
+                                borderRadius: 20,
+                            }}
+                        />
+                    </View>
+                    <View style={{flex: 2, flexDirection: 'row', marginHorizontal: 30, marginVertical: 20, justifyContent: 'space-evenly', minHeight: 30, height: 30, maxHeight: 30}}>
+                        <Text style={{color: colors.tertiary, fontSize: 18, fontWeight: 'bold'}}>Videos</Text>
+                        <SwitchToggle
+                            switchOn={showVideos}
+                            onPress={() => {setContextAndAsyncStorage('ShowVideos')}}
+                            circleColorOff={colors.tertiary}
+                            circleColorOn={colors.tertiary}
+                            backgroundColorOn={colors.darkestBlue}
+                            backgroundColorOff={colors.borderColor}
+                            containerStyle={{
+                                width: 50,
+                                height: 28,
+                                borderRadius: 25,
+                                padding: 5,
+                            }}
+                            circleStyle={{
+                                width: 20,
+                                height: 20,
+                                borderRadius: 20,
+                            }}
+                        />
+                    </View>
+                    <View style={{flex: 2, flexDirection: 'row', marginHorizontal: 30, marginVertical: 20, justifyContent: 'space-evenly', minHeight: 30, height: 30, maxHeight: 30}}>
+                        <Text style={{color: colors.tertiary, fontSize: 18, fontWeight: 'bold'}}>Audio</Text>
+                        <SwitchToggle
+                            switchOn={showAudio}
+                            onPress={() => {setContextAndAsyncStorage('ShowAudio')}}
+                            circleColorOff={colors.tertiary}
+                            circleColorOn={colors.tertiary}
+                            backgroundColorOn={colors.darkestBlue}
+                            backgroundColorOff={colors.borderColor}
+                            containerStyle={{
+                                width: 50,
+                                height: 28,
+                                borderRadius: 25,
+                                padding: 5,
+                            }}
+                            circleStyle={{
+                                width: 20,
+                                height: 20,
+                                borderRadius: 20,
+                            }}
+                        />
+                    </View>
+                    <View style={{flex: 2, flexDirection: 'row', marginHorizontal: 30, marginVertical: 20, justifyContent: 'space-evenly', minHeight: 30, height: 30, maxHeight: 30}}>
+                        <Text style={{color: colors.tertiary, fontSize: 18, fontWeight: 'bold'}}>Threads</Text>
+                        <SwitchToggle
+                            switchOn={showThreads}
+                            onPress={() => {setContextAndAsyncStorage('ShowThreads')}}
+                            circleColorOff={colors.tertiary}
+                            circleColorOn={colors.tertiary}
+                            backgroundColorOn={colors.darkestBlue}
+                            backgroundColorOff={colors.borderColor}
+                            containerStyle={{
+                                width: 50,
+                                height: 28,
+                                borderRadius: 25,
+                                padding: 5,
+                            }}
+                            circleStyle={{
+                                width: 20,
+                                height: 20,
+                                borderRadius: 20,
+                            }}
+                        />
+                    </View>
+                    <View style={{flex: 2, flexDirection: 'row', marginHorizontal: 30, marginVertical: 20, justifyContent: 'space-evenly', minHeight: 30, height: 30, maxHeight: 30}}>
+                        <Text style={{color: colors.tertiary, fontSize: 18, fontWeight: 'bold'}}>Polls</Text>
+                        <SwitchToggle
+                            switchOn={showPolls}
+                            onPress={() => {setContextAndAsyncStorage('ShowPolls')}}
+                            circleColorOff={colors.tertiary}
+                            circleColorOn={colors.tertiary}
+                            backgroundColorOn={colors.darkestBlue}
+                            backgroundColorOff={colors.borderColor}
+                            containerStyle={{
+                                width: 50,
+                                height: 28,
+                                borderRadius: 25,
+                                padding: 5,
+                            }}
+                            circleStyle={{
+                                width: 20,
+                                height: 20,
+                                borderRadius: 20,
+                            }}
+                        />
+                    </View>
+                    <View style={{flex: 2, flexDirection: 'row', marginHorizontal: 30, marginVertical: 20, justifyContent: 'space-evenly', minHeight: 30, height: 30, maxHeight: 30}}>
+                        <Text style={{color: colors.tertiary, fontSize: 18, fontWeight: 'bold'}}>Categories</Text>
+                        <SwitchToggle
+                            switchOn={showCategories}
+                            onPress={() => {setContextAndAsyncStorage('ShowCategories')}}
+                            circleColorOff={colors.tertiary}
+                            circleColorOn={colors.tertiary}
+                            backgroundColorOn={colors.darkestBlue}
+                            backgroundColorOff={colors.borderColor}
+                            containerStyle={{
+                                width: 50,
+                                height: 28,
+                                borderRadius: 25,
+                                padding: 5,
+                            }}
+                            circleStyle={{
+                                width: 20,
+                                height: 20,
+                                borderRadius: 20,
+                            }}
+                        />
+                    </View>
+                </ScrollView>
+            </ProfileOptionsView>
+            <ProfileOptionsView style={{backgroundColor: colors.primary}} viewHidden={homeScreenSettingsMenuShown}>
+                <View style={{flexDirection: 'row', width: '100%', justifyContent: 'center'}}>
+                    <TouchableOpacity style={{position: 'absolute', left: 10}} onPress={changeHomeScreenSettingsMenuView}>
+                        <Image
+                        source={require('../assets/app_icons/back_arrow.png')}
+                        style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, tintColor: colors.tertiary}}
+                        resizeMode="contain"
+                        resizeMethod="resize"
+                        />
+                    </TouchableOpacity>
+                    <Text style={{textAlign: 'center', color: colors.tertiary, fontSize: 24, alignSelf: 'center'}}>Home Screen Settings</Text>
+                </View>
+                <ScrollView style={{width: '100%'}}>
+                    <View style={{flex: 2, flexDirection: 'row', marginHorizontal: 30, marginVertical: 20, justifyContent: 'space-evenly', minHeight: 30, height: 30, maxHeight: 30}}>
+                        <Text style={{color: colors.tertiary, fontSize: 18, fontWeight: 'bold'}}>Play Audio in Silent Mode</Text>
+                        <SwitchToggle
+                            switchOn={PlayAudioInSilentMode}
+                            onPress={() => {setContextAndAsyncStorage('PlayAudioInSilentMode')}}
+                            circleColorOff={colors.tertiary}
+                            circleColorOn={colors.tertiary}
+                            backgroundColorOn={colors.darkestBlue}
+                            backgroundColorOff={colors.borderColor}
+                            containerStyle={{
+                                width: 50,
+                                height: 28,
+                                borderRadius: 25,
+                                padding: 5,
+                            }}
+                            circleStyle={{
+                                width: 20,
+                                height: 20,
+                                borderRadius: 20,
+                            }}
+                        />
+                    </View>
+                </ScrollView>
+            </ProfileOptionsView>
             <ProfileOptionsView style={{backgroundColor: colors.primary}} viewHidden={ProfileOptionsViewState}>
                 <ProfileOptionsViewText style={{color: colors.tertiary}}>{usernameToReport || "Couldn't get name"}</ProfileOptionsViewText>
                 <ProfileOptionsViewSubtitleText style={{color: colors.tertiary}}>Options</ProfileOptionsViewSubtitleText>

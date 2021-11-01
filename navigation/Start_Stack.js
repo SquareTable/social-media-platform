@@ -12,7 +12,6 @@ import HomeScreen from "../screens/HomeScreen";
 import BadgesScreen from "../screens/BadgesScreen";
 import LoginScreen from "../screens/LoginScreen";
 import AccountSettings from "../screens/AccountSettings";
-import AppStyling from "../screens/AppStylingScreen";
 import ChatScreen from "../screens/ChatScreen";
 import Signup from "../screens/Signup.js";
 

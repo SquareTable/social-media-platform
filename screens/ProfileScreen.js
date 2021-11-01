@@ -1195,7 +1195,7 @@ const Welcome = ({navigation, route}) => {
             )}
             <PostsHorizontalView style={{marginLeft: '5%', borderBottomWidth: 3, borderColor: darkLight, width: '90%', paddingBottom: 5, marginRight: '5%'}}>
                 <PostsVerticalView>
-                    <PostCreatorIcon source={{uri: `data:image/jpg;base64,${creatorPfpB64}`}}/>
+                    <PostCreatorIcon source={creatorPfpB64? {uri: `data:image/jpg;base64,${creatorPfpB64}`} : require('../assets/icon.png')}/>
                 </PostsVerticalView>
                 <PostsVerticalView style={{marginTop: 9}}>
                     <SubTitle style={{fontSize: 20, color: brand, marginBottom: 0}}>{creatorDisplayName}</SubTitle>
@@ -2540,6 +2540,7 @@ const Welcome = ({navigation, route}) => {
                         </TouchableOpacity>
                     </ProfileHorizontalView>
                     <ProfInfoAreaImage>
+                        {console.log('Avatar Image: ' + AvatarImg)}
                         <Avatar resizeMode="cover" source={{uri: AvatarImg}}/>
                         <TouchableOpacity onPress={() => {OpenImgLibrary()}}>
                             <SubTitle style={{marginBottom: 0, color: darkestBlue}}>Change</SubTitle>
