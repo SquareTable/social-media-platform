@@ -30,6 +30,7 @@ import MultiMediaUploadPage from '../screens/PostScreens/MultiMediaUploadPage';
 import ThreadUploadPage from '../screens/PostScreens/ThreadUploadPage';
 import PollUploadPage from '../screens/PostScreens/PollUploadPage';
 import AudioUploadPage from '../screens/PostScreens/AudioUploadPage';
+import MultiMediaUploadPreview from '../screens/PostScreens/MultiMediaUploadPreview'
 
 import AccountBadges from "../screens/AccountBadges.js";
 import ChangeDisplayNamePage from "../screens/ChangeDisplayNamePage";
@@ -387,6 +388,18 @@ const post_screen_navigator = () => {
         },
         headerLeft: null,
         gestureEnabled: false
+    }}/>
+    <Stack.Screen name="MultiMediaUploadPreview" component={MultiMediaUploadPreview}
+      options={{
+        headerStyle: {
+            backgroundColor: 'transparent',
+        },
+        headerTintColor: colors.tertiary,
+        headerTransparent: true,
+        headerTitle: '',
+        headerLeftContainerStyle: {
+            paddingLeft: 20,
+        },
     }}/>
     </Stack.Navigator>
   )
