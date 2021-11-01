@@ -61,7 +61,7 @@ const PostScreen = ({navigation}) => {
             navigation.navigate("MultiMediaUploadPage")
         } else if (formatTwoSelected == true) {
             setMessageVisibility(false)
-            navigation.navigate("ThreadUploadPage")
+            navigation.navigate("ThreadUploadPage", {threadFormat: null, threadTitle: null, threadSubtitle: null, threadTags: null, categoryTitle: null, threadBody: null, threadImage: null, threadImageDescription: null, threadNSFW: null, threadNSFL: null})
         } else if (formatThreeSelected == true) {
             setMessageVisibility(false)
             navigation.navigate("PollUploadPage")

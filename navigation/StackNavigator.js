@@ -31,6 +31,7 @@ import ThreadUploadPage from '../screens/PostScreens/ThreadUploadPage';
 import PollUploadPage from '../screens/PostScreens/PollUploadPage';
 import AudioUploadPage from '../screens/PostScreens/AudioUploadPage';
 import MultiMediaUploadPreview from '../screens/PostScreens/MultiMediaUploadPreview'
+import SelectCategorySearchScreen from '../screens/SelectCategorySearchScreen'
 
 import AccountBadges from "../screens/AccountBadges.js";
 import ChangeDisplayNamePage from "../screens/ChangeDisplayNamePage";
@@ -390,6 +391,18 @@ const post_screen_navigator = () => {
         gestureEnabled: false
     }}/>
     <Stack.Screen name="MultiMediaUploadPreview" component={MultiMediaUploadPreview}
+      options={{
+        headerStyle: {
+            backgroundColor: 'transparent',
+        },
+        headerTintColor: colors.tertiary,
+        headerTransparent: true,
+        headerTitle: '',
+        headerLeftContainerStyle: {
+            paddingLeft: 20,
+        },
+    }}/>
+    <Stack.Screen name="SelectCategorySearchScreen" component={SelectCategorySearchScreen}
       options={{
         headerStyle: {
             backgroundColor: 'transparent',
