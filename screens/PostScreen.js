@@ -134,8 +134,8 @@ const PostScreen = ({navigation}) => {
                         </PostTypeSelector>
                         <PostMsgBox viewHidden={messageVisibility}> Select a format </PostMsgBox>
                     </PostCollectionView>
-                    <StyledButton continueButton={true} onPress={continuePressed}>
-                        <ButtonText continueButton={true}>
+                    <StyledButton /*continueButton={true}*/ onPress={continuePressed}>
+                        <ButtonText /*continueButton={true}*/>
                             Continue
                         </ButtonText>
                     </StyledButton>
