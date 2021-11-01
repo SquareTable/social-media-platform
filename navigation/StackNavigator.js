@@ -24,6 +24,7 @@ import { NavigationContainer, useTheme } from '@react-navigation/native';
 import FindScreen from "../screens/FindScreen.js";
 import Post from "../posts/post.js";
 import Post_FullScreen from "../posts/post_fullscreen.js";
+import ProfilePages from '../screens/ProfilePages.js'
 
 import PostScreen from '../screens/PostScreen';
 import MultiMediaUploadPage from '../screens/PostScreens/MultiMediaUploadPage';
@@ -53,6 +54,8 @@ import CommentViewPage from '../screens/CommentViewPage'
 import ThreadViewPage from '../screens/ThreadViewPage'
 import ViewImagePostPage from '../screens/ViewImagePostPage'
 import ViewPollPostPage from '../screens/ViewPollPostPage'
+import CategoryHome from '../screens/CategoryHome'
+import CategoryCreationPage from "../screens/CategoryCreationPage.js";
 
 
 
@@ -194,6 +197,8 @@ const RootStack = () => {
                 <Stack.Screen name="ThreadViewPage" component={ThreadViewPage}/>
                 <Stack.Screen name="ViewImagePostPage" component={ViewImagePostPage}/>
                 <Stack.Screen name="ViewPollPostPage" component={ViewPollPostPage}/>
+                <Stack.Screen name="CategoryHome" component={CategoryHome}/>
+                <Stack.Screen name="CategoryCreationPage" component={CategoryCreationPage}/>
                 <Stack.Screen 
                   name="AppBehaviour" 
                   component={AppBehaviour}
@@ -240,6 +245,20 @@ const FindScreen_Stack = () => {
   return (
     <Stack.Navigator screenOptions={screenOptionStyle}>
       <Stack.Screen name="FindScreen" component={FindScreen}
+        options={{
+          headerStyle: {
+            backgroundColor: 'transparent',
+          },
+          headerTintColor: colors.tertiary,
+          headerTransparent: true,
+          headerTitle: '',
+          headerLeftContainerStyle: {
+              paddingLeft: 20,
+          },
+          headerLeft: null
+        }}
+      />
+      <Stack.Screen name="ProfilePages" component={ProfilePages}
         options={{
           headerStyle: {
             backgroundColor: 'transparent',

@@ -1,6 +1,5 @@
-import React, {useContext, useState} from 'react';
+import React, { useContext, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
-import * as Haptics from 'expo-haptics';
 
 import {
     InnerContainer,
@@ -65,14 +64,12 @@ import {
     SearchHorizontalViewItem,
     SearchHorizontalViewItemCenter,
     SearchSubTitle,
-    ConfirmLogoutButtons,
-    ConfirmLogoutButtonText,
-    ViewHider
-} from '../screens/screenStylings/styling.js';
+    ViewHider,
+} from './screenStylings/styling';
 
 
 // Colors
-const {brand, primary, tertiary, greyish, darkLight, darkestBlue, slightlyLighterPrimary, slightlyLighterGrey, descTextColor, darkest, red} = Colors;
+const { brand, primary, tertiary, greyish, darkLight, darkestBlue, slightlyLighterPrimary, slightlyLighterGrey, descTextColor, darkest, red } = Colors;
 
 // async-storage
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -80,32 +77,20 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 //axios
 import axios from 'axios';
 
-//Image picker
-import * as ImagePicker from 'expo-image-picker';
-
 //credentials context
 import { CredentialsContext } from '../components/CredentialsContext';
-import { ImageBackground, ScrollView, SectionList, Image, View, ActivityIndicator, Touchable } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { ImageBackground, ScrollView, SectionList, View, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
 
 import {useTheme} from "@react-navigation/native"
 
-const Welcome = ({navigation, route}) => {
-    if (route.params) {
-        var {backButtonHidden} = route.params;
-        console.log(backButtonHidden)
-    } else {
-        var backButtonHidden = false;
-    }
-    const [PageElementsState, setPageElementsState] = useState(false);
+const ProfilePages = ({ route, navigation }) => {
+    var backButtonHidden = false
+    const [PageElementsState, setPageElementsState] = useState(false)
     const { colors, dark } = useTheme();
-    const goToSettingsScreen = () => {
-        navigation.navigate("SettingsScreen");
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-    }
-     //context
-    const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
-    const {_id, name, displayName, email, photoUrl} = storedCredentials;
+    //context
+    const { profilesName, profilesDisplayName, following, followers, totalLikes } = route.params;
+    const { storedCredentials, setStoredCredentials } = useContext(CredentialsContext);
+    const { _id, name, displayName, email, photoUrl } = storedCredentials;
     const [AvatarImg, setAvatarImage] = useState("./../assets/img/Logo.png")
     const [gridViewState, setGridViewState] = useState("flex")
     const [featuredViewState, setFeaturedViewState] = useState("none")
@@ -217,80 +202,6 @@ const Welcome = ({navigation, route}) => {
     let cancelTokenPostFormatThree = axios.CancelToken.source();
     let cancelTokenPostFormatFour = axios.CancelToken.source();
     let cancelTokenPostFormatFive = axios.CancelToken.source();
-    //delete post stuff
-    const [postsWithDeleteMenuOpen, setPostsWithDeleteMenuOpen] = useState()
-
-    const openDeletePrompt = (postId, creatorName) => {
-        if (name == creatorName) {
-            setPostsWithDeleteMenuOpen(postId)
-        }
-    }
-
-    const confirmDeletePrompt = (postId, postNum) => {
-        if (selectedPostFormat == "One") {
-            const url = "https://nameless-dawn-41038.herokuapp.com/user/deleteimage";
-            var toSend = {userId: _id, imageKey: postId}
-            console.log(toSend)
-            axios.post(url, toSend).then((response) => { 
-                const result = response.data;
-                const {message, status, data} = result;
-                if (status !== 'SUCCESS') {
-                    handleMessage(message, status, postNum);
-                    setPostsWithDeleteMenuOpen()
-                } else {
-                    setPostsWithDeleteMenuOpen()
-                    changeToOne()
-                }
-            }).catch(error => {
-                console.log(error)
-                setPostsWithDeleteMenuOpen()
-                handleMessage("An error occured. Try checking your network connection and retry.", 'FAILED', postNum);
-            })
-        } else if (selectedPostFormat == "Two") {
-
-        } else if (selectedPostFormat == "Three") {
-            const url = "https://nameless-dawn-41038.herokuapp.com/user/deletepoll";
-            var toSend = {userId: _id, pollId: postId}
-            console.log(toSend)
-            axios.post(url, toSend).then((response) => { 
-                const result = response.data;
-                const {message, status, data} = result;
-                if (status !== 'SUCCESS') {
-                    handleMessage(message, status, postNum);
-                    setPostsWithDeleteMenuOpen()
-                } else {
-                    setPostsWithDeleteMenuOpen()
-                    changeToThree()
-                }
-            }).catch(error => {
-                console.log(error)
-                setPostsWithDeleteMenuOpen()
-                handleMessage("An error occured. Try checking your network connection and retry.", 'FAILED', postNum);
-            })
-        } else if (selectedPostFormat == "Four") {
-            const url = "https://nameless-dawn-41038.herokuapp.com/user/deletethread";
-            var toSend = {userId: _id, threadId: postId}
-            console.log(toSend)
-            axios.post(url, toSend).then((response) => { 
-                const result = response.data;
-                const {message, status, data} = result;
-                if (status !== 'SUCCESS') {
-                    handleMessage(message, status, postNum);
-                    setPostsWithDeleteMenuOpen()
-                } else {
-                    setPostsWithDeleteMenuOpen()
-                    changeToFour()
-                }
-            }).catch(error => {
-                console.log(error)
-                setPostsWithDeleteMenuOpen()
-                handleMessage("An error occured. Try checking your network connection and retry.", 'FAILED', postNum);
-            })
-        } else if (selectedPostFormat == "Five") {
-            setPostsWithDeleteMenuOpen(postId)
-        }
-    }
-
 
     const handleMessage = (message, type = 'FAILED', postNum) => {
         setMessage(message);
@@ -303,11 +214,11 @@ const Welcome = ({navigation, route}) => {
     }
 
     const getProfilePicture = () => {
-        const url = `https://nameless-dawn-41038.herokuapp.com/user/getProfilePic/${name}`;
+        const url = `https://nameless-dawn-41038.herokuapp.com/user/getProfilePic/${profilesName}`;
 
         axios.get(url).then((response) => {
             const result = response.data;
-            const {message, status, data} = result;
+            const { message, status, data } = result;
 
             if (status !== 'SUCCESS') {
                 handleMessage(message, status);
@@ -317,24 +228,24 @@ const Welcome = ({navigation, route}) => {
                 console.log(status)
                 console.log(message)
                 axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${data}`)
-                .then((response) => {
-                    const result = response.data;
-                    const {message, status, data} = result;
-                    console.log(status)
-                    console.log(message)
-                    //set image
-                    if (data) {
-                        //convert back to image
-                        var base64Icon = `data:image/jpg;base64,${data}`
-                        setAvatarImage(base64Icon)
-                    } else {
-                        setAvatarImage("./../assets/img/Logo.png")
-                    }
-                })
-                .catch(function (error) {
-                    console.log("Image not recieved")
-                    console.log(error);
-                });
+                    .then((response) => {
+                        const result = response.data;
+                        const { message, status, data } = result;
+                        console.log(status)
+                        console.log(message)
+                        //set image
+                        if (data) {
+                            //convert back to image
+                            var base64Icon = `data:image/jpg;base64,${data}`
+                            setAvatarImage(base64Icon)
+                        } else {
+                            setAvatarImage("./../assets/img/Logo.png")
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log("Image not recieved")
+                        console.log(error);
+                    });
             }
             //setSubmitting(false);
 
@@ -352,7 +263,7 @@ const Welcome = ({navigation, route}) => {
 
     const UpVoteImage = (imageId, postNum) => {
         //Change to loading circle
-        if (findingVotedImages.includes(imageId)) { 
+        if (findingVotedImages.includes(imageId)) {
 
         } else {
             if (changingVotedImages.includes(imageId)) {
@@ -393,14 +304,14 @@ const Welcome = ({navigation, route}) => {
                 handleMessage(null, null, null);
                 const url = "https://nameless-dawn-41038.herokuapp.com/user/upvoteimage";
 
-                var toSend = {userId: _id, imageId: imageId}
+                var toSend = { userId: _id, imageId: imageId }
 
                 console.log(toSend)
 
                 axios.post(url, toSend).then((response) => {
                     const result = response.data;
-                    const {message, status, data} = result;
-                
+                    const { message, status, data } = result;
+
                     if (status !== 'SUCCESS') {
                         handleMessage(message, status, postNum);
                         changingVotedImagesArray = changingVotedImages
@@ -414,7 +325,7 @@ const Welcome = ({navigation, route}) => {
                             setUpVotesImages(upVotedImages)
                             setChangingVotedImages([])
                             setChangingVotedImages(changingVotedImagesArray)
-                        } 
+                        }
                         if (beforeChange == "DownVoted") {
                             downVotedImages = downVotesImages
                             downVotedImages.push(imageId)
@@ -470,7 +381,7 @@ const Welcome = ({navigation, route}) => {
                         upVotedImages = upVotesImages
                         upVotedImages.push(imageId)
                         setUpVotesImages(upVotedImages)
-                    } 
+                    }
                     if (beforeChange == "DownVoted") {
                         downVotedImages = downVotesImages
                         downVotedImages.push(imageId)
@@ -489,7 +400,7 @@ const Welcome = ({navigation, route}) => {
 
     const DownVoteImage = (imageId, postNum) => {
         //Change to loading circle
-        if (findingVotedImages.includes(imageId)) { 
+        if (findingVotedImages.includes(imageId)) {
 
         } else {
             if (changingVotedImages.includes(imageId)) {
@@ -530,14 +441,14 @@ const Welcome = ({navigation, route}) => {
                 handleMessage(null, null, null);
                 const url = "https://nameless-dawn-41038.herokuapp.com/user/downvoteimage";
 
-                var toSend = {userId: _id, imageId: imageId}
+                var toSend = { userId: _id, imageId: imageId }
 
                 console.log(toSend)
 
                 axios.post(url, toSend).then((response) => {
                     const result = response.data;
-                    const {message, status, data} = result;
-                
+                    const { message, status, data } = result;
+
                     if (status !== 'SUCCESS') {
                         handleMessage(message, status, postNum);
                         changingVotedImagesArray = changingVotedImages
@@ -551,7 +462,7 @@ const Welcome = ({navigation, route}) => {
                             setUpVotesImages(upVotedImages)
                             setChangingVotedPolls([])
                             setChangingVotedImages(changingVotedImagesArray)
-                        } 
+                        }
                         if (beforeChange == "DownVoted") {
                             downVotedImages = downVotesImages
                             downVotedImages.push(imageId)
@@ -607,7 +518,7 @@ const Welcome = ({navigation, route}) => {
                         upVotedImages = upVotesImages
                         upVotedImages.push(imageId)
                         setUpVotesImages(upVotedImages)
-                    } 
+                    }
                     if (beforeChange == "DownVoted") {
                         downVotedImages = downVotesImages
                         downVotedImages.push(imageId)
@@ -626,7 +537,7 @@ const Welcome = ({navigation, route}) => {
 
     const UpVotePoll = (pollId, postNum) => {
         //Change to loading circle
-        if (findingVotedPolls.includes(pollId)) { 
+        if (findingVotedPolls.includes(pollId)) {
 
         } else {
             if (changingVotedPolls.includes(pollId)) {
@@ -668,14 +579,14 @@ const Welcome = ({navigation, route}) => {
                 handleMessage(null, null, null);
                 const url = "https://nameless-dawn-41038.herokuapp.com/user/upvotepoll";
 
-                var toSend = {userId: _id, pollId: pollId}
+                var toSend = { userId: _id, pollId: pollId }
 
                 console.log(toSend)
 
                 axios.post(url, toSend).then((response) => {
                     const result = response.data;
-                    const {message, status, data} = result;
-                
+                    const { message, status, data } = result;
+
                     if (status !== 'SUCCESS') {
                         handleMessage(message, status, postNum);
                         changingVotedPollsArray = changingVotedPolls
@@ -689,7 +600,7 @@ const Welcome = ({navigation, route}) => {
                             setUpVotesPolls(upVotedPolls)
                             setChangingVotedPolls([])
                             setChangingVotedPolls(changingVotedPollsArray)
-                        } 
+                        }
                         if (beforeChange == "DownVoted") {
                             downVotedPolls = downVotesPolls
                             downVotedPolls.push(pollId)
@@ -745,7 +656,7 @@ const Welcome = ({navigation, route}) => {
                         upVotedPolls = upVotesPolls
                         upVotedPolls.push(pollId)
                         setUpVotesPolls(upVotedPolls)
-                    } 
+                    }
                     if (beforeChange == "DownVoted") {
                         downVotedPolls = downVotesPolls
                         downVotedPolls.push(pollId)
@@ -764,7 +675,7 @@ const Welcome = ({navigation, route}) => {
 
     const DownVotePoll = (pollId, postNum) => {
         //Change to loading circle
-        if (findingVotedPolls.includes(pollId)) { 
+        if (findingVotedPolls.includes(pollId)) {
 
         } else {
             if (changingVotedPolls.includes(pollId)) {
@@ -806,14 +717,14 @@ const Welcome = ({navigation, route}) => {
                 handleMessage(null, null, null);
                 const url = "https://nameless-dawn-41038.herokuapp.com/user/downvotepoll";
 
-                var toSend = {userId: _id, pollId: pollId}
+                var toSend = { userId: _id, pollId: pollId }
 
                 console.log(toSend)
 
                 axios.post(url, toSend).then((response) => {
                     const result = response.data;
-                    const {message, status, data} = result;
-                
+                    const { message, status, data } = result;
+
                     if (status !== 'SUCCESS') {
                         handleMessage(message, status, postNum);
                         changingVotedPollsArray = changingVotedPolls
@@ -827,7 +738,7 @@ const Welcome = ({navigation, route}) => {
                             setUpVotesPolls(upVotedPolls)
                             setChangingVotedPolls([])
                             setChangingVotedPolls(changingVotedPollsArray)
-                        } 
+                        }
                         if (beforeChange == "DownVoted") {
                             downVotedPolls = downVotesPolls
                             downVotedPolls.push(pollId)
@@ -883,7 +794,7 @@ const Welcome = ({navigation, route}) => {
                         upVotedPolls = upVotesPolls
                         upVotedPolls.push(pollId)
                         setUpVotesPolls(upVotedPolls)
-                    } 
+                    }
                     if (beforeChange == "DownVoted") {
                         downVotedPolls = downVotesPolls
                         downVotedPolls.push(pollId)
@@ -902,7 +813,7 @@ const Welcome = ({navigation, route}) => {
 
     const UpVoteThread = (threadId, postNum) => {
         //Change to loading circle
-        if (findingVotedThreads.includes(threadId)) { 
+        if (findingVotedThreads.includes(threadId)) {
 
         } else {
             if (changingVotedThreads.includes(threadId)) {
@@ -944,14 +855,14 @@ const Welcome = ({navigation, route}) => {
                 handleMessage(null, null, null);
                 const url = "https://nameless-dawn-41038.herokuapp.com/user/upvotethread";
 
-                var toSend = {userId: _id, threadId: threadId}
+                var toSend = { userId: _id, threadId: threadId }
 
                 console.log(toSend)
 
                 axios.post(url, toSend).then((response) => {
                     const result = response.data;
-                    const {message, status, data} = result;
-                
+                    const { message, status, data } = result;
+
                     if (status !== 'SUCCESS') {
                         handleMessage(message, status, postNum);
                         changingVotedThreadsArray = changingVotedThreads
@@ -966,7 +877,7 @@ const Welcome = ({navigation, route}) => {
                             setUpVotesThreads(upVotedThreads)
                             setChangingVotedThreads([])
                             setChangingVotedThreads(changingVotedThreadsArray)
-                        } 
+                        }
                         if (beforeChange == "DownVoted") {
                             downVotedThreads = downVotesThreads
                             downVotedThreads.push(threadId)
@@ -1022,7 +933,7 @@ const Welcome = ({navigation, route}) => {
                         upVotedThreads = upVotesThreads
                         upVotedThreads.push(threadId)
                         setUpVotesThreads(upVotedThreads)
-                    } 
+                    }
                     if (beforeChange == "DownVoted") {
                         downVotedThreads = downVotesThreads
                         downVotedThreads.push(threadId)
@@ -1041,7 +952,7 @@ const Welcome = ({navigation, route}) => {
 
     const DownVoteThread = (threadId, postNum) => {
         //Change to loading circle
-        if (findingVotedThreads.includes(threadId)) { 
+        if (findingVotedThreads.includes(threadId)) {
 
         } else {
             if (changingVotedThreads.includes(threadId)) {
@@ -1083,14 +994,14 @@ const Welcome = ({navigation, route}) => {
                 handleMessage(null, null, null);
                 const url = "https://nameless-dawn-41038.herokuapp.com/user/downvotethread";
 
-                var toSend = {userId: _id, threadId: threadId}
+                var toSend = { userId: _id, threadId: threadId }
 
                 console.log(toSend)
 
                 axios.post(url, toSend).then((response) => {
                     const result = response.data;
-                    const {message, status, data} = result;
-                
+                    const { message, status, data } = result;
+
                     if (status !== 'SUCCESS') {
                         handleMessage(message, status, postNum);
                         changingVotedThreadsArray = changingVotedThreads
@@ -1105,7 +1016,7 @@ const Welcome = ({navigation, route}) => {
                             setUpVotesThreads(upVotedThreads)
                             setChangingVotedThreads([])
                             setChangingVotedThreads(changingVotedThreadsArray)
-                        } 
+                        }
                         if (beforeChange == "DownVoted") {
                             downVotedThreads = downVotesThreads
                             downVotedThreads.push(threadId)
@@ -1161,7 +1072,7 @@ const Welcome = ({navigation, route}) => {
                         upVotedThreads = upVotesThreads
                         upVotedThreads.push(threadId)
                         setUpVotesThreads(upVotedThreads)
-                    } 
+                    }
                     if (beforeChange == "DownVoted") {
                         downVotedThreads = downVotesPolls
                         downVotedThreads.push(threadId)
@@ -1178,201 +1089,175 @@ const Welcome = ({navigation, route}) => {
         }
     }
 
-    const ImageItem = ({imageKey, imageB64, imageTitle, imageDescription, imageUpVotes, imageComments, creatorName, creatorDisplayName, creatorPfpB64, datePosted, postNum})  => (
-        <View style={{backgroundColor: slightlyLighterPrimary, borderRadius: 15, marginBottom: 10}}>
-            {postsWithDeleteMenuOpen == imageKey && (
-                <View style={{position: 'absolute', zIndex: 100, alignSelf: 'center', alignItems: 'center', width: '100%', height: '100%', justifyContent: 'center'}}>
-                    <View style={{borderRadius: 30, width: '80%', minHeight: '35%', alignSelf: 'center', alignItems: 'center', justifyContent: 'center', backgroundColor: primary, borderColor: darkest, borderWidth: 6}}>
-                        <SubTitle style={{marginBottom: 0}}>Delete Post?</SubTitle>
-                        <ConfirmLogoutButtons cancelButton={true} onPress={()=>{setPostsWithDeleteMenuOpen(null)}}>
-                            <ConfirmLogoutButtonText cancelButton={true}>Cancel</ConfirmLogoutButtonText>
-                        </ConfirmLogoutButtons> 
-                        <ConfirmLogoutButtons confirmButton={true} onPress={()=>{confirmDeletePrompt(imageKey, postNum)}}>
-                            <ConfirmLogoutButtonText confirmButton>Confirm</ConfirmLogoutButtonText>
-                        </ConfirmLogoutButtons> 
-                    </View>
-                </View>
-            )}
-            <PostsHorizontalView style={{marginLeft: '5%', borderBottomWidth: 3, borderColor: darkLight, width: '90%', paddingBottom: 5, marginRight: '5%'}}>
+    const ImageItem = ({ imageKey, imageB64, imageTitle, imageDescription, imageUpVotes, imageComments, creatorName, creatorDisplayName, creatorPfpB64, datePosted, postNum }) => (
+        <View style={{ backgroundColor: slightlyLighterPrimary, borderRadius: 15, marginBottom: 10 }}>
+            <PostsHorizontalView style={{ marginLeft: '5%', borderBottomWidth: 3, borderColor: darkLight, width: '90%', paddingBottom: 5, marginRight: '5%' }}>
                 <PostsVerticalView>
-                    <PostCreatorIcon source={{uri: `data:image/jpg;base64,${creatorPfpB64}`}}/>
+                    <PostCreatorIcon source={{ uri: `data:image/jpg;base64,${creatorPfpB64}` }} />
                 </PostsVerticalView>
-                <PostsVerticalView style={{marginTop: 9}}>
-                    <SubTitle style={{fontSize: 20, color: brand, marginBottom: 0}}>{creatorDisplayName}</SubTitle>
-                    <SubTitle style={{fontSize: 12, marginBottom: 0}}>@{creatorName}</SubTitle>
+                <PostsVerticalView style={{ marginTop: 9 }}>
+                    <SubTitle style={{ fontSize: 20, color: brand, marginBottom: 0 }}>{creatorDisplayName}</SubTitle>
+                    <SubTitle style={{ fontSize: 12, marginBottom: 0 }}>@{creatorName}</SubTitle>
                 </PostsVerticalView>
             </PostsHorizontalView>
-            <PostsHorizontalView style={{alignItems: 'center', justifyContent: 'center'}}>
-                <MultiMediaPostFrame postOnProfile={true} style={{ aspectRatio: 1/1 }} onPress={() => navigation.navigate("ViewImagePostPage", {imageKey, imageB64, imageTitle, imageDescription, creatorName, creatorDisplayName, creatorPfpB64, datePosted})}>
-                    <Image style={{width: '100%', height: '100%', resizeMode : 'cover', borderRadius: 20}} source={{uri: `data:image/jpg;base64,${imageB64}`}}/>
+            <PostsHorizontalView style={{ alignItems: 'center', justifyContent: 'center' }}>
+                <MultiMediaPostFrame postOnProfile={true} style={{ aspectRatio: 1 / 1 }} onPress={() => navigation.navigate("ViewImagePostPage", { imageKey, imageB64, imageTitle, imageDescription, creatorName, creatorDisplayName, creatorPfpB64, datePosted })}>
+                    <Image style={{ width: '100%', height: '100%', resizeMode: 'cover', borderRadius: 20 }} source={{ uri: `data:image/jpg;base64,${imageB64}` }} />
                 </MultiMediaPostFrame>
             </PostsHorizontalView>
-            <ImagePostTextFrame style={{textAlign: 'center'}}>
-                <SubTitle style={{fontSize: 20, color: tertiary, marginBottom: 0}}>{imageTitle}</SubTitle>
-                <SubTitle style={{fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{imageDescription}</SubTitle>
+            <ImagePostTextFrame style={{ textAlign: 'center' }}>
+                <SubTitle style={{ fontSize: 20, color: tertiary, marginBottom: 0 }}>{imageTitle}</SubTitle>
+                <SubTitle style={{ fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal' }}>{imageDescription}</SubTitle>
             </ImagePostTextFrame>
-            <PostHorizontalView style={{marginLeft: '5%', width: '90%', paddingVertical: 10, flex: 1, flexDirection: 'row'}}>
-                
-                {upVotesImages.includes(imageKey) && (<PostsIconFrame onPress={() => {UpVoteImage(imageKey, postNum)}}>
-                    <PostsIcons style={{flex: 1}} tintColor={brand} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
+            <PostHorizontalView style={{ marginLeft: '5%', width: '90%', paddingVertical: 10, flex: 1, flexDirection: 'row' }}>
+
+                {upVotesImages.includes(imageKey) && (<PostsIconFrame onPress={() => { UpVoteImage(imageKey, postNum) }}>
+                    <PostsIcons style={{ flex: 1 }} tintColor={brand} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')} />
                 </PostsIconFrame>)}
-                {neitherVotesImages.includes(imageKey) && (<PostsIconFrame onPress={() => {UpVoteImage(imageKey, postNum)}}>
-                    <PostsIcons style={{flex: 1}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
+                {neitherVotesImages.includes(imageKey) && (<PostsIconFrame onPress={() => { UpVoteImage(imageKey, postNum) }}>
+                    <PostsIcons style={{ flex: 1 }} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')} />
                 </PostsIconFrame>)}
-                {downVotesImages.includes(imageKey) && (<PostsIconFrame onPress={() => {UpVoteImage(imageKey, postNum)}}>
-                    <PostsIcons style={{flex: 1}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
+                {downVotesImages.includes(imageKey) && (<PostsIconFrame onPress={() => { UpVoteImage(imageKey, postNum) }}>
+                    <PostsIcons style={{ flex: 1 }} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')} />
                 </PostsIconFrame>)}
                 {changingVotedImages.includes(imageKey) && (<PostsIconFrame></PostsIconFrame>)}
-                
+
 
                 {upVotesImages.includes(imageKey) && (<PostsIconFrame>
                     {initialUpVotesImages.includes(imageKey) && (
-                        <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{imageUpVotes}</SubTitle>
+                        <SubTitle style={{ alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal' }}>{imageUpVotes}</SubTitle>
                     )}
                     {initialNeitherVotesImages.includes(imageKey) && (
-                        <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{imageUpVotes+1}</SubTitle>
+                        <SubTitle style={{ alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal' }}>{imageUpVotes + 1}</SubTitle>
                     )}
                     {initialDownVotesImages.includes(imageKey) && (
-                        <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{imageUpVotes+2}</SubTitle>
+                        <SubTitle style={{ alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal' }}>{imageUpVotes + 2}</SubTitle>
                     )}
                 </PostsIconFrame>)}
                 {neitherVotesImages.includes(imageKey) && (<PostsIconFrame>
                     {initialNeitherVotesImages.includes(imageKey) && (
-                        <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{imageUpVotes}</SubTitle>
+                        <SubTitle style={{ alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal' }}>{imageUpVotes}</SubTitle>
                     )}
                     {initialUpVotesImages.includes(imageKey) && (
-                        <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{imageUpVotes-1}</SubTitle>
+                        <SubTitle style={{ alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal' }}>{imageUpVotes - 1}</SubTitle>
                     )}
                     {initialDownVotesImages.includes(imageKey) && (
-                        <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{imageUpVotes+1}</SubTitle>
+                        <SubTitle style={{ alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal' }}>{imageUpVotes + 1}</SubTitle>
                     )}
                 </PostsIconFrame>)}
                 {downVotesImages.includes(imageKey) && (<PostsIconFrame>
                     {initialDownVotesImages.includes(imageKey) && (
-                        <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{imageUpVotes}</SubTitle>
+                        <SubTitle style={{ alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal' }}>{imageUpVotes}</SubTitle>
                     )}
                     {initialNeitherVotesImages.includes(imageKey) && (
-                        <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{imageUpVotes-1}</SubTitle>
+                        <SubTitle style={{ alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal' }}>{imageUpVotes - 1}</SubTitle>
                     )}
-                    {initialUpVotesImages.includes(imageKey)&& (
-                        <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{imageUpVotes-2}</SubTitle>
+                    {initialUpVotesImages.includes(imageKey) && (
+                        <SubTitle style={{ alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal' }}>{imageUpVotes - 2}</SubTitle>
                     )}
                 </PostsIconFrame>)}
                 {changingVotedImages.includes(imageKey) && (<PostsIconFrame>
-                    <ActivityIndicator size="small" color={brand} />                
+                    <ActivityIndicator size="small" color={brand} />
                 </PostsIconFrame>)}
 
-                {downVotesImages.includes(imageKey) && (<PostsIconFrame onPress={() => {DownVoteImage(imageKey, postNum)}}>
-                    <PostsIcons style={{flex: 1}} tintColor={brand} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
+                {downVotesImages.includes(imageKey) && (<PostsIconFrame onPress={() => { DownVoteImage(imageKey, postNum) }}>
+                    <PostsIcons style={{ flex: 1 }} tintColor={brand} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')} />
                 </PostsIconFrame>)}
-                {neitherVotesImages.includes(imageKey) && (<PostsIconFrame onPress={() => {DownVoteImage(imageKey, postNum)}}>
-                    <PostsIcons style={{flex: 1}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
+                {neitherVotesImages.includes(imageKey) && (<PostsIconFrame onPress={() => { DownVoteImage(imageKey, postNum) }}>
+                    <PostsIcons style={{ flex: 1 }} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')} />
                 </PostsIconFrame>)}
-                {upVotesImages.includes(imageKey) && (<PostsIconFrame onPress={() => {DownVoteImage(imageKey, postNum)}}>
-                    <PostsIcons style={{flex: 1}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
+                {upVotesImages.includes(imageKey) && (<PostsIconFrame onPress={() => { DownVoteImage(imageKey, postNum) }}>
+                    <PostsIcons style={{ flex: 1 }} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')} />
                 </PostsIconFrame>)}
                 {changingVotedImages.includes(imageKey) && (<PostsIconFrame></PostsIconFrame>)}
                 <PostsIconFrame>
                 </PostsIconFrame>
-                <PostsIconFrame onPress={() => navigation.navigate("ViewImagePostPage", {imageKey, imageB64, imageTitle, imageDescription, creatorName, creatorDisplayName, creatorPfpB64, datePosted})}>
-                    <PostsIcons style={{flex: 1}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/113-bubbles4.png')}/>
+                <PostsIconFrame onPress={() => navigation.navigate("ViewImagePostPage", { imageKey, imageB64, imageTitle, imageDescription, creatorName, creatorDisplayName, creatorPfpB64, datePosted })}>
+                    <PostsIcons style={{ flex: 1 }} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/113-bubbles4.png')} />
                 </PostsIconFrame>
                 <PostsIconFrame>
-                    <PostsIcons style={{flex: 1, height: 30, width: 30}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/387-share2.png')}/>
+                    <PostsIcons style={{ flex: 1, height: 30, width: 30 }} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/387-share2.png')} />
                 </PostsIconFrame>
-                <PostsIconFrame onPress={()=>{openDeletePrompt(imageKey, creatorName)}}>
-                    <PostsIcons style={{flex: 1}} source={require('./../assets/img/ThreeDots.png')}/>
+                <PostsIconFrame>
+                    <PostsIcons style={{ flex: 1 }} source={require('./../assets/img/ThreeDots.png')} />
                 </PostsIconFrame>
             </PostHorizontalView>
             {postNumForMsg == postNum && (<MsgBox type={messageType}>{message}</MsgBox>)}
-            <SubTitle style={{flex: 1, alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{datePosted}</SubTitle>
-            <TouchableOpacity onPress={() => navigation.navigate("ViewImagePostPage", {imageKey, imageB64, imageTitle, imageDescription, creatorName, creatorDisplayName, creatorPfpB64, datePosted})}>
-                <SubTitle style={{flex: 1, alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{imageComments.length} comments</SubTitle>
+            <SubTitle style={{ flex: 1, alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal' }}>{datePosted}</SubTitle>
+            <TouchableOpacity onPress={() => navigation.navigate("ViewImagePostPage", { imageKey, imageB64, imageTitle, imageDescription, creatorName, creatorDisplayName, creatorPfpB64, datePosted })}>
+                <SubTitle style={{ flex: 1, alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal' }}>{imageComments.length} comments</SubTitle>
             </TouchableOpacity>
         </View>
     );
 
-    const PollItem = ({ pollTitle, pollSubTitle, optionOne, optionOnesColor, optionOnesVotes, optionOnesBarLength, optionTwo, optionTwosColor, optionTwosVotes, optionTwosBarLength, optionThree, optionThreesColor, optionThreesVotes, optionThreesBarLength, optionFour, optionFoursColor, optionFoursVotes, optionFoursBarLength, optionFive, optionFivesColor, optionFivesVotes, optionFivesBarLength, optionSix, optionSixesColor, optionSixesVotes, optionSixesBarLength, totalNumberOfOptions, pollUpOrDownVotes, pollId, votedFor, postNum, pollComments, pfpB64, creatorName, creatorDisplayName, datePosted}) => (
-        <PollPostFrame onPress={() => navigation.navigate("ViewPollPostPage", {pollTitle, pollSubTitle, optionOne, optionOnesColor, optionOnesVotes, optionOnesBarLength, optionTwo, optionTwosColor, optionTwosVotes, optionTwosBarLength, optionThree, optionThreesColor, optionThreesVotes, optionThreesBarLength, optionFour, optionFoursColor, optionFoursVotes, optionFoursBarLength, optionFive, optionFivesColor, optionFivesVotes, optionFivesBarLength, optionSix, optionSixesColor, optionSixesVotes, optionSixesBarLength, totalNumberOfOptions, pollId, creatorPfpB64: pfpB64, creatorName, creatorDisplayName, datePosted})}>
-            {postsWithDeleteMenuOpen == pollId && (
-                <View style={{position: 'absolute', zIndex: 100, alignSelf: 'center', alignItems: 'center', width: '100%', height: '100%', justifyContent: 'center'}}>
-                    <View style={{borderRadius: 30, width: '80%', minHeight: '35%', alignSelf: 'center', alignItems: 'center', justifyContent: 'center', backgroundColor: primary, borderColor: darkest, borderWidth: 6}}>
-                        <SubTitle style={{marginBottom: 0}}>Delete Post?</SubTitle>
-                        <ConfirmLogoutButtons cancelButton={true} onPress={()=>{setPostsWithDeleteMenuOpen(null)}}>
-                            <ConfirmLogoutButtonText cancelButton={true}>Cancel</ConfirmLogoutButtonText>
-                        </ConfirmLogoutButtons> 
-                        <ConfirmLogoutButtons confirmButton={true} onPress={()=>{confirmDeletePrompt(pollId, postNum)}}>
-                            <ConfirmLogoutButtonText confirmButton>Confirm</ConfirmLogoutButtonText>
-                        </ConfirmLogoutButtons> 
-                    </View>
-                </View>
-            )}
-            <PostsHorizontalView style={{marginLeft: '5%', borderBottomWidth: 3, borderColor: darkLight, width: '90%', paddingBottom: 5, marginRight: '5%'}}>
+    const PollItem = ({ pollTitle, pollSubTitle, optionOne, optionOnesColor, optionOnesVotes, optionOnesBarLength, optionTwo, optionTwosColor, optionTwosVotes, optionTwosBarLength, optionThree, optionThreesColor, optionThreesVotes, optionThreesBarLength, optionFour, optionFoursColor, optionFoursVotes, optionFoursBarLength, optionFive, optionFivesColor, optionFivesVotes, optionFivesBarLength, optionSix, optionSixesColor, optionSixesVotes, optionSixesBarLength, totalNumberOfOptions, pollUpOrDownVotes, pollId, votedFor, postNum, pollComments, pfpB64, creatorName, creatorDisplayName, datePosted }) => (
+        <PollPostFrame onPress={() => navigation.navigate("ViewPollPostPage", { pollTitle, pollSubTitle, optionOne, optionOnesColor, optionOnesVotes, optionOnesBarLength, optionTwo, optionTwosColor, optionTwosVotes, optionTwosBarLength, optionThree, optionThreesColor, optionThreesVotes, optionThreesBarLength, optionFour, optionFoursColor, optionFoursVotes, optionFoursBarLength, optionFive, optionFivesColor, optionFivesVotes, optionFivesBarLength, optionSix, optionSixesColor, optionSixesVotes, optionSixesBarLength, totalNumberOfOptions, pollId, creatorPfpB64: pfpB64, creatorName, creatorDisplayName, datePosted })}>
+            <PostsHorizontalView style={{ marginLeft: '5%', borderBottomWidth: 3, borderColor: darkLight, width: '90%', paddingBottom: 5, marginRight: '5%' }}>
                 <PostsVerticalView>
-                    <PostCreatorIcon source={{uri: `data:image/jpg;base64,${pfpB64}`}}/>
+                    <PostCreatorIcon source={{ uri: `data:image/jpg;base64,${pfpB64}` }} />
                 </PostsVerticalView>
-                <PostsVerticalView style={{marginTop: 9}}>
-                    <SubTitle style={{fontSize: 20, color: brand, marginBottom: 0}}>{creatorDisplayName}</SubTitle>
-                    <SubTitle style={{fontSize: 12, marginBottom: 0}}>@{creatorName}</SubTitle>
+                <PostsVerticalView style={{ marginTop: 9 }}>
+                    <SubTitle style={{ fontSize: 20, color: brand, marginBottom: 0 }}>{creatorDisplayName}</SubTitle>
+                    <SubTitle style={{ fontSize: 12, marginBottom: 0 }}>@{creatorName}</SubTitle>
                 </PostsVerticalView>
             </PostsHorizontalView>
-            <PollPostTitle style={{width: '95%'}}>
+            <PollPostTitle style={{ width: '95%' }}>
                 {pollTitle}
             </PollPostTitle>
-            <PollPostSubTitle style={{width: '95%'}}>
+            <PollPostSubTitle style={{ width: '95%' }}>
                 {pollSubTitle}
             </PollPostSubTitle>
             <AboveBarPollPostHorizontalView>
-                <PollPostSubTitle style={{width: optionOnesBarLength+'%'}}>
+                <PollPostSubTitle style={{ width: optionOnesBarLength + '%' }}>
                     1
                 </PollPostSubTitle>
-                <PollPostSubTitle style={{width: optionTwosBarLength+'%' }}>
+                <PollPostSubTitle style={{ width: optionTwosBarLength + '%' }}>
                     2
                 </PollPostSubTitle>
-                <PollPostSubTitle style={{width: optionThreesBarLength+'%' }}>
+                <PollPostSubTitle style={{ width: optionThreesBarLength + '%' }}>
                     3
                 </PollPostSubTitle>
-                <PollPostSubTitle style={{width: optionFoursBarLength+'%' }}>
+                <PollPostSubTitle style={{ width: optionFoursBarLength + '%' }}>
                     4
                 </PollPostSubTitle>
-                <PollPostSubTitle style={{width: optionFivesBarLength+'%' }}>
+                <PollPostSubTitle style={{ width: optionFivesBarLength + '%' }}>
                     5
                 </PollPostSubTitle>
-                <PollPostSubTitle style={{width: optionSixesBarLength+'%' }}>
+                <PollPostSubTitle style={{ width: optionSixesBarLength + '%' }}>
                     6
                 </PollPostSubTitle>
             </AboveBarPollPostHorizontalView>
             <PollBarOutline>
-                <PollBarItem borderChange={optionOnesBarLength} style={{ width: optionOnesBarLength+'%'}}></PollBarItem>
-                <PollBarItem borderChange={optionTwosBarLength} style={{ width: optionTwosBarLength+'%' }}></PollBarItem>
-                <PollBarItem borderChange={optionThreesBarLength} style={{ width: optionThreesBarLength+'%' }}></PollBarItem>
-                <PollBarItem borderChange={optionFoursBarLength} style={{ width: optionFoursBarLength+'%' }}></PollBarItem>
-                <PollBarItem borderChange={optionFivesBarLength} style={{ width: optionFivesBarLength+'%' }}></PollBarItem>
-                <PollBarItem borderChange={optionSixesBarLength} style={{ width: optionSixesBarLength+'%' }}></PollBarItem>
+                <PollBarItem borderChange={optionOnesBarLength} style={{ width: optionOnesBarLength + '%' }}></PollBarItem>
+                <PollBarItem borderChange={optionTwosBarLength} style={{ width: optionTwosBarLength + '%' }}></PollBarItem>
+                <PollBarItem borderChange={optionThreesBarLength} style={{ width: optionThreesBarLength + '%' }}></PollBarItem>
+                <PollBarItem borderChange={optionFoursBarLength} style={{ width: optionFoursBarLength + '%' }}></PollBarItem>
+                <PollBarItem borderChange={optionFivesBarLength} style={{ width: optionFivesBarLength + '%' }}></PollBarItem>
+                <PollBarItem borderChange={optionSixesBarLength} style={{ width: optionSixesBarLength + '%' }}></PollBarItem>
             </PollBarOutline>
             <PollPostHorizontalView>
-                <PollKeyViewOne pollOptions={totalNumberOfOptions}  onPress={() => navigation.navigate("ViewPollPostPage", {pollTitle, pollSubTitle, optionOne, optionOnesColor, optionOnesVotes, optionOnesBarLength, optionTwo, optionTwosColor, optionTwosVotes, optionTwosBarLength, optionThree, optionThreesColor, optionThreesVotes, optionThreesBarLength, optionFour, optionFoursColor, optionFoursVotes, optionFoursBarLength, optionFive, optionFivesColor, optionFivesVotes, optionFivesBarLength, optionSix, optionSixesColor, optionSixesVotes, optionSixesBarLength, totalNumberOfOptions, pollId, creatorPfpB64: pfpB64, creatorName, creatorDisplayName, datePosted})}>
+                <PollKeyViewOne pollOptions={totalNumberOfOptions} onPress={() => navigation.navigate("ViewPollPostPage", { pollTitle, pollSubTitle, optionOne, optionOnesColor, optionOnesVotes, optionOnesBarLength, optionTwo, optionTwosColor, optionTwosVotes, optionTwosBarLength, optionThree, optionThreesColor, optionThreesVotes, optionThreesBarLength, optionFour, optionFoursColor, optionFoursVotes, optionFoursBarLength, optionFive, optionFivesColor, optionFivesVotes, optionFivesBarLength, optionSix, optionSixesColor, optionSixesVotes, optionSixesBarLength, totalNumberOfOptions, pollId, creatorPfpB64: pfpB64, creatorName, creatorDisplayName, datePosted })}>
                     <PollPostSubTitle>
                         1. {optionOne}
                     </PollPostSubTitle>
                     <PollKeysCircle circleColor={optionOnesColor}></PollKeysCircle>
                 </PollKeyViewOne>
-                <PollKeyViewTwo pollOptions={totalNumberOfOptions} onPress={() => navigation.navigate("ViewPollPostPage", {pollTitle, pollSubTitle, optionOne, optionOnesColor, optionOnesVotes, optionOnesBarLength, optionTwo, optionTwosColor, optionTwosVotes, optionTwosBarLength, optionThree, optionThreesColor, optionThreesVotes, optionThreesBarLength, optionFour, optionFoursColor, optionFoursVotes, optionFoursBarLength, optionFive, optionFivesColor, optionFivesVotes, optionFivesBarLength, optionSix, optionSixesColor, optionSixesVotes, optionSixesBarLength, totalNumberOfOptions, pollId, creatorPfpB64: pfpB64, creatorName, creatorDisplayName, datePosted})}>
+                <PollKeyViewTwo pollOptions={totalNumberOfOptions} onPress={() => navigation.navigate("ViewPollPostPage", { pollTitle, pollSubTitle, optionOne, optionOnesColor, optionOnesVotes, optionOnesBarLength, optionTwo, optionTwosColor, optionTwosVotes, optionTwosBarLength, optionThree, optionThreesColor, optionThreesVotes, optionThreesBarLength, optionFour, optionFoursColor, optionFoursVotes, optionFoursBarLength, optionFive, optionFivesColor, optionFivesVotes, optionFivesBarLength, optionSix, optionSixesColor, optionSixesVotes, optionSixesBarLength, totalNumberOfOptions, pollId, creatorPfpB64: pfpB64, creatorName, creatorDisplayName, datePosted })}>
                     <PollKeysCircle circleColor={optionTwosColor}></PollKeysCircle>
                     <PollPostSubTitle>
                         2. {optionTwo}
                     </PollPostSubTitle>
                 </PollKeyViewTwo>
             </PollPostHorizontalView>
-            
+
             <PollPostHorizontalView>
-                <PollKeyViewThree pollOptions={totalNumberOfOptions} onPress={() => navigation.navigate("ViewPollPostPage", {pollTitle, pollSubTitle, optionOne, optionOnesColor, optionOnesVotes, optionOnesBarLength, optionTwo, optionTwosColor, optionTwosVotes, optionTwosBarLength, optionThree, optionThreesColor, optionThreesVotes, optionThreesBarLength, optionFour, optionFoursColor, optionFoursVotes, optionFoursBarLength, optionFive, optionFivesColor, optionFivesVotes, optionFivesBarLength, optionSix, optionSixesColor, optionSixesVotes, optionSixesBarLength, totalNumberOfOptions, pollId, creatorPfpB64: pfpB64, creatorName, creatorDisplayName, datePosted})}>
+                <PollKeyViewThree pollOptions={totalNumberOfOptions} onPress={() => navigation.navigate("ViewPollPostPage", { pollTitle, pollSubTitle, optionOne, optionOnesColor, optionOnesVotes, optionOnesBarLength, optionTwo, optionTwosColor, optionTwosVotes, optionTwosBarLength, optionThree, optionThreesColor, optionThreesVotes, optionThreesBarLength, optionFour, optionFoursColor, optionFoursVotes, optionFoursBarLength, optionFive, optionFivesColor, optionFivesVotes, optionFivesBarLength, optionSix, optionSixesColor, optionSixesVotes, optionSixesBarLength, totalNumberOfOptions, pollId, creatorPfpB64: pfpB64, creatorName, creatorDisplayName, datePosted })}>
                     <PollPostSubTitle>
                         3. {optionThree}
                     </PollPostSubTitle>
                     <PollKeysCircle circleColor={optionThreesColor}></PollKeysCircle>
                 </PollKeyViewThree>
-                <PollKeyViewFour pollOptions={totalNumberOfOptions} onPress={() => navigation.navigate("ViewPollPostPage", {pollTitle, pollSubTitle, optionOne, optionOnesColor, optionOnesVotes, optionOnesBarLength, optionTwo, optionTwosColor, optionTwosVotes, optionTwosBarLength, optionThree, optionThreesColor, optionThreesVotes, optionThreesBarLength, optionFour, optionFoursColor, optionFoursVotes, optionFoursBarLength, optionFive, optionFivesColor, optionFivesVotes, optionFivesBarLength, optionSix, optionSixesColor, optionSixesVotes, optionSixesBarLength, totalNumberOfOptions, pollId, creatorPfpB64: pfpB64, creatorName, creatorDisplayName, datePosted})}>
+                <PollKeyViewFour pollOptions={totalNumberOfOptions} onPress={() => navigation.navigate("ViewPollPostPage", { pollTitle, pollSubTitle, optionOne, optionOnesColor, optionOnesVotes, optionOnesBarLength, optionTwo, optionTwosColor, optionTwosVotes, optionTwosBarLength, optionThree, optionThreesColor, optionThreesVotes, optionThreesBarLength, optionFour, optionFoursColor, optionFoursVotes, optionFoursBarLength, optionFive, optionFivesColor, optionFivesVotes, optionFivesBarLength, optionSix, optionSixesColor, optionSixesVotes, optionSixesBarLength, totalNumberOfOptions, pollId, creatorPfpB64: pfpB64, creatorName, creatorDisplayName, datePosted })}>
                     <PollKeysCircle circleColor={optionFoursColor}></PollKeysCircle>
                     <PollPostSubTitle>
                         4. {optionFour}
@@ -1381,105 +1266,105 @@ const Welcome = ({navigation, route}) => {
             </PollPostHorizontalView>
 
             <PollPostHorizontalView>
-                <PollKeyViewFive pollOptions={totalNumberOfOptions} onPress={() => navigation.navigate("ViewPollPostPage", {pollTitle, pollSubTitle, optionOne, optionOnesColor, optionOnesVotes, optionOnesBarLength, optionTwo, optionTwosColor, optionTwosVotes, optionTwosBarLength, optionThree, optionThreesColor, optionThreesVotes, optionThreesBarLength, optionFour, optionFoursColor, optionFoursVotes, optionFoursBarLength, optionFive, optionFivesColor, optionFivesVotes, optionFivesBarLength, optionSix, optionSixesColor, optionSixesVotes, optionSixesBarLength, totalNumberOfOptions, pollId, creatorPfpB64: pfpB64, creatorName, creatorDisplayName, datePosted})}>
+                <PollKeyViewFive pollOptions={totalNumberOfOptions} onPress={() => navigation.navigate("ViewPollPostPage", { pollTitle, pollSubTitle, optionOne, optionOnesColor, optionOnesVotes, optionOnesBarLength, optionTwo, optionTwosColor, optionTwosVotes, optionTwosBarLength, optionThree, optionThreesColor, optionThreesVotes, optionThreesBarLength, optionFour, optionFoursColor, optionFoursVotes, optionFoursBarLength, optionFive, optionFivesColor, optionFivesVotes, optionFivesBarLength, optionSix, optionSixesColor, optionSixesVotes, optionSixesBarLength, totalNumberOfOptions, pollId, creatorPfpB64: pfpB64, creatorName, creatorDisplayName, datePosted })}>
                     <PollPostSubTitle>
                         5. {optionFive}
                     </PollPostSubTitle>
                     <PollKeysCircle circleColor={optionFivesColor}></PollKeysCircle>
                 </PollKeyViewFive>
-                <PollKeyViewSix pollOptions={totalNumberOfOptions} onPress={() => navigation.navigate("ViewPollPostPage", {pollTitle, pollSubTitle, optionOne, optionOnesColor, optionOnesVotes, optionOnesBarLength, optionTwo, optionTwosColor, optionTwosVotes, optionTwosBarLength, optionThree, optionThreesColor, optionThreesVotes, optionThreesBarLength, optionFour, optionFoursColor, optionFoursVotes, optionFoursBarLength, optionFive, optionFivesColor, optionFivesVotes, optionFivesBarLength, optionSix, optionSixesColor, optionSixesVotes, optionSixesBarLength, totalNumberOfOptions, pollId, creatorPfpB64: pfpB64, creatorName, creatorDisplayName, datePosted})}>
+                <PollKeyViewSix pollOptions={totalNumberOfOptions} onPress={() => navigation.navigate("ViewPollPostPage", { pollTitle, pollSubTitle, optionOne, optionOnesColor, optionOnesVotes, optionOnesBarLength, optionTwo, optionTwosColor, optionTwosVotes, optionTwosBarLength, optionThree, optionThreesColor, optionThreesVotes, optionThreesBarLength, optionFour, optionFoursColor, optionFoursVotes, optionFoursBarLength, optionFive, optionFivesColor, optionFivesVotes, optionFivesBarLength, optionSix, optionSixesColor, optionSixesVotes, optionSixesBarLength, totalNumberOfOptions, pollId, creatorPfpB64: pfpB64, creatorName, creatorDisplayName, datePosted })}>
                     <PollKeysCircle circleColor={optionSixesColor}></PollKeysCircle>
                     <PollPostSubTitle>
                         6. {optionSix}
                     </PollPostSubTitle>
                 </PollKeyViewSix>
             </PollPostHorizontalView>
-            <PostHorizontalView style={{marginLeft: '5%', width: '90%', paddingVertical: 10, flex: 1, flexDirection: 'row', borderTopWidth: 3, borderColor: darkest}}>
-            {upVotesPolls.includes(pollId) && (<PostsIconFrame onPress={() => {UpVotePoll(pollId, postNum)}}>
-                    <PostsIcons style={{flex: 1}} tintColor={brand} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
+            <PostHorizontalView style={{ marginLeft: '5%', width: '90%', paddingVertical: 10, flex: 1, flexDirection: 'row', borderTopWidth: 3, borderColor: darkest }}>
+                {upVotesPolls.includes(pollId) && (<PostsIconFrame onPress={() => { UpVotePoll(pollId, postNum) }}>
+                    <PostsIcons style={{ flex: 1 }} tintColor={brand} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')} />
                 </PostsIconFrame>)}
-                {neitherVotesPolls.includes(pollId) && (<PostsIconFrame onPress={() => {UpVotePoll(pollId, postNum)}}>
-                    <PostsIcons style={{flex: 1}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
+                {neitherVotesPolls.includes(pollId) && (<PostsIconFrame onPress={() => { UpVotePoll(pollId, postNum) }}>
+                    <PostsIcons style={{ flex: 1 }} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')} />
                 </PostsIconFrame>)}
-                {downVotesPolls.includes(pollId) && (<PostsIconFrame onPress={() => {UpVotePoll(pollId, postNum)}}>
-                    <PostsIcons style={{flex: 1}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
+                {downVotesPolls.includes(pollId) && (<PostsIconFrame onPress={() => { UpVotePoll(pollId, postNum) }}>
+                    <PostsIcons style={{ flex: 1 }} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')} />
                 </PostsIconFrame>)}
                 {changingVotedPolls.includes(pollId) && (<PostsIconFrame></PostsIconFrame>)}
-                
+
 
                 {upVotesPolls.includes(pollId) && (<PostsIconFrame>
                     {initialUpVotesPolls.includes(pollId) && (
-                        <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{pollUpOrDownVotes}</SubTitle>
+                        <SubTitle style={{ alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal' }}>{pollUpOrDownVotes}</SubTitle>
                     )}
                     {initialNeitherVotesPolls.includes(pollId) && (
-                        <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{pollUpOrDownVotes+1}</SubTitle>
+                        <SubTitle style={{ alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal' }}>{pollUpOrDownVotes + 1}</SubTitle>
                     )}
                     {initialDownVotesPolls.includes(pollId) && (
-                        <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{pollUpOrDownVotes+2}</SubTitle>
+                        <SubTitle style={{ alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal' }}>{pollUpOrDownVotes + 2}</SubTitle>
                     )}
                 </PostsIconFrame>)}
                 {neitherVotesPolls.includes(pollId) && (<PostsIconFrame>
                     {initialNeitherVotesPolls.includes(pollId) && (
-                        <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{pollUpOrDownVotes}</SubTitle>
+                        <SubTitle style={{ alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal' }}>{pollUpOrDownVotes}</SubTitle>
                     )}
                     {initialUpVotesPolls.includes(pollId) && (
-                        <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{pollUpOrDownVotes-1}</SubTitle>
+                        <SubTitle style={{ alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal' }}>{pollUpOrDownVotes - 1}</SubTitle>
                     )}
                     {initialDownVotesPolls.includes(pollId) && (
-                        <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{pollUpOrDownVotes+1}</SubTitle>
+                        <SubTitle style={{ alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal' }}>{pollUpOrDownVotes + 1}</SubTitle>
                     )}
                 </PostsIconFrame>)}
                 {downVotesPolls.includes(pollId) && (<PostsIconFrame>
                     {initialDownVotesPolls.includes(pollId) && (
-                        <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{pollUpOrDownVotes}</SubTitle>
+                        <SubTitle style={{ alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal' }}>{pollUpOrDownVotes}</SubTitle>
                     )}
                     {initialNeitherVotesPolls.includes(pollId) && (
-                        <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{pollUpOrDownVotes-1}</SubTitle>
+                        <SubTitle style={{ alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal' }}>{pollUpOrDownVotes - 1}</SubTitle>
                     )}
-                    {initialUpVotesPolls.includes(pollId)&& (
-                        <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{pollUpOrDownVotes-2}</SubTitle>
+                    {initialUpVotesPolls.includes(pollId) && (
+                        <SubTitle style={{ alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal' }}>{pollUpOrDownVotes - 2}</SubTitle>
                     )}
                 </PostsIconFrame>)}
                 {changingVotedPolls.includes(pollId) && (<PostsIconFrame>
-                    <ActivityIndicator size="small" color={brand} />                
+                    <ActivityIndicator size="small" color={brand} />
                 </PostsIconFrame>)}
 
-                {downVotesPolls.includes(pollId) && (<PostsIconFrame onPress={() => {DownVotePoll(pollId, postNum)}}>
-                    <PostsIcons style={{flex: 1}} tintColor={brand} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
+                {downVotesPolls.includes(pollId) && (<PostsIconFrame onPress={() => { DownVotePoll(pollId, postNum) }}>
+                    <PostsIcons style={{ flex: 1 }} tintColor={brand} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')} />
                 </PostsIconFrame>)}
-                {neitherVotesPolls.includes(pollId) && (<PostsIconFrame onPress={() => {DownVotePoll(pollId, postNum)}}>
-                    <PostsIcons style={{flex: 1}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
+                {neitherVotesPolls.includes(pollId) && (<PostsIconFrame onPress={() => { DownVotePoll(pollId, postNum) }}>
+                    <PostsIcons style={{ flex: 1 }} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')} />
                 </PostsIconFrame>)}
-                {upVotesPolls.includes(pollId) && (<PostsIconFrame onPress={() => {DownVotePoll(pollId, postNum)}}>
-                    <PostsIcons style={{flex: 1}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
+                {upVotesPolls.includes(pollId) && (<PostsIconFrame onPress={() => { DownVotePoll(pollId, postNum) }}>
+                    <PostsIcons style={{ flex: 1 }} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')} />
                 </PostsIconFrame>)}
                 {changingVotedPolls.includes(pollId) && (<PostsIconFrame></PostsIconFrame>)}
                 <PostsIconFrame>
                 </PostsIconFrame>
-                <PostsIconFrame onPress={() => navigation.navigate("ViewPollPostPage", {pollTitle, pollSubTitle, optionOne, optionOnesColor, optionOnesVotes, optionOnesBarLength, optionTwo, optionTwosColor, optionTwosVotes, optionTwosBarLength, optionThree, optionThreesColor, optionThreesVotes, optionThreesBarLength, optionFour, optionFoursColor, optionFoursVotes, optionFoursBarLength, optionFive, optionFivesColor, optionFivesVotes, optionFivesBarLength, optionSix, optionSixesColor, optionSixesVotes, optionSixesBarLength, totalNumberOfOptions, pollId, creatorPfpB64: pfpB64, creatorName, creatorDisplayName, datePosted})}>
-                    <PostsIcons style={{flex: 1}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/113-bubbles4.png')}/>
+                <PostsIconFrame onPress={() => navigation.navigate("ViewPollPostPage", { pollTitle, pollSubTitle, optionOne, optionOnesColor, optionOnesVotes, optionOnesBarLength, optionTwo, optionTwosColor, optionTwosVotes, optionTwosBarLength, optionThree, optionThreesColor, optionThreesVotes, optionThreesBarLength, optionFour, optionFoursColor, optionFoursVotes, optionFoursBarLength, optionFive, optionFivesColor, optionFivesVotes, optionFivesBarLength, optionSix, optionSixesColor, optionSixesVotes, optionSixesBarLength, totalNumberOfOptions, pollId, creatorPfpB64: pfpB64, creatorName, creatorDisplayName, datePosted })}>
+                    <PostsIcons style={{ flex: 1 }} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/113-bubbles4.png')} />
                 </PostsIconFrame>
                 <PostsIconFrame>
-                    <PostsIcons style={{flex: 1, height: 30, width: 30}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/387-share2.png')}/>
+                    <PostsIcons style={{ flex: 1, height: 30, width: 30 }} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/387-share2.png')} />
                 </PostsIconFrame>
-                <PostsIconFrame onPress={()=>{openDeletePrompt(pollId, creatorName)}}>
-                    <PostsIcons style={{flex: 1}} source={require('./../assets/img/ThreeDots.png')}/>
+                <PostsIconFrame>
+                    <PostsIcons style={{ flex: 1 }} source={require('./../assets/img/ThreeDots.png')} />
                 </PostsIconFrame>
             </PostHorizontalView>
             {postNumForMsg == postNum && (<MsgBox type={messageType}>{message}</MsgBox>)}
-            <SubTitle style={{flex: 1, alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{datePosted}</SubTitle>
+            <SubTitle style={{ flex: 1, alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal' }}>{datePosted}</SubTitle>
             {pollComments && (
-                <SubTitle style={{flex: 1, alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{pollComments.length} comments</SubTitle>
+                <SubTitle style={{ flex: 1, alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal' }}>{pollComments.length} comments</SubTitle>
             )}
-            </PollPostFrame>
+        </PollPostFrame>
     );
 
-    const CategoryItem = ({categoryTitle, categoryDescription, members, categoryTags, image, NSFW, NSFL, datePosted}) => (
-        <SearchFrame onPress={() => navigation.navigate("CategoryViewPage", {categoryTitle: categoryTitle})}>
-            <View style={{paddingHorizontal: '50%'}}>
+    const CategoryItem = ({ categoryTitle, categoryDescription, members, categoryTags, image, NSFW, NSFL, datePosted }) => (
+        <SearchFrame onPress={() => navigation.navigate("CategoryViewPage", { categoryTitle: categoryTitle })}>
+            <View style={{ paddingHorizontal: '50%' }}>
             </View>
             {image !== null && (
-                <Avatar resizeMode="cover" searchPage={true} source={{uri: `data:image/jpg;base64,${image}`}} />
+                <Avatar resizeMode="cover" searchPage={true} source={{ uri: `data:image/jpg;base64,${image}` }} />
             )}
             {image == null && (
                 <Avatar resizeMode="cover" searchPage={true} source={require('./../assets/img/Logo.png')} />
@@ -1490,215 +1375,202 @@ const Welcome = ({navigation, route}) => {
                         <SubTitle searchResTitle={true}>{categoryTitle}</SubTitle>
                     )}
                     {NSFL == true && (
-                        <View style={{flexDirection: 'row'}}>
-                            <SubTitle searchResTitle={true} style={{color: red}}>(NSFL) </SubTitle>
+                        <View style={{ flexDirection: 'row' }}>
+                            <SubTitle searchResTitle={true} style={{ color: red }}>(NSFL) </SubTitle>
                             <SubTitle searchResTitle={true}>{categoryTitle}</SubTitle>
                         </View>
                     )}
                 </View>
             )}
             {NSFW == true && (
-                <View style={{flexDirection: 'row'}}>
-                    <SubTitle searchResTitle={true} style={{color: red}}>(NSFW) </SubTitle>
+                <View style={{ flexDirection: 'row' }}>
+                    <SubTitle searchResTitle={true} style={{ color: red }}>(NSFW) </SubTitle>
                     <SubTitle searchResTitle={true}>{categoryTitle}</SubTitle>
                 </View>
             )}
             <SubTitle searchResTitleDisplayName={true}>{categoryDescription}</SubTitle>
-            <SubTitle searchResTitleDisplayName={true} style={{color: brand}}>{categoryTags}</SubTitle>
+            <SubTitle searchResTitleDisplayName={true} style={{ color: brand }}>{categoryTags}</SubTitle>
             <SearchHorizontalView>
-                <SearchHorizontalViewItemCenter style={{height: '100%', justifyContent: 'center', alignItems: 'center', textAlign: 'center'}}>
-                    <SearchSubTitle welcome={true} style={{flex: 1}}> Members </SearchSubTitle>
-                    <ProfIcons style={{flex: 1}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/115-users.png')}/>
-                    {members == 0 && ( 
-                        <SearchSubTitle welcome={true} style={{flex: 1}}> 0 </SearchSubTitle>
+                <SearchHorizontalViewItemCenter style={{ height: '100%', justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}>
+                    <SearchSubTitle welcome={true} style={{ flex: 1 }}> Members </SearchSubTitle>
+                    <ProfIcons style={{ flex: 1 }} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/115-users.png')} />
+                    {members == 0 && (
+                        <SearchSubTitle welcome={true} style={{ flex: 1 }}> 0 </SearchSubTitle>
                     )}
-                    {members !== 0 && ( 
-                        <SearchSubTitle welcome={true} style={{flex: 1}}> {members} </SearchSubTitle>
+                    {members !== 0 && (
+                        <SearchSubTitle welcome={true} style={{ flex: 1 }}> {members} </SearchSubTitle>
                     )}
                 </SearchHorizontalViewItemCenter>
-                <SearchHorizontalViewItemCenter style={{height: '100%', justifyContent: 'center', alignItems: 'center', textAlign: 'center'}}>
-                    <SearchSubTitle welcome={true} style={{flex: 1}}> Date Created </SearchSubTitle>
-                    <ProfIcons style={{flex: 1}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/084-calendar.png')}/>
-                    <SearchSubTitle welcome={true} style={{flex: 1}}> {datePosted} </SearchSubTitle>
+                <SearchHorizontalViewItemCenter style={{ height: '100%', justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}>
+                    <SearchSubTitle welcome={true} style={{ flex: 1 }}> Date Created </SearchSubTitle>
+                    <ProfIcons style={{ flex: 1 }} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/084-calendar.png')} />
+                    <SearchSubTitle welcome={true} style={{ flex: 1 }}> {datePosted} </SearchSubTitle>
                 </SearchHorizontalViewItemCenter>
             </SearchHorizontalView>
         </SearchFrame>
     );
 
-    const ThreadItems = ({postNum, threadId, threadComments, threadType, threadUpVotes, threadTitle, threadSubtitle, threadTags, threadCategory, threadBody, threadImageKey, threadImageDescription, threadNSFW, threadNSFL, datePosted, threadUpVoted, threadDownVoted, creatorDisplayName, creatorName, creatorImageB64, imageInThreadB64})  => (
-        <View style={{backgroundColor: slightlyLighterPrimary, borderRadius: 15, marginBottom: 10}} onPress={() => navigation.navigate("ThreadViewPage", {threadId: threadId})}>
-                {postsWithDeleteMenuOpen == threadId && (
-                    <View style={{position: 'absolute', zIndex: 100, alignSelf: 'center', alignItems: 'center', width: '100%', height: '100%', justifyContent: 'center'}}>
-                        <View style={{borderRadius: 30, width: '80%', minHeight: '35%', alignSelf: 'center', alignItems: 'center', justifyContent: 'center', backgroundColor: primary, borderColor: darkest, borderWidth: 6}}>
-                            <SubTitle style={{marginBottom: 0}}>Delete Post?</SubTitle>
-                            <ConfirmLogoutButtons cancelButton={true} onPress={()=>{setPostsWithDeleteMenuOpen(null)}}>
-                                <ConfirmLogoutButtonText cancelButton={true}>Cancel</ConfirmLogoutButtonText>
-                            </ConfirmLogoutButtons> 
-                            <ConfirmLogoutButtons confirmButton={true} onPress={()=>{confirmDeletePrompt(threadId, postNum)}}>
-                                <ConfirmLogoutButtonText confirmButton>Confirm</ConfirmLogoutButtonText>
-                            </ConfirmLogoutButtons> 
-                        </View>
-                    </View>
-                )}
-                {threadNSFW === true && (
-                    <SubTitle style={{fontSize: 10, color: red, marginBottom: 0}}>(NSFW)</SubTitle>
-                )}
-                {threadNSFL === true && (
-                    <SubTitle style={{fontSize: 10, color: red, marginBottom: 0}}>(NSFL)</SubTitle>
-                )}
-                <View style={{paddingHorizontal: '50%'}}>
-                </View>
-                <PostsHorizontalView style={{marginLeft: '5%', borderColor: darkLight, width: '90%', paddingBottom: 5, marginRight: '5%'}}>
-                    <TouchableOpacity style={{width: '100%', height: 60}}>
-                        <PostsHorizontalView>
-                            {creatorImageB64 !== null && (
-                                <PostsVerticalView>
-                                    {creatorImageB64 !== null && (
-                                        <PostCreatorIcon source={{uri: `data:image/jpg;base64,${creatorImageB64}`}}/>
-                                    )}
-                                </PostsVerticalView>
-                            )}
-                            {creatorImageB64 == null && (
-                                <PostsVerticalView>
-                                    <PostCreatorIcon source={require('./../assets/img/Logo.png')}/>
-                                </PostsVerticalView>
-                            )}
-                            <PostsVerticalView style={{marginTop: 9}}>
-                                <SubTitle style={{fontSize: 20, marginBottom: 0}}>{creatorDisplayName}</SubTitle>
-                                <SubTitle style={{fontSize: 12, color: brand, marginBottom: 0}}>@{creatorName}</SubTitle>
+    const ThreadItems = ({ postNum, threadId, threadComments, threadType, threadUpVotes, threadTitle, threadSubtitle, threadTags, threadCategory, threadBody, threadImageKey, threadImageDescription, threadNSFW, threadNSFL, datePosted, threadUpVoted, threadDownVoted, creatorDisplayName, creatorName, creatorImageB64, imageInThreadB64 }) => (
+        <View style={{ backgroundColor: slightlyLighterPrimary, borderRadius: 15, marginBottom: 10 }} onPress={() => navigation.navigate("ThreadViewPage", { threadId: threadId })}>
+            {threadNSFW === true && (
+                <SubTitle style={{ fontSize: 10, color: red, marginBottom: 0 }}>(NSFW)</SubTitle>
+            )}
+            {threadNSFL === true && (
+                <SubTitle style={{ fontSize: 10, color: red, marginBottom: 0 }}>(NSFL)</SubTitle>
+            )}
+            <View style={{ paddingHorizontal: '50%' }}>
+            </View>
+            <PostsHorizontalView style={{ marginLeft: '5%', borderColor: darkLight, width: '90%', paddingBottom: 5, marginRight: '5%' }}>
+                <TouchableOpacity style={{ width: '100%', height: 60 }}>
+                    <PostsHorizontalView>
+                        {creatorImageB64 !== null && (
+                            <PostsVerticalView>
+                                {creatorImageB64 !== null && (
+                                    <PostCreatorIcon source={{ uri: `data:image/jpg;base64,${creatorImageB64}` }} />
+                                )}
                             </PostsVerticalView>
-                        </PostsHorizontalView>
+                        )}
+                        {creatorImageB64 == null && (
+                            <PostsVerticalView>
+                                <PostCreatorIcon source={require('./../assets/img/Logo.png')} />
+                            </PostsVerticalView>
+                        )}
+                        <PostsVerticalView style={{ marginTop: 9 }}>
+                            <SubTitle style={{ fontSize: 20, marginBottom: 0 }}>{creatorDisplayName}</SubTitle>
+                            <SubTitle style={{ fontSize: 12, color: brand, marginBottom: 0 }}>@{creatorName}</SubTitle>
+                        </PostsVerticalView>
+                    </PostsHorizontalView>
+                </TouchableOpacity>
+            </PostsHorizontalView>
+            <TouchableOpacity onPress={() => navigation.navigate("ThreadViewPage", { threadId: threadId })}>
+                <ImagePostTextFrame style={{ textAlign: 'left', alignItems: 'baseline' }}>
+                    <TouchableOpacity>
+                        <SubTitle style={{ fontSize: 10, color: brand, marginBottom: 0 }}>Category: {threadCategory}</SubTitle>
                     </TouchableOpacity>
-                </PostsHorizontalView>
-                <TouchableOpacity onPress={() => navigation.navigate("ThreadViewPage", {threadId: threadId})}>
-                    <ImagePostTextFrame style={{textAlign: 'left', alignItems: 'baseline'}}>
+                    <SubTitle style={{ fontSize: 20, color: tertiary, marginBottom: 0 }}>{threadTitle}</SubTitle>
+                    {threadSubtitle !== "" && (
+                        <SubTitle style={{ fontSize: 18, color: descTextColor, marginBottom: 0, fontWeight: 'normal' }}>{threadSubtitle}</SubTitle>
+                    )}
+                    {threadTags !== "" && (
                         <TouchableOpacity>
-                            <SubTitle style={{fontSize: 10, color: brand, marginBottom: 0}}>Category: {threadCategory}</SubTitle>
+                            <SubTitle style={{ fontSize: 10, color: brand, marginBottom: 10 }}>{threadTags}</SubTitle>
                         </TouchableOpacity>
-                        <SubTitle style={{fontSize: 20, color: tertiary, marginBottom: 0}}>{threadTitle}</SubTitle>
-                        {threadSubtitle !== "" && (
-                            <SubTitle style={{fontSize: 18, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{threadSubtitle}</SubTitle>
-                        )}
-                        {threadTags !== "" && (
-                            <TouchableOpacity>
-                                <SubTitle style={{fontSize: 10, color: brand, marginBottom: 10}}>{threadTags}</SubTitle>
-                            </TouchableOpacity>
-                        )}
-                        {threadType == "Text" && (
-                            <SubTitle style={{fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{threadBody}</SubTitle>
-                        )}
-                        <View style={{textAlign: 'left', alignItems: 'baseline', marginLeft: '5%', marginRight: '5%', width: '90%'}}>
-                            {threadType == "Images" && (
-                                <View>
-                                    <View style={{height: 200, width: 200}}>
-                                        <Image style={{height: '100%', width: 'auto', resizeMode: 'contain'}} source={{uri: `data:image/jpg;base64,${imageInThreadB64}`}}/>
-                                    </View>
-                                    <SubTitle style={{fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{threadImageDescription}</SubTitle>
+                    )}
+                    {threadType == "Text" && (
+                        <SubTitle style={{ fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal' }}>{threadBody}</SubTitle>
+                    )}
+                    <View style={{ textAlign: 'left', alignItems: 'baseline', marginLeft: '5%', marginRight: '5%', width: '90%' }}>
+                        {threadType == "Images" && (
+                            <View>
+                                <View style={{ height: 200, width: 200 }}>
+                                    <Image style={{ height: '100%', width: 'auto', resizeMode: 'contain' }} source={{ uri: `data:image/jpg;base64,${imageInThreadB64}` }} />
                                 </View>
-                            )}
-                        </View>
-                    </ImagePostTextFrame>
-                </TouchableOpacity>
-                
-                <PostHorizontalView style={{marginLeft: '5%', width: '90%', paddingVertical: 10, flex: 1, flexDirection: 'row'}}>
-                    
-                    {upVotesThreads.includes(threadId) && (<PostsIconFrame onPress={() => {UpVoteThread(threadId, postNum)}}>
-                        <PostsIcons style={{flex: 1}} tintColor={brand} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
-                    </PostsIconFrame>)}
-                    {neitherVotesThreads.includes(threadId) && (<PostsIconFrame onPress={() => {UpVoteThread(threadId, postNum)}}>
-                        <PostsIcons style={{flex: 1}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
-                    </PostsIconFrame>)}
-                    {downVotesThreads.includes(threadId) && (<PostsIconFrame onPress={() => {UpVoteThread(threadId, postNum)}}>
-                        <PostsIcons style={{flex: 1}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
-                    </PostsIconFrame>)}
-                    {changingVotedThreads.includes(threadId) && (<PostsIconFrame></PostsIconFrame>)}
-                    
+                                <SubTitle style={{ fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal' }}>{threadImageDescription}</SubTitle>
+                            </View>
+                        )}
+                    </View>
+                </ImagePostTextFrame>
+            </TouchableOpacity>
 
-                    {upVotesThreads.includes(threadId) && (<PostsIconFrame>
-                        {initialUpVotesThreads.includes(threadId) && (
-                            <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{threadUpVotes}</SubTitle>
-                        )}
-                        {initialNeitherVotesThreads.includes(threadId) && (
-                            <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{threadUpVotes+1}</SubTitle>
-                        )}
-                        {initialDownVotesThreads.includes(threadId) && (
-                            <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{threadUpVotes+2}</SubTitle>
-                        )}
-                    </PostsIconFrame>)}
-                    {neitherVotesThreads.includes(threadId) && (<PostsIconFrame>
-                        {initialNeitherVotesThreads.includes(threadId) && (
-                            <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{threadUpVotes}</SubTitle>
-                        )}
-                        {initialUpVotesThreads.includes(threadId) && (
-                            <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{threadUpVotes-1}</SubTitle>
-                        )}
-                        {initialDownVotesThreads.includes(threadId) && (
-                            <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{threadUpVotes+1}</SubTitle>
-                        )}
-                    </PostsIconFrame>)}
-                    {downVotesThreads.includes(threadId) && (<PostsIconFrame>
-                        {initialDownVotesThreads.includes(threadId) && (
-                            <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{threadUpVotes}</SubTitle>
-                        )}
-                        {initialNeitherVotesThreads.includes(threadId) && (
-                            <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{threadUpVotes-1}</SubTitle>
-                        )}
-                        {initialUpVotesThreads.includes(threadId)&& (
-                            <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{threadUpVotes-2}</SubTitle>
-                        )}
-                    </PostsIconFrame>)}
-                    {changingVotedThreads.includes(threadId) && (<PostsIconFrame>
-                        <ActivityIndicator size="small" color={brand} />                
-                    </PostsIconFrame>)}
+            <PostHorizontalView style={{ marginLeft: '5%', width: '90%', paddingVertical: 10, flex: 1, flexDirection: 'row' }}>
 
-                    {downVotesThreads.includes(threadId) && (<PostsIconFrame onPress={() => {DownVoteThread(threadId, postNum)}}>
-                        <PostsIcons style={{flex: 1}} tintColor={brand} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
-                    </PostsIconFrame>)}
-                    {neitherVotesThreads.includes(threadId) && (<PostsIconFrame onPress={() => {DownVoteThread(threadId, postNum)}}>
-                        <PostsIcons style={{flex: 1}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
-                    </PostsIconFrame>)}
-                    {upVotesThreads.includes(threadId) && (<PostsIconFrame onPress={() => {DownVoteThread(threadId, postNum)}}>
-                        <PostsIcons style={{flex: 1}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
-                    </PostsIconFrame>)}
-                    {changingVotedThreads.includes(threadId) && (<PostsIconFrame></PostsIconFrame>)}
-                    <PostsIconFrame>
-                    </PostsIconFrame>
-                    <PostsIconFrame onPress={() => navigation.navigate("ThreadViewPage", {threadId: threadId})}>
-                        <PostsIcons style={{flex: 1}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/113-bubbles4.png')}/>
-                    </PostsIconFrame>
-                    <PostsIconFrame>
-                        <PostsIcons style={{flex: 1, height: 30, width: 30}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/387-share2.png')}/>
-                    </PostsIconFrame>
-                    <PostsIconFrame onPress={()=>{openDeletePrompt(threadId, creatorName)}}>
-                        <PostsIcons style={{flex: 1}} source={require('./../assets/img/ThreeDots.png')}/>
-                    </PostsIconFrame>
-                </PostHorizontalView>
-                {postNumForMsg == postNum && (<MsgBox type={messageType}>{message}</MsgBox>)}
-                <SubTitle style={{flex: 1, alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{datePosted}</SubTitle>
-                <TouchableOpacity onPress={() => navigation.navigate("ThreadViewPage", {threadId: threadId})}>
-                    <SubTitle style={{flex: 1, alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{threadComments} comments</SubTitle>
-                </TouchableOpacity>
+                {upVotesThreads.includes(threadId) && (<PostsIconFrame onPress={() => { UpVoteThread(threadId, postNum) }}>
+                    <PostsIcons style={{ flex: 1 }} tintColor={brand} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')} />
+                </PostsIconFrame>)}
+                {neitherVotesThreads.includes(threadId) && (<PostsIconFrame onPress={() => { UpVoteThread(threadId, postNum) }}>
+                    <PostsIcons style={{ flex: 1 }} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')} />
+                </PostsIconFrame>)}
+                {downVotesThreads.includes(threadId) && (<PostsIconFrame onPress={() => { UpVoteThread(threadId, postNum) }}>
+                    <PostsIcons style={{ flex: 1 }} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')} />
+                </PostsIconFrame>)}
+                {changingVotedThreads.includes(threadId) && (<PostsIconFrame></PostsIconFrame>)}
+
+
+                {upVotesThreads.includes(threadId) && (<PostsIconFrame>
+                    {initialUpVotesThreads.includes(threadId) && (
+                        <SubTitle style={{ alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal' }}>{threadUpVotes}</SubTitle>
+                    )}
+                    {initialNeitherVotesThreads.includes(threadId) && (
+                        <SubTitle style={{ alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal' }}>{threadUpVotes + 1}</SubTitle>
+                    )}
+                    {initialDownVotesThreads.includes(threadId) && (
+                        <SubTitle style={{ alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal' }}>{threadUpVotes + 2}</SubTitle>
+                    )}
+                </PostsIconFrame>)}
+                {neitherVotesThreads.includes(threadId) && (<PostsIconFrame>
+                    {initialNeitherVotesThreads.includes(threadId) && (
+                        <SubTitle style={{ alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal' }}>{threadUpVotes}</SubTitle>
+                    )}
+                    {initialUpVotesThreads.includes(threadId) && (
+                        <SubTitle style={{ alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal' }}>{threadUpVotes - 1}</SubTitle>
+                    )}
+                    {initialDownVotesThreads.includes(threadId) && (
+                        <SubTitle style={{ alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal' }}>{threadUpVotes + 1}</SubTitle>
+                    )}
+                </PostsIconFrame>)}
+                {downVotesThreads.includes(threadId) && (<PostsIconFrame>
+                    {initialDownVotesThreads.includes(threadId) && (
+                        <SubTitle style={{ alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal' }}>{threadUpVotes}</SubTitle>
+                    )}
+                    {initialNeitherVotesThreads.includes(threadId) && (
+                        <SubTitle style={{ alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal' }}>{threadUpVotes - 1}</SubTitle>
+                    )}
+                    {initialUpVotesThreads.includes(threadId) && (
+                        <SubTitle style={{ alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal' }}>{threadUpVotes - 2}</SubTitle>
+                    )}
+                </PostsIconFrame>)}
+                {changingVotedThreads.includes(threadId) && (<PostsIconFrame>
+                    <ActivityIndicator size="small" color={brand} />
+                </PostsIconFrame>)}
+
+                {downVotesThreads.includes(threadId) && (<PostsIconFrame onPress={() => { DownVoteThread(threadId, postNum) }}>
+                    <PostsIcons style={{ flex: 1 }} tintColor={brand} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')} />
+                </PostsIconFrame>)}
+                {neitherVotesThreads.includes(threadId) && (<PostsIconFrame onPress={() => { DownVoteThread(threadId, postNum) }}>
+                    <PostsIcons style={{ flex: 1 }} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')} />
+                </PostsIconFrame>)}
+                {upVotesThreads.includes(threadId) && (<PostsIconFrame onPress={() => { DownVoteThread(threadId, postNum) }}>
+                    <PostsIcons style={{ flex: 1 }} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')} />
+                </PostsIconFrame>)}
+                {changingVotedThreads.includes(threadId) && (<PostsIconFrame></PostsIconFrame>)}
+                <PostsIconFrame>
+                </PostsIconFrame>
+                <PostsIconFrame onPress={() => navigation.navigate("ThreadViewPage", { threadId: threadId })}>
+                    <PostsIcons style={{ flex: 1 }} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/113-bubbles4.png')} />
+                </PostsIconFrame>
+                <PostsIconFrame>
+                    <PostsIcons style={{ flex: 1, height: 30, width: 30 }} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/387-share2.png')} />
+                </PostsIconFrame>
+                <PostsIconFrame>
+                    <PostsIcons style={{ flex: 1 }} source={require('./../assets/img/ThreeDots.png')} />
+                </PostsIconFrame>
+            </PostHorizontalView>
+            {postNumForMsg == postNum && (<MsgBox type={messageType}>{message}</MsgBox>)}
+            <SubTitle style={{ flex: 1, alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal' }}>{datePosted}</SubTitle>
+            <TouchableOpacity onPress={() => navigation.navigate("ThreadViewPage", { threadId: threadId })}>
+                <SubTitle style={{ flex: 1, alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal' }}>{threadComments} comments</SubTitle>
+            </TouchableOpacity>
         </View>
     );
 
     //main
-    const toSendProfileName = {profileName: name, userId: _id}
+    const toSendProfileName = { profileName: profilesName, userId: _id }
 
     const clearLogin = () => {
         AsyncStorage.removeItem('socialSquareCredentials').then(() => {
             setStoredCredentials("");
         })
-        .catch(error => console.log(error))
+            .catch(error => console.log(error))
     }
     const changeToGrid = () => {
-        if (gridViewState=="none") {
+        if (gridViewState == "none") {
             setFeaturedViewState("none")
             setGridViewState("flex")
         }
     }
 
     const changeToFeatured = () => {
-        if (featuredViewState=="none") {
+        if (featuredViewState == "none") {
             console.log("SussyBaka")
             setGridViewState("none")
             setFeaturedViewState("flex")
@@ -1707,36 +1579,36 @@ const Welcome = ({navigation, route}) => {
 
     //get image of post
     async function getImageInPost(imageData, index) {
-        return axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${imageData[index].imageKey}`, { cancelToken: source.token})
-        .then(res => res.data).catch(error => {
-            console.log(error);
-            //setSubmitting(false);
-            setLoadingPosts(false)
-            console.log("Either an error or cancelled.");
-        })
+        return axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${imageData[index].imageKey}`, { cancelToken: source.token })
+            .then(res => res.data).catch(error => {
+                console.log(error);
+                //setSubmitting(false);
+                setLoadingPosts(false)
+                console.log("Either an error or cancelled.");
+            })
     }
     //profile image of creator
     async function getImageInPfp(imageData, index) {
-        return axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${imageData[index].creatorPfpKey}`, { cancelToken: source.token})
-        .then(res => res.data).catch(error => {
-            console.log(error);
-            //setSubmitting(false);
-            setLoadingPosts(false)
-            console.log("Either an error or cancelled.");
-        })
+        return axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${imageData[index].creatorPfpKey}`, { cancelToken: source.token })
+            .then(res => res.data).catch(error => {
+                console.log(error);
+                //setSubmitting(false);
+                setLoadingPosts(false)
+                console.log("Either an error or cancelled.");
+            })
     }
     async function getImageInCategory(imageKey) {
-        return axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${imageKey}`, { cancelToken: cancelTokenPostFormatFive.token})
-        .then(res => res.data).catch(error => {
-            console.log(error);
-            //setSubmitting(false);
-            setLoadingPosts(false)
-            console.log("Either an error or cancelled.");
-        })
+        return axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${imageKey}`, { cancelToken: cancelTokenPostFormatFive.token })
+            .then(res => res.data).catch(error => {
+                console.log(error);
+                //setSubmitting(false);
+                setLoadingPosts(false)
+                console.log("Either an error or cancelled.");
+            })
     }
     //any image honestly
     async function getImageWithKeyOne(imageKey) {
-            return axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${imageKey}`, { cancelToken: cancelTokenPostFormatOne.token})
+        return axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${imageKey}`, { cancelToken: cancelTokenPostFormatOne.token })
             .then(res => res.data).catch(error => {
                 console.log(error);
                 //setSubmitting(false);
@@ -1745,40 +1617,40 @@ const Welcome = ({navigation, route}) => {
             })
     }
     async function getImageWithKeyTwo(imageKey) {
-        return axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${imageKey}`, { cancelToken: cancelTokenPostFormatTwo.token})
-        .then(res => res.data).catch(error => {
-            console.log(error);
-            //setSubmitting(false);
-            setLoadingPostsVideo(false)
-            console.log("Either an error or cancelled.");
-        })
+        return axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${imageKey}`, { cancelToken: cancelTokenPostFormatTwo.token })
+            .then(res => res.data).catch(error => {
+                console.log(error);
+                //setSubmitting(false);
+                setLoadingPostsVideo(false)
+                console.log("Either an error or cancelled.");
+            })
     }
     async function getImageWithKeyThree(imageKey) {
-        return axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${imageKey}`, { cancelToken: cancelTokenPostFormatThree.token})
-        .then(res => res.data).catch(error => {
-            console.log(error);
-            //setSubmitting(false);
-            setLoadingPostsPoll(false)
-            console.log("Either an error or cancelled.");
-        })
+        return axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${imageKey}`, { cancelToken: cancelTokenPostFormatThree.token })
+            .then(res => res.data).catch(error => {
+                console.log(error);
+                //setSubmitting(false);
+                setLoadingPostsPoll(false)
+                console.log("Either an error or cancelled.");
+            })
     }
     async function getImageWithKeyFour(imageKey) {
-        return axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${imageKey}`, { cancelToken: cancelTokenPostFormatFour.token})
-        .then(res => res.data).catch(error => {
-            console.log(error);
-            //setSubmitting(false);
-            setLoadingPostsThread(false)
-            console.log("Either an error or cancelled.");
-        })
+        return axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${imageKey}`, { cancelToken: cancelTokenPostFormatFour.token })
+            .then(res => res.data).catch(error => {
+                console.log(error);
+                //setSubmitting(false);
+                setLoadingPostsThread(false)
+                console.log("Either an error or cancelled.");
+            })
     }
     async function getImageWithKeyFive(imageKey) {
-        return axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${imageKey}`, { cancelToken: cancelTokenPostFormatFive.token})
-        .then(res => res.data).catch(error => {
-            console.log(error);
-            //setSubmitting(false);
-            setLoadingPostsCategory(false)
-            console.log("Either an error or cancelled.");
-        })
+        return axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${imageKey}`, { cancelToken: cancelTokenPostFormatFive.token })
+            .then(res => res.data).catch(error => {
+                console.log(error);
+                //setSubmitting(false);
+                setLoadingPostsCategory(false)
+                console.log("Either an error or cancelled.");
+            })
     }
 
     const changeToOne = () => {
@@ -1829,7 +1701,7 @@ const Welcome = ({navigation, route}) => {
                                     var imageB64 = imageInPost.data
                                     var pfpB64 = imageInPfp.data
                                     console.log("TestHere")
-                                    var tempSectionsTemp = {data: [{imageKey: imageData[index].imageKey, imageB64: imageB64, imageTitle: imageData[index].imageTitle, imageDescription: imageData[index].imageDescription, imageUpVotes: imageData[index].imageUpVotes, imageComments: imageData[index].imageComments, creatorName: imageData[index].creatorName, creatorDisplayName: imageData[index].creatorDisplayName, creatorPfpB64: pfpB64, datePosted: imageData[index].datePosted, postNum: index}]}
+                                    var tempSectionsTemp = { data: [{ imageKey: imageData[index].imageKey, imageB64: imageB64, imageTitle: imageData[index].imageTitle, imageDescription: imageData[index].imageDescription, imageUpVotes: imageData[index].imageUpVotes, imageComments: imageData[index].imageComments, creatorName: imageData[index].creatorName, creatorDisplayName: imageData[index].creatorDisplayName, creatorPfpB64: pfpB64, datePosted: imageData[index].datePosted, postNum: index }] }
                                     if (imageData[index].imageUpVoted) {
                                         console.log("UpVoted")
                                         upVotedImages.push(imageData[index].imageKey)
@@ -1853,9 +1725,9 @@ const Welcome = ({navigation, route}) => {
                                 }
                                 await addAndPush()
                                 itemsProcessed++;
-                                if(itemsProcessed === imageData.length) {
-                                    setChangeSectionsOne(tempSections)  
-                                    setLoadingPostsImage(false)  
+                                if (itemsProcessed === imageData.length) {
+                                    setChangeSectionsOne(tempSections)
+                                    setLoadingPostsImage(false)
                                     console.log(upVotesImages)
                                     console.log(downVotesImages)
                                     console.log(neitherVotesImages)
@@ -1871,7 +1743,7 @@ const Welcome = ({navigation, route}) => {
                                 var imageB64 = imageInPost.data
                                 var pfpB64 = imageInPfp
                                 console.log("TestHere")
-                                var tempSectionsTemp = {data: [{imageKey: imageData[index].imageKey, imageB64: imageB64, imageTitle: imageData[index].imageTitle, imageDescription: imageData[index].imageDescription, imageUpVotes: imageData[index].imageUpVotes, imageComments: imageData[index].imageComments, creatorName: imageData[index].creatorName, creatorDisplayName: imageData[index].creatorDisplayName, creatorPfpB64: pfpB64, datePosted: imageData[index].datePosted, postNum: index}]}
+                                var tempSectionsTemp = { data: [{ imageKey: imageData[index].imageKey, imageB64: imageB64, imageTitle: imageData[index].imageTitle, imageDescription: imageData[index].imageDescription, imageUpVotes: imageData[index].imageUpVotes, imageComments: imageData[index].imageComments, creatorName: imageData[index].creatorName, creatorDisplayName: imageData[index].creatorDisplayName, creatorPfpB64: pfpB64, datePosted: imageData[index].datePosted, postNum: index }] }
                                 if (imageData[index].imageUpVoted) {
                                     console.log("UpVoted")
                                     upVotedImages.push(imageData[index].imageKey)
@@ -1895,9 +1767,9 @@ const Welcome = ({navigation, route}) => {
                             }
                             await addAndPush()
                             itemsProcessed++;
-                            if(itemsProcessed === imageData.length) {
-                                setChangeSectionsOne(tempSections)  
-                                setLoadingPostsImage(false)  
+                            if (itemsProcessed === imageData.length) {
+                                setChangeSectionsOne(tempSections)
+                                setLoadingPostsImage(false)
                                 console.log(upVotesImages)
                                 console.log(downVotesImages)
                                 console.log(neitherVotesImages)
@@ -1913,7 +1785,7 @@ const Welcome = ({navigation, route}) => {
             setLoadingPostsImage(true)
             axios.post(url, toSendProfileName).then((response) => {
                 const result = response.data;
-                const {message, status, data} = result;
+                const { message, status, data } = result;
 
                 if (status !== 'SUCCESS') {
                     setLoadingPostsImage(false)
@@ -1921,7 +1793,7 @@ const Welcome = ({navigation, route}) => {
                     console.log(status)
                     console.log(message)
                 } else {
-                    layoutImagePosts({data});
+                    layoutImagePosts({ data });
                     console.log(status)
                     console.log(message)
                 }
@@ -1935,7 +1807,7 @@ const Welcome = ({navigation, route}) => {
             })
         } else {
             setSelectedPostFormat("One")
-            setFormatOneText("Users Image Posts:") 
+            setFormatOneText("Users Image Posts:")
         }
     }
 
@@ -1995,25 +1867,25 @@ const Welcome = ({navigation, route}) => {
                     var optionFoursBarLength = 16.6666666667
                     var optionFivesBarLength = 16.6666666667
                     var optionSixesBarLength = 16.6666666667
-                    var totalVotes = pollData[index].optionOnesVotes+pollData[index].optionTwosVotes+pollData[index].optionThreesVotes+pollData[index].optionFoursVotes+pollData[index].optionFivesVotes+pollData[index].optionSixesVotes
+                    var totalVotes = pollData[index].optionOnesVotes + pollData[index].optionTwosVotes + pollData[index].optionThreesVotes + pollData[index].optionFoursVotes + pollData[index].optionFivesVotes + pollData[index].optionSixesVotes
                     //console.log(item, index);
                     if (totalVotes !== 0) {
-                        optionOnesBarLength = (pollData[index].optionOnesVotes/totalVotes)*100
+                        optionOnesBarLength = (pollData[index].optionOnesVotes / totalVotes) * 100
                         console.log("O1 BL")
                         console.log(optionOnesBarLength)
-                        optionTwosBarLength = (pollData[index].optionTwosVotes/totalVotes)*100
+                        optionTwosBarLength = (pollData[index].optionTwosVotes / totalVotes) * 100
                         console.log("O2 BL")
                         console.log(optionTwosBarLength)
-                        optionThreesBarLength = (pollData[index].optionThreesVotes/totalVotes)*100
+                        optionThreesBarLength = (pollData[index].optionThreesVotes / totalVotes) * 100
                         console.log("O3 BL")
                         console.log(optionThreesBarLength)
-                        optionFoursBarLength = (pollData[index].optionFoursVotes/totalVotes)*100
+                        optionFoursBarLength = (pollData[index].optionFoursVotes / totalVotes) * 100
                         console.log("O4 BL")
                         console.log(optionFoursBarLength)
-                        optionFivesBarLength = (pollData[index].optionFivesVotes/totalVotes)*100
+                        optionFivesBarLength = (pollData[index].optionFivesVotes / totalVotes) * 100
                         console.log("O5 BL")
                         console.log(optionFivesBarLength)
-                        optionSixesBarLength = (pollData[index].optionSixesVotes/totalVotes)*100
+                        optionSixesBarLength = (pollData[index].optionSixesVotes / totalVotes) * 100
                         console.log("O6 BL")
                         console.log(optionSixesBarLength)
                         if (Number.isNaN(optionOnesBarLength)) {
@@ -2038,40 +1910,40 @@ const Welcome = ({navigation, route}) => {
                         if (totalVotes == 0) {
                             console.log("No Votes")
                             if (pollData[index].totalNumberOfOptions == "Two") {
-                                optionOnesBarLength = 100/2
-                                optionTwosBarLength = 100/2
+                                optionOnesBarLength = 100 / 2
+                                optionTwosBarLength = 100 / 2
                                 optionThreesBarLength = 0
                                 optionFoursBarLength = 0
                                 optionFivesBarLength = 0
                                 optionSixesBarLength = 0
                             } else if (pollData[index].totalNumberOfOptions == "Three") {
-                                optionOnesBarLength = 100/3
-                                optionTwosBarLength = 100/3
-                                optionThreesBarLength = 100/3
+                                optionOnesBarLength = 100 / 3
+                                optionTwosBarLength = 100 / 3
+                                optionThreesBarLength = 100 / 3
                                 optionFoursBarLength = 0
                                 optionFivesBarLength = 0
                                 optionSixesBarLength = 0
                             } else if (pollData[index].totalNumberOfOptions == "Four") {
-                                optionOnesBarLength = 100/4
-                                optionTwosBarLength = 100/4
-                                optionThreesBarLength = 100/4
-                                optionFoursBarLength = 100/4
+                                optionOnesBarLength = 100 / 4
+                                optionTwosBarLength = 100 / 4
+                                optionThreesBarLength = 100 / 4
+                                optionFoursBarLength = 100 / 4
                                 optionFivesBarLength = 0
                                 optionSixesBarLength = 0
                             } else if (pollData[index].totalNumberOfOptions == "Five") {
-                                optionOnesBarLength = 100/5
-                                optionTwosBarLength = 100/5
-                                optionThreesBarLength = 100/5
-                                optionFoursBarLength = 100/5
-                                optionFivesBarLength = 100/5
+                                optionOnesBarLength = 100 / 5
+                                optionTwosBarLength = 100 / 5
+                                optionThreesBarLength = 100 / 5
+                                optionFoursBarLength = 100 / 5
+                                optionFivesBarLength = 100 / 5
                                 optionSixesBarLength = 0
                             } else if (pollData[index].totalNumberOfOptions == "Six") {
-                                optionOnesBarLength = 100/6
-                                optionTwosBarLength = 100/6
-                                optionThreesBarLength = 100/6
-                                optionFoursBarLength = 100/6
-                                optionFivesBarLength = 100/6
-                                optionSixesBarLength = 100/6
+                                optionOnesBarLength = 100 / 6
+                                optionTwosBarLength = 100 / 6
+                                optionThreesBarLength = 100 / 6
+                                optionFoursBarLength = 100 / 6
+                                optionFivesBarLength = 100 / 6
+                                optionSixesBarLength = 100 / 6
                             }
                         }
                     }
@@ -2082,8 +1954,8 @@ const Welcome = ({navigation, route}) => {
                             var imageData = pollData
                             const imageInPfp = await getImageWithKeyThree(imageData[index].creatorPfpKey)
                             var pfpB64 = imageInPfp.data
-                            
-                            var tempSectionsTemp = {data: [{pollTitle: pollData[index].pollTitle, pollSubTitle: pollData[index].pollSubTitle, optionOne: pollData[index].optionOne, optionOnesColor: pollData[index].optionOnesColor, optionOnesVotes: pollData[index].optionOnesVotes, optionOnesBarLength: optionOnesBarLength, optionTwo: pollData[index].optionTwo, optionTwosColor: pollData[index].optionTwosColor, optionTwosVotes: pollData[index].optionTwosVotes, optionTwosBarLength: optionTwosBarLength, optionThree: pollData[index].optionThree, optionThreesColor: pollData[index].optionThreesColor, optionThreesVotes: pollData[index].optionThreesVotes, optionThreesBarLength: optionThreesBarLength, optionFour: pollData[index].optionFour, optionFoursColor: pollData[index].optionFoursColor, optionFoursVotes: pollData[index].optionFoursVotes, optionFoursBarLength: optionFoursBarLength, optionFive: pollData[index].optionFive, optionFivesColor: pollData[index].optionFivesColor, optionFivesVotes: pollData[index].optionFivesVotes, optionFivesBarLength:optionFivesBarLength, optionSix: pollData[index].optionSix, optionSixesColor: pollData[index].optionSixesColor, optionSixesVotes: pollData[index].optionSixesVotes, optionSixesBarLength: optionSixesBarLength, totalNumberOfOptions: pollData[index].totalNumberOfOptions, pollUpOrDownVotes: pollData[index].pollUpOrDownVotes, pollId: pollData[index]._id, votedFor: pollData[index].votedFor, postNum: index, pollComments: pollData[index].pollComments, pfpB64: pfpB64, creatorName: pollData[index].creatorName, creatorDisplayName: pollData[index].creatorDisplayName, datePosted: pollData[index].datePosted}]}
+
+                            var tempSectionsTemp = { data: [{ pollTitle: pollData[index].pollTitle, pollSubTitle: pollData[index].pollSubTitle, optionOne: pollData[index].optionOne, optionOnesColor: pollData[index].optionOnesColor, optionOnesVotes: pollData[index].optionOnesVotes, optionOnesBarLength: optionOnesBarLength, optionTwo: pollData[index].optionTwo, optionTwosColor: pollData[index].optionTwosColor, optionTwosVotes: pollData[index].optionTwosVotes, optionTwosBarLength: optionTwosBarLength, optionThree: pollData[index].optionThree, optionThreesColor: pollData[index].optionThreesColor, optionThreesVotes: pollData[index].optionThreesVotes, optionThreesBarLength: optionThreesBarLength, optionFour: pollData[index].optionFour, optionFoursColor: pollData[index].optionFoursColor, optionFoursVotes: pollData[index].optionFoursVotes, optionFoursBarLength: optionFoursBarLength, optionFive: pollData[index].optionFive, optionFivesColor: pollData[index].optionFivesColor, optionFivesVotes: pollData[index].optionFivesVotes, optionFivesBarLength: optionFivesBarLength, optionSix: pollData[index].optionSix, optionSixesColor: pollData[index].optionSixesColor, optionSixesVotes: pollData[index].optionSixesVotes, optionSixesBarLength: optionSixesBarLength, totalNumberOfOptions: pollData[index].totalNumberOfOptions, pollUpOrDownVotes: pollData[index].pollUpOrDownVotes, pollId: pollData[index]._id, votedFor: pollData[index].votedFor, postNum: index, pollComments: pollData[index].pollComments, pfpB64: pfpB64, creatorName: pollData[index].creatorName, creatorDisplayName: pollData[index].creatorDisplayName, datePosted: pollData[index].datePosted }] }
                             if (pollData[index].pollUpOrDownVoted == "UpVoted") {
                                 console.log("UpVoted")
                                 upVotedPolls.push(pollData[index]._id)
@@ -2105,7 +1977,7 @@ const Welcome = ({navigation, route}) => {
                             }
                             tempSections.push(tempSectionsTemp)
                             itemsProcessed++;
-                            if(itemsProcessed === pollData.length) {
+                            if (itemsProcessed === pollData.length) {
                                 //console.log(tempSections) removed since floods output
                                 setChangeSectionsThree(tempSections)
                                 setLoadingPostsPoll(false)
@@ -2117,7 +1989,7 @@ const Welcome = ({navigation, route}) => {
                         getPfpImageForPollWithAsync()
                     } else {
                         var pfpB64 = null
-                        var tempSectionsTemp = {data: [{pollTitle: pollData[index].pollTitle, pollSubTitle: pollData[index].pollSubTitle, optionOne: pollData[index].optionOne, optionOnesColor: pollData[index].optionOnesColor, optionOnesVotes: pollData[index].optionOnesVotes, optionOnesBarLength: optionOnesBarLength, optionTwo: pollData[index].optionTwo, optionTwosColor: pollData[index].optionTwosColor, optionTwosVotes: pollData[index].optionTwosVotes, optionTwosBarLength: optionTwosBarLength, optionThree: pollData[index].optionThree, optionThreesColor: pollData[index].optionThreesColor, optionThreesVotes: pollData[index].optionThreesVotes, optionThreesBarLength: optionThreesBarLength, optionFour: pollData[index].optionFour, optionFoursColor: pollData[index].optionFoursColor, optionFoursVotes: pollData[index].optionFoursVotes, optionFoursBarLength: optionFoursBarLength, optionFive: pollData[index].optionFive, optionFivesColor: pollData[index].optionFivesColor, optionFivesVotes: pollData[index].optionFivesVotes, optionFivesBarLength:optionFivesBarLength, optionSix: pollData[index].optionSix, optionSixesColor: pollData[index].optionSixesColor, optionSixesVotes: pollData[index].optionSixesVotes, optionSixesBarLength: optionSixesBarLength, totalNumberOfOptions: pollData[index].totalNumberOfOptions, pollUpOrDownVotes: pollData[index].pollUpOrDownVotes, pollId: pollData[index]._id, votedFor: pollData[index].votedFor, postNum: index, pollComments: pollData[index].pollComments, pfpB64: pfpB64, creatorName: pollData[index].creatorName, creatorDisplayName: pollData[index].creatorDisplayName, datePosted: pollData[index].datePosted}]}
+                        var tempSectionsTemp = { data: [{ pollTitle: pollData[index].pollTitle, pollSubTitle: pollData[index].pollSubTitle, optionOne: pollData[index].optionOne, optionOnesColor: pollData[index].optionOnesColor, optionOnesVotes: pollData[index].optionOnesVotes, optionOnesBarLength: optionOnesBarLength, optionTwo: pollData[index].optionTwo, optionTwosColor: pollData[index].optionTwosColor, optionTwosVotes: pollData[index].optionTwosVotes, optionTwosBarLength: optionTwosBarLength, optionThree: pollData[index].optionThree, optionThreesColor: pollData[index].optionThreesColor, optionThreesVotes: pollData[index].optionThreesVotes, optionThreesBarLength: optionThreesBarLength, optionFour: pollData[index].optionFour, optionFoursColor: pollData[index].optionFoursColor, optionFoursVotes: pollData[index].optionFoursVotes, optionFoursBarLength: optionFoursBarLength, optionFive: pollData[index].optionFive, optionFivesColor: pollData[index].optionFivesColor, optionFivesVotes: pollData[index].optionFivesVotes, optionFivesBarLength: optionFivesBarLength, optionSix: pollData[index].optionSix, optionSixesColor: pollData[index].optionSixesColor, optionSixesVotes: pollData[index].optionSixesVotes, optionSixesBarLength: optionSixesBarLength, totalNumberOfOptions: pollData[index].totalNumberOfOptions, pollUpOrDownVotes: pollData[index].pollUpOrDownVotes, pollId: pollData[index]._id, votedFor: pollData[index].votedFor, postNum: index, pollComments: pollData[index].pollComments, pfpB64: pfpB64, creatorName: pollData[index].creatorName, creatorDisplayName: pollData[index].creatorDisplayName, datePosted: pollData[index].datePosted }] }
                         if (pollData[index].pollUpOrDownVoted == "UpVoted") {
                             console.log("UpVoted")
                             upVotedPolls.push(pollData[index]._id)
@@ -2139,7 +2011,7 @@ const Welcome = ({navigation, route}) => {
                         }
                         tempSections.push(tempSectionsTemp)
                         itemsProcessed++;
-                        if(itemsProcessed === pollData.length) {
+                        if (itemsProcessed === pollData.length) {
                             //console.log(tempSections) removed since floods output
                             setChangeSectionsThree(tempSections)
                             setLoadingPostsPoll(false)
@@ -2156,7 +2028,7 @@ const Welcome = ({navigation, route}) => {
             setLoadingPostsPoll(true)
             axios.post(url, toSendProfileName).then((response) => {
                 const result = response.data;
-                const {message, status, data} = result;
+                const { message, status, data } = result;
 
                 if (status !== 'SUCCESS') {
                     handleMessage(message, status);
@@ -2164,7 +2036,7 @@ const Welcome = ({navigation, route}) => {
                     console.log(status)
                     console.log(message)
                 } else {
-                    layoutPollPosts({data});
+                    layoutPollPosts({ data });
                     console.log(status)
                     console.log(message)
                 }
@@ -2178,7 +2050,7 @@ const Welcome = ({navigation, route}) => {
             })
         } else {
             setSelectedPostFormat("Three")
-            setFormatThreeText("Users Poll Posts:") 
+            setFormatThreeText("Users Poll Posts:")
         }
     }
 
@@ -2226,7 +2098,7 @@ const Welcome = ({navigation, route}) => {
                                     const imageInPfp = await getImageWithKeyFour(threadData[index].creatorImageKey)
                                     const addAndPush = async () => {
                                         var pfpB64 = imageInPfp.data
-                                        var tempSectionsTemp = {data: [{postNum: index, threadId: threadData[index].threadId, threadComments: threadData[index].threadComments, threadType: threadData[index].threadType, threadUpVotes: threadData[index].threadUpVotes, threadTitle: threadData[index].threadTitle, threadSubtitle: threadData[index].threadSubtitle, threadTags: threadData[index].threadTags, threadCategory: threadData[index].threadCategory, threadBody: threadData[index].threadBody, threadImageKey: threadData[index].threadImageKey, threadImageDescription: threadData[index].threadImageDescription, threadNSFW: threadData[index].threadNSFW, threadNSFL: threadData[index].threadNSFL, datePosted: threadData[index].datePosted, threadUpVoted: threadData[index].threadUpVoted, threadDownVoted: threadData[index].threadDownVoted, creatorDisplayName: threadData[index].creatorDisplayName, creatorName: threadData[index].creatorName, creatorImageB64: pfpB64, imageInThreadB64: null}]}
+                                        var tempSectionsTemp = { data: [{ postNum: index, threadId: threadData[index].threadId, threadComments: threadData[index].threadComments, threadType: threadData[index].threadType, threadUpVotes: threadData[index].threadUpVotes, threadTitle: threadData[index].threadTitle, threadSubtitle: threadData[index].threadSubtitle, threadTags: threadData[index].threadTags, threadCategory: threadData[index].threadCategory, threadBody: threadData[index].threadBody, threadImageKey: threadData[index].threadImageKey, threadImageDescription: threadData[index].threadImageDescription, threadNSFW: threadData[index].threadNSFW, threadNSFL: threadData[index].threadNSFL, datePosted: threadData[index].datePosted, threadUpVoted: threadData[index].threadUpVoted, threadDownVoted: threadData[index].threadDownVoted, creatorDisplayName: threadData[index].creatorDisplayName, creatorName: threadData[index].creatorName, creatorImageB64: pfpB64, imageInThreadB64: null }] }
                                         if (threadData[index].threadUpVoted == true) {
                                             console.log("UpVoted")
                                             upVotedThreads.push(threadData[index].threadId)
@@ -2248,9 +2120,9 @@ const Welcome = ({navigation, route}) => {
                                         }
                                         tempSections.push(tempSectionsTemp)
                                         itemsProcessed++;
-                                        if(itemsProcessed === threadData.length) {
-                                            setChangeSectionsFour(tempSections)  
-                                            setLoadingPostsThread(false)  
+                                        if (itemsProcessed === threadData.length) {
+                                            setChangeSectionsFour(tempSections)
+                                            setLoadingPostsThread(false)
                                             console.log(upVotesThreads)
                                             console.log(downVotesThreads)
                                             console.log(neitherVotesThreads)
@@ -2263,7 +2135,7 @@ const Welcome = ({navigation, route}) => {
                                     const addAndPush = async () => {
                                         var pfpB64 = imageInPfp.data
                                         var imageInThreadB64 = imageInThread.data
-                                        var tempSectionsTemp = {data: [{postNum: index, threadId: threadData[index].threadId, threadComments: threadData[index].threadComments, threadType: threadData[index].threadType, threadUpVotes: threadData[index].threadUpVotes, threadTitle: threadData[index].threadTitle, threadSubtitle: threadData[index].threadSubtitle, threadTags: threadData[index].threadTags, threadCategory: threadData[index].threadCategory, threadBody: threadData[index].threadBody, threadImageKey: threadData[index].threadImageKey, threadImageDescription: threadData[index].threadImageDescription, threadNSFW: threadData[index].threadNSFW, threadNSFL: threadData[index].threadNSFL, datePosted: threadData[index].datePosted, threadUpVoted: threadData[index].threadUpVoted, threadDownVoted: threadData[index].threadDownVoted, creatorDisplayName: threadData[index].creatorDisplayName, creatorName: threadData[index].creatorName, creatorImageB64: pfpB64, imageInThreadB64: imageInThreadB64}]}
+                                        var tempSectionsTemp = { data: [{ postNum: index, threadId: threadData[index].threadId, threadComments: threadData[index].threadComments, threadType: threadData[index].threadType, threadUpVotes: threadData[index].threadUpVotes, threadTitle: threadData[index].threadTitle, threadSubtitle: threadData[index].threadSubtitle, threadTags: threadData[index].threadTags, threadCategory: threadData[index].threadCategory, threadBody: threadData[index].threadBody, threadImageKey: threadData[index].threadImageKey, threadImageDescription: threadData[index].threadImageDescription, threadNSFW: threadData[index].threadNSFW, threadNSFL: threadData[index].threadNSFL, datePosted: threadData[index].datePosted, threadUpVoted: threadData[index].threadUpVoted, threadDownVoted: threadData[index].threadDownVoted, creatorDisplayName: threadData[index].creatorDisplayName, creatorName: threadData[index].creatorName, creatorImageB64: pfpB64, imageInThreadB64: imageInThreadB64 }] }
                                         if (threadData[index].threadUpVoted == true) {
                                             console.log("UpVoted")
                                             upVotedThreads.push(threadData[index].threadId)
@@ -2285,9 +2157,9 @@ const Welcome = ({navigation, route}) => {
                                         }
                                         tempSections.push(tempSectionsTemp)
                                         itemsProcessed++;
-                                        if(itemsProcessed === threadData.length) {
-                                            setChangeSectionsFour(tempSections)  
-                                            setLoadingPostsThread(false)  
+                                        if (itemsProcessed === threadData.length) {
+                                            setChangeSectionsFour(tempSections)
+                                            setLoadingPostsThread(false)
                                             console.log(upVotesThreads)
                                             console.log(downVotesThreads)
                                             console.log(neitherVotesThreads)
@@ -2303,7 +2175,7 @@ const Welcome = ({navigation, route}) => {
                                     const imageInPfp = await getImageWithKeyFour(threadData[index].creatorImageKey)
                                     const addAndPush = async () => {
                                         var pfpB64 = imageInPfp.data
-                                        var tempSectionsTemp = {data: [{postNum: index, threadId: threadData[index].threadId, threadComments: threadData[index].threadComments, threadType: threadData[index].threadType, threadUpVotes: threadData[index].threadUpVotes, threadTitle: threadData[index].threadTitle, threadSubtitle: threadData[index].threadSubtitle, threadTags: threadData[index].threadTags, threadCategory: threadData[index].threadCategory, threadBody: threadData[index].threadBody, threadImageKey: threadData[index].threadImageKey, threadImageDescription: threadData[index].threadImageDescription, threadNSFW: threadData[index].threadNSFW, threadNSFL: threadData[index].threadNSFL, datePosted: threadData[index].datePosted, threadUpVoted: threadData[index].threadUpVoted, threadDownVoted: threadData[index].threadDownVoted, creatorDisplayName: threadData[index].creatorDisplayName, creatorName: threadData[index].creatorName, creatorImageB64: pfpB64, imageInThreadB64: null}]}
+                                        var tempSectionsTemp = { data: [{ postNum: index, threadId: threadData[index].threadId, threadComments: threadData[index].threadComments, threadType: threadData[index].threadType, threadUpVotes: threadData[index].threadUpVotes, threadTitle: threadData[index].threadTitle, threadSubtitle: threadData[index].threadSubtitle, threadTags: threadData[index].threadTags, threadCategory: threadData[index].threadCategory, threadBody: threadData[index].threadBody, threadImageKey: threadData[index].threadImageKey, threadImageDescription: threadData[index].threadImageDescription, threadNSFW: threadData[index].threadNSFW, threadNSFL: threadData[index].threadNSFL, datePosted: threadData[index].datePosted, threadUpVoted: threadData[index].threadUpVoted, threadDownVoted: threadData[index].threadDownVoted, creatorDisplayName: threadData[index].creatorDisplayName, creatorName: threadData[index].creatorName, creatorImageB64: pfpB64, imageInThreadB64: null }] }
                                         if (threadData[index].threadUpVoted == true) {
                                             console.log("UpVoted")
                                             upVotedThreads.push(threadData[index].threadId)
@@ -2325,9 +2197,9 @@ const Welcome = ({navigation, route}) => {
                                         }
                                         tempSections.push(tempSectionsTemp)
                                         itemsProcessed++;
-                                        if(itemsProcessed === threadData.length) {
-                                            setChangeSectionsFour(tempSections)  
-                                            setLoadingPostsThread(false)  
+                                        if (itemsProcessed === threadData.length) {
+                                            setChangeSectionsFour(tempSections)
+                                            setLoadingPostsThread(false)
                                             console.log(upVotesThreads)
                                             console.log(downVotesThreads)
                                             console.log(neitherVotesThreads)
@@ -2340,7 +2212,7 @@ const Welcome = ({navigation, route}) => {
                                     const addAndPush = async () => {
                                         var pfpB64 = imageInPfp.data
                                         var imageInThreadB64 = imageInThread.data
-                                        var tempSectionsTemp = {data: [{postNum: index, threadId: threadData[index].threadId, threadComments: threadData[index].threadComments, threadType: threadData[index].threadType, threadUpVotes: threadData[index].threadUpVotes, threadTitle: threadData[index].threadTitle, threadSubtitle: threadData[index].threadSubtitle, threadTags: threadData[index].threadTags, threadCategory: threadData[index].threadCategory, threadBody: threadData[index].threadBody, threadImageKey: threadData[index].threadImageKey, threadImageDescription: threadData[index].threadImageDescription, threadNSFW: threadData[index].threadNSFW, threadNSFL: threadData[index].threadNSFL, datePosted: threadData[index].datePosted, threadUpVoted: threadData[index].threadUpVoted, threadDownVoted: threadData[index].threadDownVoted, creatorDisplayName: threadData[index].creatorDisplayName, creatorName: threadData[index].creatorName, creatorImageB64: pfpB64, imageInThreadB64: imageInThreadB64}]}
+                                        var tempSectionsTemp = { data: [{ postNum: index, threadId: threadData[index].threadId, threadComments: threadData[index].threadComments, threadType: threadData[index].threadType, threadUpVotes: threadData[index].threadUpVotes, threadTitle: threadData[index].threadTitle, threadSubtitle: threadData[index].threadSubtitle, threadTags: threadData[index].threadTags, threadCategory: threadData[index].threadCategory, threadBody: threadData[index].threadBody, threadImageKey: threadData[index].threadImageKey, threadImageDescription: threadData[index].threadImageDescription, threadNSFW: threadData[index].threadNSFW, threadNSFL: threadData[index].threadNSFL, datePosted: threadData[index].datePosted, threadUpVoted: threadData[index].threadUpVoted, threadDownVoted: threadData[index].threadDownVoted, creatorDisplayName: threadData[index].creatorDisplayName, creatorName: threadData[index].creatorName, creatorImageB64: pfpB64, imageInThreadB64: imageInThreadB64 }] }
                                         if (threadData[index].threadUpVoted == true) {
                                             console.log("UpVoted")
                                             upVotedThreads.push(threadData[index].threadId)
@@ -2362,9 +2234,9 @@ const Welcome = ({navigation, route}) => {
                                         }
                                         tempSections.push(tempSectionsTemp)
                                         itemsProcessed++;
-                                        if(itemsProcessed === threadData.length) {
-                                            setChangeSectionsFour(tempSections)  
-                                            setLoadingPostsThread(false)  
+                                        if (itemsProcessed === threadData.length) {
+                                            setChangeSectionsFour(tempSections)
+                                            setLoadingPostsThread(false)
                                             console.log(upVotesThreads)
                                             console.log(downVotesThreads)
                                             console.log(neitherVotesThreads)
@@ -2380,12 +2252,12 @@ const Welcome = ({navigation, route}) => {
                 });
             }
 
-            const url = `https://nameless-dawn-41038.herokuapp.com/user/getthreadsfromprofilewithid/${_id}`;
+            const url = `https://nameless-dawn-41038.herokuapp.com/user/getthreadsfromprofile/${profilesName}/${_id}`;
 
             setLoadingPostsThread(true)
             axios.get(url).then((response) => {
                 const result = response.data;
-                const {message, status, data} = result;
+                const { message, status, data } = result;
 
                 if (status !== 'SUCCESS') {
                     setLoadingPostsThread(false)
@@ -2393,7 +2265,7 @@ const Welcome = ({navigation, route}) => {
                     console.log(status)
                     console.log(message)
                 } else {
-                    layoutThreadPosts({data});
+                    layoutThreadPosts({ data });
                     console.log(status)
                     console.log(message)
                 }
@@ -2407,10 +2279,10 @@ const Welcome = ({navigation, route}) => {
             })
         } else {
             setSelectedPostFormat("Four")
-            setFormatFourText("Users Thread Posts:") 
+            setFormatFourText("Users Thread Posts:")
         }
     }
-    
+
     const changeToFive = () => {
         if (loadingPostsCategory == false) {
             cancelTokenPostFormatOne.cancel()
@@ -2429,14 +2301,14 @@ const Welcome = ({navigation, route}) => {
                 var itemsProcessed = 0;
                 allData.forEach(function (item, index) {
                     if (allData[index].imageKey !== "") {
-                        if (index+1 <= userLoadMax) {      
+                        if (index + 1 <= userLoadMax) {
                             async function asyncFunctionForImages() {
                                 const imageInCategory = await getImageWithKeyFive(allData[index].imageKey)
                                 const imageB64 = imageInCategory.data
-                                var tempSectionsTemp = {data: [{categoryTitle: allData[index].categoryTitle, categoryDescription: allData[index].categoryDescription, members: allData[index].members, categoryTags: allData[index].categoryTags, image: imageB64, NSFW: allData[index].NSFW, NSFL: allData[index].NSFL, datePosted: allData[index].datePosted}]}
+                                var tempSectionsTemp = { data: [{ categoryTitle: allData[index].categoryTitle, categoryDescription: allData[index].categoryDescription, members: allData[index].members, categoryTags: allData[index].categoryTags, image: imageB64, NSFW: allData[index].NSFW, NSFL: allData[index].NSFL, datePosted: allData[index].datePosted }] }
                                 tempSections.push(tempSectionsTemp)
                                 itemsProcessed++;
-                                if(itemsProcessed === allData.length) {
+                                if (itemsProcessed === allData.length) {
                                     setChangeSectionsFive(tempSections)
                                     setLoadingPostsCategory(false)
                                 }
@@ -2444,11 +2316,11 @@ const Welcome = ({navigation, route}) => {
                             asyncFunctionForImages()
                         }
                     } else {
-                        if (index+1 <= userLoadMax) {      
-                            var tempSectionsTemp = {data: [{categoryTitle: allData[index].categoryTitle, categoryDescription: allData[index].categoryDescription, members: allData[index].members, categoryTags: allData[index].categoryTags, image: null, NSFW: allData[index].NSFW, NSFL: allData[index].NSFL, datePosted: allData[index].datePosted}]}
+                        if (index + 1 <= userLoadMax) {
+                            var tempSectionsTemp = { data: [{ categoryTitle: allData[index].categoryTitle, categoryDescription: allData[index].categoryDescription, members: allData[index].members, categoryTags: allData[index].categoryTags, image: null, NSFW: allData[index].NSFW, NSFL: allData[index].NSFL, datePosted: allData[index].datePosted }] }
                             tempSections.push(tempSectionsTemp)
                             itemsProcessed++;
-                            if(itemsProcessed === allData.length) {
+                            if (itemsProcessed === allData.length) {
                                 setChangeSectionsFive(tempSections)
                                 setLoadingPostsCategory(false)
                             }
@@ -2458,11 +2330,11 @@ const Welcome = ({navigation, route}) => {
             }
 
             handleMessage(null);
-            const url = `https://nameless-dawn-41038.herokuapp.com/user/findcategorywithuserid/${_id}`;
+            const url = `https://nameless-dawn-41038.herokuapp.com/user/findcategoryfromprofile/${profilesName}/${_id}`;
             setLoadingPostsCategory(true)
             axios.get(url).then((response) => {
                 const result = response.data;
-                const {message, status, data} = result;
+                const { message, status, data } = result;
 
                 if (status !== 'SUCCESS') {
                     handleMessage(message, status);
@@ -2487,38 +2359,38 @@ const Welcome = ({navigation, route}) => {
 
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
-          mediaTypes: ImagePicker.MediaTypeOptions.All,
-          allowsEditing: true,
-          aspect: [1, 1],
-          quality: 1,
+            mediaTypes: ImagePicker.MediaTypeOptions.All,
+            allowsEditing: true,
+            aspect: [1, 1],
+            quality: 1,
         });
-        
+
         if (!result.cancelled) {
             console.log(result)
             postMultiMedia(result)
         }
     };
 
-        
+
     const OpenImgLibrary = async () => {
         if (Platform.OS !== 'web') {
             const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
             if (status !== 'granted') {
-              alert('Sorry, we need camera roll permissions to make this work! Go into Settings and allow SocialSquare to use camera roll permissions to get this to work.');
+                alert('Sorry, we need camera roll permissions to make this work!');
             } else {
                 pickImage()
             }
         }
     }
 
-    return(
-        <>    
-            <StatusBar style={colors.StatusBarColor}/>
+    return (
+        <>
+            <StatusBar style="dark" />
             <ScrollView>
                 <WelcomeContainer>
                     <ProfileHorizontalView topItems={true}>
                         <ViewHider viewHidden={backButtonHidden}>
-                            <TouchableOpacity style={{marginRight: '65%'}} disabled={PageElementsState} onPress={() => {navigation.goBack()}}>
+                            <TouchableOpacity style={{marginRight: '75.5%'}} disabled={PageElementsState} onPress={() => {navigation.goBack()}}>
                                 <Image
                                     source={require('../assets/app_icons/back_arrow.png')}
                                     style={{ width: 40, height: 40, tintColor: colors.tertiary}}
@@ -2529,7 +2401,7 @@ const Welcome = ({navigation, route}) => {
                         </ViewHider>
                         <ViewHider viewHidden={!backButtonHidden}>
                             <View style={{minWidth: 40, marginRight: '65%'}}/>
-                        </ViewHider>
+                        </ViewHider>{/*
                         <TouchableOpacity disabled={PageElementsState} onPress={goToSettingsScreen}>
                             <Image
                                 source={require('../assets/app_icons/settings.png')}
@@ -2537,74 +2409,71 @@ const Welcome = ({navigation, route}) => {
                                 resizeMode="contain"
                                 resizeMethod="resize"
                             />
-                        </TouchableOpacity>
+                        </TouchableOpacity>*/}
                     </ProfileHorizontalView>
                     <ProfInfoAreaImage>
-                        <Avatar resizeMode="cover" source={{uri: AvatarImg}}/>
-                        <TouchableOpacity onPress={() => {OpenImgLibrary()}}>
-                            <SubTitle style={{marginBottom: 0, color: darkestBlue}}>Change</SubTitle>
-                        </TouchableOpacity>
-                        <PageTitle welcome={true}>{displayName || name || "Couldn't get name"}</PageTitle>
-                        <SubTitle>{"@"+name}</SubTitle>
+                        <Avatar resizeMode="cover" source={{ uri: AvatarImg }} />
+                        <PageTitle welcome={true}>{profilesDisplayName || profilesName || "Couldn't get name"}</PageTitle>
+                        <SubTitle>{"@" + profilesDisplayName}</SubTitle>
                         <ProfileBadgesView onPress={() => navigation.navigate("AccountBadges")}>
-                            <ProfileBadgeIcons source={require('./../assets/img/TempProfIcons.jpg')}/>
-                            <ProfileBadgeIcons source={require('./../assets/img/BgImage1.png')}/>
-                            <ProfileBadgeIcons source={require('./../assets/img/TempProfIcons.jpg')}/>
-                            <ProfileBadgeIcons source={require('./../assets/img/Toga.jpg')}/>
-                            <ProfileBadgeIcons source={require('./../assets/img/TempProfIcons.jpg')}/>
+                            <ProfileBadgeIcons source={require('./../assets/img/TempProfIcons.jpg')} />
+                            <ProfileBadgeIcons source={require('./../assets/img/BgImage1.png')} />
+                            <ProfileBadgeIcons source={require('./../assets/img/TempProfIcons.jpg')} />
+                            <ProfileBadgeIcons source={require('./../assets/img/Toga.jpg')} />
+                            <ProfileBadgeIcons source={require('./../assets/img/TempProfIcons.jpg')} />
                         </ProfileBadgesView>
                         <SubTitle bioText={true} > Bio </SubTitle>
                     </ProfInfoAreaImage>
                     <ProfileHorizontalView>
                         <ProfileHorizontalViewItem profLeftIcon={true}>
                             <SubTitle welcome={true}> Followers </SubTitle>
-                            <ProfIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/114-user.png')}/>
-                            <SubTitle welcome={true}> 0 </SubTitle>
+                            <ProfIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/114-user.png')} />
+                            <SubTitle welcome={true}> {followers.length} </SubTitle>
                         </ProfileHorizontalViewItem>
                         <ProfileHorizontalViewItem profCenterIcon={true}>
                             <SubTitle welcome={true}> Following </SubTitle>
-                                <ProfIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/115-users.png')}/>
-                            <SubTitle welcome={true}> 0 </SubTitle>
+                            <ProfIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/115-users.png')} />
+                            <SubTitle welcome={true}> {following.length} </SubTitle>
                         </ProfileHorizontalViewItem>
                         <ProfileHorizontalViewItem profRightIcon={true}>
                             <SubTitle welcome={true}> Likes </SubTitle>
-                                <ProfIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/219-heart.png')}/>
-                            <SubTitle welcome={true}> 0 </SubTitle>
+                            <ProfIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/219-heart.png')} />
+                            <SubTitle welcome={true}> {totalLikes} </SubTitle>
                         </ProfileHorizontalViewItem>
                     </ProfileHorizontalView>
                     <ProfilePostsSelectionView>
                         <ProfilePostsSelectionBtns onPress={changeToGrid}>
-                            <ProfIcons source={require('./../assets/img/Toga.jpg')}/>
+                            <ProfIcons source={require('./../assets/img/Toga.jpg')} />
                         </ProfilePostsSelectionBtns>
                         <ProfilePostsSelectionBtns onPress={changeToFeatured}>
-                            <ProfIcons source={require('./../assets/img/Toga.jpg')}/>
+                            <ProfIcons source={require('./../assets/img/Toga.jpg')} />
                         </ProfilePostsSelectionBtns>
                     </ProfilePostsSelectionView>
                     <ProfileSelectMediaTypeHorizontalView>
                         <ProfileSelectMediaTypeItem onPress={changeToOne}>
                             <ProfileSelectMediaTypeIconsBorder>
-                                <ProfileSelectMediaTypeIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/015-images.png')}/>
+                                <ProfileSelectMediaTypeIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/015-images.png')} />
                             </ProfileSelectMediaTypeIconsBorder>
                         </ProfileSelectMediaTypeItem>
                         <ProfileSelectMediaTypeItem onPress={changeToTwo}>
                             <ProfileSelectMediaTypeIconsBorder>
-                                <ProfileSelectMediaTypeIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/020-film.png')}/>
-                            </ProfileSelectMediaTypeIconsBorder>                        
+                                <ProfileSelectMediaTypeIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/020-film.png')} />
+                            </ProfileSelectMediaTypeIconsBorder>
                         </ProfileSelectMediaTypeItem>
                         <ProfileSelectMediaTypeItem onPress={changeToThree}>
-                            <ProfileSelectMediaTypeIconsBorder>     
-                                <ProfileSelectMediaTypeIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/157-stats-bars.png')}/>
-                            </ProfileSelectMediaTypeIconsBorder>     
+                            <ProfileSelectMediaTypeIconsBorder>
+                                <ProfileSelectMediaTypeIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/157-stats-bars.png')} />
+                            </ProfileSelectMediaTypeIconsBorder>
                         </ProfileSelectMediaTypeItem>
                         <ProfileSelectMediaTypeItem onPress={changeToFour}>
-                            <ProfileSelectMediaTypeIconsBorder>     
-                                <ProfileSelectMediaTypeIcons style={{height: '80%', width: '80%'}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/007-pencil2.png')}/>
-                            </ProfileSelectMediaTypeIconsBorder>     
+                            <ProfileSelectMediaTypeIconsBorder>
+                                <ProfileSelectMediaTypeIcons style={{ height: '80%', width: '80%' }} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/007-pencil2.png')} />
+                            </ProfileSelectMediaTypeIconsBorder>
                         </ProfileSelectMediaTypeItem>
                         <ProfileSelectMediaTypeItem onPress={changeToFive}>
-                            <ProfileSelectMediaTypeIconsBorder>     
-                                <ProfileSelectMediaTypeIcons style={{height: '80%', width: '80%'}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/093-drawer.png')}/>
-                            </ProfileSelectMediaTypeIconsBorder>     
+                            <ProfileSelectMediaTypeIconsBorder>
+                                <ProfileSelectMediaTypeIcons style={{ height: '80%', width: '80%' }} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/093-drawer.png')} />
+                            </ProfileSelectMediaTypeIconsBorder>
                         </ProfileSelectMediaTypeItem>
                     </ProfileSelectMediaTypeHorizontalView>
                     <ProfileGridPosts display={gridViewState}>
@@ -2636,60 +2505,60 @@ const Welcome = ({navigation, route}) => {
                         {selectedPostFormat == "One" && (<SectionList
                             sections={changeSectionsOne}
                             keyExtractor={(item, index) => item + index}
-                            renderItem={({ item }) => <ImageItem imageKey={item.imageKey} imageB64={item.imageB64} imageTitle={item.imageTitle} imageDescription={item.imageDescription} imageUpVotes={item.imageUpVotes} imageComments={item.imageComments} creatorName={item.creatorName} creatorDisplayName={item.creatorDisplayName} creatorPfpB64={item.creatorPfpB64} datePosted={item.datePosted} postNum={item.postNum}/>}
+                            renderItem={({ item }) => <ImageItem imageKey={item.imageKey} imageB64={item.imageB64} imageTitle={item.imageTitle} imageDescription={item.imageDescription} imageUpVotes={item.imageUpVotes} imageComments={item.imageComments} creatorName={item.creatorName} creatorDisplayName={item.creatorDisplayName} creatorPfpB64={item.creatorPfpB64} datePosted={item.datePosted} postNum={item.postNum} />}
                         />)}
                         {selectedPostFormat == "Two" && (<SectionList
                             sections={changeSectionsTwo}
                             keyExtractor={(item, index) => item + index}
-                            renderItem={({ item }) => <PollItem pollTitle={item.pollTitle} pollSubTitle={item.pollSubTitle} optionOne={item.optionOne} optionOnesColor={item.optionOnesColor} optionOnesVotes={item.optionOnesVotes} optionOnesBarLength={item.optionOnesBarLength} optionTwo={item.optionTwo} optionTwosColor={item.optionTwosColor} optionTwosVotes={item.optionTwosVotes} optionTwosBarLength={item.optionTwosBarLength} optionThree={item.optionThree} optionThreesColor={item.optionThreesColor} optionThreesVotes={item.optionThreesVotes} optionThreesBarLength={item.optionThreesBarLength} optionFour={item.optionFour} optionFoursColor={item.optionFoursColor} optionFoursVotes={item.optionFoursVotes} optionFoursBarLength={item.optionFoursBarLength} optionFive={item.optionFive} optionFivesColor={item.optionFivesColor} optionFivesVotes={item.optionFivesVotes} optionFivesBarLength={item.optionFivesBarLength} optionSix={item.optionSix} optionSixesColor={item.optionSixesColor} optionSixesVotes={item.optionSixesVotes} optionSixesBarLength={item.optionSixesBarLength} totalNumberOfOptions={item.totalNumberOfOptions} pollUpOrDownVotes={item.pollUpOrDownVotes} pollId={item.pollId} votedFor={item.votedFor} pollLiked={item.pollLiked} pfpB64={item.pfpB64} creatorName={item.creatorName} creatorDisplayName={item.creatorDisplayName}/>}
+                            renderItem={({ item }) => <PollItem pollTitle={item.pollTitle} pollSubTitle={item.pollSubTitle} optionOne={item.optionOne} optionOnesColor={item.optionOnesColor} optionOnesVotes={item.optionOnesVotes} optionOnesBarLength={item.optionOnesBarLength} optionTwo={item.optionTwo} optionTwosColor={item.optionTwosColor} optionTwosVotes={item.optionTwosVotes} optionTwosBarLength={item.optionTwosBarLength} optionThree={item.optionThree} optionThreesColor={item.optionThreesColor} optionThreesVotes={item.optionThreesVotes} optionThreesBarLength={item.optionThreesBarLength} optionFour={item.optionFour} optionFoursColor={item.optionFoursColor} optionFoursVotes={item.optionFoursVotes} optionFoursBarLength={item.optionFoursBarLength} optionFive={item.optionFive} optionFivesColor={item.optionFivesColor} optionFivesVotes={item.optionFivesVotes} optionFivesBarLength={item.optionFivesBarLength} optionSix={item.optionSix} optionSixesColor={item.optionSixesColor} optionSixesVotes={item.optionSixesVotes} optionSixesBarLength={item.optionSixesBarLength} totalNumberOfOptions={item.totalNumberOfOptions} pollUpOrDownVotes={item.pollUpOrDownVotes} pollId={item.pollId} votedFor={item.votedFor} pollLiked={item.pollLiked} pfpB64={item.pfpB64} creatorName={item.creatorName} creatorDisplayName={item.creatorDisplayName} />}
                         />)}
                         {selectedPostFormat == "Three" && (<SectionList
                             sections={changeSectionsThree}
                             keyExtractor={(item, index) => item + index}
-                            renderItem={({ item }) => <PollItem pollTitle={item.pollTitle} pollSubTitle={item.pollSubTitle} optionOne={item.optionOne} optionOnesColor={item.optionOnesColor} optionOnesVotes={item.optionOnesVotes} optionOnesBarLength={item.optionOnesBarLength} optionTwo={item.optionTwo} optionTwosColor={item.optionTwosColor} optionTwosVotes={item.optionTwosVotes} optionTwosBarLength={item.optionTwosBarLength} optionThree={item.optionThree} optionThreesColor={item.optionThreesColor} optionThreesVotes={item.optionThreesVotes} optionThreesBarLength={item.optionThreesBarLength} optionFour={item.optionFour} optionFoursColor={item.optionFoursColor} optionFoursVotes={item.optionFoursVotes} optionFoursBarLength={item.optionFoursBarLength} optionFive={item.optionFive} optionFivesColor={item.optionFivesColor} optionFivesVotes={item.optionFivesVotes} optionFivesBarLength={item.optionFivesBarLength} optionSix={item.optionSix} optionSixesColor={item.optionSixesColor} optionSixesVotes={item.optionSixesVotes} optionSixesBarLength={item.optionSixesBarLength} totalNumberOfOptions={item.totalNumberOfOptions} pollUpOrDownVotes={item.pollUpOrDownVotes} pollId={item.pollId} votedFor={item.votedFor} pfpB64={item.pfpB64} creatorName={item.creatorName} creatorDisplayName={item.creatorDisplayName} postNum={item.postNum} datePosted={item.datePosted} pollComments={item.pollComments}/>}
+                            renderItem={({ item }) => <PollItem pollTitle={item.pollTitle} pollSubTitle={item.pollSubTitle} optionOne={item.optionOne} optionOnesColor={item.optionOnesColor} optionOnesVotes={item.optionOnesVotes} optionOnesBarLength={item.optionOnesBarLength} optionTwo={item.optionTwo} optionTwosColor={item.optionTwosColor} optionTwosVotes={item.optionTwosVotes} optionTwosBarLength={item.optionTwosBarLength} optionThree={item.optionThree} optionThreesColor={item.optionThreesColor} optionThreesVotes={item.optionThreesVotes} optionThreesBarLength={item.optionThreesBarLength} optionFour={item.optionFour} optionFoursColor={item.optionFoursColor} optionFoursVotes={item.optionFoursVotes} optionFoursBarLength={item.optionFoursBarLength} optionFive={item.optionFive} optionFivesColor={item.optionFivesColor} optionFivesVotes={item.optionFivesVotes} optionFivesBarLength={item.optionFivesBarLength} optionSix={item.optionSix} optionSixesColor={item.optionSixesColor} optionSixesVotes={item.optionSixesVotes} optionSixesBarLength={item.optionSixesBarLength} totalNumberOfOptions={item.totalNumberOfOptions} pollUpOrDownVotes={item.pollUpOrDownVotes} pollId={item.pollId} votedFor={item.votedFor} pfpB64={item.pfpB64} creatorName={item.creatorName} creatorDisplayName={item.creatorDisplayName} postNum={item.postNum} datePosted={item.datePosted} pollComments={item.pollComments} />}
                         />)}
                         {selectedPostFormat == "Four" && (<SectionList
                             sections={changeSectionsFour}
                             keyExtractor={(item, index) => item + index}
-                            renderItem={({ item }) => <ThreadItems postNum={item.postNum} threadId={item.threadId} threadComments={item.threadComments} threadType={item.threadType} threadUpVotes={item.threadUpVotes} threadTitle={item.threadTitle} threadSubtitle={item.threadSubtitle} threadTags={item.threadTags} threadCategory={item.threadCategory} threadBody={item.threadBody} threadImageKey={item.threadImageKey} threadImageDescription={item.threadImageDescription} threadNSFW={item.threadNSFW} threadNSFL={item.threadNSFL} datePosted={item.datePosted} threadUpVoted={item.threadUpVoted} threadDownVoted={item.threadDownVoted} creatorDisplayName={item.creatorDisplayName} creatorName={item.creatorName} creatorImageB64={item.creatorImageB64} imageInThreadB64={item.imageInThreadB64}/>}
+                            renderItem={({ item }) => <ThreadItems postNum={item.postNum} threadId={item.threadId} threadComments={item.threadComments} threadType={item.threadType} threadUpVotes={item.threadUpVotes} threadTitle={item.threadTitle} threadSubtitle={item.threadSubtitle} threadTags={item.threadTags} threadCategory={item.threadCategory} threadBody={item.threadBody} threadImageKey={item.threadImageKey} threadImageDescription={item.threadImageDescription} threadNSFW={item.threadNSFW} threadNSFL={item.threadNSFL} datePosted={item.datePosted} threadUpVoted={item.threadUpVoted} threadDownVoted={item.threadDownVoted} creatorDisplayName={item.creatorDisplayName} creatorName={item.creatorName} creatorImageB64={item.creatorImageB64} imageInThreadB64={item.imageInThreadB64} />}
                         />)}
                         {selectedPostFormat == "Five" && (<SectionList
                             sections={changeSectionsFive}
                             keyExtractor={(item, index) => item + index}
-                            renderItem={({ item }) => <CategoryItem categoryTitle={item.categoryTitle} categoryDescription={item.categoryDescription} members={item.members} categoryTags={item.categoryTags} image={item.image} NSFW={item.NSFW} NSFL={item.NSFL} datePosted={item.datePosted}/>}
+                            renderItem={({ item }) => <CategoryItem categoryTitle={item.categoryTitle} categoryDescription={item.categoryDescription} members={item.members} categoryTags={item.categoryTags} image={item.image} NSFW={item.NSFW} NSFL={item.NSFL} datePosted={item.datePosted} />}
                         />)}
                         {selectedPostFormat == "One" && (
                             <View>
                                 {loadingPostsImage == true && (
-                                    <ActivityIndicator size="large" color={brand} style={{marginBottom: 20}} />  
+                                    <ActivityIndicator size="large" color={brand} style={{ marginBottom: 20 }} />
                                 )}
                             </View>
                         )}
                         {selectedPostFormat == "Two" && (
                             <View>
                                 {loadingPostsVideo == true && (
-                                    <ActivityIndicator size="large" color={brand} style={{marginBottom: 20}} />  
+                                    <ActivityIndicator size="large" color={brand} style={{ marginBottom: 20 }} />
                                 )}
                             </View>
                         )}
                         {selectedPostFormat == "Three" && (
                             <View>
                                 {loadingPostsPoll == true && (
-                                    <ActivityIndicator size="large" color={brand} style={{marginBottom: 20}} />  
+                                    <ActivityIndicator size="large" color={brand} style={{ marginBottom: 20 }} />
                                 )}
                             </View>
                         )}
                         {selectedPostFormat == "Four" && (
                             <View>
                                 {loadingPostsThread == true && (
-                                    <ActivityIndicator size="large" color={brand} style={{marginBottom: 20}} />  
+                                    <ActivityIndicator size="large" color={brand} style={{ marginBottom: 20 }} />
                                 )}
                             </View>
                         )}
                         {selectedPostFormat == "Five" && (
                             <View>
                                 {loadingPostsCategory == true && (
-                                    <ActivityIndicator size="large" color={brand} style={{marginBottom: 20}} />  
+                                    <ActivityIndicator size="large" color={brand} style={{ marginBottom: 20 }} />
                                 )}
                             </View>
                         )}
@@ -2699,16 +2568,10 @@ const Welcome = ({navigation, route}) => {
                             Features don't work yet...
                         </SubTitle>
                     </ProfileFeaturedPosts>
-                    <StyledFormArea>
-                        <Line />
-                        <StyledButton onPress={() => navigation.navigate("CategoryHome")}>
-                            <ButtonText> Category Home </ButtonText>
-                        </StyledButton>
-                    </StyledFormArea>
                 </WelcomeContainer>
             </ScrollView>
         </>
     );
 }
 
-export default Welcome;
+export default ProfilePages;

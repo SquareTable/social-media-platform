@@ -104,6 +104,7 @@ const App = () => {
     dark: true,
     colors: {
       primary: '#3b4252',
+      background: '#3b4252',
       secondary: '#88c0d0',
       tertiary: '#eceff4',
       darkLight: '#4c566a',
@@ -124,6 +125,7 @@ const App = () => {
     dark: false,
     colors: {
       primary: '#eceff4',
+      background: '#eceff4',
       secondary: '#88c0d0',
       tertiary: '#3b4252',
       darkLight: '#4c566a',

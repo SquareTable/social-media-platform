@@ -34,7 +34,7 @@ import {
     PostIcons,
     MultiMediaPostFrame,
     Avatar
-} from './screenStylings/styling.js';
+} from './screenStylings/styling';
 const {brand, primary, tertiary, darkLight, slightlyLighterGrey, midWhite} = Colors;
 
 //From react native
