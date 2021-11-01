@@ -61,7 +61,7 @@ const PostScreen = ({navigation}) => {
             navigation.navigate("MultiMediaUploadPage")
         } else if (formatTwoSelected == true) {
             setMessageVisibility(false)
-            navigation.navigate("ThreadUploadPage")
+            navigation.navigate("ThreadUploadPage", {threadFormat: null, threadTitle: null, threadSubtitle: null, threadTags: null, categoryTitle: null, threadBody: null, threadImage: null, threadImageDescription: null, threadNSFW: null, threadNSFL: null})
         } else if (formatThreeSelected == true) {
             setMessageVisibility(false)
             navigation.navigate("PollUploadPage")
@@ -134,8 +134,8 @@ const PostScreen = ({navigation}) => {
                         </PostTypeSelector>
                         <PostMsgBox viewHidden={messageVisibility}> Select a format </PostMsgBox>
                     </PostCollectionView>
-                    <StyledButton continueButton={true} onPress={continuePressed}>
-                        <ButtonText continueButton={true}>
+                    <StyledButton /*continueButton={true}*/ onPress={continuePressed}>
+                        <ButtonText /*continueButton={true}*/>
                             Continue
                         </ButtonText>
                     </StyledButton>

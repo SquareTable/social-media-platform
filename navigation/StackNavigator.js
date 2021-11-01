@@ -24,12 +24,15 @@ import { NavigationContainer, useTheme } from '@react-navigation/native';
 import FindScreen from "../screens/FindScreen.js";
 import Post from "../posts/post.js";
 import Post_FullScreen from "../posts/post_fullscreen.js";
+import ProfilePages from '../screens/ProfilePages.js'
 
 import PostScreen from '../screens/PostScreen';
 import MultiMediaUploadPage from '../screens/PostScreens/MultiMediaUploadPage';
 import ThreadUploadPage from '../screens/PostScreens/ThreadUploadPage';
 import PollUploadPage from '../screens/PostScreens/PollUploadPage';
 import AudioUploadPage from '../screens/PostScreens/AudioUploadPage';
+import MultiMediaUploadPreview from '../screens/PostScreens/MultiMediaUploadPreview'
+import SelectCategorySearchScreen from '../screens/SelectCategorySearchScreen'
 
 import AccountBadges from "../screens/AccountBadges.js";
 import ChangeDisplayNamePage from "../screens/ChangeDisplayNamePage";
@@ -45,6 +48,14 @@ import SendAudioPage from "../screens/PostScreens/SendAudioPage.js";
 
 import AppBehaviour from '../screens/AppBehaviour.js';
 import AppBehaviour_HomeScreen from "../screens/AppBehaviour_HomeScreen.js";
+
+import CategoryViewPage from '../screens/CategoryViewPage'
+import CommentViewPage from '../screens/CommentViewPage'
+import ThreadViewPage from '../screens/ThreadViewPage'
+import ViewImagePostPage from '../screens/ViewImagePostPage'
+import ViewPollPostPage from '../screens/ViewPollPostPage'
+import CategoryHome from '../screens/CategoryHome'
+import CategoryCreationPage from "../screens/CategoryCreationPage.js";
 
 
 
@@ -181,6 +192,13 @@ const RootStack = () => {
                 <Stack.Screen name="ChangeUsernamePage" component={ChangeUsernamePage}/>
                 <Stack.Screen name="ChangeEmailPage" component={ChangeEmailPage}/>
                 <Stack.Screen name="ReportBugScreen" component={ReportBugScreen}/>
+                <Stack.Screen name="CategoryViewPage" component={CategoryViewPage}/>
+                <Stack.Screen name="CommentViewPage" component={CommentViewPage}/>
+                <Stack.Screen name="ThreadViewPage" component={ThreadViewPage}/>
+                <Stack.Screen name="ViewImagePostPage" component={ViewImagePostPage}/>
+                <Stack.Screen name="ViewPollPostPage" component={ViewPollPostPage}/>
+                <Stack.Screen name="CategoryHome" component={CategoryHome}/>
+                <Stack.Screen name="CategoryCreationPage" component={CategoryCreationPage}/>
                 <Stack.Screen 
                   name="AppBehaviour" 
                   component={AppBehaviour}
@@ -227,6 +245,20 @@ const FindScreen_Stack = () => {
   return (
     <Stack.Navigator screenOptions={screenOptionStyle}>
       <Stack.Screen name="FindScreen" component={FindScreen}
+        options={{
+          headerStyle: {
+            backgroundColor: 'transparent',
+          },
+          headerTintColor: colors.tertiary,
+          headerTransparent: true,
+          headerTitle: '',
+          headerLeftContainerStyle: {
+              paddingLeft: 20,
+          },
+          headerLeft: null
+        }}
+      />
+      <Stack.Screen name="ProfilePages" component={ProfilePages}
         options={{
           headerStyle: {
             backgroundColor: 'transparent',
@@ -387,6 +419,30 @@ const post_screen_navigator = () => {
         },
         headerLeft: null,
         gestureEnabled: false
+    }}/>
+    <Stack.Screen name="MultiMediaUploadPreview" component={MultiMediaUploadPreview}
+      options={{
+        headerStyle: {
+            backgroundColor: 'transparent',
+        },
+        headerTintColor: colors.tertiary,
+        headerTransparent: true,
+        headerTitle: '',
+        headerLeftContainerStyle: {
+            paddingLeft: 20,
+        },
+    }}/>
+    <Stack.Screen name="SelectCategorySearchScreen" component={SelectCategorySearchScreen}
+      options={{
+        headerStyle: {
+            backgroundColor: 'transparent',
+        },
+        headerTintColor: colors.tertiary,
+        headerTransparent: true,
+        headerTitle: '',
+        headerLeftContainerStyle: {
+            paddingLeft: 20,
+        },
     }}/>
     </Stack.Navigator>
   )
