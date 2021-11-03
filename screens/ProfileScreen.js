@@ -90,7 +90,11 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import {useTheme} from "@react-navigation/native"
 
+import Constants from "expo-constants";
+
 const Welcome = ({navigation, route}) => {
+    const StatusBarHeight = Constants.statusBarHeight;
+    const [ShowTopProfileBar, setShowTopProfileBar] = useState(true)
     if (route.params) {
         var {backButtonHidden} = route.params;
         console.log(backButtonHidden)
@@ -1203,7 +1207,7 @@ const Welcome = ({navigation, route}) => {
                 </PostsVerticalView>
             </PostsHorizontalView>
             <PostsHorizontalView style={{alignItems: 'center', justifyContent: 'center'}}>
-                <MultiMediaPostFrame postOnProfile={true} style={{ aspectRatio: 1/1 }} onPress={() => navigation.navigate("ViewImagePostPage", {imageKey, imageB64, imageTitle, imageDescription, creatorName, creatorDisplayName, creatorPfpB64, datePosted})}>
+                <MultiMediaPostFrame postOnProfile={true} style={{ aspectRatio: 1/1 }}>
                     <Image style={{width: '100%', height: '100%', resizeMode : 'cover', borderRadius: 20}} source={{uri: `data:image/jpg;base64,${imageB64}`}}/>
                 </MultiMediaPostFrame>
             </PostsHorizontalView>
@@ -2510,7 +2514,6 @@ const Welcome = ({navigation, route}) => {
             }
         }
     }
-
     return(
         <>    
             <StatusBar style={colors.StatusBarColor}/>

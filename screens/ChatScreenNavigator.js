@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect, useLayoutEffect } from 'react'
-import { StyleSheet, Text, View, Button, Image, TouchableOpacity, SafeAreaView, ScrollView, Platform, FlatList, Dimensions} from 'react-native';
+import { StyleSheet, Text, View, Button, Image, TouchableOpacity, SafeAreaView, ScrollView, Platform, FlatList, Dimensions, RefreshControl} from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import Images from "../posts/images.js";
 import {
@@ -95,6 +95,20 @@ const ChatScreenNavigator = ({navigation}) => {
     GetChatList();
     const {colors} = useTheme();
 
+    const [refreshing, setRefreshing] = useState(false)
+
+    const onRefresh = useCallback(async () => {
+        //Pull to refresh code goes here
+        // Fetch data from server if you pull to refresh
+        setRefreshing(true)
+        // Check if data has been refreshed code goes here
+        // Replace dataHasBeenRefreshed var and if statement with an actual check for data
+        const dataHasBeenRefreshed = true
+        if (dataHasBeenRefreshed == true) {
+            setRefreshing(false)
+        }
+    })
+
 
     return(
         <BackgroundDarkColor_SafeAreaView style={{backgroundColor: colors.primary}}>
@@ -114,6 +128,7 @@ const ChatScreenNavigator = ({navigation}) => {
             <FlatList 
                 data={directMessages}
                 keyExtractor={(item, index) => 'key'+index}
+                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
                 ListEmptyComponent={
                     <View style={{marginTop: '80%'}}>
                         <TestText style={{color: colors.tertiary, fontSize: 25}}>No messages to show here</TestText>

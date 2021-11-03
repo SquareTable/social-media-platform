@@ -50,7 +50,10 @@ import background from "./../assets/img/Toga.jpg";
 import axios from 'axios';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
+import { useTheme } from '@react-navigation/native';
+
 const FindScreen = ({navigation}) => {
+    const {colors, dark} = useTheme();
      //context
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
     const {photoUrl} = storedCredentials;
@@ -78,25 +81,25 @@ const FindScreen = ({navigation}) => {
             {profileKey == null && (
                 <Avatar resizeMode="cover" searchPage={true} source={require('./../assets/img/Logo.png')} />
             )}
-            <SubTitle searchResTitle={true}>{name}</SubTitle>
+            <SubTitle style={{color: colors.tertiary}} searchResTitle={true}>{name}</SubTitle>
             <SubTitle searchResTitleDisplayName={true} style={{color: brand}}>@{displayName}</SubTitle>
             <SearchHorizontalView>
                 <SearchHorizontalViewItem>
-                    <SearchSubTitle welcome={true}> Following </SearchSubTitle>
+                    <SearchSubTitle style={{color: colors.tertiary}} welcome={true}> Following </SearchSubTitle>
                     <ProfIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/273-checkmark.png')}/>
-                    <SearchSubTitle welcome={true}> {following.length} </SearchSubTitle>
+                    <SearchSubTitle style={{color: colors.tertiary}} welcome={true}> {following.length} </SearchSubTitle>
                 </SearchHorizontalViewItem>
 
                 <SearchHorizontalViewItemCenter>
-                    <SearchSubTitle welcome={true}> Followers </SearchSubTitle>
+                    <SearchSubTitle style={{color: colors.tertiary}} welcome={true}> Followers </SearchSubTitle>
                     <ProfIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/274-checkmark2.png')}/>
-                    <SearchSubTitle welcome={true}> {followers.length} </SearchSubTitle>
+                    <SearchSubTitle style={{color: colors.tertiary}} welcome={true}> {followers.length} </SearchSubTitle>
                 </SearchHorizontalViewItemCenter>
 
                 <SearchHorizontalViewItem>
-                    <SearchSubTitle welcome={true}> Total Likes </SearchSubTitle>
+                    <SearchSubTitle style={{color: colors.tertiary}} welcome={true}> Total Likes </SearchSubTitle>
                     <ProfIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/273-checkmark.png')}/>
-                    <SearchSubTitle welcome={true}> {totalLikes} </SearchSubTitle>
+                    <SearchSubTitle style={{color: colors.tertiary}} welcome={true}> {totalLikes} </SearchSubTitle>
                 </SearchHorizontalViewItem>
             </SearchHorizontalView>
         </SearchFrame>
@@ -113,12 +116,12 @@ const FindScreen = ({navigation}) => {
             {NSFW == false && (
                 <View>
                     {NSFL == false && (
-                        <SubTitle searchResTitle={true}>{categoryTitle}</SubTitle>
+                        <SubTitle style={{color: colors.tertiary}} searchResTitle={true}>{categoryTitle}</SubTitle>
                     )}
                     {NSFL == true && (
                         <View style={{flexDirection: 'row'}}>
                             <SubTitle searchResTitle={true} style={{color: red}}>(NSFL) </SubTitle>
-                            <SubTitle searchResTitle={true}>{categoryTitle}</SubTitle>
+                            <SubTitle style={{color: colors.tertiary}} searchResTitle={true}>{categoryTitle}</SubTitle>
                         </View>
                     )}
                 </View>
@@ -126,26 +129,26 @@ const FindScreen = ({navigation}) => {
             {NSFW == true && (
                 <View style={{flexDirection: 'row'}}>
                     <SubTitle searchResTitle={true} style={{color: red}}>(NSFW) </SubTitle>
-                    <SubTitle searchResTitle={true}>{categoryTitle}</SubTitle>
+                    <SubTitle style={{color: colors.tertiary}} searchResTitle={true}>{categoryTitle}</SubTitle>
                 </View>
             )}
-            <SubTitle searchResTitleDisplayName={true}>{categoryDescription}</SubTitle>
+            <SubTitle style={{color: colors.tertiary}} searchResTitleDisplayName={true}>{categoryDescription}</SubTitle>
             <SubTitle searchResTitleDisplayName={true} style={{color: brand}}>{categoryTags}</SubTitle>
             <SearchHorizontalView>
                 <SearchHorizontalViewItemCenter style={{height: '100%', justifyContent: 'center', alignItems: 'center', textAlign: 'center'}}>
-                    <SearchSubTitle welcome={true} style={{flex: 1}}> Members </SearchSubTitle>
+                    <SearchSubTitle welcome={true} style={{flex: 1, color: colors.tertiary}}> Members </SearchSubTitle>
                     <ProfIcons style={{flex: 1}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/115-users.png')}/>
                     {members == 0 && ( 
-                        <SearchSubTitle welcome={true} style={{flex: 1}}> 0 </SearchSubTitle>
+                        <SearchSubTitle welcome={true} style={{flex: 1, color: colors.tertiary}}> 0 </SearchSubTitle>
                     )}
                     {members !== 0 && ( 
-                        <SearchSubTitle welcome={true} style={{flex: 1}}> {members} </SearchSubTitle>
+                        <SearchSubTitle welcome={true} style={{flex: 1, color: colors.tertiary}}> {members} </SearchSubTitle>
                     )}
                 </SearchHorizontalViewItemCenter>
                 <SearchHorizontalViewItemCenter style={{height: '100%', justifyContent: 'center', alignItems: 'center', textAlign: 'center'}}>
-                    <SearchSubTitle welcome={true} style={{flex: 1}}> Date Created </SearchSubTitle>
+                    <SearchSubTitle welcome={true} style={{flex: 1, color: colors.tertiary}}> Date Created </SearchSubTitle>
                     <ProfIcons style={{flex: 1}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/084-calendar.png')}/>
-                    <SearchSubTitle welcome={true} style={{flex: 1}}> {datePosted} </SearchSubTitle>
+                    <SearchSubTitle welcome={true} style={{flex: 1, color: colors.tertiary}}> {datePosted} </SearchSubTitle>
                 </SearchHorizontalViewItemCenter>
             </SearchHorizontalView>
         </SearchFrame>
@@ -336,11 +339,11 @@ const FindScreen = ({navigation}) => {
     return(
         <>    
             <StatusBar style="dark"/>
-            <ScrollView style={{'backgroundColor': primary}}>
-                <WelcomeContainer postScreen={true}>
+            <ScrollView style={{backgroundColor: colors.primary}}>
+                <WelcomeContainer style={{backgroundColor: colors.primary}} postScreen={true}>
                     <PageTitle>Search Screen</PageTitle>
-                    <SubTitle>Select a format</SubTitle>
-                    <SubTitle>{message}</SubTitle>
+                    <SubTitle style={{color: colors.tertiary}}>Select a format</SubTitle>
+                    <SubTitle style={{color: colors.tertiary}}>{message}</SubTitle>
                     <SearchBarArea>
                         <UserTextInput
                             placeholder="Search"
@@ -351,14 +354,14 @@ const FindScreen = ({navigation}) => {
                 </WelcomeContainer>
                 <View style={{'alignItems': 'center', flexDirection: 'row', flex: 1}}>
                     <View style={{flex: 1, flexDirection: 'column', alignItems: 'center'}}>
-                        <SubTitle style={{marginBottom: 0, fontSize: 15, fontWeight: 'normal'}}>Users</SubTitle>
+                        <SubTitle style={{marginBottom: 0, fontSize: 15, fontWeight: 'normal', color: colors.tertiary}}>Users</SubTitle>
                         {filterFormatSearch == "Users" && (
-                            <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: brand, borderWidth: 3, padding: 10, backgroundColor: darkLight, alignItems: 'center', justifyContent: 'center'}}>
+                            <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: brand, borderWidth: 3, padding: 10, backgroundColor: dark? darkLight : colors.borderColor, alignItems: 'center', justifyContent: 'center'}}>
                                 <PostIcons style={{width: '100%', height: '100%', resizeMode: 'contain'}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/035-file-text.png')}/>
                             </TouchableOpacity>
                         )}
                         {filterFormatSearch !== "Users" && (
-                            <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: slightlyLighterGrey, borderWidth: 3, padding: 10, backgroundColor: darkLight, alignItems: 'center', justifyContent: 'center'}} onPress={() => {
+                            <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: slightlyLighterGrey, borderWidth: 3, padding: 10, backgroundColor: dark? darkLight : colors.borderColor, alignItems: 'center', justifyContent: 'center'}} onPress={() => {
                                 cancelTokenPostFormatTwo.cancel()
                                 setChangeSectionsOne()
                                 setFilterFormatSearch("Users")  
@@ -368,14 +371,14 @@ const FindScreen = ({navigation}) => {
                         )}
                     </View>
                     <View style={{flex: 1, flexDirection: 'column', alignItems: 'center'}}>
-                        <SubTitle style={{marginBottom: 0, fontSize: 15, fontWeight: 'normal'}}>Categories</SubTitle>
+                        <SubTitle style={{marginBottom: 0, fontSize: 15, fontWeight: 'normal', color: colors.tertiary}}>Categories</SubTitle>
                         {filterFormatSearch == "Categories" && (
-                            <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: brand, borderWidth: 3, padding: 10, backgroundColor: darkLight, alignItems: 'center', justifyContent: 'center'}}>
+                            <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: brand, borderWidth: 3, padding: 10, backgroundColor: dark? darkLight : colors.borderColor, alignItems: 'center', justifyContent: 'center'}}>
                                 <PostIcons style={{width: '100%', height: '100%', resizeMode: 'contain'}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/093-drawer.png')}/>
                             </TouchableOpacity>
                         )}
                         {filterFormatSearch !== "Categories" && (
-                            <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: slightlyLighterGrey, borderWidth: 3, padding: 10, backgroundColor: darkLight, alignItems: 'center', justifyContent: 'center'}} onPress={() => {
+                            <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: slightlyLighterGrey, borderWidth: 3, padding: 10, backgroundColor: dark? darkLight : colors.borderColor, alignItems: 'center', justifyContent: 'center'}} onPress={() => {
                                 cancelTokenPostFormatOne.cancel()
                                 setChangeSectionsTwo()
                                 setFilterFormatSearch("Categories")
@@ -385,14 +388,14 @@ const FindScreen = ({navigation}) => {
                         )}
                     </View>
                     <View style={{flex: 1, flexDirection: 'column', alignItems: 'center'}}>
-                        <SubTitle style={{marginBottom: 0, fontSize: 15, fontWeight: 'normal'}}>Images</SubTitle>
+                        <SubTitle style={{marginBottom: 0, fontSize: 15, fontWeight: 'normal', color: colors.tertiary}}>Images</SubTitle>
                         {filterFormatSearch == "Images" && (
-                            <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: brand, borderWidth: 3, padding: 10, backgroundColor: darkLight, alignItems: 'center', justifyContent: 'center'}}>
+                            <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: brand, borderWidth: 3, padding: 10, backgroundColor: dark? darkLight : colors.borderColor, alignItems: 'center', justifyContent: 'center'}}>
                                 <PostIcons style={{width: '100%', height: '100%', resizeMode: 'contain'}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/015-images.png')}/>
                             </TouchableOpacity>
                         )}
                         {filterFormatSearch !== "Images" && (
-                            <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: slightlyLighterGrey, borderWidth: 3, padding: 10, backgroundColor: darkLight, alignItems: 'center', justifyContent: 'center'}} onPress={() => {
+                            <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: slightlyLighterGrey, borderWidth: 3, padding: 10, backgroundColor: dark? darkLight : colors.borderColor, alignItems: 'center', justifyContent: 'center'}} onPress={() => {
                                 cancelTokenPostFormatOne.cancel()
                                 cancelTokenPostFormatTwo.cancel()
                                 setChangeSections()
@@ -423,7 +426,7 @@ const FindScreen = ({navigation}) => {
                 )}
                 {filterFormatSearch == "Images" && (
                     <View style={{alignSelf: 'center', textAlign: 'center'}}>
-                        <SubTitle style={{alignSelf: 'center', textAlign: 'center'}}>This feature is not out yet...</SubTitle>
+                        <SubTitle style={{alignSelf: 'center', textAlign: 'center', color: colors.tertiary}}>This feature is not out yet...</SubTitle>
                     </View>
                 )}
                 {filterFormatSearch == "Users" && ( 
@@ -447,13 +450,14 @@ const FindScreen = ({navigation}) => {
 }
 
 const UserTextInput = ({label, icon, isPassword, ...props}) => {
+    const {colors, dark} = useTheme();
     return(
         <SearchBarArea>
             <LeftIcon searchIcon={true}>
                 <Octicons name={"search"} size={20} color={brand} />
             </LeftIcon>
             <StyledInputLabel>{label}</StyledInputLabel>
-            <StyledTextInput searchPage={true} {...props}/>
+            <StyledTextInput style={{backgroundColor: colors.primary, color: colors.tertiary, borderColor: colors.borderColor}} searchPage={true} {...props}/>
         </SearchBarArea>
     )
 }

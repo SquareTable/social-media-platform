@@ -16,6 +16,7 @@ import { AppearanceProvider, useColorScheme } from 'react-native-appearance';
 import { DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { CredentialsContext } from './components/CredentialsContext';
 import { AdIDContext } from './components/AdIDContext.js';
+import { AppStylingContext } from './components/AppStylingContext.js';
 
 const Stack = createStackNavigator();
 
@@ -29,13 +30,12 @@ Notifications.setNotificationHandler({
 });
 
 const App = () => {
+  const [AppStylingContextState, setAppStylingContextState] = useState(null)
   const [AdID, setAdID] = useState('');
   const testID = Platform.OS == "ios" ? 'ca-app-pub-3940256099942544/2934735716' : 'ca-app-pub-3940256099942544/6300978111';
   const productionID = Platform.OS == 'ios' ? 'ca-app-pub-6980968247752885/8710919560' : 'ca-app-pub-6980968247752885/3057291726';
   // Is a real device and running in production.
   const adUnitID = Constants.isDevice && !__DEV__ ? productionID : testID;
-
-  const [AppBehaviour_Context, setAppBehaviour_Context] = useState('');
 
   const [storedCredentials, setStoredCredentials] = useState('');
   const clearAsyncStorageOnLogin = false;
@@ -119,6 +119,13 @@ const App = () => {
       navFocusedColor: '#88C0D0',
       navNonFocusedColor: '#ECEFF4',
       borderColor: '#2E3440',
+      orange: '#D08770',
+      yellow: '#EBCB8B',
+      purple: '#B48EAD',
+      slightlyLighterGrey: '#434C5E',
+      midWhite: '#E5E9F0',
+      slightlyLighterPrimary: '#424a5c',
+      descTextColor: '#abafb8'
     },
   };
   const AppLightTheme = {
@@ -140,6 +147,13 @@ const App = () => {
       navFocusedColor: '#5E81AC',
       navNonFocusedColor: '#2E3440',
       borderColor: '#D8DEE9',
+      orange: '#D08770',
+      yellow: '#EBCB8B',
+      purple: '#B48EAD',
+      slightlyLighterGrey: '#434C5E',
+      midWhite: '#E5E9F0',
+      slightlyLighterPrimary: '#424a5c',
+      descTextColor: '#abafb8'
     }
   };
 
@@ -152,15 +166,17 @@ const App = () => {
           setStoredCredentials(null);
         }
       }).catch((error) => console.log(error));
-      AsyncStorage.getItem('AppBehaviour').then((result) => {
-        if (result !== null) {
-          setAppBehaviour_Context(JSON.parse(result))
-        } else {
-          const AppBehaviour = {PlayAudioOnSilentMode: false};
-          setAppBehaviour_Context(AppBehaviour);
-          AsyncStorage.setItem('AppBehaviour', JSON.stringify(AppBehaviour))
+      await AsyncStorage.getItem('AppStylingContextState').then((result) => {
+        if (result == null) {
+          setAppStylingContextState('Default')
+        } else if (result == 'Default') {
+          setAppStylingContextState('Default')
+        } else if (result == 'Dark') {
+          setAppStylingContextState('Dark')
+        } else if (result == 'Light') {
+          setAppStylingContextState('Light')
         }
-      }).catch((error) => console.log(error));
+      }).catch((error) => {console.log(error)})
       setAdID(adUnitID);
       const images = [
         require('./assets/img/Logo.png'),
@@ -226,11 +242,13 @@ const App = () => {
     return (
       <CredentialsContext.Provider value={{storedCredentials, setStoredCredentials}}>
         <AdIDContext.Provider value={{AdID, setAdID}}>
-          <AppearanceProvider>
-            <NavigationContainer theme={scheme === 'dark' ? AppDarkTheme : AppLightTheme} onStateChange={() => {console.log('Screen changed')}}>
-              <Start_Stack/>
-            </NavigationContainer>
-          </AppearanceProvider>
+          <AppStylingContext.Provider value={{AppStylingContextState, setAppStylingContextState}}>
+            <AppearanceProvider>
+              <NavigationContainer theme={AppStylingContextState == 'Default' ? scheme === 'dark' ? AppDarkTheme : AppLightTheme : AppStylingContextState == 'Dark' ? AppDarkTheme : AppLightTheme} onStateChange={() => {console.log('Screen changed')}}>
+                <Start_Stack/>
+              </NavigationContainer>
+            </AppearanceProvider>
+          </AppStylingContext.Provider>
         </AdIDContext.Provider>
       </CredentialsContext.Provider>
 

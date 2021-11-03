@@ -210,6 +210,7 @@ const RootStack = () => {
                     headerLeftContainerStyle: {
                         paddingLeft: 20,
                     },
+                    headerLeft: null
                 }}
                 />
     </Stack.Navigator>
@@ -334,6 +335,19 @@ const FindScreen_Stack = () => {
         }}
       />
       <Stack.Screen name="ViewPollPostPage" component={ViewPollPostPage}
+        options={{
+          headerStyle: {
+            backgroundColor: 'transparent',
+          },
+          headerTintColor: colors.tertiary,
+          headerTransparent: true,
+          headerTitle: '',
+          headerLeftContainerStyle: {
+              paddingLeft: 20,
+          },
+        }}
+      />
+      <Stack.Screen name="ThreadUploadPage" component={ThreadUploadPage}
         options={{
           headerStyle: {
             backgroundColor: 'transparent',

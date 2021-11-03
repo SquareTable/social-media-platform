@@ -90,7 +90,7 @@ const SettingsPage = ({navigation}) => {
                             <SettingsItemText style={{color: colors.tertiary}}>Account Settings</SettingsItemText>
                         </SettingsPageItemTouchableOpacity>
                         <SettingsPageItemTouchableOpacity style={{borderColor: colors.borderColor}} onPress={() => navigation.navigate("AppStyling")}>
-                            <SettingsItemImage source={require('./../assets/app_icons/settings.png')}/>
+                            <SettingsItemImage source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/207-eye.png')}/>
                             <SettingsItemText style={{color: colors.tertiary}}>App Styling</SettingsItemText>
                         </SettingsPageItemTouchableOpacity>
                         <SettingsPageItemTouchableOpacity style={{borderColor: colors.borderColor}} onPress={() => {navigation.navigate('ReportBugScreen')}}>

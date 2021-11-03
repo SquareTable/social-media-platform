@@ -216,11 +216,11 @@ const HomeScreen = ({navigation}) => {
             }
         }
         else if (type == 'PlayAudioInSilentMode') {
-            if (PlayAudioInSilentMode_useState == true) {
-                setPlayAudioInSilentMode_useState(false)
+            if (PlayAudioInSilentMode == true) {
+                setPlayAudioInSilentMode(false)
                 AsyncStorage.setItem('PlayAudioInSilentMode_AppBehaviour_AsyncStorage', 'false')
             } else {
-                setPlayAudioInSilentMode_useState(true)
+                setPlayAudioInSilentMode(true)
                 AsyncStorage.setItem('PlayAudioInSilentMode_AppBehaviour_AsyncStorage', 'true')
             }
         }
@@ -500,7 +500,7 @@ const HomeScreen = ({navigation}) => {
                             switchOn={showPhotos}
                             onPress={() => {setContextAndAsyncStorage('ShowPhotos')}}
                             circleColorOff={colors.tertiary}
-                            circleColorOn={colors.tertiary}
+                            circleColorOn={dark? colors.teritary : colors.primary}
                             backgroundColorOn={colors.darkestBlue}
                             backgroundColorOff={colors.borderColor}
                             containerStyle={{
@@ -522,7 +522,7 @@ const HomeScreen = ({navigation}) => {
                             switchOn={showVideos}
                             onPress={() => {setContextAndAsyncStorage('ShowVideos')}}
                             circleColorOff={colors.tertiary}
-                            circleColorOn={colors.tertiary}
+                            circleColorOn={dark? colors.teritary : colors.primary}
                             backgroundColorOn={colors.darkestBlue}
                             backgroundColorOff={colors.borderColor}
                             containerStyle={{
@@ -544,7 +544,7 @@ const HomeScreen = ({navigation}) => {
                             switchOn={showAudio}
                             onPress={() => {setContextAndAsyncStorage('ShowAudio')}}
                             circleColorOff={colors.tertiary}
-                            circleColorOn={colors.tertiary}
+                            circleColorOn={dark? colors.teritary : colors.primary}
                             backgroundColorOn={colors.darkestBlue}
                             backgroundColorOff={colors.borderColor}
                             containerStyle={{
@@ -566,7 +566,7 @@ const HomeScreen = ({navigation}) => {
                             switchOn={showThreads}
                             onPress={() => {setContextAndAsyncStorage('ShowThreads')}}
                             circleColorOff={colors.tertiary}
-                            circleColorOn={colors.tertiary}
+                            circleColorOn={dark? colors.teritary : colors.primary}
                             backgroundColorOn={colors.darkestBlue}
                             backgroundColorOff={colors.borderColor}
                             containerStyle={{
@@ -588,7 +588,7 @@ const HomeScreen = ({navigation}) => {
                             switchOn={showPolls}
                             onPress={() => {setContextAndAsyncStorage('ShowPolls')}}
                             circleColorOff={colors.tertiary}
-                            circleColorOn={colors.tertiary}
+                            circleColorOn={dark? colors.teritary : colors.primary}
                             backgroundColorOn={colors.darkestBlue}
                             backgroundColorOff={colors.borderColor}
                             containerStyle={{
@@ -610,7 +610,7 @@ const HomeScreen = ({navigation}) => {
                             switchOn={showCategories}
                             onPress={() => {setContextAndAsyncStorage('ShowCategories')}}
                             circleColorOff={colors.tertiary}
-                            circleColorOn={colors.tertiary}
+                            circleColorOn={dark? colors.teritary : colors.primary}
                             backgroundColorOn={colors.darkestBlue}
                             backgroundColorOff={colors.borderColor}
                             containerStyle={{
@@ -647,7 +647,7 @@ const HomeScreen = ({navigation}) => {
                             switchOn={PlayAudioInSilentMode}
                             onPress={() => {setContextAndAsyncStorage('PlayAudioInSilentMode')}}
                             circleColorOff={colors.tertiary}
-                            circleColorOn={colors.tertiary}
+                            circleColorOn={dark? colors.teritary : colors.primary}
                             backgroundColorOn={colors.darkestBlue}
                             backgroundColorOff={colors.borderColor}
                             containerStyle={{

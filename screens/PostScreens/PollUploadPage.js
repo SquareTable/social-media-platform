@@ -60,8 +60,99 @@ import { CredentialsContext } from '../../components/CredentialsContext';
 import styled from 'styled-components';
 import { set } from 'react-native-reanimated';
 
+import { useTheme } from '@react-navigation/native';
+
 
 const PollUploadPage = ({navigation}) => {
+    // Start User Text Input
+
+    const UserTextInput = ({
+        label, 
+        icon, 
+        optionOneColor, 
+        setOptionOneColor,
+        optionOneColorChangeViewVisible,
+        setOptionOneColorChangeViewVisible,
+        optionTwoColor, 
+        setOptionTwoColor,
+        optionTwoColorChangeViewVisible,
+        setOptionTwoColorChangeViewVisible,
+        optionThreeColor, 
+        setOptionThreeColor,
+        optionThreeColorChangeViewVisible,
+        setOptionThreeColorChangeViewVisible,
+        optionFourColor, 
+        setOptionFourColor,
+        optionFourColorChangeViewVisible,
+        setOptionFourColorChangeViewVisible,
+        optionFiveColor, 
+        setOptionFiveColor,
+        optionFiveColorChangeViewVisible,
+        setOptionFiveColorChangeViewVisible,
+        optionSixColor, 
+        setOptionSixColor,
+        optionSixColorChangeViewVisible,
+        setOptionSixColorChangeViewVisible,
+        isOptionOne,
+        isOptionTwo,
+        isOptionThree,
+        isOptionFour,
+        isOptionFive,
+        isOptionSix,
+        hidePassword,
+        selectedOptionForColor,
+        setSelectedOptionForColor,
+        ...props}) => {
+        return(
+            <View>
+                <LeftIcon>
+                    <Octicons name={icon} size={30} color={
+                        isOptionOne ? optionOneColor !== '' ? optionOneColor.toLowerCase() : brand :
+                        isOptionTwo ? optionTwoColor !== '' ? optionTwoColor.toLowerCase() : brand :
+                        isOptionThree ? optionThreeColor !== '' ? optionThreeColor.toLowerCase() : brand :
+                        isOptionFour ? optionFourColor !== '' ? optionFourColor.toLowerCase() : brand : 
+                        isOptionFive ? optionFiveColor !== '' ? optionFiveColor.toLowerCase() : brand :
+                        isOptionSix ? optionSixColor !== '' ? optionSixColor.toLowerCase() : brand : brand
+                    } />
+                </LeftIcon>
+                <StyledInputLabel style={{color: colors.tertiary}}>{label}</StyledInputLabel>
+                <StyledTextInput {...props}/>
+                {isOptionOne && (
+                    <RightIcon onPress={() => setOptionOneColorChangeViewVisible(false)}>
+                        <Ionicons name={'color-palette-outline'} size={30} color={optionOneColor !== '' ? optionOneColor.toLowerCase() : brand}/>
+                    </RightIcon>
+                )}
+                {isOptionTwo && (
+                    <RightIcon onPress={() => setOptionTwoColorChangeViewVisible(false)}>
+                        <Ionicons name={'color-palette-outline'} size={30} color={optionTwoColor !== '' ? optionTwoColor.toLowerCase() : brand}/>
+                    </RightIcon>
+                )}
+                {isOptionThree && (
+                    <RightIcon onPress={() => setOptionThreeColorChangeViewVisible(false)}>
+                        <Ionicons name={'color-palette-outline'} size={30} color={optionThreeColor !== '' ? optionThreeColor.toLowerCase() : brand}/>
+                    </RightIcon>
+                )}
+                {isOptionFour && (
+                    <RightIcon onPress={() => setOptionFourColorChangeViewVisible(false)}>
+                        <Ionicons name={'color-palette-outline'} size={30} color={optionFourColor !== '' ? optionFourColor.toLowerCase() : brand}/>
+                    </RightIcon>
+                )}
+                {isOptionFive && (
+                    <RightIcon onPress={() => setOptionFiveColorChangeViewVisible(false)}>
+                        <Ionicons name={'color-palette-outline'} size={30} color={optionFiveColor !== '' ? optionFiveColor.toLowerCase() : brand}/>
+                    </RightIcon>
+                )}
+                {isOptionSix && (
+                    <RightIcon onPress={() => setOptionSixColorChangeViewVisible(false)}>
+                        <Ionicons name={'color-palette-outline'} size={30} color={optionSixColor !== '' ? optionSixColor.toLowerCase() : brand}/>
+                    </RightIcon>
+                )}
+            </View>
+        )
+    }
+
+    // End of User Text Input
+    const {colors, dark} = useTheme();
     const [optionOneColorChangeViewVisible, setOptionOneColorChangeViewVisible] = useState(true);
     const [optionOneColor, setOptionOneColor] = useState("");
     const [optionTwoColorChangeViewVisible, setOptionTwoColorChangeViewVisible] = useState(true);
@@ -142,8 +233,8 @@ const PollUploadPage = ({navigation}) => {
     }
 
     return(
-        <KeyboardAvoidingWrapper>
-            <StyledContainer>
+        <KeyboardAvoidingWrapper style={{backgroundColor: colors.primary}}>
+            <StyledContainer style={{backgroundColor: colors.primary}}>
                     <StatusBar style="dark"/>
                     <InnerContainer>
                         <PageLogo source={require('./../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/157-stats-bars.png')} />
@@ -166,37 +257,41 @@ const PollUploadPage = ({navigation}) => {
                                         label="Poll Title"
                                         icon="note"
                                         placeholder=""
-                                        placeholderTextColor={tertiary}
+                                        placeholderTextColor={colors.tertiary}
                                         onChangeText={handleChange('pollTitle')}
                                         onBlur={handleBlur('pollTitle')}
                                         value={values.pollTitle}
+                                        style={{color: colors.tertiary, backgroundColor: colors.primary}}
                                     />
                                     <UserTextInput
                                         label="Poll subtitle"
                                         icon="note"
                                         placeholder=""
-                                        placeholderTextColor={tertiary}
+                                        placeholderTextColor={colors.tertiary}
                                         onChangeText={handleChange('pollSubTitle')}
                                         onBlur={handleBlur('pollSubTitle')}
                                         value={values.pollSubTitle}
+                                        style={{color: colors.tertiary, backgroundColor: colors.primary}}
                                     />
-                                    <AboveButtonText>Poll Options</AboveButtonText>
+                                    <AboveButtonText style={{color: colors.tertiary}}>Poll Options</AboveButtonText>
                                     <UserTextInput
                                         label="Option One"
                                         icon="pencil"
                                         placeholder=""
-                                        placeholderTextColor={tertiary}
+                                        placeholderTextColor={colors.tertiary}
                                         isOptionOne={true}
                                         onChangeText={handleChange('optionOne')}
                                         onBlur={handleBlur('optionOne')}
                                         value={values.optionOne}
                                         setOptionOneColor={setOptionOneColor}
                                         setOptionOneColorChangeViewVisible={setOptionOneColorChangeViewVisible}
+                                        style={{borderColor: optionOneColor !== '' ? optionOneColor.toLowerCase() : brand, backgroundColor: colors.primary, color: colors.tertiary}}
+                                        optionOneColor={optionOneColor}
                                     />
-                                    <ChangePollOptionColorView viewHidden={optionOneColorChangeViewVisible}>
-                                        <ChangePollOptionColorText>Associate with color:</ChangePollOptionColorText>
+                                    <ChangePollOptionColorView style={{backgroundColor: colors.primary}} viewHidden={optionOneColorChangeViewVisible}>
+                                        <ChangePollOptionColorText style={{color: colors.tertiary}}>Associate with color:</ChangePollOptionColorText>
                                         <PostHorizontalView>
-                                            <RedCheckBoxForColor selectedState={optionOneColor} 
+                                            <RedCheckBoxForColor style={{borderColor: optionOneColor == 'Red' ? brand : colors.tertiary}} selectedState={optionOneColor} 
                                             onPress={() => {
                                                 if (values.optionOnesColor !== "Red") {
                                                     values.optionOnesColor = "Red"
@@ -208,7 +303,7 @@ const PollUploadPage = ({navigation}) => {
                                                     console.log(values.optionOnesColor)
                                                 }
                                             }}></RedCheckBoxForColor>
-                                            <OrangeCheckBoxForColor selectedState={optionOneColor} 
+                                            <OrangeCheckBoxForColor style={{borderColor: optionOneColor == 'Orange' ? brand : colors.tertiary}} selectedState={optionOneColor} 
                                             onPress={() => {
                                                 if (values.optionOnesColor !== "Orange") {
                                                     values.optionOnesColor = "Orange"
@@ -220,7 +315,7 @@ const PollUploadPage = ({navigation}) => {
                                                     console.log(values.optionOnesColor)
                                                 }
                                             }}></OrangeCheckBoxForColor>
-                                            <YellowCheckBoxForColor selectedState={optionOneColor} 
+                                            <YellowCheckBoxForColor style={{borderColor: optionOneColor == 'Yellow' ? brand : colors.tertiary}} selectedState={optionOneColor} 
                                             onPress={() => {
                                                 if (values.optionOnesColor !== "Yellow") {
                                                     values.optionOnesColor = "Yellow"
@@ -232,7 +327,7 @@ const PollUploadPage = ({navigation}) => {
                                                     console.log(values.optionOnesColor)
                                                 }
                                             }}></YellowCheckBoxForColor>
-                                            <GreenCheckBoxForColor selectedState={optionOneColor} 
+                                            <GreenCheckBoxForColor style={{borderColor: optionOneColor == 'Green' ? brand : colors.tertiary}} selectedState={optionOneColor} 
                                             onPress={() => {
                                                 if (values.optionOnesColor !== "Green") {
                                                     values.optionOnesColor = "Green"
@@ -244,7 +339,7 @@ const PollUploadPage = ({navigation}) => {
                                                     console.log(values.optionOnesColor)
                                                 }
                                             }}></GreenCheckBoxForColor>
-                                            <PurpleCheckBoxForColor selectedState={optionOneColor} 
+                                            <PurpleCheckBoxForColor style={{borderColor: optionOneColor == 'Purple' ? brand : colors.tertiary}} selectedState={optionOneColor} 
                                             onPress={() => {
                                                 if (values.optionOnesColor !== "Purple") {
                                                     values.optionOnesColor = "Purple"
@@ -272,11 +367,13 @@ const PollUploadPage = ({navigation}) => {
                                         value={values.optionTwo}
                                         setOptionTwoColor={setOptionTwoColor}
                                         setOptionTwoColorChangeViewVisible={setOptionTwoColorChangeViewVisible}
+                                        style={{borderColor: optionTwoColor !== '' ? optionTwoColor.toLowerCase() : brand, backgroundColor: colors.primary, color: colors.tertiary}}
+                                        optionTwoColor={optionTwoColor}
                                     />
-                                    <ChangePollOptionColorView viewHidden={optionTwoColorChangeViewVisible}>
-                                        <ChangePollOptionColorText>Associate with color:</ChangePollOptionColorText>
+                                    <ChangePollOptionColorView style={{backgroundColor: colors.primary}} viewHidden={optionTwoColorChangeViewVisible}>
+                                        <ChangePollOptionColorText style={{color: colors.tertiary}}>Associate with color:</ChangePollOptionColorText>
                                         <PostHorizontalView>
-                                            <RedCheckBoxForColor selectedState={optionTwoColor} 
+                                            <RedCheckBoxForColor style={{borderColor: optionTwoColor == 'Red' ? brand : colors.tertiary}} selectedState={optionTwoColor} 
                                             onPress={() => {
                                                 if (values.optionTwosColor !== "Red") {
                                                     values.optionTwosColor = "Red"
@@ -288,7 +385,7 @@ const PollUploadPage = ({navigation}) => {
                                                     console.log(values.optionTwosColor)
                                                 }
                                             }}></RedCheckBoxForColor>
-                                            <OrangeCheckBoxForColor selectedState={optionTwoColor} 
+                                            <OrangeCheckBoxForColor style={{borderColor: optionTwoColor == 'Orange' ? brand : colors.tertiary}} selectedState={optionTwoColor} 
                                             onPress={() => {
                                                 if (values.optionTwosColor !== "Orange") {
                                                     values.optionTwosColor = "Orange"
@@ -300,7 +397,7 @@ const PollUploadPage = ({navigation}) => {
                                                     console.log(values.optionTwosColor)
                                                 }
                                             }}></OrangeCheckBoxForColor>
-                                            <YellowCheckBoxForColor selectedState={optionTwoColor} 
+                                            <YellowCheckBoxForColor style={{borderColor: optionTwoColor == 'Yellow' ? brand : colors.tertiary}} selectedState={optionTwoColor} 
                                             onPress={() => {
                                                 if (values.optionTwosColor !== "Yellow") {
                                                     values.optionTwosColor = "Yellow"
@@ -312,7 +409,7 @@ const PollUploadPage = ({navigation}) => {
                                                     console.log(values.optionTwosColor)
                                                 }
                                             }}></YellowCheckBoxForColor>
-                                            <GreenCheckBoxForColor selectedState={optionTwoColor} 
+                                            <GreenCheckBoxForColor style={{borderColor: optionTwoColor == 'Green' ? brand : colors.tertiary}} selectedState={optionTwoColor} 
                                             onPress={() => {
                                                 if (values.optionTwosColor !== "Green") {
                                                     values.optionTwosColor = "Green"
@@ -324,7 +421,7 @@ const PollUploadPage = ({navigation}) => {
                                                     console.log(values.optionTwosColor)
                                                 }
                                             }}></GreenCheckBoxForColor>
-                                            <PurpleCheckBoxForColor selectedState={optionTwoColor} 
+                                            <PurpleCheckBoxForColor style={{borderColor: optionTwoColor == 'Purple' ? brand : colors.tertiary}} selectedState={optionTwoColor} 
                                             onPress={() => {
                                                 if (values.optionTwosColor !== "Purple") {
                                                     values.optionTwosColor = "Purple"
@@ -353,11 +450,13 @@ const PollUploadPage = ({navigation}) => {
                                             value={values.optionThree}
                                             setOptionThreeColor={setOptionThreeColor}
                                             setOptionThreeColorChangeViewVisible={setOptionThreeColorChangeViewVisible}
+                                            style={{borderColor: optionThreeColor !== '' ? optionThreeColor.toLowerCase() : brand, backgroundColor: colors.primary, color: colors.tertiary}}
+                                            optionThreeColor={optionThreeColor}
                                         />
-                                        <ChangePollOptionColorView viewHidden={optionThreeColorChangeViewVisible}>
-                                            <ChangePollOptionColorText>Associate with color:</ChangePollOptionColorText>
+                                        <ChangePollOptionColorView style={{backgroundColor: colors.primary}} viewHidden={optionThreeColorChangeViewVisible}>
+                                            <ChangePollOptionColorText style={{color: colors.tertiary}}>Associate with color:</ChangePollOptionColorText>
                                             <PostHorizontalView>
-                                                <RedCheckBoxForColor selectedState={optionThreeColor} 
+                                                <RedCheckBoxForColor style={{borderColor: optionThreeColor == 'Red' ? brand : colors.tertiary}} selectedState={optionThreeColor} 
                                                 onPress={() => {
                                                     if (values.optionThreesColor !== "Red") {
                                                         values.optionThreesColor = "Red"
@@ -369,7 +468,7 @@ const PollUploadPage = ({navigation}) => {
                                                         console.log(values.optionThreesColor)
                                                     }
                                                 }}></RedCheckBoxForColor>
-                                                <OrangeCheckBoxForColor selectedState={optionThreeColor} 
+                                                <OrangeCheckBoxForColor style={{borderColor: optionThreeColor == 'Orange' ? brand : colors.tertiary}} selectedState={optionThreeColor} 
                                                 onPress={() => {
                                                     if (values.optionThreesColor !== "Orange") {
                                                         values.optionThreesColor = "Orange"
@@ -381,7 +480,7 @@ const PollUploadPage = ({navigation}) => {
                                                         console.log(values.optionThreesColor)
                                                     }
                                                 }}></OrangeCheckBoxForColor>
-                                                <YellowCheckBoxForColor selectedState={optionThreeColor} 
+                                                <YellowCheckBoxForColor style={{borderColor: optionThreeColor == 'Yellow' ? brand : colors.tertiary}} selectedState={optionThreeColor} 
                                                 onPress={() => {
                                                     if (values.optionThreesColor !== "Yellow") {
                                                         values.optionThreesColor = "Yellow"
@@ -393,7 +492,7 @@ const PollUploadPage = ({navigation}) => {
                                                         console.log(values.optionThreesColor)
                                                     }
                                                 }}></YellowCheckBoxForColor>
-                                                <GreenCheckBoxForColor selectedState={optionThreeColor} 
+                                                <GreenCheckBoxForColor style={{borderColor: optionThreeColor == 'Green' ? brand : colors.tertiary}} selectedState={optionThreeColor} 
                                                 onPress={() => {
                                                     if (values.optionThreesColor !== "Green") {
                                                         values.optionThreesColor = "Green"
@@ -405,7 +504,7 @@ const PollUploadPage = ({navigation}) => {
                                                         console.log(values.optionThreesColor)
                                                     }
                                                 }}></GreenCheckBoxForColor>
-                                                <PurpleCheckBoxForColor selectedState={optionThreeColor} 
+                                                <PurpleCheckBoxForColor style={{borderColor: optionThreeColor == 'Purple' ? brand : colors.tertiary}} selectedState={optionThreeColor} 
                                                 onPress={() => {
                                                     if (values.optionThreesColor !== "Purple") {
                                                         values.optionThreesColor = "Purple"
@@ -435,11 +534,13 @@ const PollUploadPage = ({navigation}) => {
                                             value={values.optionFour}
                                             setOptionFourColor={setOptionFourColor}
                                             setOptionFourColorChangeViewVisible={setOptionFourColorChangeViewVisible}
+                                            style={{borderColor: optionFourColor !== '' ? optionFourColor.toLowerCase() : brand, backgroundColor: colors.primary, color: colors.tertiary}}
+                                            optionFourColor={optionFourColor}
                                         />
-                                        <ChangePollOptionColorView viewHidden={optionFourColorChangeViewVisible}>
-                                            <ChangePollOptionColorText>Associate with color:</ChangePollOptionColorText>
+                                        <ChangePollOptionColorView style={{backgroundColor: colors.primary}} viewHidden={optionFourColorChangeViewVisible}>
+                                            <ChangePollOptionColorText style={{color: colors.tertiary}}>Associate with color:</ChangePollOptionColorText>
                                             <PostHorizontalView>
-                                                <RedCheckBoxForColor selectedState={optionFourColor} 
+                                                <RedCheckBoxForColor style={{borderColor: optionFourColor == 'Red' ? brand : colors.tertiary}} selectedState={optionFourColor} 
                                                 onPress={() => {
                                                     if (values.optionFoursColor !== "Red") {
                                                         values.optionFoursColor = "Red"
@@ -451,7 +552,7 @@ const PollUploadPage = ({navigation}) => {
                                                         console.log(values.optionFoursColor)
                                                     }
                                                 }}></RedCheckBoxForColor>
-                                                <OrangeCheckBoxForColor selectedState={optionFourColor} 
+                                                <OrangeCheckBoxForColor style={{borderColor: optionFourColor == 'Orange' ? brand : colors.tertiary}} selectedState={optionFourColor} 
                                                 onPress={() => {
                                                     if (values.optionFoursColor !== "Orange") {
                                                         values.optionFoursColor = "Orange"
@@ -463,7 +564,7 @@ const PollUploadPage = ({navigation}) => {
                                                         console.log(values.optionFoursColor)
                                                     }
                                                 }}></OrangeCheckBoxForColor>
-                                                <YellowCheckBoxForColor selectedState={optionFourColor} 
+                                                <YellowCheckBoxForColor style={{borderColor: optionFourColor == 'Yellow' ? brand : colors.tertiary}} selectedState={optionFourColor} 
                                                 onPress={() => {
                                                     if (values.optionFoursColor !== "Yellow") {
                                                         values.optionFoursColor = "Yellow"
@@ -475,7 +576,7 @@ const PollUploadPage = ({navigation}) => {
                                                         console.log(values.optionFoursColor)
                                                     }
                                                 }}></YellowCheckBoxForColor>
-                                                <GreenCheckBoxForColor selectedState={optionFourColor} 
+                                                <GreenCheckBoxForColor style={{borderColor: optionFourColor == 'Green' ? brand : colors.tertiary}} selectedState={optionFourColor} 
                                                 onPress={() => {
                                                     if (values.optionFoursColor !== "Green") {
                                                         values.optionFoursColor = "Green"
@@ -487,7 +588,7 @@ const PollUploadPage = ({navigation}) => {
                                                         console.log(values.optionFoursColor)
                                                     }
                                                 }}></GreenCheckBoxForColor>
-                                                <PurpleCheckBoxForColor selectedState={optionFourColor} 
+                                                <PurpleCheckBoxForColor style={{borderColor: optionFourColor == 'Purple' ? brand : colors.tertiary}} selectedState={optionFourColor} 
                                                 onPress={() => {
                                                     if (values.optionFoursColor !== "Purple") {
                                                         values.optionFoursColor = "Purple"
@@ -517,11 +618,13 @@ const PollUploadPage = ({navigation}) => {
                                             value={values.optionFive}
                                             setOptionFiveColor={setOptionFiveColor}
                                             setOptionFiveColorChangeViewVisible={setOptionFiveColorChangeViewVisible}
+                                            style={{borderColor: optionFiveColor !== '' ? optionFiveColor.toLowerCase() : brand, backgroundColor: colors.primary, color: colors.tertiary}}
+                                            optionFiveColor={optionFiveColor}
                                         />
-                                        <ChangePollOptionColorView viewHidden={optionFiveColorChangeViewVisible}>
-                                            <ChangePollOptionColorText>Associate with color:</ChangePollOptionColorText>
+                                        <ChangePollOptionColorView style={{backgroundColor: colors.primary}} viewHidden={optionFiveColorChangeViewVisible}>
+                                            <ChangePollOptionColorText style={{color: colors.tertiary}}>Associate with color:</ChangePollOptionColorText>
                                             <PostHorizontalView>
-                                                <RedCheckBoxForColor selectedState={optionFiveColor} 
+                                                <RedCheckBoxForColor style={{borderColor: optionFiveColor == 'Red' ? brand : colors.tertiary}} selectedState={optionFiveColor} 
                                                 onPress={() => {
                                                     if (values.optionFivesColor !== "Red") {
                                                         values.optionFivesColor = "Red"
@@ -533,7 +636,7 @@ const PollUploadPage = ({navigation}) => {
                                                         console.log(values.optionFivesColor)
                                                     }
                                                 }}></RedCheckBoxForColor>
-                                                <OrangeCheckBoxForColor selectedState={optionFiveColor} 
+                                                <OrangeCheckBoxForColor style={{borderColor: optionFiveColor == 'Orange' ? brand : colors.tertiary}} selectedState={optionFiveColor} 
                                                 onPress={() => {
                                                     if (values.optionFivesColor !== "Orange") {
                                                         values.optionFivesColor = "Orange"
@@ -545,7 +648,7 @@ const PollUploadPage = ({navigation}) => {
                                                         console.log(values.optionFivesColor)
                                                     }
                                                 }}></OrangeCheckBoxForColor>
-                                                <YellowCheckBoxForColor selectedState={optionFiveColor} 
+                                                <YellowCheckBoxForColor style={{borderColor: optionFiveColor == 'Yellow' ? brand : colors.tertiary}} selectedState={optionFiveColor} 
                                                 onPress={() => {
                                                     if (values.optionFivesColor !== "Yellow") {
                                                         values.optionFivesColor = "Yellow"
@@ -557,7 +660,7 @@ const PollUploadPage = ({navigation}) => {
                                                         console.log(values.optionFivesColor)
                                                     }
                                                 }}></YellowCheckBoxForColor>
-                                                <GreenCheckBoxForColor selectedState={optionFiveColor} 
+                                                <GreenCheckBoxForColor style={{borderColor: optionFiveColor == 'Green' ? brand : colors.tertiary}} selectedState={optionFiveColor} 
                                                 onPress={() => {
                                                     if (values.optionFivesColor !== "Green") {
                                                         values.optionFivesColor = "Green"
@@ -569,7 +672,7 @@ const PollUploadPage = ({navigation}) => {
                                                         console.log(values.optionFivesColor)
                                                     }
                                                 }}></GreenCheckBoxForColor>
-                                                <PurpleCheckBoxForColor selectedState={optionFiveColor} 
+                                                <PurpleCheckBoxForColor style={{borderColor: optionFiveColor == 'Purple' ? brand : colors.tertiary}} selectedState={optionFiveColor} 
                                                 onPress={() => {
                                                     if (values.optionFivesColor !== "Purple") {
                                                         values.optionFivesColor = "Purple"
@@ -599,11 +702,13 @@ const PollUploadPage = ({navigation}) => {
                                             value={values.optionSix}
                                             setOptionSixColor={setOptionSixColor}
                                             setOptionSixColorChangeViewVisible={setOptionSixColorChangeViewVisible}
+                                            style={{borderColor: optionSixColor !== '' ? optionSixColor.toLowerCase() : brand, backgroundColor: colors.primary, color: colors.tertiary}}
+                                            optionSixColor={optionSixColor}
                                         />
-                                        <ChangePollOptionColorView viewHidden={optionSixColorChangeViewVisible}>
-                                            <ChangePollOptionColorText>Associate with color:</ChangePollOptionColorText>
+                                        <ChangePollOptionColorView style={{backgroundColor: colors.primary}} viewHidden={optionSixColorChangeViewVisible}>
+                                            <ChangePollOptionColorText style={{color: colors.tertiary}}>Associate with color:</ChangePollOptionColorText>
                                             <PostHorizontalView>
-                                                <RedCheckBoxForColor selectedState={optionSixColor} 
+                                                <RedCheckBoxForColor style={{borderColor: optionSixColor == 'Red' ? brand : colors.tertiary}} selectedState={optionSixColor} 
                                                 onPress={() => {
                                                     if (values.optionSixesColor !== "Red") {
                                                         values.optionSixesColor = "Red"
@@ -615,7 +720,7 @@ const PollUploadPage = ({navigation}) => {
                                                         console.log(values.optionSixesColor)
                                                     }
                                                 }}></RedCheckBoxForColor>
-                                                <OrangeCheckBoxForColor selectedState={optionSixColor} 
+                                                <OrangeCheckBoxForColor style={{borderColor: optionSixColor == 'Orange' ? brand : colors.tertiary}} selectedState={optionSixColor} 
                                                 onPress={() => {
                                                     if (values.optionSixesColor !== "Orange") {
                                                         values.optionSixesColor = "Orange"
@@ -627,7 +732,7 @@ const PollUploadPage = ({navigation}) => {
                                                         console.log(values.optionSixesColor)
                                                     }
                                                 }}></OrangeCheckBoxForColor>
-                                                <YellowCheckBoxForColor selectedState={optionSixColor} 
+                                                <YellowCheckBoxForColor style={{borderColor: optionSixColor == 'Yellow' ? brand : colors.tertiary}} selectedState={optionSixColor} 
                                                 onPress={() => {
                                                     if (values.optionSixesColor !== "Yellow") {
                                                         values.optionSixesColor = "Yellow"
@@ -639,7 +744,7 @@ const PollUploadPage = ({navigation}) => {
                                                         console.log(values.optionSixesColor)
                                                     }
                                                 }}></YellowCheckBoxForColor>
-                                                <GreenCheckBoxForColor selectedState={optionSixColor} 
+                                                <GreenCheckBoxForColor style={{borderColor: optionSixColor == 'Green' ? brand : colors.tertiary}} selectedState={optionSixColor} 
                                                 onPress={() => {
                                                     if (values.optionSixesColor !== "Green") {
                                                         values.optionSixesColor = "Green"
@@ -651,7 +756,7 @@ const PollUploadPage = ({navigation}) => {
                                                         console.log(values.optionSixesColor)
                                                     }
                                                 }}></GreenCheckBoxForColor>
-                                                <PurpleCheckBoxForColor selectedState={optionSixColor} 
+                                                <PurpleCheckBoxForColor style={{borderColor: optionSixColor == 'Purple' ? brand : colors.tertiary}} selectedState={optionSixColor} 
                                                 onPress={() => {
                                                     if (values.optionSixesColor !== "Purple") {
                                                         values.optionSixesColor = "Purple"
@@ -718,7 +823,7 @@ const PollUploadPage = ({navigation}) => {
                                         <ActivityIndicator size="large" color={primary} />
                                     </StyledButton>)}
                                     
-                                    <StyledButton signUpButton={true} onPress={() => navigation.navigate("PostScreen")}>
+                                    <StyledButton style={{backgroundColor: colors.primary}} signUpButton={true} onPress={() => navigation.navigate("PostScreen")}>
                                             <ButtonText signUpButton={true}> Back </ButtonText>
                                     </StyledButton>
                                 </StyledFormArea>)}
@@ -736,83 +841,5 @@ const styles = StyleSheet.create({
       justifyContent: "center"
     }
 })
-
-const UserTextInput = ({
-    label, 
-    icon, 
-    optionOneColor, 
-    setOptionOneColor,
-    optionOneColorChangeViewVisible,
-    setOptionOneColorChangeViewVisible,
-    optionTwoColor, 
-    setOptionTwoColor,
-    optionTwoColorChangeViewVisible,
-    setOptionTwoColorChangeViewVisible,
-    optionThreeColor, 
-    setOptionThreeColor,
-    optionThreeColorChangeViewVisible,
-    setOptionThreeColorChangeViewVisible,
-    optionFourColor, 
-    setOptionFourColor,
-    optionFourColorChangeViewVisible,
-    setOptionFourColorChangeViewVisible,
-    optionFiveColor, 
-    setOptionFiveColor,
-    optionFiveColorChangeViewVisible,
-    setOptionFiveColorChangeViewVisible,
-    optionSixColor, 
-    setOptionSixColor,
-    optionSixColorChangeViewVisible,
-    setOptionSixColorChangeViewVisible,
-    isOptionOne,
-    isOptionTwo,
-    isOptionThree,
-    isOptionFour,
-    isOptionFive,
-    isOptionSix,
-    hidePassword,
-    selectedOptionForColor,
-    setSelectedOptionForColor,
-    ...props}) => {
-    return(
-        <View>
-            <LeftIcon>
-                <Octicons name={icon} size={30} color={brand} />
-            </LeftIcon>
-            <StyledInputLabel>{label}</StyledInputLabel>
-            <StyledTextInput {...props}/>
-            {isOptionOne && (
-                <RightIcon onPress={() => setOptionOneColorChangeViewVisible(false)}>
-                    <Ionicons name={'color-palette-outline'} size={30} color={brand}/>
-                </RightIcon>
-            )}
-            {isOptionTwo && (
-                <RightIcon onPress={() => setOptionTwoColorChangeViewVisible(false)}>
-                    <Ionicons name={'color-palette-outline'} size={30} color={brand}/>
-                </RightIcon>
-            )}
-            {isOptionThree && (
-                <RightIcon onPress={() => setOptionThreeColorChangeViewVisible(false)}>
-                    <Ionicons name={'color-palette-outline'} size={30} color={brand}/>
-                </RightIcon>
-            )}
-            {isOptionFour && (
-                <RightIcon onPress={() => setOptionFourColorChangeViewVisible(false)}>
-                    <Ionicons name={'color-palette-outline'} size={30} color={brand}/>
-                </RightIcon>
-            )}
-            {isOptionFive && (
-                <RightIcon onPress={() => setOptionFiveColorChangeViewVisible(false)}>
-                    <Ionicons name={'color-palette-outline'} size={30} color={brand}/>
-                </RightIcon>
-            )}
-            {isOptionSix && (
-                <RightIcon onPress={() => setOptionSixColorChangeViewVisible(false)}>
-                    <Ionicons name={'color-palette-outline'} size={30} color={brand}/>
-                </RightIcon>
-            )}
-        </View>
-    )
-}
 
 export default PollUploadPage;
