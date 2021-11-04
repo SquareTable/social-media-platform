@@ -2525,7 +2525,6 @@ const Welcome = ({navigation, route}) => {
     })
 
     const isFocused = useIsFocused()
-    isFocused ? null : setRefreshing(false)
     return(
         <>    
             <StatusBar style={colors.StatusBarColor}/>
