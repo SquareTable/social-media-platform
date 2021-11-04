@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useCallback, useContext, useState} from 'react';
 import { StatusBar } from 'expo-status-bar';
 import * as Haptics from 'expo-haptics';
 
@@ -85,10 +85,10 @@ import * as ImagePicker from 'expo-image-picker';
 
 //credentials context
 import { CredentialsContext } from '../components/CredentialsContext';
-import { ImageBackground, ScrollView, SectionList, Image, View, ActivityIndicator, Touchable } from 'react-native';
+import { ImageBackground, ScrollView, SectionList, Image, View, ActivityIndicator, Touchable, RefreshControl, SafeAreaView } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
-import {useTheme} from "@react-navigation/native"
+import {useTheme, useIsFocused} from "@react-navigation/native"
 
 import Constants from "expo-constants";
 
@@ -2514,10 +2514,22 @@ const Welcome = ({navigation, route}) => {
             }
         }
     }
+
+    const [refreshing, setRefreshing] = useState(false)
+
+    const onRefresh = useCallback(() => {
+        setRefreshing(true)
+        // Get data here
+        setRefreshing(false)
+        
+    })
+
+    const isFocused = useIsFocused()
+    isFocused ? null : setRefreshing(false)
     return(
         <>    
             <StatusBar style={colors.StatusBarColor}/>
-            <ScrollView>
+            <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
                 <WelcomeContainer>
                     <ProfileHorizontalView topItems={true}>
                         <ViewHider viewHidden={backButtonHidden}>
