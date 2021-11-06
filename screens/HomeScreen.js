@@ -49,7 +49,8 @@ const HomeScreen = ({navigation}) => {
     const [showAudio, setShowAudio] = useState(undefined);
     const [showThreads, setShowThreads] = useState(undefined);
     const [showPolls, setShowPolls] = useState(undefined);
-    const [showCategories, setShowCategories] = useState(undefined)
+    const [showCategories, setShowCategories] = useState(undefined);
+    const [PlayVideoSoundInSilentMode, setPlayVideoSoundInSilentMode] = useState(undefined)
     useEffect(() => {
         async function setUp() {
             const showPhotosValue = await AsyncStorage.getItem('ShowPhotos_AppBehaviour_AsyncStorage')
@@ -156,6 +157,21 @@ const HomeScreen = ({navigation}) => {
             } else {
                 console.log('Error occured while getting ShowCategories value in setUp() function in AppBehaviour_HomeScreen.js')
             }
+
+            const PlayVideoSoundInSilentModeValue = await AsyncStorage.getItem('PlayVideoSoundInSilentMode_AppBehaviour_AsyncStorage')
+            console.log('HomeScreen.js value of PlayAudioInSilentMode_AppBehaviour_AsyncStorage key is: ' + value)
+            if (PlayVideoSoundInSilentModeValue == null) {
+                setPlayVideoSoundInSilentMode(false)
+                AsyncStorage.setItem('PlayVideoSoundInSilentMode_AppBehaviour_AsyncStorage', 'false')
+            } else if (PlayVideoSoundInSilentModeValue == 'true') {
+                setPlayVideoSoundInSilentMode(true)
+                AsyncStorage.setItem('PlayVideoSoundInSilentMode_AppBehaviour_AsyncStorage', 'true')
+            } else if (PlayVideoSoundInSilentModeValue == 'false') {
+                setPlayVideoSoundInSilentMode(false)
+                AsyncStorage.setItem('PlayVideoSoundInSilentMode_AppBehaviour_AsyncStorage', 'false')
+            } else {
+                console.log('Error occured in setUp() function in HomeScreen.js')
+            }
         }
         setUp()
     })
@@ -222,6 +238,15 @@ const HomeScreen = ({navigation}) => {
             } else {
                 setPlayAudioInSilentMode(true)
                 AsyncStorage.setItem('PlayAudioInSilentMode_AppBehaviour_AsyncStorage', 'true')
+            }
+        }
+        else if (type == 'PlayVideoSoundInSilentMode') {
+            if (PlayVideoSoundInSilentMode == true) {
+                setPlayVideoSoundInSilentMode(false)
+                AsyncStorage.setItem('PlayVideoSoundInSilentMode_AppBehaviour_AsyncStorage', 'false')
+            } else {
+                setPlayVideoSoundInSilentMode(true)
+                AsyncStorage.setItem('PlayVideoSoundInSilentMode_AppBehaviour_AsyncStorage', 'true')
             }
         }
         else {
@@ -646,6 +671,28 @@ const HomeScreen = ({navigation}) => {
                         <SwitchToggle
                             switchOn={PlayAudioInSilentMode}
                             onPress={() => {setContextAndAsyncStorage('PlayAudioInSilentMode')}}
+                            circleColorOff={colors.tertiary}
+                            circleColorOn={dark? colors.teritary : colors.primary}
+                            backgroundColorOn={colors.darkestBlue}
+                            backgroundColorOff={colors.borderColor}
+                            containerStyle={{
+                                width: 50,
+                                height: 28,
+                                borderRadius: 25,
+                                padding: 5,
+                            }}
+                            circleStyle={{
+                                width: 20,
+                                height: 20,
+                                borderRadius: 20,
+                            }}
+                        />
+                    </View>
+                    <View style={{flex: 2, flexDirection: 'row', marginHorizontal: 30, marginVertical: 20, justifyContent: 'space-evenly', minHeight: 30, height: 30, maxHeight: 30}}>
+                        <Text style={{color: colors.tertiary, fontSize: 18, fontWeight: 'bold'}}>Mute video in Silent Mode</Text>
+                        <SwitchToggle
+                            switchOn={PlayVideoSoundInSilentMode}
+                            onPress={() => {setContextAndAsyncStorage('PlayVideoSoundInSilentMode')}}
                             circleColorOff={colors.tertiary}
                             circleColorOn={dark? colors.teritary : colors.primary}
                             backgroundColorOn={colors.darkestBlue}

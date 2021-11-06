@@ -54,6 +54,7 @@ import ViewImagePostPage from '../screens/ViewImagePostPage'
 import ViewPollPostPage from '../screens/ViewPollPostPage'
 import CategoryHome from '../screens/CategoryHome'
 import CategoryCreationPage from "../screens/CategoryCreationPage.js";
+import customizeStylingScreen from "../screens/customizeStylingScreen.js";
 
 
 
@@ -200,6 +201,22 @@ const RootStack = () => {
                 <Stack.Screen 
                   name="AppStyling" 
                   component={AppStyling}
+                  options={{
+                    headerStyle: {
+                        backgroundColor: 'transparent',
+                    },
+                    headerTintColor: colors.tertiary,
+                    headerTransparent: true,
+                    headerTitle: '',
+                    headerLeftContainerStyle: {
+                        paddingLeft: 20,
+                    },
+                    headerLeft: null
+                }}
+                />
+                <Stack.Screen 
+                  name="CustomizeAppStyling" 
+                  component={customizeStylingScreen}
                   options={{
                     headerStyle: {
                         backgroundColor: 'transparent',

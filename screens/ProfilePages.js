@@ -83,7 +83,10 @@ import { ImageBackground, ScrollView, SectionList, View, Image, TouchableOpacity
 
 import {useTheme} from "@react-navigation/native"
 
+import Constants from "expo-constants";
+
 const ProfilePages = ({ route, navigation }) => {
+    const StatusBarHeight = Constants.statusBarHeight;
     var backButtonHidden = false
     const [PageElementsState, setPageElementsState] = useState(false)
     const { colors, dark } = useTheme();
@@ -2383,10 +2386,47 @@ const ProfilePages = ({ route, navigation }) => {
         }
     }
 
+    const [ShowTopProfileBar, setShowTopProfileBar] = useState(false)
+
+    const handleScroll = (event) => {
+        var scrollY = event.nativeEvent.contentOffset.y
+        console.log(scrollY)
+        if (scrollY < 550) {
+            if (ShowTopProfileBar != false) {
+                setShowTopProfileBar(false)
+            }
+        } else {
+            if (ShowTopProfileBar != true) {
+                setShowTopProfileBar(true)
+            }
+        }
+    }
+
     return (
         <>
             <StatusBar style="dark" />
-            <ScrollView>
+            {ShowTopProfileBar != false &&
+                <View style={{paddingTop: StatusBarHeight - 20, backgroundColor: colors.primary, borderColor: colors.borderColor, borderBottomWidth: 1, alignItems: 'center'}}>
+                    <View style={{position: 'absolute', top: StatusBarHeight - 10, left: 10}}>
+                    <TouchableOpacity style={{marginRight: '75.5%'}} disabled={PageElementsState} onPress={() => {navigation.goBack()}}>
+                        <Image
+                            source={require('../assets/app_icons/back_arrow.png')}
+                            style={{ width: 40, height: 40, tintColor: colors.tertiary}}
+                            resizeMode="contain"
+                            resizeMethod="resize"
+                        />
+                    </TouchableOpacity>
+                    </View>
+                    <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+                        <PageTitle style={{fontSize: 24}} welcome={true}>{profilesDisplayName || profilesName || "Couldn't get name"}</PageTitle>
+                        <Avatar style={{width: 40, height: 40}} resizeMode="cover" source={{uri: AvatarImg}}/>
+                    </View>
+                </View>
+            }
+            <ScrollView
+                onScroll={handleScroll}
+                scrollEventThrottle={1}
+            >
                 <WelcomeContainer>
                     <ProfileHorizontalView topItems={true}>
                         <ViewHider viewHidden={backButtonHidden}>

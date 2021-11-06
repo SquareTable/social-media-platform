@@ -221,6 +221,9 @@ const App = () => {
         require('./post_media/seb_and_azaria_1.jpeg'),
         require('./post_media/seb_and_azaria_2.jpeg'),
         require('./post_media/seb_and_azaria_3.jpeg'),
+        require('./assets/appstyling_fusion.png'),
+        require('./assets/appstyling_darkmode.png'),
+        require('./assets/appstyling_lightmode.png'),
       ];
   
       const cacheImages = images.map(image => {

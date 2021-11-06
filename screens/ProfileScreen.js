@@ -85,7 +85,7 @@ import * as ImagePicker from 'expo-image-picker';
 
 //credentials context
 import { CredentialsContext } from '../components/CredentialsContext';
-import { ImageBackground, ScrollView, SectionList, Image, View, ActivityIndicator, Touchable, RefreshControl, SafeAreaView } from 'react-native';
+import { ImageBackground, ScrollView, SectionList, Image, View, ActivityIndicator, Touchable, RefreshControl, SafeAreaView, Text } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import {useTheme, useIsFocused} from "@react-navigation/native"
@@ -94,7 +94,6 @@ import Constants from "expo-constants";
 
 const Welcome = ({navigation, route}) => {
     const StatusBarHeight = Constants.statusBarHeight;
-    const [ShowTopProfileBar, setShowTopProfileBar] = useState(true)
     if (route.params) {
         var {backButtonHidden} = route.params;
         console.log(backButtonHidden)
@@ -2525,10 +2524,47 @@ const Welcome = ({navigation, route}) => {
     })
 
     const isFocused = useIsFocused()
+    const [ShowTopProfileBar, setShowTopProfileBar] = useState(false)
+
+    const handleScroll = (event) => { // Comment the contents of this out if you want better performance
+        var scrollY = event.nativeEvent.contentOffset.y
+        if (scrollY < 550) {
+            if (ShowTopProfileBar != false) {
+                setShowTopProfileBar(false)
+            }
+        } else {
+            if (ShowTopProfileBar != true) {
+                setShowTopProfileBar(true)
+            }
+        }
+    }
     return(
         <>    
             <StatusBar style={colors.StatusBarColor}/>
-            <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+            {ShowTopProfileBar != false &&
+                <View style={{paddingTop: StatusBarHeight - 20, backgroundColor: colors.primary, borderColor: colors.borderColor, borderBottomWidth: 1, alignItems: 'center'}}>
+                    <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+                        <PageTitle style={{fontSize: 24}} welcome={true}>{displayName || name || "Couldn't get name"}</PageTitle>
+                        <Avatar style={{width: 40, height: 40}} resizeMode="cover" source={{uri: AvatarImg}}/>
+                    </View>
+                    <View style={{position: 'absolute', right: 10, top: StatusBarHeight - 10}}>
+                        <TouchableOpacity disabled={PageElementsState} onPress={goToSettingsScreen}>
+                            <Image
+                                source={require('../assets/app_icons/settings.png')}
+                                style={{ width: 40, height: 40, tintColor: colors.tertiary}}
+                                resizeMode="contain"
+                                resizeMethod="resize"
+                            />
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            }
+            <ScrollView 
+                style={{flex: 100}} 
+                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+                onScroll={handleScroll}
+                scrollEventThrottle={1}
+            >
                 <WelcomeContainer>
                     <ProfileHorizontalView topItems={true}>
                         <ViewHider viewHidden={backButtonHidden}>

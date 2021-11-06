@@ -130,6 +130,9 @@ const AppStyling = ({navigation}) => {
                     </View>
                 </View>
             </View>
+            <TouchableOpacity style={{marginHorizontal: '15%', width: '70%', minWidth: '70%', maxWidth: '70%', backgroundColor: colors.primary, borderColor: colors.borderColor, borderWidth: 2, borderRadius: 50, marginVertical: 20}} onPress={() => {navigation.navigate('CustomizeAppStyling')}}>
+                <Text style={{fontSize: 24, fontWeight: 'bold', color: colors.tertiary, textAlign: 'center'}}>Customize styling</Text>
+            </TouchableOpacity>
         </View>
     );
 }
