@@ -54,8 +54,10 @@ import { CredentialsContext } from '../components/CredentialsContext';
 
 //Image picker
 import * as ImagePicker from 'expo-image-picker';
+import { useTheme } from '@react-navigation/native';
 
 const CategoryCreationPage = ({navigation}) => {
+    const {colors, dark} = useTheme()
     const [hidePassword, setHidePassword] = useState(true);
     const [message, setMessage] = useState();
     const [messageType, setMessageType] = useState();
@@ -132,6 +134,30 @@ const CategoryCreationPage = ({navigation}) => {
         }
     }
 
+    const UserTextInput = ({label, icon, body, ...props}) => {
+        if (body == true) {
+            return(
+                <View>
+                    <LeftIcon searchIcon={true}>
+                        <Octicons name={icon} size={30} color={brand} />
+                    </LeftIcon>
+                    <StyledInputLabel>{label}</StyledInputLabel>
+                    <StyledTextInput searchPage={true} style={{borderColor: midWhite, borderRadius: 10}} {...props}/>
+                </View>
+            )
+        } else {
+            return(
+                <View>
+                    <LeftIcon searchIcon={true}>
+                        <Octicons name={icon} size={30} color={brand} />
+                    </LeftIcon>
+                    <StyledInputLabel style={{color: colors.tertiary}}>{label}</StyledInputLabel>
+                    <StyledTextInput searchPage={true} style={{borderColor: slightlyLighterGrey}} {...props}/>
+                </View>
+            )
+        }
+    }
+
     const handleMessage = (message, type = 'FAILED') => {
         setMessage(message);
         setMessageType(type);
@@ -185,7 +211,7 @@ const CategoryCreationPage = ({navigation}) => {
 
     return(
         <KeyboardAvoidingWrapper>
-            <StyledContainer>
+            <StyledContainer style={{backgroundColor: colors.primary}}>
                     <StatusBar style="dark"/>
                     <InnerContainer>
                         <PageLogo source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/093-drawer.png')} />
@@ -208,42 +234,45 @@ const CategoryCreationPage = ({navigation}) => {
                                         label="Title (unchangeable)"
                                         icon="note"
                                         placeholder=""
-                                        placeholderTextColor={tertiary}
+                                        placeholderTextColor={colors.tertiary}
                                         onChangeText={handleChange('categoryTitle')}
                                         onBlur={handleBlur('categoryTitle')}
                                         value={values.categoryTitle}
+                                        style={{backgroundColor: colors.borderColor, borderColor: colors.tertiary, color: colors.tertiary}}
                                     />
                                     <UserTextInput
                                         label="Description"
                                         icon="note"
                                         placeholder=""
-                                        placeholderTextColor={tertiary}
+                                        placeholderTextColor={colors.tertiary}
                                         onChangeText={handleChange('categoryDescription')}
                                         onBlur={handleBlur('categoryDescription')}
                                         value={values.categoryDescription}
+                                        style={{backgroundColor: colors.borderColor, borderColor: colors.tertiary, color: colors.tertiary}}
                                     />
                                     <UserTextInput
                                         label="Tags (recommended)"
                                         icon="note"
                                         placeholder=""
-                                        placeholderTextColor={tertiary}
+                                        placeholderTextColor={colors.tertiary}
                                         onChangeText={handleChange('categoryTags')}
                                         onBlur={handleBlur('categoryTags')}
                                         value={values.categoryTags}
+                                        style={{backgroundColor: colors.borderColor, borderColor: colors.tertiary, color: colors.tertiary}}
                                     />
-                                    <SubTitle style={{alignSelf: 'center', fontSize: 15, fontWeight: 'normal', marginBottom: 0}}>Icon</SubTitle>
-                                    <SubTitle style={{alignSelf: 'center', fontSize: 15, fontWeight: 'normal', marginBottom: 0, marginTop: 0}}>(recommended)</SubTitle>
+                                    <SubTitle style={{alignSelf: 'center', fontSize: 15, fontWeight: 'normal', marginBottom: 0, color: colors.tertiary}}>Icon</SubTitle>
+                                    <SubTitle style={{alignSelf: 'center', fontSize: 15, fontWeight: 'normal', marginBottom: 0, marginTop: 0, color: colors.tertiary}}>(recommended)</SubTitle>
                                     {image && (
                                         <Avatar resizeMode="cover" source={image}/>
                                     )}
                                     {!image && (
                                         <Avatar resizeMode="cover" source={require("./../assets/img/Logo.png")}/>
                                     )}
-                                    <StyledButton signUpButton={true} onPress={() => {OpenImgLibrary()}}>
+                                    <StyledButton style={{backgroundColor: colors.primary}} signUpButton={true} onPress={() => {OpenImgLibrary()}}>
                                         <ButtonText signUpButton={true}>Change</ButtonText>
                                     </StyledButton>
                                     <PostHorizontalView centerAlign={true}>
-                                        <CheckBoxForPosts selectedState={postIsNSFW} onPress={() => {
+                                        <CheckBoxForPosts style={{borderWidth: dark ? 3 : 5}} selectedState={postIsNSFW} onPress={() => {
                                             if (values.categoryNSFW == true) {
                                                 setPostIsNSFL(false)
                                                 values.categoryNSFL = false
@@ -256,10 +285,10 @@ const CategoryCreationPage = ({navigation}) => {
                                                 values.categoryNSFW = true
                                             }
                                         }}/>
-                                        <AboveButtonText byCheckBox={true}>Mark as NSFW</AboveButtonText>
+                                        <AboveButtonText style={{color: colors.tertiary}} byCheckBox={true}>Mark as NSFW</AboveButtonText>
                                     </PostHorizontalView>
                                     <PostHorizontalView centerAlign={true}>
-                                        <CheckBoxForPosts selectedState={postIsNSFL} onPress={() => {
+                                        <CheckBoxForPosts style={{borderWidth: dark ? 3 : 5}} selectedState={postIsNSFL} onPress={() => {
                                             if (values.categoryNSFL == true) {
                                                 setPostIsNSFL(false)
                                                 values.categoryNSFL = false
@@ -272,7 +301,7 @@ const CategoryCreationPage = ({navigation}) => {
                                                 values.categoryNSFW = false
                                             }
                                         }}/>
-                                        <AboveButtonText byCheckBox={true}>Mark as NSFL</AboveButtonText>
+                                        <AboveButtonText style={{color: colors.tertiary}} byCheckBox={true}>Mark as NSFL</AboveButtonText>
                                     </PostHorizontalView>
                                     <MsgBox type={messageType}>{message}</MsgBox>
                                     {!submitting && (<StyledButton onPress={() => {
@@ -286,7 +315,7 @@ const CategoryCreationPage = ({navigation}) => {
                                         <ActivityIndicator size="large" color={primary} />
                                     </StyledButton>)}
                                     
-                                    <StyledButton signUpButton={true} onPress={() => navigation.navigate("AccountSettings")}>
+                                    <StyledButton style={{backgroundColor: colors.primary}} signUpButton={true} onPress={() => navigation.navigate("AccountSettings")}>
                                             <ButtonText signUpButton={true}> Back </ButtonText>
                                     </StyledButton>
                                 </StyledFormArea>)}
@@ -304,29 +333,5 @@ const styles = StyleSheet.create({
       justifyContent: "center"
     }
 })
-
-const UserTextInput = ({label, icon, body, ...props}) => {
-    if (body == true) {
-        return(
-            <View>
-                <LeftIcon searchIcon={true}>
-                    <Octicons name={icon} size={30} color={brand} />
-                </LeftIcon>
-                <StyledInputLabel>{label}</StyledInputLabel>
-                <StyledTextInput searchPage={true} style={{borderColor: midWhite, borderRadius: 10}} {...props}/>
-            </View>
-        )
-    } else {
-        return(
-            <View>
-                <LeftIcon searchIcon={true}>
-                    <Octicons name={icon} size={30} color={brand} />
-                </LeftIcon>
-                <StyledInputLabel>{label}</StyledInputLabel>
-                <StyledTextInput searchPage={true} style={{borderColor: slightlyLighterGrey}} {...props}/>
-            </View>
-        )
-    }
-}
 
 export default CategoryCreationPage;

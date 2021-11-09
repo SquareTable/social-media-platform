@@ -89,9 +89,10 @@ import axios from 'axios';
 //credentials context
 import { CredentialsContext } from '../components/CredentialsContext';
 import { ImageBackground, ScrollView, SectionList, View, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
-import { useTheme } from 'styled-components';
+import { useTheme } from '@react-navigation/native';
 
 const ThreadViewPage = ({route, navigation}) => {
+    const {colors, dark} = useTheme()
      //context
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
     const {_id, name} = storedCredentials;
@@ -831,10 +832,10 @@ const ThreadViewPage = ({route, navigation}) => {
                 </CommentsVerticalView>
                 <CommentsVerticalView>
                     <TouchableOpacity>
-                        <CommenterName displayName={true}>{commenterDisplayName}</CommenterName>
+                        <CommenterName style={{color: colors.tertiary}} displayName={true}>{commenterDisplayName}</CommenterName>
                         <CommenterName>@{commenterName}</CommenterName>
                     </TouchableOpacity>
-                    <CommentText>{commentsText}</CommentText>
+                    <CommentText style={{color: colors.tertiary}}>{commentsText}</CommentText>
                 </CommentsVerticalView>
             </CommentsHorizontalView>
             <CommentsHorizontalView bottomIcons={true}>
@@ -844,7 +845,7 @@ const ThreadViewPage = ({route, navigation}) => {
                     </TouchableOpacity>
                 </CommentsVerticalView>
                 <CommentsVerticalView datePosted={true}>
-                    <VoteText>
+                    <VoteText style={{color: colors.tertiary}}>
                         {datePosted}
                     </VoteText>
                     <TouchableOpacity onPress={()=>{navigation.navigate("CommentViewPage", {commentId: commentId, threadId: threadId, postFormat: "Thread"})}}>
@@ -941,8 +942,8 @@ const ThreadViewPage = ({route, navigation}) => {
     return(
         <>    
             <StatusBar style="dark"/>
-            <ScrollView style={{backgroundColor: primary}}>
-                <StyledContainer style={{width: '100%', backgroundColor: darkest, alignItems: 'center', paddingBottom: 2}}>
+            <ScrollView style={{backgroundColor: colors.primary}}>
+                <StyledContainer style={{width: '100%', backgroundColor: dark ? darkest : greyish, alignItems: 'center', paddingBottom: 2}}>
                     {categoryImageB64 == "Finding" && (
                         <Avatar style={{height: 70, width: 70, marginBottom: 0}} source={require('./../assets/img/Logo.png')}/>
                     )}
@@ -956,17 +957,17 @@ const ThreadViewPage = ({route, navigation}) => {
                             )}
                         </View>
                     )}
-                    <SubTitle style={{marginBottom: 0}}>Category: {threadCategory}</SubTitle>
+                    <SubTitle style={{marginBottom: 0, color: colors.tertiary}}>Category: {threadCategory}</SubTitle>
                 </StyledContainer>
-                    <View style={{backgroundColor: darkest}}>
-                        <View style={{backgroundColor: slightlyLighterPrimary, borderRadius: 30, width: '100%', borderBottomLeftRadius: 0, borderBottomRightRadius: 0}}>
+                    <View style={{backgroundColor: dark ? darkest : greyish}}>
+                        <View style={{backgroundColor: dark ? slightlyLighterPrimary : colors.primary, borderRadius: 30, width: '100%', borderBottomLeftRadius: 0, borderBottomRightRadius: 0}}>
                             {threadNSFW === true && (
                                 <SubTitle style={{fontSize: 10, color: red, marginBottom: 0}}>(NSFW)</SubTitle>
                             )}
                             {threadNSFL === true && (
                                 <SubTitle style={{fontSize: 10, color: red, marginBottom: 0}}>(NSFL)</SubTitle>
                             )}
-                            <PostsHorizontalView style={{marginLeft: '5%', borderColor: darkLight, width: '90%', paddingBottom: 5, marginRight: '5%'}}>
+                            <PostsHorizontalView style={{marginLeft: '5%', borderColor: colors.borderColor, width: '90%', paddingBottom: 5, marginRight: '5%'}}>
                                 <TouchableOpacity style={{width: '100%'}}>
                                     <PostsHorizontalView>
                                         <PostsVerticalView>
@@ -985,7 +986,7 @@ const ThreadViewPage = ({route, navigation}) => {
                                             )}
                                         </PostsVerticalView>
                                         <PostsVerticalView style={{marginTop: 9}}>
-                                            <SubTitle style={{fontSize: 20, marginBottom: 0}}>{creatorDisplayName}</SubTitle>
+                                            <SubTitle style={{fontSize: 20, marginBottom: 0, color: colors.tertiary}}>{creatorDisplayName}</SubTitle>
                                             <SubTitle style={{fontSize: 12, color: brand, marginBottom: 0}}>@{creatorName}</SubTitle>
                                         </PostsVerticalView>
                                     </PostsHorizontalView>
@@ -995,7 +996,7 @@ const ThreadViewPage = ({route, navigation}) => {
                                 <TouchableOpacity>
                                     <SubTitle style={{fontSize: 10, color: brand, marginBottom: 0}}>Category: {threadCategory}</SubTitle>
                                 </TouchableOpacity>
-                                <SubTitle style={{fontSize: 20, color: tertiary, marginBottom: 0}}>{threadTitle}</SubTitle>
+                                <SubTitle style={{fontSize: 20, color: colors.tertiary, marginBottom: 0}}>{threadTitle}</SubTitle>
                                 {threadSubtitle !== "" && (
                                     <SubTitle style={{fontSize: 18, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{threadSubtitle}</SubTitle>
                                 )}
@@ -1102,7 +1103,7 @@ const ThreadViewPage = ({route, navigation}) => {
                             <SubTitle style={{flex: 1, alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{datePosted}</SubTitle>
                         </View>  
                     </View>
-                    <View style={{backgroundColor: slightlyLighterPrimary, borderBottomLeftRadius: 30, borderBottomRightRadius: 30, height: 30, width: '100%'}}>
+                    <View style={{backgroundColor: dark ? slightlyLighterPrimary : colors.primary, borderBottomLeftRadius: 30, borderBottomRightRadius: 30, height: 30, width: '100%'}}>
                         <SubTitle style={{flex: 1, alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{commentsLength} comments</SubTitle>
                     </View>
                     <ViewScreenPollPostCommentsFrame style={{width: '100%', marginLeft: 0, marginRight: 0}}>
@@ -1145,12 +1146,13 @@ const ThreadViewPage = ({route, navigation}) => {
                                                         onBlur={handleBlur('comment')}
                                                         value={values.comment}
                                                         multiline={true}
+                                                        style={{color: colors.tertiary, backgroundColor: colors.primary, borderColor: colors.borderColor}}
                                                     />
                                                 </CommentsVerticalView>
                                             </CommentsHorizontalView>
                                             <CommentsHorizontalView belowWriteCommentArea={true}>
                                                 <CommentsVerticalView postComment={true}>
-                                                    {!isSubmitting && (<StyledButton postComment={true} onPress={handleSubmit}>
+                                                    {!isSubmitting && (<StyledButton style={{backgroundColor: colors.primary}} postComment={true} onPress={handleSubmit}>
                                                         <ButtonText postComment={true}> Post </ButtonText>
                                                     </StyledButton>)}
                                                     <MsgBox type={messageType}>{message}</MsgBox>
@@ -1163,7 +1165,7 @@ const ThreadViewPage = ({route, navigation}) => {
                                         )}
                                 </Formik>
                             </CommentsHorizontalView>
-                            <PollPostSubTitle>{ifCommentText}</PollPostSubTitle>
+                            <PollPostSubTitle style={{color: colors.tertiary}}>{ifCommentText}</PollPostSubTitle>
                             <SectionList
                                 sections={changeSections}
                                 keyExtractor={(item, index) => item + index}

@@ -48,8 +48,10 @@ import background from "./../assets/img/Toga.jpg";
 //axios
 import axios from 'axios';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { useTheme } from '@react-navigation/native';
 
 const CategoryHome = ({navigation}) => {
+    const {colors, dark} = useTheme()
      //context
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
     const {photoUrl} = storedCredentials;
@@ -153,13 +155,13 @@ const CategoryHome = ({navigation}) => {
     return(
         <>    
             <StatusBar style="dark"/>
-            <ScrollView style={{'backgroundColor': primary}}>
-                <WelcomeContainer postScreen={true}>
+            <ScrollView style={{'backgroundColor': colors.primary}}>
+                <WelcomeContainer style={{backgroundColor: colors.primary}} postScreen={true}>
                     <PageTitle>Categories (Only used for creating categories as of now)</PageTitle>
-                    <StyledButton postCategory={true} onPress={() => {navigation.navigate("CategoryCreationPage")}}>
-                        <ButtonText postCategory={true}>Create a category</ButtonText>
+                    <StyledButton style={{backgroundColor: colors.primary}} postCategory={true} onPress={() => {navigation.navigate("CategoryCreationPage")}}>
+                        <ButtonText style={{color: colors.tertiary}} postCategory={true}>Create a category</ButtonText>
                     </StyledButton>
-                    <SubTitle>Coming Soon:</SubTitle>
+                    <SubTitle style={{color: colors.tertiary}}>Coming Soon:</SubTitle>
                     <SubTitle>{message}</SubTitle>
                     
                 </WelcomeContainer>

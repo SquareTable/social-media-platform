@@ -46,7 +46,7 @@ import {ActivityIndicator} from 'react-native';
 import {Octicons, Ionicons, Fontisto} from '@expo/vector-icons';
 
 // Colors
-const {brand, primary, tertiary, greyish, darkLight, darkestBlue} = Colors;
+const {brand, primary, tertiary, greyish, darkLight, darkestBlue, slightlyLighterPrimary} = Colors;
 
 // axios
 import axios from 'axios';
@@ -65,7 +65,10 @@ import { ImageBackground, ScrollView, Image, View } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { cos } from 'react-native-reanimated';
 
+import { useTheme } from '@react-navigation/native';
+
 const MultiMediaUploadPreview = ({route, navigation}) => {
+    const {colors, dark} = useTheme();
     const { title, description, image} = route.params;
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
     const {_id, name, displayName, email, photoUrl} = storedCredentials;
@@ -124,18 +127,18 @@ const MultiMediaUploadPreview = ({route, navigation}) => {
     return(
         <>    
             <StatusBar style="dark"/>
-            <ScrollView style={{backgroundColor: primary}}>
-                <MultiMediaPostFrame TitleView={true}>
+            <ScrollView style={{backgroundColor: colors.primary}}>
+                <MultiMediaPostFrame style={{backgroundColor: dark ? slightlyLighterPrimary : colors.borderColor}} TitleView={true}>
                     <PageTitle>MultiMedia Post Screen</PageTitle>
                     <SubTitle style={{color: darkestBlue}}>Format: Image</SubTitle>
                 </MultiMediaPostFrame>
                 <SubTitle style={{color: brand, alignSelf: "center"}}>Preview</SubTitle>
-                <MultiMediaPostFrame ImageView={true}>
+                <MultiMediaPostFrame style={{backgroundColor: dark ? slightlyLighterPrimary : colors.borderColor}} ImageView={true}>
                     <Image source={image} style={{ width: "100%", height: "100%" }} resizeMode="contain" />
                 </MultiMediaPostFrame>
-                <MultiMediaPostFrame>
-                    <SubTitle>{title}</SubTitle>
-                    <SubTitle style={{fontSize: 10}}>{description}</SubTitle>
+                <MultiMediaPostFrame style={{backgroundColor: colors.primary}}>
+                    <SubTitle style={{color: colors.tertiary}}>{title}</SubTitle>
+                    <SubTitle style={{fontSize: 10, color: colors.tertiary}}>{description}</SubTitle>
                 </MultiMediaPostFrame>
                 {!submitting && (<StyledButton onPress={postMultiMedia}>
                     <ButtonText> Post </ButtonText>

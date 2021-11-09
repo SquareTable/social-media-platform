@@ -102,6 +102,8 @@ import { CredentialsContext } from './../components/CredentialsContext';
 
 import { View, ImageBackground, ScrollView, SectionList, ActivityIndicator, StyleSheet, TouchableOpacity, Image } from 'react-native';
 
+import { useTheme } from '@react-navigation/native';
+
 
 const ViewImagePostPage = ({route, navigation}) => {
     const [hidePassword, setHidePassword] = useState(true);
@@ -128,6 +130,8 @@ const ViewImagePostPage = ({route, navigation}) => {
         setMessage(message);
         setMessageType(type);
     }
+
+    const {colors, dark} = useTheme()
 
     //PFP
     const [getPfp, setGetPfp] = useState(false)
@@ -279,7 +283,7 @@ const ViewImagePostPage = ({route, navigation}) => {
                         <CommentIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
                     </TouchableOpacity>
                     <TouchableOpacity>
-                        <VoteText>
+                        <VoteText style={{color: colors.tertiary}}>
                             {commentUpVotes}
                         </VoteText>
                     </TouchableOpacity>
@@ -289,10 +293,10 @@ const ViewImagePostPage = ({route, navigation}) => {
                 </CommentsVerticalView>
                 <CommentsVerticalView>
                     <TouchableOpacity>
-                        <CommenterName displayName={true}>{commenterDisplayName}</CommenterName>
+                        <CommenterName style={{color: colors.tertiary}} displayName={true}>{commenterDisplayName}</CommenterName>
                         <CommenterName>@{commenterName}</CommenterName>
                     </TouchableOpacity>
-                    <CommentText>{commentsText}</CommentText>
+                    <CommentText style={{color: colors.tertiary}}>{commentsText}</CommentText>
                 </CommentsVerticalView>
             </CommentsHorizontalView>
             <CommentsHorizontalView bottomIcons={true}>
@@ -302,7 +306,7 @@ const ViewImagePostPage = ({route, navigation}) => {
                     </TouchableOpacity>
                 </CommentsVerticalView>
                 <CommentsVerticalView datePosted={true}>
-                    <VoteText>
+                    <VoteText style={{color: colors.tertiary}}>
                         {datePosted}
                     </VoteText>
                     <TouchableOpacity onPress={() => {navigation.navigate("CommentViewPage", {commentId: commentId, "postId": imageKey, postFormat: "Image"})}}>
@@ -457,15 +461,15 @@ const ViewImagePostPage = ({route, navigation}) => {
     return(
         <>    
             <StatusBar style="dark"/>
-                <ScrollView style={{height: '100%', backgroundColor: primary}}>
-                    <View style={{backgroundColor: slightlyLighterPrimary, borderRadius: 15, marginBottom: 10, marginTop: 80}}>
+                <ScrollView style={{height: '100%', backgroundColor: colors.primary}}>
+                    <View style={{backgroundColor: dark ? slightlyLighterPrimary : colors.borderColor, borderRadius: 15, marginBottom: 10, marginTop: 80}}>
                         <PostsHorizontalView style={{marginLeft: '5%', borderBottomWidth: 3, borderColor: darkLight, width: '90%', paddingBottom: 5, marginRight: '5%'}}>
                             <PostsVerticalView>
                                 <PostCreatorIcon source={{uri: `data:image/jpg;base64,${creatorPfpB64}`}}/>
                             </PostsVerticalView>
                             <PostsVerticalView style={{marginTop: 9}}>
                                 <SubTitle style={{fontSize: 20, color: brand, marginBottom: 0}}>{creatorDisplayName}</SubTitle>
-                                <SubTitle style={{fontSize: 12, marginBottom: 0}}>@{creatorName}</SubTitle>
+                                <SubTitle style={{fontSize: 12, marginBottom: 0, color: colors.tertiary}}>@{creatorName}</SubTitle>
                             </PostsVerticalView>
                         </PostsHorizontalView>
                         <PostsHorizontalView style={{alignItems: 'center', justifyContent: 'center'}}>
@@ -474,7 +478,7 @@ const ViewImagePostPage = ({route, navigation}) => {
                             </MultiMediaPostFrame>
                         </PostsHorizontalView>
                         <ImagePostFrame style={{textAlign: 'left'}}>
-                            <SubTitle style={{fontSize: 20, color: tertiary, marginBottom: 0}}>{imageTitle}</SubTitle>
+                            <SubTitle style={{fontSize: 20, color: colors.tertiary, marginBottom: 0}}>{imageTitle}</SubTitle>
                             <SubTitle style={{fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{imageDescription}</SubTitle>
                         </ImagePostFrame>
                         <PostHorizontalView style={{marginLeft: '5%', width: '90%', paddingVertical: 10, flex: 1, flexDirection: 'row'}}>
@@ -598,12 +602,13 @@ const ViewImagePostPage = ({route, navigation}) => {
                                                         onBlur={handleBlur('comment')}
                                                         value={values.comment}
                                                         multiline={true}
+                                                        style={{backgroundColor: colors.primary, borderColor: colors.borderColor, color: colors.tertiary}}
                                                     />
                                                 </CommentsVerticalView>
                                             </CommentsHorizontalView>
                                             <CommentsHorizontalView belowWriteCommentArea={true}>
                                                 <CommentsVerticalView postComment={true}>
-                                                    {!isSubmitting && (<StyledButton postComment={true} onPress={handleSubmit}>
+                                                    {!isSubmitting && (<StyledButton style={{backgroundColor: colors.primary}} postComment={true} onPress={handleSubmit}>
                                                         <ButtonText postComment={true}> Post </ButtonText>
                                                     </StyledButton>)}
                                                     <MsgBox type={messageType}>{message}</MsgBox>

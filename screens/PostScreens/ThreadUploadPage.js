@@ -34,7 +34,7 @@ import {
     PostIcons,
     MultiMediaPostFrame
 } from '../screenStylings/styling.js';
-const {brand, primary, tertiary, darkLight, slightlyLighterGrey, midWhite} = Colors;
+const {brand, primary, tertiary, darkLight, slightlyLighterGrey, midWhite, greyish} = Colors;
 
 //From react native
 import {View, Image, ActivityIndicator, ImageBackground, StyleSheet, ScrollView, TouchableOpacity} from 'react-native';
@@ -54,8 +54,10 @@ import { CredentialsContext } from '../../components/CredentialsContext';
 //Image picker
 import * as ImagePicker from 'expo-image-picker';
 import CategoryCreationPage from '../CategoryCreationPage';
+import { useTheme } from '@react-navigation/native';
 
 const ThreadUploadPage = ({route, navigation}) => {
+    const {colors, dark} = useTheme();
     const [hidePassword, setHidePassword] = useState(true);
     const [message, setMessage] = useState();
     const [messageType, setMessageType] = useState();
@@ -242,6 +244,30 @@ const ThreadUploadPage = ({route, navigation}) => {
         setMessageType(type);
     }
 
+    const UserTextInput = ({label, icon, body, ...props}) => {
+        if (body == true) {
+            return(
+                <View>
+                    <LeftIcon searchIcon={true}>
+                        <Octicons name={icon} size={30} color={brand} />
+                    </LeftIcon>
+                    <StyledInputLabel style={{color: colors.tertiary}}>{label}</StyledInputLabel>
+                    <StyledTextInput searchPage={true} style={{borderColor: dark ? midWhite : greyish, borderRadius: 10, backgroundColor: dark ? darkLight : colors.borderColor, borderWidth: 3}} {...props}/>
+                </View>
+            )
+        } else {
+            return(
+                <View>
+                    <LeftIcon searchIcon={true}>
+                        <Octicons name={icon} size={30} color={brand} />
+                    </LeftIcon>
+                    <StyledInputLabel style={{color: colors.tertiary}}>{label}</StyledInputLabel>
+                    <StyledTextInput searchPage={true} style={{borderColor: dark ? slightlyLighterGrey : greyish, backgroundColor: dark ? darkLight : colors.borderColor}} {...props}/>
+                </View>
+            )
+        }
+    }
+
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
           mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -269,9 +295,9 @@ const ThreadUploadPage = ({route, navigation}) => {
 
     return(
         <KeyboardAvoidingWrapper>
-            <StyledContainer>
+            <StyledContainer style={{backgroundColor: colors.primary}}>
                     <StatusBar style="dark"/>
-                    <InnerContainer>
+                    <InnerContainer style={{backgroundColor: colors.primary}}>
                         <PageLogo source={require('./../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/007-pencil2.png')} />
                         
                         <PageTitle>Create Thread</PageTitle>
@@ -325,14 +351,14 @@ const ThreadUploadPage = ({route, navigation}) => {
                                     />
                                     <View style={{width: '100%', flexDirection: 'row', flex: 1, alignItems: 'center', justifyContent: 'center'}}>
                                         <View style={{flex: 1, flexDirection: 'column', alignItems: 'center'}}>
-                                            <SubTitle style={{marginBottom: 0, fontSize: 15, fontWeight: 'normal'}}>Text</SubTitle>
+                                            <SubTitle style={{marginBottom: 0, fontSize: 15, fontWeight: 'normal', color: colors.tertiary}}>Text</SubTitle>
                                             {selectFormat == "Text" && (
-                                                <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: brand, borderWidth: 3, padding: 10, backgroundColor: darkLight, alignItems: 'center', justifyContent: 'center'}}>
+                                                <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: brand, borderWidth: 3, padding: 10, backgroundColor: colors.borderColor, alignItems: 'center', justifyContent: 'center'}}>
                                                     <PostIcons style={{width: '100%', height: '100%', resizeMode: 'contain'}} source={require('./../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/035-file-text.png')}/>
                                                 </TouchableOpacity>
                                             )}
                                             {selectFormat !== "Text" && (
-                                                <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: slightlyLighterGrey, borderWidth: 3, padding: 10, backgroundColor: darkLight, alignItems: 'center', justifyContent: 'center'}} onPress={() => {
+                                                <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: slightlyLighterGrey, borderWidth: 3, padding: 10, backgroundColor: colors.borderColor, alignItems: 'center', justifyContent: 'center'}} onPress={() => {
                                                     setSelectFormat("Text")
                                                     values.threadFormat="Text"
                                                 }}>
@@ -341,14 +367,14 @@ const ThreadUploadPage = ({route, navigation}) => {
                                             )}
                                         </View>
                                         <View style={{flex: 1, flexDirection: 'column', alignItems: 'center'}}>
-                                            <SubTitle style={{marginBottom: 0, fontSize: 15, fontWeight: 'normal'}}>Images</SubTitle>
+                                            <SubTitle style={{marginBottom: 0, fontSize: 15, fontWeight: 'normal', color: colors.tertiary}}>Images</SubTitle>
                                             {selectFormat == "Images" && (
-                                                <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: brand, borderWidth: 3, padding: 10, backgroundColor: darkLight, alignItems: 'center', justifyContent: 'center'}}>
+                                                <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: brand, borderWidth: 3, padding: 10, backgroundColor: colors.borderColor, alignItems: 'center', justifyContent: 'center'}}>
                                                     <PostIcons style={{width: '100%', height: '100%', resizeMode: 'contain'}} source={require('./../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/015-images.png')}/>
                                                 </TouchableOpacity>
                                             )}
                                             {selectFormat !== "Images" && (
-                                                <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: slightlyLighterGrey, borderWidth: 3, padding: 10, backgroundColor: darkLight, alignItems: 'center', justifyContent: 'center'}} onPress={() => {
+                                                <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: slightlyLighterGrey, borderWidth: 3, padding: 10, backgroundColor: colors.borderColor, alignItems: 'center', justifyContent: 'center'}} onPress={() => {
                                                     setSelectFormat("Images")
                                                     values.threadFormat="Images"
                                                 }}>
@@ -357,14 +383,14 @@ const ThreadUploadPage = ({route, navigation}) => {
                                             )}
                                         </View>
                                         <View style={{flex: 1, flexDirection: 'column', alignItems: 'center'}}>
-                                            <SubTitle style={{marginBottom: 0, fontSize: 15, fontWeight: 'normal'}}>User Posts</SubTitle>
+                                            <SubTitle style={{marginBottom: 0, fontSize: 15, fontWeight: 'normal', color: colors.tertiary}}>User Posts</SubTitle>
                                             {selectFormat == "User Posts" && (
-                                                <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: brand, borderWidth: 3, padding: 10, backgroundColor: darkLight, alignItems: 'center', justifyContent: 'center'}}>
+                                                <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: brand, borderWidth: 3, padding: 10, backgroundColor: colors.borderColor, alignItems: 'center', justifyContent: 'center'}}>
                                                     <PostIcons style={{width: '100%', height: '100%', resizeMode: 'contain'}} source={require('./../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/115-users.png')}/>
                                                 </TouchableOpacity>
                                             )}
                                             {selectFormat !== "User Posts" && (
-                                                <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: slightlyLighterGrey, borderWidth: 3, padding: 10, backgroundColor: darkLight, alignItems: 'center', justifyContent: 'center'}} onPress={() => {
+                                                <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: slightlyLighterGrey, borderWidth: 3, padding: 10, backgroundColor: colors.borderColor, alignItems: 'center', justifyContent: 'center'}} onPress={() => {
                                                     setSelectFormat("User Posts")
                                                     values.threadFormat="User Posts"
                                                 }}>
@@ -388,17 +414,17 @@ const ThreadUploadPage = ({route, navigation}) => {
                                     )}
                                     {selectFormat == "Images" && (
                                         <View style={{width: '90%', alignSelf: 'center', marginVertical: 10}}>
-                                            {image && <MultiMediaPostFrame style={{width: '100%', aspectRatio: 1/1}} PostingThreadImage={true}>
+                                            {image && <MultiMediaPostFrame style={{width: '100%', aspectRatio: 1/1, backgroundColor: colors.borderColor}} PostingThreadImage={true}>
                                                 <Image source={image} style={{ width: "100%", height: '100%'}} resizeMode="contain" />
                                             </MultiMediaPostFrame>}
-                                            {image && <StyledButton removeImage={true} onPress={() => {setImage()}}>
-                                                <ButtonText removeImage={true}>
+                                            {image && <StyledButton style={{backgroundColor: colors.primary, borderColor: colors.tertiary}} removeImage={true} onPress={() => {setImage()}}>
+                                                <ButtonText style={{color: colors.tertiary}} removeImage={true}>
                                                     X
                                                 </ButtonText>
                                             </StyledButton>}
-                                            {!image && <MultiMediaPostFrame style={{width: '100%', aspectRatio: 1/1}} PostingThreadImage={true}>
-                                                <StyledButton postImage={true} onPress={OpenImgLibrary}>
-                                                    <ButtonText postImage={true}>
+                                            {!image && <MultiMediaPostFrame style={{width: '100%', aspectRatio: 1/1, backgroundColor: colors.borderColor}} PostingThreadImage={true}>
+                                                <StyledButton style={{backgroundColor: colors.borderColor, borderColor: colors.tertiary}} postImage={true} onPress={OpenImgLibrary}>
+                                                    <ButtonText style={{color: colors.tertiary}} postImage={true}>
                                                         +
                                                     </ButtonText>
                                                 </StyledButton>
@@ -416,17 +442,17 @@ const ThreadUploadPage = ({route, navigation}) => {
                                             />
                                         </View>
                                     )}
-                                    <AboveButtonText>Select Category</AboveButtonText>
-                                    <StyledButton signUpButton={true} onPress={() => navigation.navigate("SelectCategorySearchScreen", {threadFormat: selectFormat, threadTitle: values.threadTitle, threadSubtitle: values.threadSubtitle, threadTags: values.threadTags, threadCategory: selectedCategory, threadBody: values.threadBody, threadImage: image, threadImageDescription: values.threadImageDescription, threadNSFW: values.threadNSFW, threadNSFL: values.threadNSFL})}>
+                                    <AboveButtonText style={{color: colors.tertiary}}>Select Category</AboveButtonText>
+                                    <StyledButton style={{backgroundColor: colors.primary}} signUpButton={true} onPress={() => navigation.navigate("SelectCategorySearchScreen", {threadFormat: selectFormat, threadTitle: values.threadTitle, threadSubtitle: values.threadSubtitle, threadTags: values.threadTags, threadCategory: selectedCategory, threadBody: values.threadBody, threadImage: image, threadImageDescription: values.threadImageDescription, threadNSFW: values.threadNSFW, threadNSFL: values.threadNSFL})}>
                                         <ButtonText signUpButton={true}>{selectedCategory || "None"}</ButtonText>
                                     </StyledButton>
                                     <PostHorizontalView centerAlign={true}>
                                         <CheckBoxForPosts selectedState={postIsNSFW} onPress={checkboxNSFWPressed}/>
-                                        <AboveButtonText byCheckBox={true}>Mark as NSFW</AboveButtonText>
+                                        <AboveButtonText style={{color: colors.tertiary, borderColor: dark ? 3 : 5}} byCheckBox={true}>Mark as NSFW</AboveButtonText>
                                     </PostHorizontalView>
                                     <PostHorizontalView centerAlign={true}>
                                         <CheckBoxForPosts selectedState={postIsNSFL} onPress={checkboxNSFLPressed}/>
-                                        <AboveButtonText byCheckBox={true}>Mark as NSFL</AboveButtonText>
+                                        <AboveButtonText style={{color: colors.tertiary, borderColor: dark ? 3 : 5}} byCheckBox={true}>Mark as NSFL</AboveButtonText>
                                     </PostHorizontalView>
                                     <MsgBox type={messageType}>{message}</MsgBox>
                                     {!isSubmitting && (<StyledButton onPress={handleSubmit}>
@@ -437,7 +463,7 @@ const ThreadUploadPage = ({route, navigation}) => {
                                         <ActivityIndicator size="large" color={primary} />
                                     </StyledButton>)}
                                     
-                                    <StyledButton signUpButton={true} onPress={() => navigation.navigate("PostScreen")}>
+                                    <StyledButton style={{backgroundColor: colors.primary}} signUpButton={true} onPress={() => navigation.navigate("PostScreen")}>
                                             <ButtonText signUpButton={true}> Back </ButtonText>
                                     </StyledButton>
                                 </StyledFormArea>)}
@@ -455,29 +481,5 @@ const styles = StyleSheet.create({
       justifyContent: "center"
     }
 })
-
-const UserTextInput = ({label, icon, body, ...props}) => {
-    if (body == true) {
-        return(
-            <View>
-                <LeftIcon searchIcon={true}>
-                    <Octicons name={icon} size={30} color={brand} />
-                </LeftIcon>
-                <StyledInputLabel>{label}</StyledInputLabel>
-                <StyledTextInput searchPage={true} style={{borderColor: midWhite, borderRadius: 10}} {...props}/>
-            </View>
-        )
-    } else {
-        return(
-            <View>
-                <LeftIcon searchIcon={true}>
-                    <Octicons name={icon} size={30} color={brand} />
-                </LeftIcon>
-                <StyledInputLabel>{label}</StyledInputLabel>
-                <StyledTextInput searchPage={true} style={{borderColor: slightlyLighterGrey}} {...props}/>
-            </View>
-        )
-    }
-}
 
 export default ThreadUploadPage;

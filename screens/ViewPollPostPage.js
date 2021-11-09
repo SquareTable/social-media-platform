@@ -98,9 +98,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { CredentialsContext } from './../components/CredentialsContext';
 
 import { View, ImageBackground, ScrollView, SectionList, ActivityIndicator, StyleSheet, TouchableOpacity } from 'react-native';
+import { useTheme } from '@react-navigation/native';
 
 
 const ViewPollPostPage = ({route, navigation}) => {
+    const {colors, dark} = useTheme();
     const [hidePassword, setHidePassword] = useState(true);
     const [message, setMessage] = useState();
     const [messageType, setMessageType] = useState();
@@ -364,7 +366,7 @@ const ViewPollPostPage = ({route, navigation}) => {
                         <CommentIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
                     </TouchableOpacity>
                     <TouchableOpacity>
-                        <VoteText>
+                        <VoteText style={{color: colors.tertiary}}>
                             {commentUpVotes}
                         </VoteText>
                     </TouchableOpacity>
@@ -374,10 +376,10 @@ const ViewPollPostPage = ({route, navigation}) => {
                 </CommentsVerticalView>
                 <CommentsVerticalView>
                     <TouchableOpacity>
-                        <CommenterName displayName={true}>{commenterDisplayName}</CommenterName>
+                        <CommenterName style={{color: colors.tertiary}} displayName={true}>{commenterDisplayName}</CommenterName>
                         <CommenterName>@{commenterName}</CommenterName>
                     </TouchableOpacity>
-                    <CommentText>{commentsText}</CommentText>
+                    <CommentText style={{color: colors.tertiary}}>{commentsText}</CommentText>
                 </CommentsVerticalView>
             </CommentsHorizontalView>
             <CommentsHorizontalView bottomIcons={true}>
@@ -387,7 +389,7 @@ const ViewPollPostPage = ({route, navigation}) => {
                     </TouchableOpacity>
                 </CommentsVerticalView>
                 <CommentsVerticalView datePosted={true}>
-                    <VoteText>
+                    <VoteText style={{color: colors.tertiary}}>
                         {datePosted}
                     </VoteText>
                     <TouchableOpacity onPress={() => {navigation.navigate("CommentViewPage", {commentId: commentId, "postId": pollId, postFormat: "Poll"})}}>
@@ -1009,9 +1011,9 @@ const ViewPollPostPage = ({route, navigation}) => {
     return(
         <>    
             <StatusBar style="dark"/>
-            <ScrollView style={{backgroundColor: primary}}>
-                <WelcomeContainer>
-                    <WelcomeContainer>
+            <ScrollView style={{backgroundColor: colors.primary}}>
+                <WelcomeContainer style={{backgroundColor: colors.primary}}>
+                    <WelcomeContainer style={{backgroundColor: colors.primary}}>
                         <ViewScreenPollPostFrame style={{width: '100%'}}>
                             <PostsHorizontalView style={{borderBottomWidth: 3, borderColor: darkLight, width: '100%', paddingBottom: 5}}>
                                 <PostsVerticalView>
@@ -1019,32 +1021,32 @@ const ViewPollPostPage = ({route, navigation}) => {
                                 </PostsVerticalView>
                                 <PostsVerticalView style={{marginTop: 9}}>
                                     <SubTitle style={{fontSize: 20, color: brand, marginBottom: 0}}>{creatorDisplayName}</SubTitle>
-                                    <SubTitle style={{fontSize: 12, marginBottom: 0}}>@{creatorName}</SubTitle>
+                                    <SubTitle style={{fontSize: 12, marginBottom: 0, color: colors.tertiary}}>@{creatorName}</SubTitle>
                                 </PostsVerticalView>
                             </PostsHorizontalView>
                             <PollPostTitle viewPage={true}>
                                 {objectForAllData.data.pollTitle || "Couldn't recieve data"}
                             </PollPostTitle>
-                            <PollPostSubTitle viewPage={true}>
+                            <PollPostSubTitle style={{color: colors.tertiary}} viewPage={true}>
                                 {objectForAllData.data.pollSubTitle || "Couldn't recieve data"}
                             </PollPostSubTitle>
                             <AboveBarPollPostHorizontalView viewPage={true}>
-                                <PollPostSubTitle style={{width: pollBarLengths.optionOnesBarLength+'%'}}>
+                                <PollPostSubTitle style={{width: pollBarLengths.optionOnesBarLength+'%', color: colors.tertiary}}>
                                     1
                                 </PollPostSubTitle>
-                                <PollPostSubTitle style={{width: pollBarLengths.optionTwosBarLength+'%' }}>
+                                <PollPostSubTitle style={{width: pollBarLengths.optionTwosBarLength+'%', color: colors.tertiary }}>
                                     2
                                 </PollPostSubTitle>
-                                <PollPostSubTitle style={{width: pollBarLengths.optionThreesBarLength+'%' }}>
+                                <PollPostSubTitle style={{width: pollBarLengths.optionThreesBarLength+'%', color: colors.tertiary }}>
                                     3
                                 </PollPostSubTitle>
-                                <PollPostSubTitle style={{width: pollBarLengths.optionFoursBarLength+'%' }}>
+                                <PollPostSubTitle style={{width: pollBarLengths.optionFoursBarLength+'%', color: colors.tertiary }}>
                                     4
                                 </PollPostSubTitle>
-                                <PollPostSubTitle style={{width: pollBarLengths.optionFivesBarLength+'%' }}>
+                                <PollPostSubTitle style={{width: pollBarLengths.optionFivesBarLength+'%', color: colors.tertiary }}>
                                     5
                                 </PollPostSubTitle>
-                                <PollPostSubTitle style={{width: pollBarLengths.optionSixesBarLength+'%' }}>
+                                <PollPostSubTitle style={{width: pollBarLengths.optionSixesBarLength+'%', color: colors.tertiary }}>
                                     6
                                 </PollPostSubTitle>
                             </AboveBarPollPostHorizontalView>
@@ -1058,33 +1060,33 @@ const ViewPollPostPage = ({route, navigation}) => {
                             </PollBarOutline>
                             <PollPostHorizontalView>
                                 <PollKeyViewOne pollOptions={objectForAllData.data.totalNumberOfOptions} viewPage={true} onPress={openOptionOne}>
-                                    <Octicons name={"chevron-down"} size={20} color={greyish} />
+                                    <Octicons name={"chevron-down"} size={20} color={dark ? greyish : colors.tertiary} />
                                     <PollKeysCircle circleColor={objectForAllData.data.optionOnesColor}></PollKeysCircle>
-                                    <PollPostSubTitle>
+                                    <PollPostSubTitle style={{color: colors.tertiary}}>
                                         1. {objectForAllData.data.optionOne || "Couldn't recieve data"}
                                     </PollPostSubTitle>
                                     <PollKeysCircle circleColor={objectForAllData.data.optionOnesColor}></PollKeysCircle>
-                                    <Octicons name={"chevron-down"} size={20} color={greyish} />
+                                    <Octicons name={"chevron-down"} size={20} color={dark ? greyish : colors.tertiary} />
                                 </PollKeyViewOne>
                             </PollPostHorizontalView>
                             
                             <PollPostHorizontalView visible={optionOneInfoState}>
                                 <PollHorizontalViewItem>
-                                    <PollPostSubTitle welcome={true}> Votes </PollPostSubTitle>
+                                    <PollPostSubTitle style={{color: colors.tertiary}} welcome={true}> Votes </PollPostSubTitle>
                                     <ProfIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/273-checkmark.png')}/>
-                                    <PollPostSubTitle welcome={true}> {pollVotesForOptions.optionOne} </PollPostSubTitle>
+                                    <PollPostSubTitle style={{color: colors.tertiary}} welcome={true}> {pollVotesForOptions.optionOne} </PollPostSubTitle>
                                 </PollHorizontalViewItem>
 
                                 <PollHorizontalViewItemCenter onPress={() => {handleVoteOnPoll("optionOnesVotes")}}>
-                                    <PollPostSubTitle welcome={true}> Option One </PollPostSubTitle>
+                                    <PollPostSubTitle style={{color: colors.tertiary}} welcome={true}> Option One </PollPostSubTitle>
                                     <ProfIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/274-checkmark2.png')}/>
-                                    <PollPostSubTitle welcome={true}> {optionOneVoteText} </PollPostSubTitle>
+                                    <PollPostSubTitle style={{color: colors.tertiary}} welcome={true}> {optionOneVoteText} </PollPostSubTitle>
                                 </PollHorizontalViewItemCenter>
 
                                 <PollHorizontalViewItem>
-                                    <PollPostSubTitle welcome={true}> Percent </PollPostSubTitle>
+                                    <PollPostSubTitle style={{color: colors.tertiary}} welcome={true}> Percent </PollPostSubTitle>
                                     <ProfIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/273-checkmark.png')}/>
-                                    <PollPostSubTitle welcome={true}> {pollBarLengths.optionOnesBarLength.toFixed(2)}% </PollPostSubTitle>
+                                    <PollPostSubTitle style={{color: colors.tertiary}} welcome={true}> {pollBarLengths.optionOnesBarLength.toFixed(2)}% </PollPostSubTitle>
                                 </PollHorizontalViewItem>
                             </PollPostHorizontalView>
 
@@ -1092,161 +1094,161 @@ const ViewPollPostPage = ({route, navigation}) => {
 
                             <PollPostHorizontalView>
                                 <PollKeyViewTwo pollOptions={objectForAllData.data.totalNumberOfOptions} viewPage={true} onPress={openOptionTwo}>
-                                    <Octicons name={"chevron-down"} size={20} color={greyish} />
+                                    <Octicons name={"chevron-down"} size={20} color={dark ? greyish : colors.tertiary} />
                                     <PollKeysCircle circleColor={objectForAllData.data.optionTwosColor}></PollKeysCircle>
-                                    <PollPostSubTitle>
+                                    <PollPostSubTitle style={{color: colors.tertiary}}>
                                         2. {objectForAllData.data.optionTwo || "Couldn't recieve data"}
                                     </PollPostSubTitle>
                                     <PollKeysCircle circleColor={objectForAllData.data.optionTwosColor}></PollKeysCircle>
-                                    <Octicons name={"chevron-down"} size={20} color={greyish} />
+                                    <Octicons name={"chevron-down"} size={20} color={dark ? greyish : colors.tertiary} />
                                 </PollKeyViewTwo>
                             </PollPostHorizontalView>
                             
                             <PollPostHorizontalView visible={optionTwoInfoState}>
                                 <PollHorizontalViewItem>
-                                    <PollPostSubTitle welcome={true}> Votes </PollPostSubTitle>
+                                    <PollPostSubTitle style={{color: colors.tertiary}} welcome={true}> Votes </PollPostSubTitle>
                                     <ProfIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/273-checkmark.png')}/>
-                                    <PollPostSubTitle welcome={true}> {pollVotesForOptions.optionTwo} </PollPostSubTitle>
+                                    <PollPostSubTitle style={{color: colors.tertiary}} welcome={true}> {pollVotesForOptions.optionTwo} </PollPostSubTitle>
                                 </PollHorizontalViewItem>
 
                                 <PollHorizontalViewItemCenter onPress={() => {handleVoteOnPoll("optionTwosVotes")}}>
-                                    <PollPostSubTitle welcome={true}> Option Two </PollPostSubTitle>
+                                    <PollPostSubTitle style={{color: colors.tertiary}} welcome={true}> Option Two </PollPostSubTitle>
                                     <ProfIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/274-checkmark2.png')}/>
-                                    <PollPostSubTitle welcome={true}> {optionTwoVoteText} </PollPostSubTitle>
+                                    <PollPostSubTitle style={{color: colors.tertiary}} welcome={true}> {optionTwoVoteText} </PollPostSubTitle>
                                 </PollHorizontalViewItemCenter>
 
                                 <PollHorizontalViewItem>
-                                    <PollPostSubTitle welcome={true}> Percent </PollPostSubTitle>
+                                    <PollPostSubTitle style={{color: colors.tertiary}} welcome={true}> Percent </PollPostSubTitle>
                                     <ProfIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/273-checkmark.png')}/>
-                                    <PollPostSubTitle welcome={true}> {pollBarLengths.optionTwosBarLength.toFixed(2)}% </PollPostSubTitle>
+                                    <PollPostSubTitle style={{color: colors.tertiary}} welcome={true}> {pollBarLengths.optionTwosBarLength.toFixed(2)}% </PollPostSubTitle>
                                 </PollHorizontalViewItem>
                             </PollPostHorizontalView>
 
                             <PollPostHorizontalView>
                                 <PollKeyViewThree pollOptions={objectForAllData.data.totalNumberOfOptions} viewPage={true} onPress={openOptionThree}>
-                                    <Octicons name={"chevron-down"} size={20} color={greyish} />
+                                    <Octicons name={"chevron-down"} size={20} color={dark ? greyish : colors.tertiary} />
                                     <PollKeysCircle circleColor={objectForAllData.data.optionThreesColor}></PollKeysCircle>
-                                    <PollPostSubTitle>
+                                    <PollPostSubTitle style={{color: colors.tertiary}}>
                                         3. {objectForAllData.data.optionThree || "Couldn't recieve data"}
                                     </PollPostSubTitle>
                                     <PollKeysCircle circleColor={objectForAllData.data.optionThreesColor}></PollKeysCircle>
-                                    <Octicons name={"chevron-down"} size={20} color={greyish} />
+                                    <Octicons name={"chevron-down"} size={20} color={dark ? greyish : colors.tertiary} />
                                 </PollKeyViewThree>
                             </PollPostHorizontalView>
                             
                             <PollPostHorizontalView visible={optionThreeInfoState}>
                                 <PollHorizontalViewItem>
-                                    <PollPostSubTitle welcome={true}> Votes </PollPostSubTitle>
+                                    <PollPostSubTitle style={{color: colors.tertiary}} welcome={true}> Votes </PollPostSubTitle>
                                     <ProfIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/273-checkmark.png')}/>
-                                    <PollPostSubTitle welcome={true}> {pollVotesForOptions.optionThree} </PollPostSubTitle>
+                                    <PollPostSubTitle style={{color: colors.tertiary}} welcome={true}> {pollVotesForOptions.optionThree} </PollPostSubTitle>
                                 </PollHorizontalViewItem>
 
                                 <PollHorizontalViewItemCenter onPress={() => {handleVoteOnPoll("optionThreesVotes")}}>
-                                    <PollPostSubTitle welcome={true}> Option Three </PollPostSubTitle>
+                                    <PollPostSubTitle style={{color: colors.tertiary}} welcome={true}> Option Three </PollPostSubTitle>
                                     <ProfIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/274-checkmark2.png')}/>
-                                    <PollPostSubTitle welcome={true}> {optionThreeVoteText} </PollPostSubTitle>
+                                    <PollPostSubTitle style={{color: colors.tertiary}} welcome={true}> {optionThreeVoteText} </PollPostSubTitle>
                                 </PollHorizontalViewItemCenter>
 
                                 <PollHorizontalViewItem>
-                                    <PollPostSubTitle welcome={true}> Percent </PollPostSubTitle>
+                                    <PollPostSubTitle style={{color: colors.tertiary}} welcome={true}> Percent </PollPostSubTitle>
                                     <ProfIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/273-checkmark.png')}/>
-                                    <PollPostSubTitle welcome={true}> {pollBarLengths.optionThreesBarLength.toFixed(2)}% </PollPostSubTitle>
+                                    <PollPostSubTitle style={{color: colors.tertiary}} welcome={true}> {pollBarLengths.optionThreesBarLength.toFixed(2)}% </PollPostSubTitle>
                                 </PollHorizontalViewItem>
                             </PollPostHorizontalView>
 
                             <PollPostHorizontalView>
                                 <PollKeyViewFour pollOptions={objectForAllData.data.totalNumberOfOptions} viewPage={true} onPress={openOptionFour}>
-                                    <Octicons name={"chevron-down"} size={20} color={greyish} />
+                                    <Octicons name={"chevron-down"} size={20} color={dark ? greyish : colors.tertiary} />
                                     <PollKeysCircle circleColor={objectForAllData.data.optionFoursColor}></PollKeysCircle>
-                                    <PollPostSubTitle>
+                                    <PollPostSubTitle style={{color: colors.tertiary}}>
                                         4. {objectForAllData.data.optionFour || "Couldn't recieve data"}
                                     </PollPostSubTitle>
                                     <PollKeysCircle circleColor={objectForAllData.data.optionFoursColor}></PollKeysCircle>
-                                    <Octicons name={"chevron-down"} size={20} color={greyish} />
+                                    <Octicons name={"chevron-down"} size={20} color={dark ? greyish : colors.tertiary} />
                                 </PollKeyViewFour>
                             </PollPostHorizontalView>
 
                             <PollPostHorizontalView visible={optionFourInfoState}>
                                 <PollHorizontalViewItem>
-                                    <PollPostSubTitle welcome={true}> Votes </PollPostSubTitle>
+                                    <PollPostSubTitle style={{color: colors.tertiary}} welcome={true}> Votes </PollPostSubTitle>
                                     <ProfIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/273-checkmark.png')}/>
-                                    <PollPostSubTitle welcome={true}> {pollVotesForOptions.optionFour} </PollPostSubTitle>
+                                    <PollPostSubTitle style={{color: colors.tertiary}} welcome={true}> {pollVotesForOptions.optionFour} </PollPostSubTitle>
                                 </PollHorizontalViewItem>
 
                                 <PollHorizontalViewItemCenter onPress={() => {handleVoteOnPoll("optionFoursVotes")}}>
-                                    <PollPostSubTitle welcome={true}> Option Four </PollPostSubTitle>
+                                    <PollPostSubTitle style={{color: colors.tertiary}} welcome={true}> Option Four </PollPostSubTitle>
                                     <ProfIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/274-checkmark2.png')}/>
-                                    <PollPostSubTitle welcome={true}> {optionFourVoteText} </PollPostSubTitle>
+                                    <PollPostSubTitle style={{color: colors.tertiary}} welcome={true}> {optionFourVoteText} </PollPostSubTitle>
                                 </PollHorizontalViewItemCenter>
 
                                 <PollHorizontalViewItem>
-                                    <PollPostSubTitle welcome={true}> Percent </PollPostSubTitle>
+                                    <PollPostSubTitle style={{color: colors.tertiary}} welcome={true}> Percent </PollPostSubTitle>
                                     <ProfIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/273-checkmark.png')}/>
-                                    <PollPostSubTitle welcome={true}> {pollBarLengths.optionFoursBarLength.toFixed(2)}% </PollPostSubTitle>
+                                    <PollPostSubTitle style={{color: colors.tertiary}} welcome={true}> {pollBarLengths.optionFoursBarLength.toFixed(2)}% </PollPostSubTitle>
                                 </PollHorizontalViewItem>
                             </PollPostHorizontalView>
 
                             <PollPostHorizontalView>
                                 <PollKeyViewFive pollOptions={objectForAllData.data.totalNumberOfOptions} viewPage={true} onPress={openOptionFive}>
-                                <Octicons name={"chevron-down"} size={20} color={greyish} />
+                                <Octicons name={"chevron-down"} size={20} color={dark ? greyish : colors.tertiary} />
                                     <PollKeysCircle circleColor={objectForAllData.data.optionFivesColor}></PollKeysCircle>
-                                    <PollPostSubTitle>
+                                    <PollPostSubTitle style={{color: colors.tertiary}}>
                                         5. {objectForAllData.data.optionFive || "Couldn't recieve data"}
                                     </PollPostSubTitle>
                                     <PollKeysCircle circleColor={objectForAllData.data.optionFivesColor}></PollKeysCircle>
-                                    <Octicons name={"chevron-down"} size={20} color={greyish} />
+                                    <Octicons name={"chevron-down"} size={20} color={dark ? greyish : colors.tertiary} />
                                 </PollKeyViewFive>
                             </PollPostHorizontalView>
 
                             <PollPostHorizontalView visible={optionFiveInfoState}>
                                 <PollHorizontalViewItem>
-                                    <PollPostSubTitle welcome={true}> Votes </PollPostSubTitle>
+                                    <PollPostSubTitle style={{color: colors.tertiary}} welcome={true}> Votes </PollPostSubTitle>
                                     <ProfIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/273-checkmark.png')}/>
-                                    <PollPostSubTitle welcome={true}> {pollVotesForOptions.optionFive} </PollPostSubTitle>
+                                    <PollPostSubTitle style={{color: colors.tertiary}} welcome={true}> {pollVotesForOptions.optionFive} </PollPostSubTitle>
                                 </PollHorizontalViewItem>
 
                                 <PollHorizontalViewItemCenter onPress={() => {handleVoteOnPoll("optionFivesVotes")}}>
-                                    <PollPostSubTitle welcome={true}> Option Five </PollPostSubTitle>
+                                    <PollPostSubTitle style={{color: colors.tertiary}} welcome={true}> Option Five </PollPostSubTitle>
                                     <ProfIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/274-checkmark2.png')}/>
-                                    <PollPostSubTitle welcome={true}> {optionFiveVoteText} </PollPostSubTitle>
+                                    <PollPostSubTitle style={{color: colors.tertiary}} welcome={true}> {optionFiveVoteText} </PollPostSubTitle>
                                 </PollHorizontalViewItemCenter>
 
                                 <PollHorizontalViewItem>
-                                    <PollPostSubTitle welcome={true}> Percent </PollPostSubTitle>
+                                    <PollPostSubTitle style={{color: colors.tertiary}} welcome={true}> Percent </PollPostSubTitle>
                                     <ProfIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/273-checkmark.png')}/>
-                                    <PollPostSubTitle welcome={true}> {pollBarLengths.optionFivesBarLength.toFixed(2)}% </PollPostSubTitle>
+                                    <PollPostSubTitle style={{color: colors.tertiary}} welcome={true}> {pollBarLengths.optionFivesBarLength.toFixed(2)}% </PollPostSubTitle>
                                 </PollHorizontalViewItem>
                             </PollPostHorizontalView>
 
                             <PollPostHorizontalView>
                                 <PollKeyViewSix pollOptions={objectForAllData.data.totalNumberOfOptions} viewPage={true} onPress={openOptionSix}>
-                                    <Octicons name={"chevron-down"} size={20} color={greyish} />
+                                    <Octicons name={"chevron-down"} size={20} color={dark ? greyish : colors.tertiary} />
                                     <PollKeysCircle circleColor={objectForAllData.data.optionSixesColor}></PollKeysCircle>
-                                    <PollPostSubTitle>
+                                    <PollPostSubTitle style={{color: colors.tertiary}}>
                                         6. {objectForAllData.data.optionSix || "Couldn't recieve data"}
                                     </PollPostSubTitle>
                                     <PollKeysCircle circleColor={objectForAllData.data.optionSixesColor}></PollKeysCircle>
-                                    <Octicons name={"chevron-down"} size={20} color={greyish} />
+                                    <Octicons name={"chevron-down"} size={20} color={dark ? greyish : colors.tertiary} />
                                 </PollKeyViewSix>
                             </PollPostHorizontalView>
 
                             <PollPostHorizontalView visible={optionSixInfoState}>
                                 <PollHorizontalViewItem>
-                                    <PollPostSubTitle welcome={true}> Votes </PollPostSubTitle>
+                                    <PollPostSubTitle style={{color: colors.tertiary}} welcome={true}> Votes </PollPostSubTitle>
                                     <ProfIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/273-checkmark.png')}/>
-                                    <PollPostSubTitle welcome={true}> {pollVotesForOptions.optionSix} </PollPostSubTitle>
+                                    <PollPostSubTitle style={{color: colors.tertiary}} welcome={true}> {pollVotesForOptions.optionSix} </PollPostSubTitle>
                                 </PollHorizontalViewItem>
 
                                 <PollHorizontalViewItemCenter onPress={() => {handleVoteOnPoll("optionSixesVotes")}}>
-                                    <PollPostSubTitle welcome={true}> Option Six </PollPostSubTitle>
+                                    <PollPostSubTitle style={{color: colors.tertiary}} welcome={true}> Option Six </PollPostSubTitle>
                                     <ProfIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/274-checkmark2.png')}/>
-                                    <PollPostSubTitle welcome={true}> {optionSixVoteText} </PollPostSubTitle>
+                                    <PollPostSubTitle style={{color: colors.tertiary}} welcome={true}> {optionSixVoteText} </PollPostSubTitle>
                                 </PollHorizontalViewItemCenter>
 
                                 <PollHorizontalViewItem>
-                                    <PollPostSubTitle welcome={true}> Percent </PollPostSubTitle>
+                                    <PollPostSubTitle style={{color: colors.tertiary}} welcome={true}> Percent </PollPostSubTitle>
                                     <ProfIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/273-checkmark.png')}/>
-                                    <PollPostSubTitle welcome={true}> {pollBarLengths.optionSixesBarLength.toFixed(2)}% </PollPostSubTitle>
+                                    <PollPostSubTitle style={{color: colors.tertiary}} welcome={true}> {pollBarLengths.optionSixesBarLength.toFixed(2)}% </PollPostSubTitle>
                                 </PollHorizontalViewItem>
                             </PollPostHorizontalView>
 
@@ -1328,7 +1330,7 @@ const ViewPollPostPage = ({route, navigation}) => {
                             {typeof message === 'string' || message instanceof String && (
                                 <MsgBox type={messageType}>{message}</MsgBox>
                             )}
-                            <PollPostSubTitle votesText={true} style={{flex: 1}}>
+                            <PollPostSubTitle votesText={true} style={{flex: 1, color: colors.tertiary}}>
                                 Total Votes: {pollVotesForOptions.optionOne+pollVotesForOptions.optionTwo+pollVotesForOptions.optionThree+pollVotesForOptions.optionFour+pollVotesForOptions.optionFive+pollVotesForOptions.optionSix}
                             </PollPostSubTitle>
                             <SubTitle style={{flex: 1, alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{datePosted}</SubTitle>
@@ -1373,12 +1375,13 @@ const ViewPollPostPage = ({route, navigation}) => {
                                                         onBlur={handleBlur('comment')}
                                                         value={values.comment}
                                                         multiline={true}
+                                                        style={{backgroundColor: colors.primary, color: colors.tertiary, borderColor: colors.borderColor}}
                                                     />
                                                 </CommentsVerticalView>
                                             </CommentsHorizontalView>
                                             <CommentsHorizontalView belowWriteCommentArea={true}>
                                                 <CommentsVerticalView postComment={true}>
-                                                    {!isSubmitting && (<StyledButton postComment={true} onPress={handleSubmit}>
+                                                    {!isSubmitting && (<StyledButton style={{backgroundColor: colors.primary}} postComment={true} onPress={handleSubmit}>
                                                         <ButtonText postComment={true}> Post </ButtonText>
                                                     </StyledButton>)}
                                                     <MsgBox type={messageType}>{message}</MsgBox>
@@ -1391,7 +1394,7 @@ const ViewPollPostPage = ({route, navigation}) => {
                                         )}
                                 </Formik>
                             </CommentsHorizontalView>
-                            <PollPostSubTitle>{ifCommentText}</PollPostSubTitle>
+                            <PollPostSubTitle style={{color: colors.tertiary}}>{ifCommentText}</PollPostSubTitle>
                             <SectionList
                                 sections={changeSections}
                                 keyExtractor={(item, index) => item + index}
