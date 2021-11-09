@@ -4,6 +4,8 @@ import { StatusBar } from 'expo-status-bar';
 // formik
 import {Formik} from 'formik';
 
+import { Camera } from 'expo-camera';
+
 import {
     InnerContainer,
     PageTitle,
@@ -55,15 +57,17 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 //credentials context
 import { CredentialsContext } from '../../components/CredentialsContext';
-import { ImageBackground, ScrollView, Image, View } from 'react-native';
+import { ImageBackground, ScrollView, Image, View, TouchableOpacity, Text } from 'react-native';
 
 //Image picker
 import * as ImagePicker from 'expo-image-picker';
+import { useTheme } from '@react-navigation/native';
 
-const MultiMediaUploadPage = ({navigation}) => {
-    const [image, setImage] = useState();
+const MultiMediaUploadPage = ({navigation, route}) => {
     const [message, setMessage] = useState();
     const [messageType, setMessageType] = useState();
+    const {imageFromRoute} = route.params;
+    const [image, setImage] = useState(imageFromRoute);
 
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
@@ -96,6 +100,22 @@ const MultiMediaUploadPage = ({navigation}) => {
         setMessageType(type);
     }
 
+    const {colors, dark} = useTheme()
+
+    const [hasCameraPermission, setHasCameraPermission] = useState(null);
+    const [cameraType, setCameraType] = useState(Camera.Constants.Type.back);
+
+    const checkForCameraPermissions = async () => {
+        var { status } = await Camera.requestPermissionsAsync();
+        setHasCameraPermission(status === 'granted');
+        if (hasCameraPermission == false) {
+            alert('Please enable camera permissions for this feature to work.')
+        } else {
+            console.log('Camera permissions have been granted')
+            navigation.navigate('MultiMediaUploadPage_Camera')
+        }
+    }
+
     return(
         <>    
             <StatusBar style="dark"/>
@@ -109,11 +129,22 @@ const MultiMediaUploadPage = ({navigation}) => {
                 </MultiMediaPostFrame>}
 
                 {!image && <MultiMediaPostFrame ImageView={true}>
-                    <StyledButton postImage={true} onPress={OpenImgLibrary}>
-                        <ButtonText postImage={true}>
-                            +
-                        </ButtonText>
-                    </StyledButton>
+                    <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+                        <StyledButton postImage={true} onPress={OpenImgLibrary}>
+                            <ButtonText postImage={true}>
+                                +
+                            </ButtonText>
+                        </StyledButton>
+                        <View style={{width: 20}}/>
+                        <StyledButton postImage={true} onPress={checkForCameraPermissions}>
+                            <Image
+                                source={require('../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/016-camera.png')}
+                                style={{height: 30, width: 30, tintColor: colors.tertiary}}
+                                resizeMode="contain"
+                                resizeMethod="resize"
+                            />
+                        </StyledButton>
+                    </View>
                 </MultiMediaPostFrame>}
                 {image && <StyledButton removeImage={true} onPress={() => {setImage()}}>
                     <ButtonText removeImage={true}>

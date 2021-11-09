@@ -107,44 +107,44 @@ const PollUploadPage = ({navigation}) => {
             <View>
                 <LeftIcon>
                     <Octicons name={icon} size={30} color={
-                        isOptionOne ? optionOneColor !== '' ? optionOneColor.toLowerCase() : brand :
-                        isOptionTwo ? optionTwoColor !== '' ? optionTwoColor.toLowerCase() : brand :
-                        isOptionThree ? optionThreeColor !== '' ? optionThreeColor.toLowerCase() : brand :
-                        isOptionFour ? optionFourColor !== '' ? optionFourColor.toLowerCase() : brand : 
-                        isOptionFive ? optionFiveColor !== '' ? optionFiveColor.toLowerCase() : brand :
-                        isOptionSix ? optionSixColor !== '' ? optionSixColor.toLowerCase() : brand : brand
+                        isOptionOne ? optionOneColor !== '' ? eval(optionOneColor.toLowerCase()) : brand :
+                        isOptionTwo ? optionTwoColor !== '' ? eval(optionTwoColor.toLowerCase()) : brand :
+                        isOptionThree ? optionThreeColor !== '' ? eval(optionThreeColor.toLowerCase()) : brand :
+                        isOptionFour ? optionFourColor !== '' ? eval(optionFourColor.toLowerCase()) : brand : 
+                        isOptionFive ? optionFiveColor !== '' ? eval(optionFiveColor.toLowerCase()) : brand :
+                        isOptionSix ? optionSixColor !== '' ? eval(optionSixColor.toLowerCase()) : brand : brand
                     } />
                 </LeftIcon>
                 <StyledInputLabel style={{color: colors.tertiary}}>{label}</StyledInputLabel>
                 <StyledTextInput {...props}/>
                 {isOptionOne && (
                     <RightIcon onPress={() => setOptionOneColorChangeViewVisible(false)}>
-                        <Ionicons name={'color-palette-outline'} size={30} color={optionOneColor !== '' ? optionOneColor.toLowerCase() : brand}/>
+                        <Ionicons name={'color-palette-outline'} size={30} color={optionOneColor !== '' ? eval(optionOneColor.toLowerCase()) : brand}/>
                     </RightIcon>
                 )}
                 {isOptionTwo && (
                     <RightIcon onPress={() => setOptionTwoColorChangeViewVisible(false)}>
-                        <Ionicons name={'color-palette-outline'} size={30} color={optionTwoColor !== '' ? optionTwoColor.toLowerCase() : brand}/>
+                        <Ionicons name={'color-palette-outline'} size={30} color={optionTwoColor !== '' ? eval(optionTwoColor.toLowerCase()) : brand}/>
                     </RightIcon>
                 )}
                 {isOptionThree && (
                     <RightIcon onPress={() => setOptionThreeColorChangeViewVisible(false)}>
-                        <Ionicons name={'color-palette-outline'} size={30} color={optionThreeColor !== '' ? optionThreeColor.toLowerCase() : brand}/>
+                        <Ionicons name={'color-palette-outline'} size={30} color={optionThreeColor !== '' ? eval(optionThreeColor.toLowerCase()) : brand}/>
                     </RightIcon>
                 )}
                 {isOptionFour && (
                     <RightIcon onPress={() => setOptionFourColorChangeViewVisible(false)}>
-                        <Ionicons name={'color-palette-outline'} size={30} color={optionFourColor !== '' ? optionFourColor.toLowerCase() : brand}/>
+                        <Ionicons name={'color-palette-outline'} size={30} color={optionFourColor !== '' ? eval(optionFourColor.toLowerCase()) : brand}/>
                     </RightIcon>
                 )}
                 {isOptionFive && (
                     <RightIcon onPress={() => setOptionFiveColorChangeViewVisible(false)}>
-                        <Ionicons name={'color-palette-outline'} size={30} color={optionFiveColor !== '' ? optionFiveColor.toLowerCase() : brand}/>
+                        <Ionicons name={'color-palette-outline'} size={30} color={optionFiveColor !== '' ? eval(optionFiveColor.toLowerCase()) : brand}/>
                     </RightIcon>
                 )}
                 {isOptionSix && (
                     <RightIcon onPress={() => setOptionSixColorChangeViewVisible(false)}>
-                        <Ionicons name={'color-palette-outline'} size={30} color={optionSixColor !== '' ? optionSixColor.toLowerCase() : brand}/>
+                        <Ionicons name={'color-palette-outline'} size={30} color={optionSixColor !== '' ? eval(optionSixColor.toLowerCase()) : brand}/>
                     </RightIcon>
                 )}
             </View>
@@ -285,7 +285,7 @@ const PollUploadPage = ({navigation}) => {
                                         value={values.optionOne}
                                         setOptionOneColor={setOptionOneColor}
                                         setOptionOneColorChangeViewVisible={setOptionOneColorChangeViewVisible}
-                                        style={{borderColor: optionOneColor !== '' ? optionOneColor.toLowerCase() : brand, backgroundColor: colors.primary, color: colors.tertiary}}
+                                        style={{borderColor: optionOneColor !== '' ? eval(optionOneColor.toLowerCase()) : brand, backgroundColor: colors.primary, color: colors.tertiary}}
                                         optionOneColor={optionOneColor}
                                     />
                                     <ChangePollOptionColorView style={{backgroundColor: colors.primary}} viewHidden={optionOneColorChangeViewVisible}>
@@ -367,7 +367,7 @@ const PollUploadPage = ({navigation}) => {
                                         value={values.optionTwo}
                                         setOptionTwoColor={setOptionTwoColor}
                                         setOptionTwoColorChangeViewVisible={setOptionTwoColorChangeViewVisible}
-                                        style={{borderColor: optionTwoColor !== '' ? optionTwoColor.toLowerCase() : brand, backgroundColor: colors.primary, color: colors.tertiary}}
+                                        style={{borderColor: optionTwoColor !== '' ? eval(optionTwoColor.toLowerCase()) : brand, backgroundColor: colors.primary, color: colors.tertiary}}
                                         optionTwoColor={optionTwoColor}
                                     />
                                     <ChangePollOptionColorView style={{backgroundColor: colors.primary}} viewHidden={optionTwoColorChangeViewVisible}>
@@ -450,7 +450,7 @@ const PollUploadPage = ({navigation}) => {
                                             value={values.optionThree}
                                             setOptionThreeColor={setOptionThreeColor}
                                             setOptionThreeColorChangeViewVisible={setOptionThreeColorChangeViewVisible}
-                                            style={{borderColor: optionThreeColor !== '' ? optionThreeColor.toLowerCase() : brand, backgroundColor: colors.primary, color: colors.tertiary}}
+                                            style={{borderColor: optionThreeColor !== '' ? eval(optionThreeColor.toLowerCase()) : brand, backgroundColor: colors.primary, color: colors.tertiary}}
                                             optionThreeColor={optionThreeColor}
                                         />
                                         <ChangePollOptionColorView style={{backgroundColor: colors.primary}} viewHidden={optionThreeColorChangeViewVisible}>
@@ -534,7 +534,7 @@ const PollUploadPage = ({navigation}) => {
                                             value={values.optionFour}
                                             setOptionFourColor={setOptionFourColor}
                                             setOptionFourColorChangeViewVisible={setOptionFourColorChangeViewVisible}
-                                            style={{borderColor: optionFourColor !== '' ? optionFourColor.toLowerCase() : brand, backgroundColor: colors.primary, color: colors.tertiary}}
+                                            style={{borderColor: optionFourColor !== '' ? eval(optionFourColor.toLowerCase()) : brand, backgroundColor: colors.primary, color: colors.tertiary}}
                                             optionFourColor={optionFourColor}
                                         />
                                         <ChangePollOptionColorView style={{backgroundColor: colors.primary}} viewHidden={optionFourColorChangeViewVisible}>
@@ -618,7 +618,7 @@ const PollUploadPage = ({navigation}) => {
                                             value={values.optionFive}
                                             setOptionFiveColor={setOptionFiveColor}
                                             setOptionFiveColorChangeViewVisible={setOptionFiveColorChangeViewVisible}
-                                            style={{borderColor: optionFiveColor !== '' ? optionFiveColor.toLowerCase() : brand, backgroundColor: colors.primary, color: colors.tertiary}}
+                                            style={{borderColor: optionFiveColor !== '' ? eval(optionFiveColor.toLowerCase()) : brand, backgroundColor: colors.primary, color: colors.tertiary}}
                                             optionFiveColor={optionFiveColor}
                                         />
                                         <ChangePollOptionColorView style={{backgroundColor: colors.primary}} viewHidden={optionFiveColorChangeViewVisible}>
@@ -702,7 +702,7 @@ const PollUploadPage = ({navigation}) => {
                                             value={values.optionSix}
                                             setOptionSixColor={setOptionSixColor}
                                             setOptionSixColorChangeViewVisible={setOptionSixColorChangeViewVisible}
-                                            style={{borderColor: optionSixColor !== '' ? optionSixColor.toLowerCase() : brand, backgroundColor: colors.primary, color: colors.tertiary}}
+                                            style={{borderColor: optionSixColor !== '' ? eval(optionSixColor.toLowerCase()) : brand, backgroundColor: colors.primary, color: colors.tertiary}}
                                             optionSixColor={optionSixColor}
                                         />
                                         <ChangePollOptionColorView style={{backgroundColor: colors.primary}} viewHidden={optionSixColorChangeViewVisible}>
@@ -776,6 +776,7 @@ const PollUploadPage = ({navigation}) => {
                                     </StyledFormArea>
                                     <PostHorizontalView centerAlign={true}>
                                         <TextLink addPollText={true} onPress={() => {
+                                            handleMessage('', 'FAILED')
                                             if (optionThreeVisible == false) {
                                                 setOptionThreeVisible(true)
                                                 values.totalNumberOfOptions= "Three"
@@ -795,6 +796,7 @@ const PollUploadPage = ({navigation}) => {
                                             <TextLinkContent addPollText={true}>+ Add Option   </TextLinkContent>
                                         </TextLink>
                                         <TextLink removePollText={true} onPress={() => {
+                                            handleMessage('', 'FAILED')
                                             if (optionSixVisible == true) {
                                                 setOptionSixVisible(false)
                                                 values.totalNumberOfOptions = "Five"
@@ -808,7 +810,7 @@ const PollUploadPage = ({navigation}) => {
                                                 setOptionThreeVisible(false)
                                                 values.totalNumberOfOptions = "Two"
                                             } else {
-                                                handleMessage("A poll requiares a minimum of 2 options","FAILED");
+                                                handleMessage("A poll requires a minimum of 2 options","FAILED");
                                             }
                                         }}>
                                             <TextLinkContent removePollText={true}>- Remove Option</TextLinkContent>

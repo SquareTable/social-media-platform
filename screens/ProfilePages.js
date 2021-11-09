@@ -69,7 +69,7 @@ import {
 
 
 // Colors
-const { brand, primary, tertiary, greyish, darkLight, darkestBlue, slightlyLighterPrimary, slightlyLighterGrey, descTextColor, darkest, red } = Colors;
+const { brand, primary, tertiary, greyish, darkLight, darkestBlue, slightlyLighterPrimary, slightlyLighterGrey, descTextColor, darkest, red, orange, yellow, green, purple } = Colors;
 
 // async-storage
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -1093,23 +1093,23 @@ const ProfilePages = ({ route, navigation }) => {
     }
 
     const ImageItem = ({ imageKey, imageB64, imageTitle, imageDescription, imageUpVotes, imageComments, creatorName, creatorDisplayName, creatorPfpB64, datePosted, postNum }) => (
-        <View style={{ backgroundColor: slightlyLighterPrimary, borderRadius: 15, marginBottom: 10 }}>
+        <View style={{ backgroundColor: dark ? slightlyLighterPrimary : colors.borderColor, borderRadius: 15, marginBottom: 10 }}>
             <PostsHorizontalView style={{ marginLeft: '5%', borderBottomWidth: 3, borderColor: darkLight, width: '90%', paddingBottom: 5, marginRight: '5%' }}>
                 <PostsVerticalView>
                     <PostCreatorIcon source={{ uri: `data:image/jpg;base64,${creatorPfpB64}` }} />
                 </PostsVerticalView>
                 <PostsVerticalView style={{ marginTop: 9 }}>
                     <SubTitle style={{ fontSize: 20, color: brand, marginBottom: 0 }}>{creatorDisplayName}</SubTitle>
-                    <SubTitle style={{ fontSize: 12, marginBottom: 0 }}>@{creatorName}</SubTitle>
+                    <SubTitle style={{ fontSize: 12, marginBottom: 0, color: colors.tertiary }}>@{creatorName}</SubTitle>
                 </PostsVerticalView>
             </PostsHorizontalView>
             <PostsHorizontalView style={{ alignItems: 'center', justifyContent: 'center' }}>
-                <MultiMediaPostFrame postOnProfile={true} style={{ aspectRatio: 1 / 1 }} onPress={() => navigation.navigate("ViewImagePostPage", { imageKey, imageB64, imageTitle, imageDescription, creatorName, creatorDisplayName, creatorPfpB64, datePosted })}>
+                <MultiMediaPostFrame postOnProfile={true} style={{ aspectRatio: 1 / 1, backgroundColor: colors.borderColor }} onPress={() => navigation.navigate("ViewImagePostPage", { imageKey, imageB64, imageTitle, imageDescription, creatorName, creatorDisplayName, creatorPfpB64, datePosted })}>
                     <Image style={{ width: '100%', height: '100%', resizeMode: 'cover', borderRadius: 20 }} source={{ uri: `data:image/jpg;base64,${imageB64}` }} />
                 </MultiMediaPostFrame>
             </PostsHorizontalView>
             <ImagePostTextFrame style={{ textAlign: 'center' }}>
-                <SubTitle style={{ fontSize: 20, color: tertiary, marginBottom: 0 }}>{imageTitle}</SubTitle>
+                <SubTitle style={{ fontSize: 20, color: colors.tertiary, marginBottom: 0 }}>{imageTitle}</SubTitle>
                 <SubTitle style={{ fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal' }}>{imageDescription}</SubTitle>
             </ImagePostTextFrame>
             <PostHorizontalView style={{ marginLeft: '5%', width: '90%', paddingVertical: 10, flex: 1, flexDirection: 'row' }}>
@@ -1201,53 +1201,53 @@ const ProfilePages = ({ route, navigation }) => {
                 </PostsVerticalView>
                 <PostsVerticalView style={{ marginTop: 9 }}>
                     <SubTitle style={{ fontSize: 20, color: brand, marginBottom: 0 }}>{creatorDisplayName}</SubTitle>
-                    <SubTitle style={{ fontSize: 12, marginBottom: 0 }}>@{creatorName}</SubTitle>
+                    <SubTitle style={{ fontSize: 12, marginBottom: 0, color: colors.tertiary }}>@{creatorName}</SubTitle>
                 </PostsVerticalView>
             </PostsHorizontalView>
             <PollPostTitle style={{ width: '95%' }}>
                 {pollTitle}
             </PollPostTitle>
-            <PollPostSubTitle style={{ width: '95%' }}>
+            <PollPostSubTitle style={{ width: '95%', color: colors.tertiary }}>
                 {pollSubTitle}
             </PollPostSubTitle>
             <AboveBarPollPostHorizontalView>
-                <PollPostSubTitle style={{ width: optionOnesBarLength + '%' }}>
+                <PollPostSubTitle style={{ width: optionOnesBarLength + '%', color: colors.tertiary }}>
                     1
                 </PollPostSubTitle>
-                <PollPostSubTitle style={{ width: optionTwosBarLength + '%' }}>
+                <PollPostSubTitle style={{ width: optionTwosBarLength + '%', color: colors.tertiary }}>
                     2
                 </PollPostSubTitle>
-                <PollPostSubTitle style={{ width: optionThreesBarLength + '%' }}>
+                <PollPostSubTitle style={{ width: optionThreesBarLength + '%', color: colors.tertiary }}>
                     3
                 </PollPostSubTitle>
-                <PollPostSubTitle style={{ width: optionFoursBarLength + '%' }}>
+                <PollPostSubTitle style={{ width: optionFoursBarLength + '%', color: colors.tertiary }}>
                     4
                 </PollPostSubTitle>
-                <PollPostSubTitle style={{ width: optionFivesBarLength + '%' }}>
+                <PollPostSubTitle style={{ width: optionFivesBarLength + '%', color: colors.tertiary }}>
                     5
                 </PollPostSubTitle>
-                <PollPostSubTitle style={{ width: optionSixesBarLength + '%' }}>
+                <PollPostSubTitle style={{ width: optionSixesBarLength + '%', color: colors.tertiary }}>
                     6
                 </PollPostSubTitle>
             </AboveBarPollPostHorizontalView>
             <PollBarOutline>
-                <PollBarItem borderChange={optionOnesBarLength} style={{ width: optionOnesBarLength + '%' }}></PollBarItem>
-                <PollBarItem borderChange={optionTwosBarLength} style={{ width: optionTwosBarLength + '%' }}></PollBarItem>
-                <PollBarItem borderChange={optionThreesBarLength} style={{ width: optionThreesBarLength + '%' }}></PollBarItem>
-                <PollBarItem borderChange={optionFoursBarLength} style={{ width: optionFoursBarLength + '%' }}></PollBarItem>
-                <PollBarItem borderChange={optionFivesBarLength} style={{ width: optionFivesBarLength + '%' }}></PollBarItem>
-                <PollBarItem borderChange={optionSixesBarLength} style={{ width: optionSixesBarLength + '%' }}></PollBarItem>
+            <PollBarItem borderChange={optionOnesBarLength} style={{ width: optionOnesBarLength+'%', backgroundColor: optionOnesColor == 'Not Specified' ? brand : eval(optionOnesColor.toLowerCase())}}></PollBarItem>
+                <PollBarItem borderChange={optionTwosBarLength} style={{ width: optionTwosBarLength+'%', backgroundColor: optionTwosColor == 'Not Specified' ? brand : eval(optionTwosColor.toLowerCase() )}}></PollBarItem>
+                <PollBarItem borderChange={optionThreesBarLength} style={{ width: optionThreesBarLength+'%', backgroundColor: optionThreesColor == 'Not Specified' ? brand : eval(optionThreesColor.toLowerCase()) }}></PollBarItem>
+                <PollBarItem borderChange={optionFoursBarLength} style={{ width: optionFoursBarLength+'%', backgroundColor: optionFoursColor == 'Not Specified' ? brand : eval(optionFoursColor.toLowerCase()) }}></PollBarItem>
+                <PollBarItem borderChange={optionFivesBarLength} style={{ width: optionFivesBarLength+'%', backgroundColor: optionFivesColor == 'Not Specified' ? brand : eval(optionFivesColor.toLowerCase()) }}></PollBarItem>
+                <PollBarItem borderChange={optionSixesBarLength} style={{ width: optionSixesBarLength+'%', backgroundColor: optionSixesColor == 'Not Specified' ? brand : eval(optionSixesColor.toLowerCase()) }}></PollBarItem>
             </PollBarOutline>
             <PollPostHorizontalView>
                 <PollKeyViewOne pollOptions={totalNumberOfOptions} onPress={() => navigation.navigate("ViewPollPostPage", { pollTitle, pollSubTitle, optionOne, optionOnesColor, optionOnesVotes, optionOnesBarLength, optionTwo, optionTwosColor, optionTwosVotes, optionTwosBarLength, optionThree, optionThreesColor, optionThreesVotes, optionThreesBarLength, optionFour, optionFoursColor, optionFoursVotes, optionFoursBarLength, optionFive, optionFivesColor, optionFivesVotes, optionFivesBarLength, optionSix, optionSixesColor, optionSixesVotes, optionSixesBarLength, totalNumberOfOptions, pollId, creatorPfpB64: pfpB64, creatorName, creatorDisplayName, datePosted })}>
-                    <PollPostSubTitle>
+                    <PollPostSubTitle style={{color: colors.tertiary}}>
                         1. {optionOne}
                     </PollPostSubTitle>
                     <PollKeysCircle circleColor={optionOnesColor}></PollKeysCircle>
                 </PollKeyViewOne>
                 <PollKeyViewTwo pollOptions={totalNumberOfOptions} onPress={() => navigation.navigate("ViewPollPostPage", { pollTitle, pollSubTitle, optionOne, optionOnesColor, optionOnesVotes, optionOnesBarLength, optionTwo, optionTwosColor, optionTwosVotes, optionTwosBarLength, optionThree, optionThreesColor, optionThreesVotes, optionThreesBarLength, optionFour, optionFoursColor, optionFoursVotes, optionFoursBarLength, optionFive, optionFivesColor, optionFivesVotes, optionFivesBarLength, optionSix, optionSixesColor, optionSixesVotes, optionSixesBarLength, totalNumberOfOptions, pollId, creatorPfpB64: pfpB64, creatorName, creatorDisplayName, datePosted })}>
                     <PollKeysCircle circleColor={optionTwosColor}></PollKeysCircle>
-                    <PollPostSubTitle>
+                    <PollPostSubTitle style={{color: colors.tertiary}}>
                         2. {optionTwo}
                     </PollPostSubTitle>
                 </PollKeyViewTwo>
@@ -1255,14 +1255,14 @@ const ProfilePages = ({ route, navigation }) => {
 
             <PollPostHorizontalView>
                 <PollKeyViewThree pollOptions={totalNumberOfOptions} onPress={() => navigation.navigate("ViewPollPostPage", { pollTitle, pollSubTitle, optionOne, optionOnesColor, optionOnesVotes, optionOnesBarLength, optionTwo, optionTwosColor, optionTwosVotes, optionTwosBarLength, optionThree, optionThreesColor, optionThreesVotes, optionThreesBarLength, optionFour, optionFoursColor, optionFoursVotes, optionFoursBarLength, optionFive, optionFivesColor, optionFivesVotes, optionFivesBarLength, optionSix, optionSixesColor, optionSixesVotes, optionSixesBarLength, totalNumberOfOptions, pollId, creatorPfpB64: pfpB64, creatorName, creatorDisplayName, datePosted })}>
-                    <PollPostSubTitle>
+                    <PollPostSubTitle style={{color: colors.tertiary}}>
                         3. {optionThree}
                     </PollPostSubTitle>
                     <PollKeysCircle circleColor={optionThreesColor}></PollKeysCircle>
                 </PollKeyViewThree>
                 <PollKeyViewFour pollOptions={totalNumberOfOptions} onPress={() => navigation.navigate("ViewPollPostPage", { pollTitle, pollSubTitle, optionOne, optionOnesColor, optionOnesVotes, optionOnesBarLength, optionTwo, optionTwosColor, optionTwosVotes, optionTwosBarLength, optionThree, optionThreesColor, optionThreesVotes, optionThreesBarLength, optionFour, optionFoursColor, optionFoursVotes, optionFoursBarLength, optionFive, optionFivesColor, optionFivesVotes, optionFivesBarLength, optionSix, optionSixesColor, optionSixesVotes, optionSixesBarLength, totalNumberOfOptions, pollId, creatorPfpB64: pfpB64, creatorName, creatorDisplayName, datePosted })}>
                     <PollKeysCircle circleColor={optionFoursColor}></PollKeysCircle>
-                    <PollPostSubTitle>
+                    <PollPostSubTitle style={{color: colors.tertiary}}>
                         4. {optionFour}
                     </PollPostSubTitle>
                 </PollKeyViewFour>
@@ -1270,14 +1270,14 @@ const ProfilePages = ({ route, navigation }) => {
 
             <PollPostHorizontalView>
                 <PollKeyViewFive pollOptions={totalNumberOfOptions} onPress={() => navigation.navigate("ViewPollPostPage", { pollTitle, pollSubTitle, optionOne, optionOnesColor, optionOnesVotes, optionOnesBarLength, optionTwo, optionTwosColor, optionTwosVotes, optionTwosBarLength, optionThree, optionThreesColor, optionThreesVotes, optionThreesBarLength, optionFour, optionFoursColor, optionFoursVotes, optionFoursBarLength, optionFive, optionFivesColor, optionFivesVotes, optionFivesBarLength, optionSix, optionSixesColor, optionSixesVotes, optionSixesBarLength, totalNumberOfOptions, pollId, creatorPfpB64: pfpB64, creatorName, creatorDisplayName, datePosted })}>
-                    <PollPostSubTitle>
+                    <PollPostSubTitle style={{color: colors.tertiary}}>
                         5. {optionFive}
                     </PollPostSubTitle>
                     <PollKeysCircle circleColor={optionFivesColor}></PollKeysCircle>
                 </PollKeyViewFive>
                 <PollKeyViewSix pollOptions={totalNumberOfOptions} onPress={() => navigation.navigate("ViewPollPostPage", { pollTitle, pollSubTitle, optionOne, optionOnesColor, optionOnesVotes, optionOnesBarLength, optionTwo, optionTwosColor, optionTwosVotes, optionTwosBarLength, optionThree, optionThreesColor, optionThreesVotes, optionThreesBarLength, optionFour, optionFoursColor, optionFoursVotes, optionFoursBarLength, optionFive, optionFivesColor, optionFivesVotes, optionFivesBarLength, optionSix, optionSixesColor, optionSixesVotes, optionSixesBarLength, totalNumberOfOptions, pollId, creatorPfpB64: pfpB64, creatorName, creatorDisplayName, datePosted })}>
                     <PollKeysCircle circleColor={optionSixesColor}></PollKeysCircle>
-                    <PollPostSubTitle>
+                    <PollPostSubTitle style={{color: colors.tertiary}}>
                         6. {optionSix}
                     </PollPostSubTitle>
                 </PollKeyViewSix>
@@ -1375,12 +1375,12 @@ const ProfilePages = ({ route, navigation }) => {
             {NSFW == false && (
                 <View>
                     {NSFL == false && (
-                        <SubTitle searchResTitle={true}>{categoryTitle}</SubTitle>
+                        <SubTitle style={{color: colors.tertiary}} searchResTitle={true}>{categoryTitle}</SubTitle>
                     )}
                     {NSFL == true && (
                         <View style={{ flexDirection: 'row' }}>
                             <SubTitle searchResTitle={true} style={{ color: red }}>(NSFL) </SubTitle>
-                            <SubTitle searchResTitle={true}>{categoryTitle}</SubTitle>
+                            <SubTitle style={{color: colors.tertiary}} searchResTitle={true}>{categoryTitle}</SubTitle>
                         </View>
                     )}
                 </View>
@@ -1388,33 +1388,33 @@ const ProfilePages = ({ route, navigation }) => {
             {NSFW == true && (
                 <View style={{ flexDirection: 'row' }}>
                     <SubTitle searchResTitle={true} style={{ color: red }}>(NSFW) </SubTitle>
-                    <SubTitle searchResTitle={true}>{categoryTitle}</SubTitle>
+                    <SubTitle searchResTitle={true} style={{color: colors.tertiary}}>{categoryTitle}</SubTitle>
                 </View>
             )}
-            <SubTitle searchResTitleDisplayName={true}>{categoryDescription}</SubTitle>
+            <SubTitle searchResTitleDisplayName={true} style={{color: colors.tertiary}}>{categoryDescription}</SubTitle>
             <SubTitle searchResTitleDisplayName={true} style={{ color: brand }}>{categoryTags}</SubTitle>
             <SearchHorizontalView>
                 <SearchHorizontalViewItemCenter style={{ height: '100%', justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}>
-                    <SearchSubTitle welcome={true} style={{ flex: 1 }}> Members </SearchSubTitle>
+                    <SearchSubTitle welcome={true} style={{ flex: 1, color: colors.tertiary }}> Members </SearchSubTitle>
                     <ProfIcons style={{ flex: 1 }} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/115-users.png')} />
                     {members == 0 && (
-                        <SearchSubTitle welcome={true} style={{ flex: 1 }}> 0 </SearchSubTitle>
+                        <SearchSubTitle welcome={true} style={{ flex: 1, color: colors.tertiary }}> 0 </SearchSubTitle>
                     )}
                     {members !== 0 && (
-                        <SearchSubTitle welcome={true} style={{ flex: 1 }}> {members} </SearchSubTitle>
+                        <SearchSubTitle welcome={true} style={{ flex: 1, color: colors.tertiary }}> {members} </SearchSubTitle>
                     )}
                 </SearchHorizontalViewItemCenter>
                 <SearchHorizontalViewItemCenter style={{ height: '100%', justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}>
-                    <SearchSubTitle welcome={true} style={{ flex: 1 }}> Date Created </SearchSubTitle>
+                    <SearchSubTitle welcome={true} style={{ flex: 1, color: colors.tertiary }}> Date Created </SearchSubTitle>
                     <ProfIcons style={{ flex: 1 }} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/084-calendar.png')} />
-                    <SearchSubTitle welcome={true} style={{ flex: 1 }}> {datePosted} </SearchSubTitle>
+                    <SearchSubTitle welcome={true} style={{ flex: 1, color: colors.tertiary }}> {datePosted} </SearchSubTitle>
                 </SearchHorizontalViewItemCenter>
             </SearchHorizontalView>
         </SearchFrame>
     );
 
     const ThreadItems = ({ postNum, threadId, threadComments, threadType, threadUpVotes, threadTitle, threadSubtitle, threadTags, threadCategory, threadBody, threadImageKey, threadImageDescription, threadNSFW, threadNSFL, datePosted, threadUpVoted, threadDownVoted, creatorDisplayName, creatorName, creatorImageB64, imageInThreadB64 }) => (
-        <View style={{ backgroundColor: slightlyLighterPrimary, borderRadius: 15, marginBottom: 10 }} onPress={() => navigation.navigate("ThreadViewPage", { threadId: threadId })}>
+        <View style={{ backgroundColor: dark ? slightlyLighterPrimary : colors.borderColor, borderRadius: 15, marginBottom: 10 }} onPress={() => navigation.navigate("ThreadViewPage", { threadId: threadId })}>
             {threadNSFW === true && (
                 <SubTitle style={{ fontSize: 10, color: red, marginBottom: 0 }}>(NSFW)</SubTitle>
             )}
@@ -1439,7 +1439,7 @@ const ProfilePages = ({ route, navigation }) => {
                             </PostsVerticalView>
                         )}
                         <PostsVerticalView style={{ marginTop: 9 }}>
-                            <SubTitle style={{ fontSize: 20, marginBottom: 0 }}>{creatorDisplayName}</SubTitle>
+                            <SubTitle style={{ fontSize: 20, marginBottom: 0, color: colors.tertiary }}>{creatorDisplayName}</SubTitle>
                             <SubTitle style={{ fontSize: 12, color: brand, marginBottom: 0 }}>@{creatorName}</SubTitle>
                         </PostsVerticalView>
                     </PostsHorizontalView>
@@ -1450,7 +1450,7 @@ const ProfilePages = ({ route, navigation }) => {
                     <TouchableOpacity>
                         <SubTitle style={{ fontSize: 10, color: brand, marginBottom: 0 }}>Category: {threadCategory}</SubTitle>
                     </TouchableOpacity>
-                    <SubTitle style={{ fontSize: 20, color: tertiary, marginBottom: 0 }}>{threadTitle}</SubTitle>
+                    <SubTitle style={{ fontSize: 20, color: colors.tertiary, marginBottom: 0 }}>{threadTitle}</SubTitle>
                     {threadSubtitle !== "" && (
                         <SubTitle style={{ fontSize: 18, color: descTextColor, marginBottom: 0, fontWeight: 'normal' }}>{threadSubtitle}</SubTitle>
                     )}
@@ -2427,7 +2427,7 @@ const ProfilePages = ({ route, navigation }) => {
                 onScroll={handleScroll}
                 scrollEventThrottle={1}
             >
-                <WelcomeContainer>
+                <WelcomeContainer style={{backgroundColor: colors.primary}}>
                     <ProfileHorizontalView topItems={true}>
                         <ViewHider viewHidden={backButtonHidden}>
                             <TouchableOpacity style={{marginRight: '75.5%'}} disabled={PageElementsState} onPress={() => {navigation.goBack()}}>
@@ -2454,7 +2454,7 @@ const ProfilePages = ({ route, navigation }) => {
                     <ProfInfoAreaImage>
                         <Avatar resizeMode="cover" source={{ uri: AvatarImg }} />
                         <PageTitle welcome={true}>{profilesDisplayName || profilesName || "Couldn't get name"}</PageTitle>
-                        <SubTitle>{"@" + profilesDisplayName}</SubTitle>
+                        <SubTitle style={{color: colors.tertiary}}>{"@" + profilesDisplayName}</SubTitle>
                         <ProfileBadgesView onPress={() => navigation.navigate("AccountBadges")}>
                             <ProfileBadgeIcons source={require('./../assets/img/TempProfIcons.jpg')} />
                             <ProfileBadgeIcons source={require('./../assets/img/BgImage1.png')} />
@@ -2462,23 +2462,23 @@ const ProfilePages = ({ route, navigation }) => {
                             <ProfileBadgeIcons source={require('./../assets/img/Toga.jpg')} />
                             <ProfileBadgeIcons source={require('./../assets/img/TempProfIcons.jpg')} />
                         </ProfileBadgesView>
-                        <SubTitle bioText={true} > Bio </SubTitle>
+                        <SubTitle style={{color: colors.tertiary}} bioText={true} > Bio </SubTitle>
                     </ProfInfoAreaImage>
                     <ProfileHorizontalView>
                         <ProfileHorizontalViewItem profLeftIcon={true}>
-                            <SubTitle welcome={true}> Followers </SubTitle>
+                            <SubTitle style={{color: colors.tertiary}} welcome={true}> Followers </SubTitle>
                             <ProfIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/114-user.png')} />
-                            <SubTitle welcome={true}> {followers.length} </SubTitle>
+                            <SubTitle style={{color: colors.tertiary}} welcome={true}> {followers.length} </SubTitle>
                         </ProfileHorizontalViewItem>
                         <ProfileHorizontalViewItem profCenterIcon={true}>
-                            <SubTitle welcome={true}> Following </SubTitle>
+                            <SubTitle style={{color: colors.tertiary}} welcome={true}> Following </SubTitle>
                             <ProfIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/115-users.png')} />
-                            <SubTitle welcome={true}> {following.length} </SubTitle>
+                            <SubTitle style={{color: colors.tertiary}} welcome={true}> {following.length} </SubTitle>
                         </ProfileHorizontalViewItem>
                         <ProfileHorizontalViewItem profRightIcon={true}>
-                            <SubTitle welcome={true}> Likes </SubTitle>
+                            <SubTitle style={{color: colors.tertiary}} welcome={true}> Likes </SubTitle>
                             <ProfIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/219-heart.png')} />
-                            <SubTitle welcome={true}> {totalLikes} </SubTitle>
+                            <SubTitle style={{color: colors.tertiary}} welcome={true}> {totalLikes} </SubTitle>
                         </ProfileHorizontalViewItem>
                     </ProfileHorizontalView>
                     <ProfilePostsSelectionView>
@@ -2491,54 +2491,54 @@ const ProfilePages = ({ route, navigation }) => {
                     </ProfilePostsSelectionView>
                     <ProfileSelectMediaTypeHorizontalView>
                         <ProfileSelectMediaTypeItem onPress={changeToOne}>
-                            <ProfileSelectMediaTypeIconsBorder>
+                            <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor, borderColor: colors.borderColor}}>
                                 <ProfileSelectMediaTypeIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/015-images.png')} />
                             </ProfileSelectMediaTypeIconsBorder>
                         </ProfileSelectMediaTypeItem>
                         <ProfileSelectMediaTypeItem onPress={changeToTwo}>
-                            <ProfileSelectMediaTypeIconsBorder>
+                            <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor, borderColor: colors.borderColor}}>
                                 <ProfileSelectMediaTypeIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/020-film.png')} />
                             </ProfileSelectMediaTypeIconsBorder>
                         </ProfileSelectMediaTypeItem>
                         <ProfileSelectMediaTypeItem onPress={changeToThree}>
-                            <ProfileSelectMediaTypeIconsBorder>
+                            <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor, borderColor: colors.borderColor}}>
                                 <ProfileSelectMediaTypeIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/157-stats-bars.png')} />
                             </ProfileSelectMediaTypeIconsBorder>
                         </ProfileSelectMediaTypeItem>
                         <ProfileSelectMediaTypeItem onPress={changeToFour}>
-                            <ProfileSelectMediaTypeIconsBorder>
+                            <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor, borderColor: colors.borderColor}}>
                                 <ProfileSelectMediaTypeIcons style={{ height: '80%', width: '80%' }} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/007-pencil2.png')} />
                             </ProfileSelectMediaTypeIconsBorder>
                         </ProfileSelectMediaTypeItem>
                         <ProfileSelectMediaTypeItem onPress={changeToFive}>
-                            <ProfileSelectMediaTypeIconsBorder>
+                            <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor, borderColor: colors.borderColor}}>
                                 <ProfileSelectMediaTypeIcons style={{ height: '80%', width: '80%' }} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/093-drawer.png')} />
                             </ProfileSelectMediaTypeIconsBorder>
                         </ProfileSelectMediaTypeItem>
                     </ProfileSelectMediaTypeHorizontalView>
                     <ProfileGridPosts display={gridViewState}>
                         {selectedPostFormat == "One" && (
-                            <SubTitle profNoPosts={true}>
+                            <SubTitle style={{color: colors.tertiary}} profNoPosts={true}>
                                 {formatOneText}
                             </SubTitle>
                         )}
                         {selectedPostFormat == "Two" && (
-                            <SubTitle profNoPosts={true}>
+                            <SubTitle style={{color: colors.tertiary}} profNoPosts={true}>
                                 {formatTwoText}
                             </SubTitle>
                         )}
                         {selectedPostFormat == "Three" && (
-                            <SubTitle profNoPosts={true}>
+                            <SubTitle style={{color: colors.tertiary}} profNoPosts={true}>
                                 {formatThreeText}
                             </SubTitle>
                         )}
                         {selectedPostFormat == "Four" && (
-                            <SubTitle profNoPosts={true}>
+                            <SubTitle style={{color: colors.tertiary}} profNoPosts={true}>
                                 {formatFourText}
                             </SubTitle>
                         )}
                         {selectedPostFormat == "Five" && (
-                            <SubTitle profNoPosts={true}>
+                            <SubTitle style={{color: colors.tertiary}} profNoPosts={true}>
                                 {formatFiveText}
                             </SubTitle>
                         )}
@@ -2604,7 +2604,7 @@ const ProfilePages = ({ route, navigation }) => {
                         )}
                     </ProfileGridPosts>
                     <ProfileFeaturedPosts display={featuredViewState}>
-                        <SubTitle profNoPosts={true}>
+                        <SubTitle style={{color: colors.tertiary}} profNoPosts={true}>
                             Features don't work yet...
                         </SubTitle>
                     </ProfileFeaturedPosts>

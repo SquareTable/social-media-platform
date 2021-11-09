@@ -25,7 +25,8 @@ import {
     ProfIcons,
     SearchUserViewItemCenter,
     SearchFrame,
-    PostIcons
+    PostIcons,
+    ChangePollOptionColorButtons
 } from '../screens/screenStylings/styling.js';
 
 // Colors
@@ -49,8 +50,10 @@ import background from "./../assets/img/Toga.jpg";
 //axios
 import axios from 'axios';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { useTheme } from '@react-navigation/native';
 
 const SelectCategorySearchScreen = ({route, navigation}) => {
+    const {colors, dark} = useTheme()
      //context
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
     const {photoUrl} = storedCredentials;
@@ -75,12 +78,12 @@ const SelectCategorySearchScreen = ({route, navigation}) => {
             {NSFW == false && (
                 <View>
                     {NSFL == false && (
-                        <SubTitle searchResTitle={true}>{categoryTitle}</SubTitle>
+                        <SubTitle style={{color: colors.tertiary}} searchResTitle={true}>{categoryTitle}</SubTitle>
                     )}
                     {NSFL == true && (
                         <View style={{flexDirection: 'row'}}>
                             <SubTitle searchResTitle={true} style={{color: red}}>(NSFL) </SubTitle>
-                            <SubTitle searchResTitle={true}>{categoryTitle}</SubTitle>
+                            <SubTitle style={{color: colors.tertiary}} searchResTitle={true}>{categoryTitle}</SubTitle>
                         </View>
                     )}
                 </View>
@@ -88,26 +91,26 @@ const SelectCategorySearchScreen = ({route, navigation}) => {
             {NSFW == true && (
                 <View style={{flexDirection: 'row'}}>
                     <SubTitle searchResTitle={true} style={{color: red}}>(NSFW) </SubTitle>
-                    <SubTitle searchResTitle={true}>{categoryTitle}</SubTitle>
+                    <SubTitle style={{color: colors.tertiary}} searchResTitle={true}>{categoryTitle}</SubTitle>
                 </View>
             )}
-            <SubTitle searchResTitleDisplayName={true}>{categoryDescription}</SubTitle>
+            <SubTitle style={{color: colors.tertiary}} searchResTitleDisplayName={true}>{categoryDescription}</SubTitle>
             <SubTitle searchResTitleDisplayName={true} style={{color: brand}}>{categoryTags}</SubTitle>
             <SearchHorizontalView>
                 <SearchHorizontalViewItemCenter style={{height: '100%', justifyContent: 'center', alignItems: 'center', textAlign: 'center'}}>
-                    <SearchSubTitle welcome={true} style={{flex: 1}}> Members </SearchSubTitle>
+                    <SearchSubTitle welcome={true} style={{flex: 1, color: colors.tertiary}}> Members </SearchSubTitle>
                     <ProfIcons style={{flex: 1}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/115-users.png')}/>
                     {members == 0 && ( 
-                        <SearchSubTitle welcome={true} style={{flex: 1}}> 0 </SearchSubTitle>
+                        <SearchSubTitle welcome={true} style={{flex: 1, color: colors.tertiary}}> 0 </SearchSubTitle>
                     )}
                     {members !== 0 && ( 
-                        <SearchSubTitle welcome={true} style={{flex: 1}}> {members} </SearchSubTitle>
+                        <SearchSubTitle welcome={true} style={{flex: 1, color: colors.tertiary}}> {members} </SearchSubTitle>
                     )}
                 </SearchHorizontalViewItemCenter>
                 <SearchHorizontalViewItemCenter style={{height: '100%', justifyContent: 'center', alignItems: 'center', textAlign: 'center'}}>
-                    <SearchSubTitle welcome={true} style={{flex: 1}}> Date Created </SearchSubTitle>
+                    <SearchSubTitle welcome={true} style={{flex: 1, color: colors.tertiary}}> Date Created </SearchSubTitle>
                     <ProfIcons style={{flex: 1}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/084-calendar.png')}/>
-                    <SearchSubTitle welcome={true} style={{flex: 1}}> {datePosted} </SearchSubTitle>
+                    <SearchSubTitle welcome={true} style={{flex: 1, color: colors.tertiary}}> {datePosted} </SearchSubTitle>
                 </SearchHorizontalViewItemCenter>
             </SearchHorizontalView>
         </SearchFrame>
@@ -198,26 +201,27 @@ const SelectCategorySearchScreen = ({route, navigation}) => {
     return(
         <>    
             <StatusBar style="dark"/>
-            <ScrollView style={{'backgroundColor': primary}}>
-                <WelcomeContainer postScreen={true}>
-                    <PageTitle>Select A Category</PageTitle>
-                    <SubTitle>{message}</SubTitle>
-                    <SearchBarArea>
-                        <UserTextInput
-                            placeholder="Search"
-                            placeholderTextColor={darkLight}
-                            onChangeText={(val) => handleChange(val)}
-                        />
-                    </SearchBarArea>
-                </WelcomeContainer>
-                <View style={{'width': '100%'}}>
-                    <SectionList
-                        sections={changeSections}
-                        keyExtractor={(item, index) => item + index}
-                        renderItem={({ item }) => <CategoryItem categoryTitle={item.categoryTitle} categoryDescription={item.categoryDescription} members={item.members} categoryTags={item.categoryTags} image={item.image} NSFW={item.NSFW} NSFL={item.NSFL} datePosted={item.datePosted}/>}
-                    />
-                </View>
-            </ScrollView>
+            <View style={{'width': '100%', 'height': '100%'}}>
+                <SectionList
+                    ListHeaderComponent={
+                        <WelcomeContainer style={{backgroundColor: colors.primary}} postScreen={true}>
+                            <PageTitle>Select A Category</PageTitle>
+                            <SubTitle style={{color: colors.tertiary}}>{message}</SubTitle>
+                            <SearchBarArea>
+                                <UserTextInput
+                                    placeholder="Search"
+                                    placeholderTextColor={darkLight}
+                                    onChangeText={(val) => handleChange(val)}
+                                    style={{backgroundColor: colors.primary, borderColor: colors.tertiary, color: colors.tertiary}}
+                                />
+                            </SearchBarArea>
+                        </WelcomeContainer>
+                    }
+                    sections={changeSections}
+                    keyExtractor={(item, index) => item + index}
+                    renderItem={({ item }) => <CategoryItem categoryTitle={item.categoryTitle} categoryDescription={item.categoryDescription} members={item.members} categoryTags={item.categoryTags} image={item.image} NSFW={item.NSFW} NSFL={item.NSFL} datePosted={item.datePosted}/>}
+                />
+            </View>
 
         </>
     );

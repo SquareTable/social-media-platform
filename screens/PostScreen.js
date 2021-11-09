@@ -58,7 +58,7 @@ const PostScreen = ({navigation}) => {
     const continuePressed = () => {
         if (formatOneSelected == true) {
             setMessageVisibility(false)
-            navigation.navigate("MultiMediaUploadPage")
+            navigation.navigate("MultiMediaUploadPage", {imageFromRoute: null, titleFromRoute: '', descriptionFromRoute: ''})
         } else if (formatTwoSelected == true) {
             setMessageVisibility(false)
             navigation.navigate("ThreadUploadPage", {threadFormat: null, threadTitle: null, threadSubtitle: null, threadTags: null, categoryTitle: null, threadBody: null, threadImage: null, threadImageDescription: null, threadNSFW: null, threadNSFL: null})

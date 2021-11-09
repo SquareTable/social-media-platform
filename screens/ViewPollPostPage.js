@@ -83,7 +83,7 @@ import {
 } from './screenStylings/styling';
 
 // Colors
-const {brand, primary, tertiary, greyish, darkLight, darkest, descTextColor} = Colors;
+const {brand, primary, tertiary, greyish, darkLight, darkest, descTextColor, red, orange, yellow, green, purple} = Colors;
 
 // keyboard avoiding view
 import KeyboardAvoidingWrapper from '../components/KeyboardAvoidingWrapper';
@@ -1049,12 +1049,12 @@ const ViewPollPostPage = ({route, navigation}) => {
                                 </PollPostSubTitle>
                             </AboveBarPollPostHorizontalView>
                             <PollBarOutline>
-                                <PollBarItem borderChange={pollBarLengths.optionOnesBarLength} style={{ width: pollBarLengths.optionOnesBarLength+'%'}}></PollBarItem>
-                                <PollBarItem borderChange={pollBarLengths.optionTwosBarLength} style={{ width: pollBarLengths.optionTwosBarLength+'%' }}></PollBarItem>
-                                <PollBarItem borderChange={pollBarLengths.optionThreesBarLength} style={{ width: pollBarLengths.optionThreesBarLength+'%' }}></PollBarItem>
-                                <PollBarItem borderChange={pollBarLengths.optionFoursBarLength} style={{ width: pollBarLengths.optionFoursBarLength+'%' }}></PollBarItem>
-                                <PollBarItem borderChange={pollBarLengths.optionFivesBarLength} style={{ width: pollBarLengths.optionFivesBarLength+'%' }}></PollBarItem>
-                                <PollBarItem borderChange={pollBarLengths.optionSixesBarLength} style={{ width: pollBarLengths.optionSixesBarLength+'%' }}></PollBarItem>
+                            <PollBarItem borderChange={optionOnesBarLength} style={{ width: optionOnesBarLength+'%', backgroundColor: optionOnesColor == 'Not Specified' ? brand : eval(optionOnesColor.toLowerCase())}}></PollBarItem>
+                            <PollBarItem borderChange={optionTwosBarLength} style={{ width: optionTwosBarLength+'%', backgroundColor: optionTwosColor == 'Not Specified' ? brand : eval(optionTwosColor.toLowerCase() )}}></PollBarItem>
+                            <PollBarItem borderChange={optionThreesBarLength} style={{ width: optionThreesBarLength+'%', backgroundColor: optionThreesColor == 'Not Specified' ? brand : eval(optionThreesColor.toLowerCase()) }}></PollBarItem>
+                            <PollBarItem borderChange={optionFoursBarLength} style={{ width: optionFoursBarLength+'%', backgroundColor: optionFoursColor == 'Not Specified' ? brand : eval(optionFoursColor.toLowerCase()) }}></PollBarItem>
+                            <PollBarItem borderChange={optionFivesBarLength} style={{ width: optionFivesBarLength+'%', backgroundColor: optionFivesColor == 'Not Specified' ? brand : eval(optionFivesColor.toLowerCase()) }}></PollBarItem>
+                            <PollBarItem borderChange={optionSixesBarLength} style={{ width: optionSixesBarLength+'%', backgroundColor: optionSixesColor == 'Not Specified' ? brand : eval(optionSixesColor.toLowerCase()) }}></PollBarItem>
                             </PollBarOutline>
                             <PollPostHorizontalView>
                                 <PollKeyViewOne pollOptions={objectForAllData.data.totalNumberOfOptions} viewPage={true} onPress={openOptionOne}>

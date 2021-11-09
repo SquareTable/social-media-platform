@@ -55,6 +55,7 @@ import ViewPollPostPage from '../screens/ViewPollPostPage'
 import CategoryHome from '../screens/CategoryHome'
 import CategoryCreationPage from "../screens/CategoryCreationPage.js";
 import customizeStylingScreen from "../screens/customizeStylingScreen.js";
+import MultiMediaUploadPage_Camera from "../screens/MultiMediaUploadPage_Camera.js";
 
 
 
@@ -510,6 +511,18 @@ const post_screen_navigator = () => {
         },
     }}/>
     <Stack.Screen name="SelectCategorySearchScreen" component={SelectCategorySearchScreen}
+      options={{
+        headerStyle: {
+            backgroundColor: 'transparent',
+        },
+        headerTintColor: colors.tertiary,
+        headerTransparent: true,
+        headerTitle: '',
+        headerLeftContainerStyle: {
+            paddingLeft: 20,
+        },
+    }}/>
+    <Stack.Screen name="MultiMediaUploadPage_Camera" component={MultiMediaUploadPage_Camera}
       options={{
         headerStyle: {
             backgroundColor: 'transparent',
