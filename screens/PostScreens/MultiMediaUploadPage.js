@@ -103,7 +103,6 @@ const MultiMediaUploadPage = ({navigation, route}) => {
     const {colors, dark} = useTheme()
 
     const [hasCameraPermission, setHasCameraPermission] = useState(null);
-    const [cameraType, setCameraType] = useState(Camera.Constants.Type.back);
 
     const checkForCameraPermissions = async () => {
         var { status } = await Camera.requestPermissionsAsync();
