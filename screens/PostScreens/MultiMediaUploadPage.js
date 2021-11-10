@@ -111,7 +111,6 @@ const MultiMediaUploadPage = ({navigation, route}) => {
     const {colors, dark} = useTheme()
 
     const [hasCameraPermission, setHasCameraPermission] = useState(null);
-
     const checkForCameraPermissions = async () => {
         var { status } = await Camera.requestPermissionsAsync();
         setHasCameraPermission(status === 'granted');
@@ -119,7 +118,7 @@ const MultiMediaUploadPage = ({navigation, route}) => {
             alert('Please enable camera permissions for this feature to work.')
         } else {
             console.log('Camera permissions have been granted')
-            navigation.navigate('MultiMediaUploadPage_Camera')
+            navigation.navigate('TakeImage_Camera', {locationToGoTo: 'MultiMediaUploadPage'})
         }
     }
 

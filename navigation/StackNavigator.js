@@ -55,7 +55,7 @@ import ViewPollPostPage from '../screens/ViewPollPostPage'
 import CategoryHome from '../screens/CategoryHome'
 import CategoryCreationPage from "../screens/CategoryCreationPage.js";
 import customizeStylingScreen from "../screens/customizeStylingScreen.js";
-import MultiMediaUploadPage_Camera from "../screens/MultiMediaUploadPage_Camera.js";
+import TakeImage_Camera from "../screens/TakeImage_Camera.js";
 
 
 
@@ -522,12 +522,12 @@ const post_screen_navigator = () => {
             paddingLeft: 20,
         },
     }}/>
-    <Stack.Screen name="MultiMediaUploadPage_Camera" component={MultiMediaUploadPage_Camera}
+    <Stack.Screen name="TakeImage_Camera" component={TakeImage_Camera}
       options={{
         headerStyle: {
             backgroundColor: 'transparent',
         },
-        headerTintColor: colors.tertiary,
+        headerTintColor: 'white',
         headerTransparent: true,
         headerTitle: '',
         headerLeftContainerStyle: {

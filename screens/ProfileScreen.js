@@ -1578,7 +1578,7 @@ const Welcome = ({navigation, route}) => {
                         <TouchableOpacity>
                             <SubTitle style={{fontSize: 10, color: brand, marginBottom: 0}}>Category: {threadCategory}</SubTitle>
                         </TouchableOpacity>
-                        <SubTitle style={{fontSize: 20, color: tertiary, marginBottom: 0, color: colors.tertiaryx}}>{threadTitle}</SubTitle>
+                        <SubTitle style={{fontSize: 20, marginBottom: 0, color: colors.tertiary}}>{threadTitle}</SubTitle>
                         {threadSubtitle !== "" && (
                             <SubTitle style={{fontSize: 18, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{threadSubtitle}</SubTitle>
                         )}

@@ -3,12 +3,13 @@ import {View, Text, TouchableOpacity, Image, Dimensions} from 'react-native';
 import {Camera} from 'expo-camera';
 import { AntDesign, MaterialIcons } from '@expo/vector-icons';
 
-const MultiMediaUploadPage_Camera = ({navigation}) => {
+const TakeImage_Camera = ({navigation, route}) => {
     const [cameraType, setCameraType] = useState(Camera.Constants.Type.back);
     const [cameraIsReady, setCameraIsReady] = useState(false)
     const [cameraIsInPreview, setCameraIsInPreview] = useState(false)
     const [image, setImage] = useState(null)
     const cameraRef = useRef()
+    const {locationToGoTo} = route.params;
     console.log('Camera Is ready value is ' + cameraIsReady)
 
     const screenWidth = Dimensions.get('window').width;
@@ -37,7 +38,7 @@ const MultiMediaUploadPage_Camera = ({navigation}) => {
     const chooseImage = () => {
         console.log('Choosing image')
         if (image) {
-            navigation.navigate('MultiMediaUploadPage', {imageFromRoute: image})
+            navigation.navigate(locationToGoTo, {imageFromRoute: image})
         } else {
             alert('An error occured')
         }
@@ -98,4 +99,4 @@ const MultiMediaUploadPage_Camera = ({navigation}) => {
     );
 }
 
-export default MultiMediaUploadPage_Camera;
+export default TakeImage_Camera;

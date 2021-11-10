@@ -182,7 +182,7 @@ const RecordAudioPage = ({navigation}) => {
                     await play_sound.loadAsync(
                         { uri: recording_uri },
                         { shouldPlay: true },
-                        { progressUpdateIntervalMillis: 100 }
+                        { progressUpdateIntervalMillis: 500 }
                     );
                     await play_sound.setVolumeAsync(1);
                     console.log('Loaded Sound');
@@ -191,12 +191,14 @@ const RecordAudioPage = ({navigation}) => {
                         setPlaybackStatus(status);
                         status_update_num += 1;
                         console.log("Playback status update num = " + status_update_num);
+                        console.log(status)
                         if (status.didJustFinish === true) {
-                        // audio has finished!
-                        await play_sound.unloadAsync()
-                        setIsAudioPlaying(false);
-                        setPlaybackStatus(undefined);
-                        setPlayRecording(undefined);
+                            // audio has finished!
+                            console.log('Audio has finished')
+                            await play_sound.unloadAsync()
+                            setIsAudioPlaying(false);
+                            setPlaybackStatus(undefined);
+                            setPlayRecording(undefined);
                         }
                     })
                     await play_sound.playAsync();

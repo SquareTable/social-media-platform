@@ -1,4 +1,4 @@
-import React, {useState, useContext} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 
 import { StatusBar } from 'expo-status-bar';
 
@@ -56,6 +56,8 @@ import * as ImagePicker from 'expo-image-picker';
 import CategoryCreationPage from '../CategoryCreationPage';
 import { useTheme } from '@react-navigation/native';
 
+import { Camera } from 'expo-camera';
+
 const ThreadUploadPage = ({route, navigation}) => {
     const {colors, dark} = useTheme();
     const [hidePassword, setHidePassword] = useState(true);
@@ -64,7 +66,7 @@ const ThreadUploadPage = ({route, navigation}) => {
     const [postIsNSFW, setPostIsNSFW] = useState(false);
     const [postIsNSFL, setPostIsNSFL] = useState(false);
     const [selectFormat, setSelectFormat] = useState("Text");
-    const {threadFormat, threadTitle, threadSubtitle, threadTags, categoryTitle, threadBody, threadImage, threadImageDescription, threadNSFW, threadNSFL} = route.params;
+    const {threadFormat, threadTitle, threadSubtitle, threadTags, categoryTitle, threadBody, imageFromRoute, threadImageDescription, threadNSFW, threadNSFL} = route.params;
     const [selectedTitle, setSelectedTitle] = useState("")
     const [selectedSubTitle, setSelectedSubTitle] = useState("")
     const [selectedTags, setSelectedTags] = useState("")
@@ -78,8 +80,12 @@ const ThreadUploadPage = ({route, navigation}) => {
     //context
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
     const {_id} = storedCredentials;
+
+    useEffect(() => {
+        setImage(imageFromRoute)
+    })
     
-    console.log("Format:", threadFormat, "Title:", threadTitle, "Subtitle:", threadSubtitle, "Tags:", threadTags, "CategoryTitle:", categoryTitle, "Body:", threadBody, "ThreadImage:", threadImage, "ThreadImageDescription:", threadImageDescription, "ThreadNSFW:", threadNSFW, "ThreadNSFL:", threadNSFL)
+    console.log("Format:", threadFormat, "Title:", threadTitle, "Subtitle:", threadSubtitle, "Tags:", threadTags, "CategoryTitle:", categoryTitle, "Body:", threadBody, "ImageFromRoute:", imageFromRoute, "ThreadImageDescription:", threadImageDescription, "ThreadNSFW:", threadNSFW, "ThreadNSFL:", threadNSFL)
     console.log("SelectedCategory:", selectedCategory)
     if (categoryTitle !== null) {
         if (selectedCategory !== categoryTitle) {
@@ -119,10 +125,10 @@ const ThreadUploadPage = ({route, navigation}) => {
                 setSelectedBody(threadBody)
             }
         }
-        if (threadImage !== null) {
-            if (image !== threadImage) {
+        if (imageFromRoute !== null) {
+            if (image !== imageFromRoute) {
                 setImage()
-                setImage(threadImage)
+                setImage(imageFromRoute)
             }
         }
         if (threadImageDescription !== null) {
@@ -252,7 +258,7 @@ const ThreadUploadPage = ({route, navigation}) => {
                         <Octicons name={icon} size={30} color={brand} />
                     </LeftIcon>
                     <StyledInputLabel style={{color: colors.tertiary}}>{label}</StyledInputLabel>
-                    <StyledTextInput searchPage={true} style={{borderColor: dark ? midWhite : greyish, borderRadius: 10, backgroundColor: dark ? darkLight : colors.borderColor, borderWidth: 3}} {...props}/>
+                    <StyledTextInput searchPage={true} style={{borderColor: dark ? midWhite : greyish, borderRadius: 10, backgroundColor: dark ? darkLight : colors.borderColor, borderWidth: 3, color: colors.tertiary}} {...props}/>
                 </View>
             )
         } else {
@@ -262,7 +268,7 @@ const ThreadUploadPage = ({route, navigation}) => {
                         <Octicons name={icon} size={30} color={brand} />
                     </LeftIcon>
                     <StyledInputLabel style={{color: colors.tertiary}}>{label}</StyledInputLabel>
-                    <StyledTextInput searchPage={true} style={{borderColor: dark ? slightlyLighterGrey : greyish, backgroundColor: dark ? darkLight : colors.borderColor}} {...props}/>
+                    <StyledTextInput searchPage={true} style={{borderColor: dark ? slightlyLighterGrey : greyish, backgroundColor: dark ? darkLight : colors.borderColor, color: colors.tertiary}} {...props}/>
                 </View>
             )
         }
@@ -277,7 +283,7 @@ const ThreadUploadPage = ({route, navigation}) => {
         
         if (!result.cancelled) {
             console.log(result)
-            setImage(result);
+            navigation.setParams({imageFromRoute: result})
         }
     };
 
@@ -290,6 +296,18 @@ const ThreadUploadPage = ({route, navigation}) => {
             } else {
                 pickImage()
             }
+        }
+    }
+
+    const [hasCameraPermission, setHasCameraPermission] = useState(null);
+    const checkForCameraPermissions = async () => {
+        var { status } = await Camera.requestPermissionsAsync();
+        setHasCameraPermission(status === 'granted');
+        if (hasCameraPermission == false) {
+            alert('Please enable camera permissions for this feature to work.')
+        } else {
+            console.log('Camera permissions have been granted')
+            navigation.navigate('TakeImage_Camera', {locationToGoTo: 'ThreadUploadPage'})
         }
     }
 
@@ -417,17 +435,28 @@ const ThreadUploadPage = ({route, navigation}) => {
                                             {image && <MultiMediaPostFrame style={{width: '100%', aspectRatio: 1/1, backgroundColor: colors.borderColor}} PostingThreadImage={true}>
                                                 <Image source={image} style={{ width: "100%", height: '100%'}} resizeMode="contain" />
                                             </MultiMediaPostFrame>}
-                                            {image && <StyledButton style={{backgroundColor: colors.primary, borderColor: colors.tertiary}} removeImage={true} onPress={() => {setImage()}}>
+                                            {image && <StyledButton style={{backgroundColor: colors.primary, borderColor: colors.tertiary}} removeImage={true} onPress={() => {navigation.setParams({imageFromRoute: null})}}>
                                                 <ButtonText style={{color: colors.tertiary}} removeImage={true}>
                                                     X
                                                 </ButtonText>
                                             </StyledButton>}
                                             {!image && <MultiMediaPostFrame style={{width: '100%', aspectRatio: 1/1, backgroundColor: colors.borderColor}} PostingThreadImage={true}>
-                                                <StyledButton style={{backgroundColor: colors.borderColor, borderColor: colors.tertiary}} postImage={true} onPress={OpenImgLibrary}>
-                                                    <ButtonText style={{color: colors.tertiary}} postImage={true}>
-                                                        +
-                                                    </ButtonText>
-                                                </StyledButton>
+                                                <View style={{flexDirection: 'row'}}>
+                                                    <StyledButton style={{backgroundColor: colors.borderColor, borderColor: colors.tertiary}} postImage={true} onPress={OpenImgLibrary}>
+                                                        <ButtonText style={{color: colors.tertiary}} postImage={true}>
+                                                            +
+                                                        </ButtonText>
+                                                    </StyledButton>
+                                                    <View style={{width: 20}}/>
+                                                    <StyledButton style={{backgroundColor: colors.borderColor, borderColor: colors.tertiary}} postImage={true} onPress={checkForCameraPermissions}>
+                                                    <Image
+                                                        source={require('../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/016-camera.png')}
+                                                        style={{height: 30, width: 30, tintColor: colors.tertiary}}
+                                                        resizeMode="contain"
+                                                        resizeMethod="resize"
+                                                    />
+                                                    </StyledButton>
+                                                </View>
                                             </MultiMediaPostFrame>}
                                             <UserTextInput
                                                 label="Image Description (optional)"
