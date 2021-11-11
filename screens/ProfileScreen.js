@@ -1,6 +1,8 @@
-import React, {useCallback, useContext, useState} from 'react';
+import React, {useCallback, useContext, useState, useRef, useEffect} from 'react';
 import { StatusBar } from 'expo-status-bar';
 import * as Haptics from 'expo-haptics';
+import ActionSheet from 'react-native-actionsheet';
+import { Camera } from 'expo-camera';
 
 import {
     InnerContainer,
@@ -95,7 +97,7 @@ import Constants from "expo-constants";
 const Welcome = ({navigation, route}) => {
     const StatusBarHeight = Constants.statusBarHeight;
     if (route.params) {
-        var {backButtonHidden} = route.params;
+        var {backButtonHidden, imageFromRoute} = route.params;
         console.log(backButtonHidden)
     } else {
         var backButtonHidden = false;
@@ -2538,8 +2540,66 @@ const Welcome = ({navigation, route}) => {
             }
         }
     }
+
+    const ActionMenuOptions = [
+        'Camera',
+        'Photo Library',
+        'Reset Icon',
+        'Cancel'
+    ]
+
+    let PfpPickerActionMenu = useRef()
+
+    const [hasCameraPermission, setHasCameraPermission] = useState(null);
+    const checkForCameraPermissions = async () => {
+        var { status } = await Camera.requestPermissionsAsync();
+        setHasCameraPermission(status === 'granted');
+        if (hasCameraPermission == false) {
+            alert('Please enable camera permissions for this feature to work.')
+        } else {
+            console.log('Camera permissions have been granted')
+            navigation.navigate('TakeImage_Camera', {locationToGoTo: 'Welcome'})
+        }
+    }
+
+    useEffect(() => {
+        if (imageFromRoute != null) {
+            console.log('Image received from imageFromRoute')
+            console.log(imageFromRoute)
+            postMultiMedia(imageFromRoute)
+            navigation.setParams({imageFromRoute: null})
+        }
+    })
+
+    const postMultiMedia = (image) => {
+        console.log(image)
+    }
     return(
         <>    
+            <ActionSheet
+                ref={PfpPickerActionMenu}
+                title={'How would you like to pick your profile picture?'}
+                options={ActionMenuOptions}
+                // Define cancel button index in the option array
+                // This will take the cancel option in bottom
+                // and will highlight it
+                cancelButtonIndex={3}
+                // Highlight any specific option
+                destructiveButtonIndex={2}
+                onPress={(index) => {
+                    if (index == 0) {
+                        console.log('Opening camera...')
+                        checkForCameraPermissions()
+                    } else if (index == 1) {
+                        console.log('Opening image library')
+                        OpenImgLibrary()
+                    } else if (index == 2) {
+                        console.log('Resetting icon')
+                    } else if (index == 3) {
+                        console.log('Cancelling picker menu')
+                    }
+                }}
+            />
             <StatusBar style={colors.StatusBarColor}/>
             {ShowTopProfileBar != false &&
                 <View style={{paddingTop: StatusBarHeight - 10, backgroundColor: colors.primary, borderColor: colors.borderColor, borderBottomWidth: 1, alignItems: 'center'}}>
@@ -2592,7 +2652,7 @@ const Welcome = ({navigation, route}) => {
                     <ProfInfoAreaImage>
                         {console.log('Avatar Image: ' + AvatarImg)}
                         <Avatar resizeMode="cover" source={{uri: AvatarImg}}/>
-                        <TouchableOpacity onPress={() => {OpenImgLibrary()}}>
+                        <TouchableOpacity onPress={() => {PfpPickerActionMenu.current.show();}}>
                             <SubTitle style={{marginBottom: 0, color: darkestBlue}}>Change</SubTitle>
                         </TouchableOpacity>
                         <PageTitle welcome={true}>{displayName || name || "Couldn't get name"}</PageTitle>

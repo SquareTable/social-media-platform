@@ -282,7 +282,7 @@ const HomeScreen = ({navigation}) => {
     ]);
     const goToProfileScreen = (name, userToNavigateTo, profilePictureUrl, displayName) => {
         name? 
-        name === userToNavigateTo? navigation.navigate("Welcome", {backButtonHidden: false}) : navigation.navigate("VisitingProfileScreen", {name: userToNavigateTo, photoUrl: profilePictureUrl, displayName: displayName}) 
+        name === userToNavigateTo? navigation.navigate("Welcome", {backButtonHidden: false, imageFromRoute: null}) : navigation.navigate("VisitingProfileScreen", {name: userToNavigateTo, photoUrl: profilePictureUrl, displayName: displayName}) 
         : alert("An error occured");
     }
     

@@ -158,7 +158,7 @@ const CategoryHome = ({navigation}) => {
             <ScrollView style={{'backgroundColor': colors.primary}}>
                 <WelcomeContainer style={{backgroundColor: colors.primary}} postScreen={true}>
                     <PageTitle>Categories (Only used for creating categories as of now)</PageTitle>
-                    <StyledButton style={{backgroundColor: colors.primary}} postCategory={true} onPress={() => {navigation.navigate("CategoryCreationPage")}}>
+                    <StyledButton style={{backgroundColor: colors.primary}} postCategory={true} onPress={() => {navigation.navigate("CategoryCreationPage", {imageFromRoute: null})}}>
                         <ButtonText style={{color: colors.tertiary}} postCategory={true}>Create a category</ButtonText>
                     </StyledButton>
                     <SubTitle style={{color: colors.tertiary}}>Coming Soon:</SubTitle>

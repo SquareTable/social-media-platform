@@ -231,6 +231,21 @@ const RootStack = () => {
                     headerLeft: null
                 }}
                 />
+                <Stack.Screen 
+                  name="TakeImage_Camera" 
+                  component={TakeImage_Camera}
+                  options={{
+                    headerStyle: {
+                        backgroundColor: 'transparent',
+                    },
+                    headerTintColor: 'white',
+                    headerTransparent: true,
+                    headerTitle: '',
+                    headerLeftContainerStyle: {
+                        paddingLeft: 20,
+                    },
+                }}
+                />
     </Stack.Navigator>
   );
 };
