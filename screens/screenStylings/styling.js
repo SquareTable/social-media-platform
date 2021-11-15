@@ -2111,3 +2111,10 @@ export const PostsIconFrame = styled.TouchableOpacity`
 `;
 
 /* End of code merge from 31st October 2021 */
+
+export const ListItem = styled.Text`
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+    margin-vertical: 8px;
+`;

@@ -51,10 +51,11 @@ const HomeScreen = ({navigation}) => {
     const [showPolls, setShowPolls] = useState(undefined);
     const [showCategories, setShowCategories] = useState(undefined);
     const [PlayVideoSoundInSilentMode, setPlayVideoSoundInSilentMode] = useState(undefined)
+    const OutputAsyncStorageToConsole = false
     useEffect(() => {
         async function setUp() {
             const showPhotosValue = await AsyncStorage.getItem('ShowPhotos_AppBehaviour_AsyncStorage')
-            console.log('ShowPhotos_AppBehaviour_AsyncStorage key is: ' + showPhotosValue)
+            if (OutputAsyncStorageToConsole) {console.log('ShowPhotos_AppBehaviour_AsyncStorage key is: ' + showPhotosValue)}
             if (showPhotosValue == null) {
                 setShowPhotos(true)
                 AsyncStorage.setItem('ShowPhotos_AppBehaviour_AsyncStorage', 'true')
@@ -69,7 +70,7 @@ const HomeScreen = ({navigation}) => {
             }
 
             const showVideosValue = await AsyncStorage.getItem('ShowVideos_AppBehaviour_AsyncStorage')
-            console.log('ShowVideos_AppBehaviour_AsyncStorage key is: ' + showVideosValue)
+            if (OutputAsyncStorageToConsole) {console.log('ShowVideos_AppBehaviour_AsyncStorage key is: ' + showVideosValue)}
             if (showVideosValue == null) {
                 setShowVideos(true)
                 AsyncStorage.setItem('ShowVideos_AppBehaviour_AsyncStorage', 'true')
@@ -84,7 +85,7 @@ const HomeScreen = ({navigation}) => {
             }
 
             const showAudioValue = await AsyncStorage.getItem('ShowAudio_AppBehaviour_AsyncStorage')
-            console.log('ShowAudio_AppBehaviour_AsyncStorage key is: ' + showAudioValue)
+            if (OutputAsyncStorageToConsole) {console.log('ShowAudio_AppBehaviour_AsyncStorage key is: ' + showAudioValue)}
             if (showAudioValue == null) {
                 setShowAudio(true)
                 AsyncStorage.setItem('ShowAudio_AppBehaviour_AsyncStorage', 'true')
@@ -99,7 +100,7 @@ const HomeScreen = ({navigation}) => {
             }
 
             const showPollsValue = await AsyncStorage.getItem('ShowPolls_AppBehaviour_AsyncStorage')
-            console.log('ShowPolls_AppBehaviour_AsyncStorage key is: ' + showPollsValue)
+            if (OutputAsyncStorageToConsole) {console.log('ShowPolls_AppBehaviour_AsyncStorage key is: ' + showPollsValue)}
             if (showPollsValue == null) {
                 setShowPolls(true)
                 AsyncStorage.setItem('ShowPolls_AppBehaviour_AsyncStorage', 'true')
@@ -114,7 +115,7 @@ const HomeScreen = ({navigation}) => {
             }
 
             const showThreadsValue = await AsyncStorage.getItem('ShowThreads_AppBehaviour_AsyncStorage')
-            console.log('ShowThreads_AppBehaviour_AsyncStorage key is: ' + showThreadsValue)
+            if (OutputAsyncStorageToConsole) {console.log('ShowThreads_AppBehaviour_AsyncStorage key is: ' + showThreadsValue)}
             if (showThreadsValue == null) {
                 setShowThreads(true)
                 AsyncStorage.setItem('ShowThreads_AppBehaviour_AsyncStorage', 'true')
@@ -129,7 +130,7 @@ const HomeScreen = ({navigation}) => {
             }
 
             const value = await AsyncStorage.getItem('PlayAudioInSilentMode_AppBehaviour_AsyncStorage')
-            console.log('HomeScreen.js value of PlayAudioInSilentMode_AppBehaviour_AsyncStorage key is: ' + value)
+            if (OutputAsyncStorageToConsole) {console.log('HomeScreen.js value of PlayAudioInSilentMode_AppBehaviour_AsyncStorage key is: ' + value)}
             if (value == null) {
                 setPlayAudioInSilentMode(false)
                 AsyncStorage.setItem('PlayAudioInSilentMode_AppBehaviour_AsyncStorage', 'false')
@@ -144,7 +145,7 @@ const HomeScreen = ({navigation}) => {
             }
 
             const showCategoriesValue = await AsyncStorage.getItem('ShowCategories_AppBehaviour_AsyncStorage')
-            console.log('ShowCategories_AppBehaviour_AsyncStorage key is: ' + showCategoriesValue)
+            if (OutputAsyncStorageToConsole) {console.log('ShowCategories_AppBehaviour_AsyncStorage key is: ' + showCategoriesValue)}
             if (showCategoriesValue == null) {
                 setShowCategories(true)
                 AsyncStorage.setItem('ShowCategories_AppBehaviour_AsyncStorage', 'true')
@@ -159,7 +160,7 @@ const HomeScreen = ({navigation}) => {
             }
 
             const PlayVideoSoundInSilentModeValue = await AsyncStorage.getItem('PlayVideoSoundInSilentMode_AppBehaviour_AsyncStorage')
-            console.log('HomeScreen.js value of PlayAudioInSilentMode_AppBehaviour_AsyncStorage key is: ' + value)
+            if (OutputAsyncStorageToConsole) {console.log('HomeScreen.js value of PlayAudioInSilentMode_AppBehaviour_AsyncStorage key is: ' + PlayVideoSoundInSilentMode)}
             if (PlayVideoSoundInSilentModeValue == null) {
                 setPlayVideoSoundInSilentMode(false)
                 AsyncStorage.setItem('PlayVideoSoundInSilentMode_AppBehaviour_AsyncStorage', 'false')
@@ -174,7 +175,7 @@ const HomeScreen = ({navigation}) => {
             }
         }
         setUp()
-    })
+    }, [])
    
     const setContextAndAsyncStorage = (type) => {
         if (type == 'ShowPhotos') {
@@ -339,37 +340,39 @@ const HomeScreen = ({navigation}) => {
     const [ReportProfile_PretendingToBeSomeoneElse_OptionsViewState, setReportProfile_PretendingToBeSomeoneElse_OptionsViewState] = useState(true);
     const [FlatListElementsEnabledState, setFlatListElementsEnabledState] = useState(true);
     // Start of checking for update and announce the update
-    async function checkAndAnnounceUpdate() {
-        const welcome_message = () => {
-            alert("Welcome to SocialSquare, it looks like you have just downloaded this app for the first time! Nice! You are right now on development version " + development_version);
-        };
-        var development_version = '0.1.12';
-        //Get data
-        try {
-            var development_version_localstorage_value = await AsyncStorage.getItem('development_version')
-            if(development_version_localstorage_value !== null) {
-                if (development_version !== development_version_localstorage_value) {
-                    console.log(development_version_localstorage_value);
-                    var releaseNotes = "Fix all storedCredentials issues (so now usernames etc. show up) and added ads (1 ad gets shown per 5 posts shown)";
-                    var alert_on_update = "SocialSquare has been updated to the latest version (dev version " + development_version + "). Changes in this update are: " + releaseNotes;
-                    alert(alert_on_update);
+    useEffect(() => {
+        async function checkAndAnnounceUpdate() {
+            const welcome_message = () => {
+                alert("Welcome to SocialSquare, it looks like you have just downloaded this app for the first time! Nice! You are right now on development version " + development_version);
+            };
+            var development_version = '0.1.12';
+            //Get data
+            try {
+                var development_version_localstorage_value = await AsyncStorage.getItem('development_version')
+                if(development_version_localstorage_value !== null) {
+                    if (development_version !== development_version_localstorage_value) {
+                        console.log(development_version_localstorage_value);
+                        var releaseNotes = "Fix all storedCredentials issues (so now usernames etc. show up) and added ads (1 ad gets shown per 5 posts shown)";
+                        var alert_on_update = "SocialSquare has been updated to the latest version (dev version " + development_version + "). Changes in this update are: " + releaseNotes;
+                        alert(alert_on_update);
+                    } else {
+                        console.log("Not updated");
+                    }
                 } else {
-                    console.log("Not updated");
+                    welcome_message();
                 }
-            } else {
-                welcome_message();
+            } catch(e) {
+                alert(e)
             }
-        } catch(e) {
-            alert(e)
+            //Store data
+            try {
+                await AsyncStorage.setItem('development_version', development_version)
+            } catch (e) {
+                alert(e)
+            }
         }
-        //Store data
-        try {
-            await AsyncStorage.setItem('development_version', development_version)
-        } catch (e) {
-            alert(e)
-        }
-    }
-    checkAndAnnounceUpdate();
+        checkAndAnnounceUpdate();
+    }, [])
     // End of checking for update and announcing the update
 
     var deviceWidth = Dimensions.get('window').width

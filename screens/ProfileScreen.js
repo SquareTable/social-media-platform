@@ -87,12 +87,13 @@ import * as ImagePicker from 'expo-image-picker';
 
 //credentials context
 import { CredentialsContext } from '../components/CredentialsContext';
-import { ImageBackground, ScrollView, SectionList, Image, View, ActivityIndicator, Touchable, RefreshControl, SafeAreaView, Text } from 'react-native';
+import { ImageBackground, ScrollView, SectionList, Image, View, ActivityIndicator, Touchable, RefreshControl, SafeAreaView, Text, Animated } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import {useTheme, useIsFocused} from "@react-navigation/native"
 
 import Constants from "expo-constants";
+import SocialSquareLogo_B64_png from '../assets/SocialSquareLogo_Base64_png.js';
 
 const Welcome = ({navigation, route}) => {
     const StatusBarHeight = Constants.statusBarHeight;
@@ -110,8 +111,8 @@ const Welcome = ({navigation, route}) => {
     }
      //context
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
-    const {_id, name, displayName, email, photoUrl} = storedCredentials;
-    const [AvatarImg, setAvatarImage] = useState("./../assets/img/Logo.png")
+    const {_id, name, displayName, email, photoUrl, followers, following} = storedCredentials;
+    const [AvatarImg, setAvatarImage] = useState(SocialSquareLogo_B64_png)
     const [gridViewState, setGridViewState] = useState("flex")
     const [featuredViewState, setFeaturedViewState] = useState("none")
     const [selectedPostFormat, setSelectedPostFormat] = useState("One")
@@ -327,13 +328,20 @@ const Welcome = ({navigation, route}) => {
                     const {message, status, data} = result;
                     console.log(status)
                     console.log(message)
+                    console.log(data)
                     //set image
-                    if (data) {
+                    if (message == 'No profile image.' && status == 'FAILED') {
+                        console.log('Setting logo to SocialSquare logo')
+                        setAvatarImage(SocialSquareLogo_B64_png)
+                    } else if (data) {
                         //convert back to image
+                        console.log('Setting logo to profile logo')
                         var base64Icon = `data:image/jpg;base64,${data}`
                         setAvatarImage(base64Icon)
+                        AsyncStorage.setItem('UserProfilePicture', base64Icon)
                     } else {
-                        setAvatarImage("./../assets/img/Logo.png")
+                        console.log('Setting logo to SocialSquare logo')
+                        setAvatarImage(SocialSquareLogo_B64_png)
                     }
                 })
                 .catch(function (error) {
@@ -350,9 +358,21 @@ const Welcome = ({navigation, route}) => {
         })
     }
 
+    const checkForUserProfilePictureFromAsyncStorage = async () => {
+        const image = await AsyncStorage.getItem('UserProfilePicture')
+        if (image == null) {
+            getProfilePicture()
+            setGetPfp(true)
+            console.log('Getting profile picture from server from ProfileScreen.js')
+        } else {
+            setAvatarImage(image)
+            setGetPfp(true)
+            console.log('Getting profile picture from AsyncStorage from ProfileScreen.js')
+        }
+    }
+
     if (getPfp !== true) {
-        getProfilePicture()
-        setGetPfp(true)
+        checkForUserProfilePictureFromAsyncStorage()
     }
 
     const UpVoteImage = (imageId, postNum) => {
@@ -1314,7 +1334,7 @@ const Welcome = ({navigation, route}) => {
             )}
             <PostsHorizontalView style={{marginLeft: '5%', borderBottomWidth: 3, borderColor: darkLight, width: '90%', paddingBottom: 5, marginRight: '5%'}}>
                 <PostsVerticalView>
-                    <PostCreatorIcon source={{uri: `data:image/jpg;base64,${pfpB64}`}}/>
+                    <PostCreatorIcon source={{uri: pfpB64 ? `data:image/jpg;base64,${pfpB64}` : SocialSquareLogo_B64_png}}/>
                 </PostsVerticalView>
                 <PostsVerticalView style={{marginTop: 9}}>
                     <SubTitle style={{fontSize: 20, color: brand, marginBottom: 0}}>{creatorDisplayName}</SubTitle>
@@ -1565,7 +1585,7 @@ const Welcome = ({navigation, route}) => {
                             )}
                             {creatorImageB64 == null && (
                                 <PostsVerticalView>
-                                    <PostCreatorIcon source={require('./../assets/img/Logo.png')}/>
+                                    <PostCreatorIcon source={{uri: SocialSquareLogo_B64_png}}/>
                                 </PostsVerticalView>
                             )}
                             <PostsVerticalView style={{marginTop: 9}}>
@@ -2526,20 +2546,25 @@ const Welcome = ({navigation, route}) => {
     })
 
     const isFocused = useIsFocused()
-    const [ShowTopProfileBar, setShowTopProfileBar] = useState(false)
 
-    const handleScroll = (event) => { // Comment the contents of this out if you want better performance
+    const handleScroll = (event) => {
         var scrollY = event.nativeEvent.contentOffset.y
         if (scrollY < 550) {
-            if (ShowTopProfileBar != false) {
-                setShowTopProfileBar(false)
-            }
+            Animated.timing(TopProfileBarFadeAnim, {
+                toValue: 0,
+                duration: 1,
+                useNativeDriver: 'true'
+            }).start()
         } else {
-            if (ShowTopProfileBar != true) {
-                setShowTopProfileBar(true)
-            }
+            Animated.timing(TopProfileBarFadeAnim, {
+                toValue: 1,
+                duration: 1,
+                useNativeDriver: 'true'
+            }).start()
         }
     }
+
+    const TopProfileBarFadeAnim = useRef(new Animated.Value(0)).current;
 
     const ActionMenuOptions = [
         'Camera',
@@ -2601,26 +2626,36 @@ const Welcome = ({navigation, route}) => {
                 }}
             />
             <StatusBar style={colors.StatusBarColor}/>
-            {ShowTopProfileBar != false &&
-                <View style={{paddingTop: StatusBarHeight - 10, backgroundColor: colors.primary, borderColor: colors.borderColor, borderBottomWidth: 1, alignItems: 'center'}}>
-                    <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
-                        <PageTitle style={{fontSize: 24}} welcome={true}>{displayName || name || "Couldn't get name"}</PageTitle>
-                        <Avatar style={{width: 40, height: 40}} resizeMode="cover" source={{uri: AvatarImg}}/>
-                    </View>
-                    <View style={{position: 'absolute', right: 10, top: StatusBarHeight}}>
-                        <TouchableOpacity disabled={PageElementsState} onPress={goToSettingsScreen}>
+            <Animated.View style={{paddingTop: StatusBarHeight - 10, backgroundColor: colors.primary, borderColor: colors.borderColor, borderBottomWidth: 1, alignItems: 'center', opacity: TopProfileBarFadeAnim, zIndex: 10}}>
+                {backButtonHidden == false &&
+                    <View style={{position: 'absolute', top: StatusBarHeight, left: 10}}>
+                        <TouchableOpacity style={{marginRight: '75.5%'}} disabled={PageElementsState} onPress={() => {navigation.goBack()}}>
                             <Image
-                                source={require('../assets/app_icons/settings.png')}
+                                source={require('../assets/app_icons/back_arrow.png')}
                                 style={{ width: 40, height: 40, tintColor: colors.tertiary}}
                                 resizeMode="contain"
                                 resizeMethod="resize"
                             />
                         </TouchableOpacity>
                     </View>
+                }
+                <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+                    <PageTitle style={{fontSize: 24}} welcome={true}>{displayName || name || "Couldn't get name"}</PageTitle>
+                    <Avatar style={{width: 40, height: 40}} resizeMode="cover" source={{uri: AvatarImg}}/>
                 </View>
-            }
+                <View style={{position: 'absolute', right: 10, top: StatusBarHeight}}>
+                    <TouchableOpacity disabled={PageElementsState} onPress={goToSettingsScreen}>
+                        <Image
+                            source={require('../assets/app_icons/settings.png')}
+                            style={{ width: 40, height: 40, tintColor: colors.tertiary}}
+                            resizeMode="contain"
+                            resizeMethod="resize"
+                        />
+                    </TouchableOpacity>
+                </View>
+            </Animated.View>
             <ScrollView 
-                style={{flex: 100}} 
+                style={{flex: 1, marginTop: -100}} 
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
                 onScroll={handleScroll}
                 scrollEventThrottle={1}
@@ -2650,7 +2685,6 @@ const Welcome = ({navigation, route}) => {
                         </TouchableOpacity>
                     </ProfileHorizontalView>
                     <ProfInfoAreaImage>
-                        {console.log('Avatar Image: ' + AvatarImg)}
                         <Avatar resizeMode="cover" source={{uri: AvatarImg}}/>
                         <TouchableOpacity onPress={() => {PfpPickerActionMenu.current.show();}}>
                             <SubTitle style={{marginBottom: 0, color: darkestBlue}}>Change</SubTitle>
@@ -2668,14 +2702,18 @@ const Welcome = ({navigation, route}) => {
                     </ProfInfoAreaImage>
                     <ProfileHorizontalView>
                         <ProfileHorizontalViewItem profLeftIcon={true}>
-                            <SubTitle style={{color: colors.tertiary}} welcome={true}> Followers </SubTitle>
-                            <ProfIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/114-user.png')}/>
-                            <SubTitle style={{color: colors.tertiary}} welcome={true}> 0 </SubTitle>
+                            <TouchableOpacity onPress={() => {navigation.navigate('ProfileStats', {name: name, followers: followers, type: 'Followers'})}} style={{alignItems: 'center'}}>
+                                <SubTitle style={{color: colors.tertiary}} welcome={true}> Followers </SubTitle>
+                                <ProfIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/114-user.png')}/>
+                                <SubTitle style={{color: colors.tertiary}} welcome={true}> 0 </SubTitle>
+                            </TouchableOpacity>
                         </ProfileHorizontalViewItem>
                         <ProfileHorizontalViewItem profCenterIcon={true}>
-                            <SubTitle style={{color: colors.tertiary}} welcome={true}> Following </SubTitle>
-                            <ProfIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/115-users.png')}/>
-                            <SubTitle style={{color: colors.tertiary}} welcome={true}> 0 </SubTitle>
+                            <TouchableOpacity onPress={() => {navigation.navigate('ProfileStats', {name: name, followers: following, type: 'Following'})}} style={{alignItems: 'center'}}>
+                                <SubTitle style={{color: colors.tertiary}} welcome={true}> Following </SubTitle>
+                                <ProfIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/115-users.png')}/>
+                                <SubTitle style={{color: colors.tertiary}} welcome={true}> 0 </SubTitle>
+                            </TouchableOpacity>
                         </ProfileHorizontalViewItem>
                         <ProfileHorizontalViewItem profRightIcon={true}>
                             <SubTitle style={{color: colors.tertiary}} welcome={true}> Likes </SubTitle>

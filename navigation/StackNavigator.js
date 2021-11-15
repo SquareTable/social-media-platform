@@ -56,6 +56,13 @@ import CategoryHome from '../screens/CategoryHome'
 import CategoryCreationPage from "../screens/CategoryCreationPage.js";
 import customizeStylingScreen from "../screens/customizeStylingScreen.js";
 import TakeImage_Camera from "../screens/TakeImage_Camera.js";
+import GDPRCompliance from "../screens/SecuritySettingsScreens/GDPRCompliance.js";
+import SecuritySettingsScreen from "../screens/SecuritySettingsScreen.js";
+import LoginActivity from "../screens/SecuritySettingsScreens/LoginActivity.js";
+import TwoFA from "../screens/SecuritySettingsScreens/2FA.js";
+import WhatIsStoredOnOurServers from "../screens/SecuritySettingsScreens/WhatIsStoredOnOurServers.js";
+import NotificationsSettingsScreen from "../screens/NotificationsSettingsScreen.js";
+import ProfileStats from "../screens/ProfileStats.js";
 
 
 
@@ -246,6 +253,116 @@ const RootStack = () => {
                     },
                 }}
                 />
+                <Stack.Screen 
+                  name="GDPRCompliance" 
+                  component={GDPRCompliance}
+                  options={{
+                    headerStyle: {
+                        backgroundColor: 'transparent',
+                    },
+                    headerTintColor: colors.tertiary,
+                    headerTransparent: true,
+                    headerTitle: '',
+                    headerLeftContainerStyle: {
+                        paddingLeft: 20,
+                    },
+                    headerLeft: null
+                }}
+                />
+                <Stack.Screen 
+                  name="SecuritySettingsScreen" 
+                  component={SecuritySettingsScreen}
+                  options={{
+                    headerStyle: {
+                        backgroundColor: 'transparent',
+                    },
+                    headerTintColor: colors.tertiary,
+                    headerTransparent: true,
+                    headerTitle: '',
+                    headerLeftContainerStyle: {
+                        paddingLeft: 20,
+                    },
+                    headerLeft: null
+                }}
+                />
+                <Stack.Screen 
+                  name="LoginActivity" 
+                  component={LoginActivity}
+                  options={{
+                    headerStyle: {
+                        backgroundColor: 'transparent',
+                    },
+                    headerTintColor: colors.tertiary,
+                    headerTransparent: true,
+                    headerTitle: '',
+                    headerLeftContainerStyle: {
+                        paddingLeft: 20,
+                    },
+                    headerLeft: null
+                }}
+                />
+                <Stack.Screen 
+                  name="2FA" 
+                  component={TwoFA}
+                  options={{
+                    headerStyle: {
+                        backgroundColor: 'transparent',
+                    },
+                    headerTintColor: colors.tertiary,
+                    headerTransparent: true,
+                    headerTitle: '',
+                    headerLeftContainerStyle: {
+                        paddingLeft: 20,
+                    },
+                    headerLeft: null
+                }}
+                />
+                <Stack.Screen 
+                  name="WhatIsStoredOnOurServers" 
+                  component={WhatIsStoredOnOurServers}
+                  options={{
+                    headerStyle: {
+                        backgroundColor: 'transparent',
+                    },
+                    headerTintColor: colors.tertiary,
+                    headerTransparent: true,
+                    headerTitle: '',
+                    headerLeftContainerStyle: {
+                        paddingLeft: 20,
+                    },
+                    headerLeft: null
+                }}
+                />
+                <Stack.Screen 
+                  name="NotificationsSettingsScreen" 
+                  component={NotificationsSettingsScreen}
+                  options={{
+                    headerStyle: {
+                        backgroundColor: 'transparent',
+                    },
+                    headerTintColor: colors.tertiary,
+                    headerTransparent: true,
+                    headerTitle: '',
+                    headerLeftContainerStyle: {
+                        paddingLeft: 20,
+                    },
+                    headerLeft: null
+                }}
+                />
+                <Stack.Screen name="ProfileStats" component={ProfileStats}
+                options={{
+                  headerStyle: {
+                    backgroundColor: 'transparent',
+                  },
+                  headerTintColor: colors.tertiary,
+                  headerTransparent: true,
+                  headerTitle: '',
+                  headerLeftContainerStyle: {
+                      paddingLeft: 20,
+                  },
+                  headerLeft: null
+                }}
+              />
     </Stack.Navigator>
   );
 };
@@ -391,6 +508,20 @@ const FindScreen_Stack = () => {
           headerLeftContainerStyle: {
               paddingLeft: 20,
           },
+        }}
+      />
+      <Stack.Screen name="ProfileStats" component={ProfileStats}
+        options={{
+          headerStyle: {
+            backgroundColor: 'transparent',
+          },
+          headerTintColor: colors.tertiary,
+          headerTransparent: true,
+          headerTitle: '',
+          headerLeftContainerStyle: {
+              paddingLeft: 20,
+          },
+          headerLeft: null
         }}
       />
     </Stack.Navigator>

@@ -13,9 +13,14 @@ import BadgesScreen from '../screens/BadgesScreen';
 import LoginScreen from '../screens/LoginScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import {ChatScreen_Stack, ProfileScreenToSettings_StackNavigation, RootStack, SettingsToBadges_StackNavigation, FindScreen_Stack, post_screen_navigator, home_screen_post_to_profile_screen} from '../navigation/StackNavigator.js'
-import {darkModeStyling, darkModeOn, lightModeStyling, darkModeStyling_navFocusedColor, lightModeStyling_navFocusedColor, darkModeStyling_navNonFocusedColor, lightModeStyling_navNonFocusedColor} from '../screens/screenStylings/styling.js';
+import {darkModeStyling, darkModeOn, lightModeStyling, darkModeStyling_navFocusedColor, lightModeStyling_navFocusedColor, darkModeStyling_navNonFocusedColor, lightModeStyling_navNonFocusedColor, Avatar} from '../screens/screenStylings/styling.js';
 import * as Haptics from 'expo-haptics';
 import { CredentialsContext } from '../components/CredentialsContext';
+import SocialSquareLogo_B64_png from '../assets/SocialSquareLogo_Base64_png';
+
+//axios
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 const Tab = createBottomTabNavigator();
@@ -72,8 +77,70 @@ const Tabs = ({navigation}) => {
         });
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     }
-        const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
-        if (storedCredentials) {var {photoUrl} = storedCredentials}
+    const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
+    if (storedCredentials) {var {name} = storedCredentials}
+
+    const [AvatarImage, setAvatarImage] = useState(SocialSquareLogo_B64_png)
+    const getProfilePicture = () => {
+        const url = `https://nameless-dawn-41038.herokuapp.com/user/getProfilePic/${name}`;
+
+        axios.get(url).then((response) => {
+            const result = response.data;
+            const {message, status, data} = result;
+
+            if (status !== 'SUCCESS') {
+                console.log('GETTING PROFILE PICTURE FOR TABS.JS WAS NOT A SUCCESS')
+                console.log(status)
+                console.log(message)
+            } else {
+                console.log(status)
+                console.log(message)
+                axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${data}`)
+                .then((response) => {
+                    const result = response.data;
+                    const {message, status, data} = result;
+                    console.log(status)
+                    console.log(message)
+                    console.log(data)
+                    //set image
+                    if (message == 'No profile image.' && status == 'FAILED') {
+                        console.log('Setting logo to SocialSquare logo')
+                        setAvatarImage(SocialSquareLogo_B64_png)
+                    } else if (data) {
+                        //convert back to image
+                        console.log('Setting logo in tab bar to profile logo')
+                        var base64Icon = `data:image/jpg;base64,${data}`
+                        setAvatarImage(base64Icon)
+                        const SetUserPfpToAsyncStorage = async () => {await AsyncStorage.setItem('UserProfilePicture', base64Icon)}
+                        SetUserPfpToAsyncStorage()
+                    } else {
+                        console.log('Setting logo to SocialSquare logo')
+                        setAvatarImage(SocialSquareLogo_B64_png)
+                    }
+                })
+                .catch(function (error) {
+                    console.log("Image not recieved")
+                    console.log(error);
+                });
+            }
+            //setSubmitting(false);
+
+        }).catch(error => {
+            console.log(error);
+            //setSubmitting(false);
+            handleMessage("An error occured. Try checking your network connection and retry.");
+        })
+    }
+    const CheckForAsyncStoragePfp = async () => {
+        if (await AsyncStorage.getItem('UserProfilePicture') != null) {
+            console.log('Loading profile picture from AsyncStorage in tabs.js')
+            setAvatarImage(await AsyncStorage.getItem('UserProfilePicture'))
+        } else {
+            console.log('There is no profile picture in AsyncStorage. Loading profile picture for tabs.js')
+            getProfilePicture()
+        }
+    }
+    CheckForAsyncStoragePfp()
     return(
         <Tab.Navigator
             tabBarOptions={{
@@ -168,7 +235,7 @@ const Tabs = ({navigation}) => {
                     <TouchableOpacity style={{backgroundColor: colors.primary, width: '100%', height: 75, marginTop: 30}} onPressIn={onProfileScreenNavigate}>
                         <View style={{alignItems: 'center', justifyContent: 'center', top: 10}}>
                             <Image
-                                source={photoUrl ? {uri: photoUrl} : require('./../assets/img/Logo.png')}
+                                source={{uri: AvatarImage}}
                                 resizeMode = 'contain'
                                 style={{
                                     width: 35,

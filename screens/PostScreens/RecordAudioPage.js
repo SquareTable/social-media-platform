@@ -1,4 +1,4 @@
-import React, {useContext, useState, useEffect} from 'react';
+import React, {useContext, useState, useEffect, useRef} from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { Audio } from 'expo-av';
 import { useTheme } from '@react-navigation/native';
