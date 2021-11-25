@@ -2704,20 +2704,20 @@ const Welcome = ({navigation, route}) => {
                         <ProfileHorizontalViewItem profLeftIcon={true}>
                             <TouchableOpacity onPress={() => {navigation.navigate('ProfileStats', {name: name, followers: followers, type: 'Followers'})}} style={{alignItems: 'center'}}>
                                 <SubTitle style={{color: colors.tertiary}} welcome={true}> Followers </SubTitle>
-                                <ProfIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/114-user.png')}/>
+                                <ProfIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/114-user.png')}/>
                                 <SubTitle style={{color: colors.tertiary}} welcome={true}> 0 </SubTitle>
                             </TouchableOpacity>
                         </ProfileHorizontalViewItem>
                         <ProfileHorizontalViewItem profCenterIcon={true}>
                             <TouchableOpacity onPress={() => {navigation.navigate('ProfileStats', {name: name, followers: following, type: 'Following'})}} style={{alignItems: 'center'}}>
                                 <SubTitle style={{color: colors.tertiary}} welcome={true}> Following </SubTitle>
-                                <ProfIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/115-users.png')}/>
+                                <ProfIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/115-users.png')}/>
                                 <SubTitle style={{color: colors.tertiary}} welcome={true}> 0 </SubTitle>
                             </TouchableOpacity>
                         </ProfileHorizontalViewItem>
                         <ProfileHorizontalViewItem profRightIcon={true}>
                             <SubTitle style={{color: colors.tertiary}} welcome={true}> Likes </SubTitle>
-                            <ProfIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/219-heart.png')}/>
+                            <ProfIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/219-heart.png')}/>
                             <SubTitle style={{color: colors.tertiary}} welcome={true}> 0 </SubTitle>
                         </ProfileHorizontalViewItem>
                     </ProfileHorizontalView>

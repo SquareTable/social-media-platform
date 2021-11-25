@@ -1,4 +1,4 @@
-import React, {useState, useContext} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import { StatusBar } from 'expo-status-bar';
 import {useTheme} from '@react-navigation/native'
 
@@ -62,7 +62,9 @@ import * as Haptics from 'expo-haptics'
 
 
 const ReportBugScreen = ({navigation}) => {
-
+    useEffect(() => {
+        alert('Coming soon')
+    }, [])
 
     const [hidePassword, setHidePassword] = useState(true);
     const [message, setMessage] = useState();

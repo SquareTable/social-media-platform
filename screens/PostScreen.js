@@ -109,28 +109,28 @@ const PostScreen = ({navigation}) => {
         }
     }
 
-    const {colors} = useTheme();
+    const {colors, dark} = useTheme();
 
     return(
         <>    
-            <StatusBar style={colors.StatusBarColor}/>
+            <StatusBar style={dark ? 'light' : 'dark'}/>
                 <WelcomeContainer style={{backgroundColor: colors.primary}} postScreen={true}>
                     <PageTitle>Post Screen</PageTitle>
                     <SubTitle style={{color: colors.tertiary}}>Select a format</SubTitle>
                     <PostCollectionView>
                         <PostTypeSelector styleForSelected={formatOneSelected} onPress={formatOnePressed}>
-                            <PostIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/016-camera.png')}/>
+                            <PostIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/016-camera.png')}/>
                         </PostTypeSelector>
                         <PostHorizontalView>
                             <PostTypeSelector sideIcons={true} styleForSelected={formatTwoSelected} onPress={formatTwoPressed}>
-                                <PostIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/007-pencil2.png')}/>
+                                <PostIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/007-pencil2.png')}/>
                             </PostTypeSelector>
                             <PostTypeSelector sideIcons={true} styleForSelected={formatThreeSelected} onPress={formatThreePressed}>
-                                <PostIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/157-stats-bars.png')}/>
+                                <PostIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/157-stats-bars.png')}/>
                             </PostTypeSelector>
                         </PostHorizontalView>
                         <PostTypeSelector styleForSelected={formatFourSelected} onPress={formatFourPressed}>
-                            <PostIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/018-music.png')}/>
+                            <PostIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/018-music.png')}/>
                         </PostTypeSelector>
                         <PostMsgBox viewHidden={messageVisibility}> Select a format </PostMsgBox>
                     </PostCollectionView>

@@ -86,19 +86,19 @@ const FindScreen = ({navigation}) => {
             <SearchHorizontalView>
                 <SearchHorizontalViewItem>
                     <SearchSubTitle style={{color: colors.tertiary}} welcome={true}> Following </SearchSubTitle>
-                    <ProfIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/273-checkmark.png')}/>
+                    <ProfIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/273-checkmark.png')}/>
                     <SearchSubTitle style={{color: colors.tertiary}} welcome={true}> {following.length} </SearchSubTitle>
                 </SearchHorizontalViewItem>
 
                 <SearchHorizontalViewItemCenter>
                     <SearchSubTitle style={{color: colors.tertiary}} welcome={true}> Followers </SearchSubTitle>
-                    <ProfIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/274-checkmark2.png')}/>
+                    <ProfIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/274-checkmark2.png')}/>
                     <SearchSubTitle style={{color: colors.tertiary}} welcome={true}> {followers.length} </SearchSubTitle>
                 </SearchHorizontalViewItemCenter>
 
                 <SearchHorizontalViewItem>
                     <SearchSubTitle style={{color: colors.tertiary}} welcome={true}> Total Likes </SearchSubTitle>
-                    <ProfIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/273-checkmark.png')}/>
+                    <ProfIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/273-checkmark.png')}/>
                     <SearchSubTitle style={{color: colors.tertiary}} welcome={true}> {totalLikes} </SearchSubTitle>
                 </SearchHorizontalViewItem>
             </SearchHorizontalView>
@@ -137,7 +137,7 @@ const FindScreen = ({navigation}) => {
             <SearchHorizontalView>
                 <SearchHorizontalViewItemCenter style={{height: '100%', justifyContent: 'center', alignItems: 'center', textAlign: 'center'}}>
                     <SearchSubTitle welcome={true} style={{flex: 1, color: colors.tertiary}}> Members </SearchSubTitle>
-                    <ProfIcons style={{flex: 1}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/115-users.png')}/>
+                    <ProfIcons style={{flex: 1, tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/115-users.png')}/>
                     {members == 0 && ( 
                         <SearchSubTitle welcome={true} style={{flex: 1, color: colors.tertiary}}> 0 </SearchSubTitle>
                     )}
@@ -147,7 +147,7 @@ const FindScreen = ({navigation}) => {
                 </SearchHorizontalViewItemCenter>
                 <SearchHorizontalViewItemCenter style={{height: '100%', justifyContent: 'center', alignItems: 'center', textAlign: 'center'}}>
                     <SearchSubTitle welcome={true} style={{flex: 1, color: colors.tertiary}}> Date Created </SearchSubTitle>
-                    <ProfIcons style={{flex: 1}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/084-calendar.png')}/>
+                    <ProfIcons style={{flex: 1, tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/084-calendar.png')}/>
                     <SearchSubTitle welcome={true} style={{flex: 1, color: colors.tertiary}}> {datePosted} </SearchSubTitle>
                 </SearchHorizontalViewItemCenter>
             </SearchHorizontalView>
@@ -338,7 +338,7 @@ const FindScreen = ({navigation}) => {
 
     return(
         <>    
-            <StatusBar style="dark"/>
+            <StatusBar style={dark ? 'light' : 'dark'}/>
             <ScrollView style={{backgroundColor: colors.primary}}>
                 <WelcomeContainer style={{backgroundColor: colors.primary}} postScreen={true}>
                     <PageTitle>Search Screen</PageTitle>

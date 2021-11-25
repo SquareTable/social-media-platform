@@ -152,27 +152,27 @@ const SettingsPage = ({navigation}) => {
                     </ConfirmLogoutView>
                         <Avatar resizeMode="cover" source={{uri: AvatarImg}} />  
                         <SettingsPageItemTouchableOpacity style={{borderColor: colors.borderColor}} onPress={() => {navigation.navigate('SecuritySettingsScreen')}}>
-                            <Icon name="security" size={60} color='black'/>
+                            <Icon name="security" size={60} color={colors.tertiary}/>
                             <SettingsItemText style={{color: colors.tertiary}}>Security</SettingsItemText>
                         </SettingsPageItemTouchableOpacity>
                         <SettingsPageItemTouchableOpacity style={{borderColor: colors.borderColor}} onPress={() => {navigation.navigate('NotificationsSettingsScreen')}}>
-                            <Icon name="alarm-light-outline" size={60} color='black'/>
+                            <Icon name="alarm-light-outline" size={60} color={colors.tertiary}/>
                             <SettingsItemText style={{color: colors.tertiary}}>Notifications</SettingsItemText>
                         </SettingsPageItemTouchableOpacity>
                         <SettingsPageItemTouchableOpacity style={{borderColor: colors.borderColor}} onPress={() => navigation.navigate("AccountSettings")}>
-                            <SettingsItemImage source={require('./../assets/app_icons/settings.png')}/>
+                            <SettingsItemImage style={{tintColor: colors.tertiary}} source={require('./../assets/app_icons/settings.png')}/>
                             <SettingsItemText style={{color: colors.tertiary}}>Account Settings</SettingsItemText>
                         </SettingsPageItemTouchableOpacity>
                         <SettingsPageItemTouchableOpacity style={{borderColor: colors.borderColor}} onPress={() => navigation.navigate("AppStyling")}>
-                            <SettingsItemImage source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/207-eye.png')}/>
+                            <SettingsItemImage style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/207-eye.png')}/>
                             <SettingsItemText style={{color: colors.tertiary}}>App Styling</SettingsItemText>
                         </SettingsPageItemTouchableOpacity>
                         <SettingsPageItemTouchableOpacity style={{borderColor: colors.borderColor}} onPress={() => {navigation.navigate('ReportBugScreen')}}>
-                            <SettingsItemImage source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/265-notification.png')}/>
+                            <SettingsItemImage style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/265-notification.png')}/>
                             <SettingsItemText style={{color: colors.tertiary}}>Report bug</SettingsItemText>
                         </SettingsPageItemTouchableOpacity>
                         <SettingsPageItemTouchableOpacity style={{borderColor: colors.borderColor}} onPressOut={changeLogoutView}>
-                            <SettingsItemImage source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/277-exit.png')}/>
+                            <SettingsItemImage style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/277-exit.png')}/>
                             <SettingsItemText style={{color: colors.tertiary}}>Logout</SettingsItemText>
                         </SettingsPageItemTouchableOpacity>
                         <Text style={{color: colors.tertiary, fontSize: 24, textAlign: 'center'}}>© SquareTable 2021</Text>

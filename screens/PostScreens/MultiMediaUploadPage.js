@@ -136,7 +136,7 @@ const MultiMediaUploadPage = ({navigation, route}) => {
 
     return(
         <>    
-            <StatusBar style="dark"/>
+            <StatusBar style={dark ? 'light' : 'dark'}/>
             <ScrollView style={{backgroundColor: colors.primary}}>
                 <MultiMediaPostFrame style={{backgroundColor: dark ? slightlyLighterPrimary : colors.borderColor}} TitleView={true}>
                     <PageTitle>MultiMedia Post Screen</PageTitle>

@@ -63,6 +63,10 @@ import TwoFA from "../screens/SecuritySettingsScreens/2FA.js";
 import WhatIsStoredOnOurServers from "../screens/SecuritySettingsScreens/WhatIsStoredOnOurServers.js";
 import NotificationsSettingsScreen from "../screens/NotificationsSettingsScreen.js";
 import ProfileStats from "../screens/ProfileStats.js";
+import SimpleStylingMenu from "../screens/SimpleStylingScreens/SimpleStylingMenu.js";
+import EditSimpleStyle from "../screens/SimpleStylingScreens/EditSimpleStyle.js";
+import Simple_ColorPickerScreen from "../screens/SimpleStylingScreens/ColorPicker.js";
+import BuiltInStylingMenu from "../screens/BuiltInStylingMenu.js";
 
 
 
@@ -350,6 +354,63 @@ const RootStack = () => {
                 }}
                 />
                 <Stack.Screen name="ProfileStats" component={ProfileStats}
+                options={{
+                  headerStyle: {
+                    backgroundColor: 'transparent',
+                  },
+                  headerTintColor: colors.tertiary,
+                  headerTransparent: true,
+                  headerTitle: '',
+                  headerLeftContainerStyle: {
+                      paddingLeft: 20,
+                  },
+                  headerLeft: null
+                }}
+              />
+              <Stack.Screen name="SimpleStylingMenu" component={SimpleStylingMenu}
+                options={{
+                  headerStyle: {
+                    backgroundColor: 'transparent',
+                  },
+                  headerTintColor: colors.tertiary,
+                  headerTransparent: true,
+                  headerTitle: '',
+                  headerLeftContainerStyle: {
+                      paddingLeft: 20,
+                  },
+                  headerLeft: null
+                }}
+              />
+              <Stack.Screen name="EditSimpleStyle" component={EditSimpleStyle}
+                options={{
+                  headerStyle: {
+                    backgroundColor: 'transparent',
+                  },
+                  headerTintColor: colors.tertiary,
+                  headerTransparent: true,
+                  headerTitle: '',
+                  headerLeftContainerStyle: {
+                      paddingLeft: 20,
+                  },
+                  headerLeft: null,
+                  gestureEnabled: false
+                }}
+              />
+              <Stack.Screen name="Simple_ColorPickerScreen" component={Simple_ColorPickerScreen}
+                options={{
+                  headerStyle: {
+                    backgroundColor: 'transparent',
+                  },
+                  headerTintColor: colors.tertiary,
+                  headerTransparent: true,
+                  headerTitle: '',
+                  headerLeftContainerStyle: {
+                      paddingLeft: 20,
+                  },
+                  headerLeft: null
+                }}
+              />
+              <Stack.Screen name="BuiltInStylingMenu" component={BuiltInStylingMenu}
                 options={{
                   headerStyle: {
                     backgroundColor: 'transparent',

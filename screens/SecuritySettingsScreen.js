@@ -123,15 +123,15 @@ const SecuritySettingsScreen = ({navigation}) => {
                     <WelcomeContainer style={{backgroundColor: colors.primary, marginTop: -50}}>
                         <Avatar resizeMode="cover" source={{uri: AvatarImg}} />
                         <SettingsPageItemTouchableOpacity style={{borderColor: colors.borderColor}} onPress={() => navigation.navigate("GDPRCompliance")}>
-                            <SettingsItemImage source={require('./../assets/app_icons/settings.png')}/>
+                            <SettingsItemImage style={{tintColor: colors.tertiary}} source={require('./../assets/app_icons/settings.png')}/>
                             <SettingsItemText style={{color: colors.tertiary}}>GDPR Compliance</SettingsItemText>
                         </SettingsPageItemTouchableOpacity>
                         <SettingsPageItemTouchableOpacity style={{borderColor: colors.borderColor}} onPress={() => navigation.navigate("LoginActivity")}>
-                            <SettingsItemImage source={require('./../assets/app_icons/settings.png')}/>
+                            <SettingsItemImage style={{tintColor: colors.tertiary}} source={require('./../assets/app_icons/settings.png')}/>
                             <SettingsItemText style={{color: colors.tertiary}}>Login Activity</SettingsItemText>
                         </SettingsPageItemTouchableOpacity>
                         <SettingsPageItemTouchableOpacity style={{borderColor: colors.borderColor}} onPress={() => navigation.navigate("2FA")}>
-                            <SettingsItemImage source={require('./../assets/app_icons/settings.png')}/>
+                            <SettingsItemImage style={{tintColor: colors.tertiary}} source={require('./../assets/app_icons/settings.png')}/>
                             <SettingsItemText style={{color: colors.tertiary}}>Two Factor Authentication</SettingsItemText>
                         </SettingsPageItemTouchableOpacity>
                         <Text style={{color: colors.tertiary, fontSize: 24, textAlign: 'center'}}>© SquareTable 2021</Text>

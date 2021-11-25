@@ -314,9 +314,9 @@ const ThreadUploadPage = ({route, navigation}) => {
     return(
         <KeyboardAvoidingWrapper>
             <StyledContainer style={{backgroundColor: colors.primary}}>
-                    <StatusBar style="dark"/>
+                    <StatusBar style={dark ? 'light' : 'dark'}/>
                     <InnerContainer style={{backgroundColor: colors.primary}}>
-                        <PageLogo source={require('./../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/007-pencil2.png')} />
+                        <PageLogo style={{tintColor: colors.tertiary}} source={require('./../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/007-pencil2.png')} />
                         
                         <PageTitle>Create Thread</PageTitle>
                         <Formik

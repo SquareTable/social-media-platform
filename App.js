@@ -32,10 +32,14 @@ Notifications.setNotificationHandler({
 const App = () => {
   const [AppStylingContextState, setAppStylingContextState] = useState(null)
   const [AdID, setAdID] = useState('');
+  const [AsyncStorageSimpleStylingData, setAsyncStorageSimpleStylingData] = useState()
+  const [currentSimpleStylingData, setCurrentSimpleStylingData] = useState()
   const testID = Platform.OS == "ios" ? 'ca-app-pub-3940256099942544/2934735716' : 'ca-app-pub-3940256099942544/6300978111';
   const productionID = Platform.OS == 'ios' ? 'ca-app-pub-6980968247752885/8710919560' : 'ca-app-pub-6980968247752885/3057291726';
   // Is a real device and running in production.
   const adUnitID = Constants.isDevice && !__DEV__ ? productionID : testID;
+  const previousStylingState = useRef(null)
+  const AsyncSimpleStyling_ParsedRef = useRef(null)
 
   const [storedCredentials, setStoredCredentials] = useState('');
   const clearAsyncStorageOnLogin = false;
@@ -156,6 +160,102 @@ const App = () => {
       descTextColor: '#abafb8'
     }
   };
+  const AppPureDarkTheme = {
+    dark: true,
+    colors: {
+      primary: 'black',
+      background: 'black',
+      secondary: '#88c0d0',
+      tertiary: 'white',
+      darkLight: '#4c566a',
+      brand: '#81A1C1',
+      green: '#A3BE8C',
+      red: '#BF616A',
+      darkest: '#2e3440',
+      greyish: '#D8DEE9',
+      bronzeRarity: '#b08d57',
+      darkestBlue: '#5E81AC',
+      StatusBarColor: 'light',
+      navFocusedColor: '#81A1C1',
+      navNonFocusedColor: 'white',
+      borderColor: '#D8DEE9',
+      orange: '#D08770',
+      yellow: '#EBCB8B',
+      purple: '#B48EAD',
+      slightlyLighterGrey: '#434C5E',
+      midWhite: '#E5E9F0',
+      slightlyLighterPrimary: '#424a5c',
+      descTextColor: '#abafb8'
+    }
+  };
+  const AppPureLightTheme = {
+    dark: false,
+    colors: {
+      primary: 'white',
+      background: 'white',
+      secondary: '#88c0d0',
+      tertiary: 'black',
+      darkLight: '#4c566a',
+      brand: '#81A1C1',
+      green: '#A3BE8C',
+      red: '#BF616A',
+      darkest: '#2e3440',
+      greyish: '#D8DEE9',
+      bronzeRarity: '#b08d57',
+      darkestBlue: '#5E81AC',
+      StatusBarColor: 'dark',
+      navFocusedColor: '#5E81AC',
+      navNonFocusedColor: '#2E3440',
+      borderColor: '#D8DEE9',
+      orange: '#D08770',
+      yellow: '#EBCB8B',
+      purple: '#B48EAD',
+      slightlyLighterGrey: '#434C5E',
+      midWhite: '#E5E9F0',
+      slightlyLighterPrimary: '#424a5c',
+      descTextColor: '#abafb8'
+    }
+  };
+
+  useEffect(() => {
+    async function getAsyncSimpleStyling() {
+      let AsyncSimpleStyling = await AsyncStorage.getItem('simpleStylingData')
+      let AsyncSimpleStyling_Parsed = JSON.parse(AsyncSimpleStyling)
+      if (AsyncSimpleStyling_Parsed != AsyncSimpleStyling_ParsedRef.current) {
+        setAsyncStorageSimpleStylingData(AsyncSimpleStyling_Parsed)
+        AsyncSimpleStyling_ParsedRef.current = AsyncSimpleStyling_Parsed
+        console.log('Setting Async Storage Data in App.js')
+      }
+      console.log('AsyncSimpleStyling is: ' + AsyncSimpleStyling_Parsed)
+    }
+    getAsyncSimpleStyling()
+  }, [])
+
+  useEffect(() => {
+    async function firstTime_getAsyncSimpleStyling() {
+      let AsyncSimpleStyling = await AsyncStorage.getItem('simpleStylingData')
+      let AsyncSimpleStyling_Parsed = JSON.parse(AsyncSimpleStyling)
+      setAsyncStorageSimpleStylingData(AsyncSimpleStyling_Parsed)
+      AsyncSimpleStyling_ParsedRef.current = AsyncSimpleStyling_Parsed
+    }
+    firstTime_getAsyncSimpleStyling()
+  }, [])
+ 
+
+  const setCurrentSimpleStylingDataToStyle = (SimpleAppStyleIndexNum) => {
+    const simpleStylingData = AsyncStorageSimpleStylingData;
+    console.log(simpleStylingData);
+    for (let i = 0; i < simpleStylingData.length; i++) {
+      if (simpleStylingData[i].indexNum == parseInt(SimpleAppStyleIndexNum)) {
+          setCurrentSimpleStylingData(simpleStylingData[i])
+          console.log(simpleStylingData[i])
+          previousStylingState.current = SimpleAppStyleIndexNum
+      }
+    }
+  }
+
+  console.log('App Styling Context State is: ' + AppStylingContextState)
+  console.log('App is currently using this style: ' + currentSimpleStylingData)
 
   if (isReady == false) {
     async function cacheResourcesAsync() {
@@ -175,6 +275,8 @@ const App = () => {
           setAppStylingContextState('Dark')
         } else if (result == 'Light') {
           setAppStylingContextState('Light')
+        } else {
+          setAppStylingContextState(result)
         }
       }).catch((error) => {console.log(error)})
       setAdID(adUnitID);
@@ -246,8 +348,9 @@ const App = () => {
       <CredentialsContext.Provider value={{storedCredentials, setStoredCredentials}}>
         <AdIDContext.Provider value={{AdID, setAdID}}>
           <AppStylingContext.Provider value={{AppStylingContextState, setAppStylingContextState}}>
+            {AppStylingContextState != 'Default' && AppStylingContextState != 'Light' && AppStylingContextState != 'Dark' && AppStylingContextState != 'PureDark' && AppStylingContextState != 'PureLight' ? previousStylingState.current != AppStylingContextState ? setCurrentSimpleStylingDataToStyle(AppStylingContextState) : null : null}
             <AppearanceProvider>
-              <NavigationContainer theme={AppStylingContextState == 'Default' ? scheme === 'dark' ? AppDarkTheme : AppLightTheme : AppStylingContextState == 'Dark' ? AppDarkTheme : AppLightTheme} onStateChange={() => {console.log('Screen changed')}}>
+              <NavigationContainer theme={AppStylingContextState == 'Default' ? scheme === 'dark' ? AppDarkTheme : AppLightTheme : AppStylingContextState == 'Dark' ? AppDarkTheme : AppStylingContextState == 'Light' ? AppLightTheme : AppStylingContextState == 'PureDark' ? AppPureDarkTheme : AppStylingContextState == 'PureLight' ? AppPureLightTheme : currentSimpleStylingData} onStateChange={() => {console.log('Screen changed')}}>
                 <Start_Stack/>
               </NavigationContainer>
             </AppearanceProvider>

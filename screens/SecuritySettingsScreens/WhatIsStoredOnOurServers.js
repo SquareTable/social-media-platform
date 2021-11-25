@@ -38,7 +38,7 @@ const WhatIsStoredOnOurServers = ({navigation}) => {
                     <ListItem style={{color: colors.tertiary}}>{`\u2022 The posts you have upvoted and downvoted`}</ListItem>
                     <ListItem style={{color: colors.tertiary}}>{`\u2022 Post media (such as photos, video, audio, etc.)`}</ListItem>
                     <ListItem style={{color: colors.tertiary}}>{`\u2022 Comments you have made on peoples' posts`}</ListItem>
-                    <ListItem style={{color: colors.tertiary}}>{`\u2022 The posts you have upvoted and downvoted`}</ListItem>
+                    <ListItem style={{color: colors.tertiary}}>{`\u2022 The comments you have upvoted and downvoted`}</ListItem>
                 </View>
                 <View style={{borderColor: colors.borderColor, borderWidth: 3}}>
                     <Text style={{fontSize: 20, textAlign: 'center', fontWeight: 'bold', color: colors.tertiary, marginVertical: 20}}>This is a full list of the data we store on our servers that is encrypted so that no one (including SocialSquare) can read or see the data except for you:</Text>

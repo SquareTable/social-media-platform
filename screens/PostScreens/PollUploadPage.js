@@ -235,9 +235,9 @@ const PollUploadPage = ({navigation}) => {
     return(
         <KeyboardAvoidingWrapper style={{backgroundColor: colors.primary}}>
             <StyledContainer style={{backgroundColor: colors.primary}}>
-                    <StatusBar style="dark"/>
+                    <StatusBar style={dark ? 'light' : 'dark'}/>
                     <InnerContainer>
-                        <PageLogo source={require('./../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/157-stats-bars.png')} />
+                        <PageLogo style={{tintColor: colors.tertiary}} source={require('./../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/157-stats-bars.png')} />
                         
                         <PageTitle>Create Poll</PageTitle>
                         <Formik
@@ -264,7 +264,7 @@ const PollUploadPage = ({navigation}) => {
                                         style={{color: colors.tertiary, backgroundColor: colors.primary}}
                                     />
                                     <UserTextInput
-                                        label="Poll subtitle"
+                                        label="Poll Subtitle"
                                         icon="note"
                                         placeholder=""
                                         placeholderTextColor={colors.tertiary}

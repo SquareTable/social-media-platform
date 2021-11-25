@@ -969,7 +969,7 @@ const CategoryViewPage = ({route, navigation}) => {
                     <ProfileHorizontalView>
                         <ProfileHorizontalViewItem profLeftIcon={true}>
                             <SubTitle style={{color: colors.tertiary}} welcome={true}> Members </SubTitle>
-                            <ProfIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/115-users.png')}/>
+                            <ProfIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/115-users.png')}/>
                             {initialInCategory == true && (
                                 <View>
                                     {inCategory == true && (
@@ -1007,7 +1007,7 @@ const CategoryViewPage = ({route, navigation}) => {
                         </ProfileHorizontalViewItem>
                         <ProfileHorizontalViewItem profCenterIcon={true}>
                             <SubTitle style={{color: colors.tertiary}} welcome={true}> Date Created </SubTitle>
-                                <ProfIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/084-calendar.png')}/>
+                                <ProfIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/084-calendar.png')}/>
                             <SubTitle welcome={true} style={{width: '80%', textAlign: 'center', color: colors.tertiary}}> {datePosted} </SubTitle>
                         </ProfileHorizontalViewItem>
                     </ProfileHorizontalView>
