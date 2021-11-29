@@ -17,6 +17,8 @@ import { DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { CredentialsContext } from './components/CredentialsContext';
 import { AdIDContext } from './components/AdIDContext.js';
 import { AppStylingContext } from './components/AppStylingContext.js';
+import { RefreshAppStylingContext } from './components/RefreshAppStylingContext.js';
+import { SimpleStylingVersion } from './components/StylingVersionsFile.js';
 
 const Stack = createStackNavigator();
 
@@ -32,6 +34,7 @@ Notifications.setNotificationHandler({
 const App = () => {
   const [AppStylingContextState, setAppStylingContextState] = useState(null)
   const [AdID, setAdID] = useState('');
+  const [refreshAppStyling, setRefreshAppStyling] = useState(false);
   const [AsyncStorageSimpleStylingData, setAsyncStorageSimpleStylingData] = useState()
   const [currentSimpleStylingData, setCurrentSimpleStylingData] = useState()
   const testID = Platform.OS == "ios" ? 'ca-app-pub-3940256099942544/2934735716' : 'ca-app-pub-3940256099942544/6300978111';
@@ -129,7 +132,8 @@ const App = () => {
       slightlyLighterGrey: '#434C5E',
       midWhite: '#E5E9F0',
       slightlyLighterPrimary: '#424a5c',
-      descTextColor: '#abafb8'
+      descTextColor: '#abafb8',
+      errorColor: '#FF0000' //red
     },
   };
   const AppLightTheme = {
@@ -157,7 +161,8 @@ const App = () => {
       slightlyLighterGrey: '#434C5E',
       midWhite: '#E5E9F0',
       slightlyLighterPrimary: '#424a5c',
-      descTextColor: '#abafb8'
+      descTextColor: '#abafb8',
+      errorColor: '#FF0000' //red
     }
   };
   const AppPureDarkTheme = {
@@ -185,7 +190,8 @@ const App = () => {
       slightlyLighterGrey: '#434C5E',
       midWhite: '#E5E9F0',
       slightlyLighterPrimary: '#424a5c',
-      descTextColor: '#abafb8'
+      descTextColor: '#abafb8',
+      errorColor: '#FF0000' //red
     }
   };
   const AppPureLightTheme = {
@@ -213,7 +219,8 @@ const App = () => {
       slightlyLighterGrey: '#434C5E',
       midWhite: '#E5E9F0',
       slightlyLighterPrimary: '#424a5c',
-      descTextColor: '#abafb8'
+      descTextColor: '#abafb8',
+      errorColor: '#FF0000' //red
     }
   };
 
@@ -245,17 +252,34 @@ const App = () => {
   const setCurrentSimpleStylingDataToStyle = (SimpleAppStyleIndexNum) => {
     const simpleStylingData = AsyncStorageSimpleStylingData;
     console.log(simpleStylingData);
-    for (let i = 0; i < simpleStylingData.length; i++) {
-      if (simpleStylingData[i].indexNum == parseInt(SimpleAppStyleIndexNum)) {
-          setCurrentSimpleStylingData(simpleStylingData[i])
-          console.log(simpleStylingData[i])
-          previousStylingState.current = SimpleAppStyleIndexNum
+    try {
+      for (let i = 0; i < simpleStylingData.length; i++) {
+        if (simpleStylingData[i].indexNum == parseInt(SimpleAppStyleIndexNum)) {
+            setCurrentSimpleStylingData(simpleStylingData[i])
+            console.log(simpleStylingData[i])
+            previousStylingState.current = SimpleAppStyleIndexNum
+        }
       }
+    } catch (e) {
+      console.warn(e);
     }
   }
 
   console.log('App Styling Context State is: ' + AppStylingContextState)
   console.log('App is currently using this style: ' + currentSimpleStylingData)
+
+  if (refreshAppStyling == true) {
+    console.warn('Refreshing app styling')
+    async function getAsyncSimpleStyling() {
+      let AsyncSimpleStyling = await AsyncStorage.getItem('simpleStylingData')
+      let AsyncSimpleStyling_Parsed = JSON.parse(AsyncSimpleStyling)
+      setAsyncStorageSimpleStylingData(AsyncSimpleStyling_Parsed)
+      AsyncSimpleStyling_ParsedRef.current = AsyncSimpleStyling_Parsed
+    }
+    setRefreshAppStyling(false)
+    getAsyncSimpleStyling()
+    setCurrentSimpleStylingDataToStyle(AppStylingContextState)
+  }
 
   if (isReady == false) {
     async function cacheResourcesAsync() {
@@ -348,12 +372,14 @@ const App = () => {
       <CredentialsContext.Provider value={{storedCredentials, setStoredCredentials}}>
         <AdIDContext.Provider value={{AdID, setAdID}}>
           <AppStylingContext.Provider value={{AppStylingContextState, setAppStylingContextState}}>
-            {AppStylingContextState != 'Default' && AppStylingContextState != 'Light' && AppStylingContextState != 'Dark' && AppStylingContextState != 'PureDark' && AppStylingContextState != 'PureLight' ? previousStylingState.current != AppStylingContextState ? setCurrentSimpleStylingDataToStyle(AppStylingContextState) : null : null}
-            <AppearanceProvider>
-              <NavigationContainer theme={AppStylingContextState == 'Default' ? scheme === 'dark' ? AppDarkTheme : AppLightTheme : AppStylingContextState == 'Dark' ? AppDarkTheme : AppStylingContextState == 'Light' ? AppLightTheme : AppStylingContextState == 'PureDark' ? AppPureDarkTheme : AppStylingContextState == 'PureLight' ? AppPureLightTheme : currentSimpleStylingData} onStateChange={() => {console.log('Screen changed')}}>
-                <Start_Stack/>
-              </NavigationContainer>
-            </AppearanceProvider>
+            <RefreshAppStylingContext.Provider value={{refreshAppStyling, setRefreshAppStyling}}>
+              {AppStylingContextState != 'Default' && AppStylingContextState != 'Light' && AppStylingContextState != 'Dark' && AppStylingContextState != 'PureDark' && AppStylingContextState != 'PureLight' ? previousStylingState.current != AppStylingContextState ? setCurrentSimpleStylingDataToStyle(AppStylingContextState) : null : null}
+              <AppearanceProvider>
+                <NavigationContainer theme={AppStylingContextState == 'Default' ? scheme === 'dark' ? AppDarkTheme : AppLightTheme : AppStylingContextState == 'Dark' ? AppDarkTheme : AppStylingContextState == 'Light' ? AppLightTheme : AppStylingContextState == 'PureDark' ? AppPureDarkTheme : AppStylingContextState == 'PureLight' ? AppPureLightTheme : currentSimpleStylingData} onStateChange={() => {console.log('Screen changed')}}>
+                  <Start_Stack/>
+                </NavigationContainer>
+              </AppearanceProvider>
+            </RefreshAppStylingContext.Provider>
           </AppStylingContext.Provider>
         </AdIDContext.Provider>
       </CredentialsContext.Provider>

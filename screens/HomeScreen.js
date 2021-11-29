@@ -41,6 +41,7 @@ import { Viewport } from '@skele/components';
 import { Audio } from 'expo-av';
 import OfflineNotice from '../components/OfflineNotice.js';
 import SwitchToggle from "react-native-switch-toggle";
+import { SimpleStylingVersion } from '../components/StylingVersionsFile.js';
 
 const HomeScreen = ({navigation}) => {
     // Filter code
@@ -270,7 +271,8 @@ const HomeScreen = ({navigation}) => {
     } else {
         var styling = lightModeStyling;
     }
-    const {colors, dark} = useTheme();
+    const {colors, dark, indexNum, stylingType} = useTheme();
+
     const [Posts, setPosts] = useState([
         { postSource: Images.posts.social_studies_1, profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', displayName: 'sebthemancreator', type: 'post', timeUploadedAgo: '4 hours ago', bio: 'Seb and Kovid are cool', encrypted: 'true' },
         { postSource: Images.posts.seb_and_azaria_1, profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', displayName: 'sebthemancreator', type: 'post', timeUploadedAgo: '4 hours ago', bio: 'Seb and Kovid are cool', encrypted: 'true' },

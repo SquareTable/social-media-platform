@@ -1204,10 +1204,10 @@ const Welcome = ({navigation, route}) => {
     }
 
     const ImageItem = ({imageKey, imageB64, imageTitle, imageDescription, imageUpVotes, imageComments, creatorName, creatorDisplayName, creatorPfpB64, datePosted, postNum})  => (
-        <View style={{backgroundColor: dark ? slightlyLighterPrimary : colors.borderColor, borderRadius: 15, marginBottom: 10}}>
+        <View style={{backgroundColor: dark ? colors.slightlyLighterPrimary : colors.borderColor, borderRadius: 15, marginBottom: 10}}>
             {postsWithDeleteMenuOpen == imageKey && (
                 <View style={{position: 'absolute', zIndex: 100, alignSelf: 'center', alignItems: 'center', width: '100%', height: '100%', justifyContent: 'center'}}>
-                    <View style={{borderRadius: 30, width: '80%', minHeight: '35%', alignSelf: 'center', alignItems: 'center', justifyContent: 'center', backgroundColor: colors.primary, borderColor: darkest, borderWidth: 6}}>
+                    <View style={{borderRadius: 30, width: '80%', minHeight: '35%', alignSelf: 'center', alignItems: 'center', justifyContent: 'center', backgroundColor: colors.primary, borderColor: colors.darkest, borderWidth: 6}}>
                         <SubTitle style={{marginBottom: 0, color: colors.tertiary}}>Delete Post?</SubTitle>
                         <ConfirmLogoutButtons cancelButton={true} onPress={()=>{setPostsWithDeleteMenuOpen(null)}}>
                             <ConfirmLogoutButtonText cancelButton={true}>Cancel</ConfirmLogoutButtonText>
@@ -1218,12 +1218,12 @@ const Welcome = ({navigation, route}) => {
                     </View>
                 </View>
             )}
-            <PostsHorizontalView style={{marginLeft: '5%', borderBottomWidth: 3, borderColor: darkLight, width: '90%', paddingBottom: 5, marginRight: '5%'}}>
+            <PostsHorizontalView style={{marginLeft: '5%', borderBottomWidth: 3, borderColor: colors.darkLight, width: '90%', paddingBottom: 5, marginRight: '5%'}}>
                 <PostsVerticalView>
                     <PostCreatorIcon source={creatorPfpB64? {uri: `data:image/jpg;base64,${creatorPfpB64}`} : require('../assets/icon.png')}/>
                 </PostsVerticalView>
                 <PostsVerticalView style={{marginTop: 9}}>
-                    <SubTitle style={{fontSize: 20, color: brand, marginBottom: 0}}>{creatorDisplayName}</SubTitle>
+                    <SubTitle style={{fontSize: 20, color: colors.brand, marginBottom: 0}}>{creatorDisplayName}</SubTitle>
                     <SubTitle style={{fontSize: 12, marginBottom: 0, color: colors.tertiary}}>@{creatorName}</SubTitle>
                 </PostsVerticalView>
             </PostsHorizontalView>
@@ -1234,12 +1234,12 @@ const Welcome = ({navigation, route}) => {
             </PostsHorizontalView>
             <ImagePostTextFrame style={{textAlign: 'center'}}>
                 <SubTitle style={{fontSize: 20, color: colors.tertiary, marginBottom: 0}}>{imageTitle}</SubTitle>
-                <SubTitle style={{fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{imageDescription}</SubTitle>
+                <SubTitle style={{fontSize: 16, color: colors.descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{imageDescription}</SubTitle>
             </ImagePostTextFrame>
             <PostHorizontalView style={{marginLeft: '5%', width: '90%', paddingVertical: 10, flex: 1, flexDirection: 'row'}}>
                 
                 {upVotesImages.includes(imageKey) && (<PostsIconFrame onPress={() => {UpVoteImage(imageKey, postNum)}}>
-                    <PostsIcons style={{flex: 1}} tintColor={brand} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
+                    <PostsIcons style={{flex: 1}} tintColor={colors.brand} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
                 </PostsIconFrame>)}
                 {neitherVotesImages.includes(imageKey) && (<PostsIconFrame onPress={() => {UpVoteImage(imageKey, postNum)}}>
                     <PostsIcons style={{flex: 1}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
@@ -1252,43 +1252,43 @@ const Welcome = ({navigation, route}) => {
 
                 {upVotesImages.includes(imageKey) && (<PostsIconFrame>
                     {initialUpVotesImages.includes(imageKey) && (
-                        <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{imageUpVotes}</SubTitle>
+                        <SubTitle style={{alignSelf: 'center', fontSize: 16, color: colors.descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{imageUpVotes}</SubTitle>
                     )}
                     {initialNeitherVotesImages.includes(imageKey) && (
-                        <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{imageUpVotes+1}</SubTitle>
+                        <SubTitle style={{alignSelf: 'center', fontSize: 16, color: colors.descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{imageUpVotes+1}</SubTitle>
                     )}
                     {initialDownVotesImages.includes(imageKey) && (
-                        <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{imageUpVotes+2}</SubTitle>
+                        <SubTitle style={{alignSelf: 'center', fontSize: 16, color: colors.descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{imageUpVotes+2}</SubTitle>
                     )}
                 </PostsIconFrame>)}
                 {neitherVotesImages.includes(imageKey) && (<PostsIconFrame>
                     {initialNeitherVotesImages.includes(imageKey) && (
-                        <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{imageUpVotes}</SubTitle>
+                        <SubTitle style={{alignSelf: 'center', fontSize: 16, color: colors.descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{imageUpVotes}</SubTitle>
                     )}
                     {initialUpVotesImages.includes(imageKey) && (
-                        <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{imageUpVotes-1}</SubTitle>
+                        <SubTitle style={{alignSelf: 'center', fontSize: 16, color: colors.descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{imageUpVotes-1}</SubTitle>
                     )}
                     {initialDownVotesImages.includes(imageKey) && (
-                        <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{imageUpVotes+1}</SubTitle>
+                        <SubTitle style={{alignSelf: 'center', fontSize: 16, color: colors.descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{imageUpVotes+1}</SubTitle>
                     )}
                 </PostsIconFrame>)}
                 {downVotesImages.includes(imageKey) && (<PostsIconFrame>
                     {initialDownVotesImages.includes(imageKey) && (
-                        <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{imageUpVotes}</SubTitle>
+                        <SubTitle style={{alignSelf: 'center', fontSize: 16, color: colors.descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{imageUpVotes}</SubTitle>
                     )}
                     {initialNeitherVotesImages.includes(imageKey) && (
-                        <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{imageUpVotes-1}</SubTitle>
+                        <SubTitle style={{alignSelf: 'center', fontSize: 16, color: colors.descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{imageUpVotes-1}</SubTitle>
                     )}
                     {initialUpVotesImages.includes(imageKey)&& (
-                        <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{imageUpVotes-2}</SubTitle>
+                        <SubTitle style={{alignSelf: 'center', fontSize: 16, color: colors.descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{imageUpVotes-2}</SubTitle>
                     )}
                 </PostsIconFrame>)}
                 {changingVotedImages.includes(imageKey) && (<PostsIconFrame>
-                    <ActivityIndicator size="small" color={brand} />                
+                    <ActivityIndicator size="small" color={colors.brand} />                
                 </PostsIconFrame>)}
 
                 {downVotesImages.includes(imageKey) && (<PostsIconFrame onPress={() => {DownVoteImage(imageKey, postNum)}}>
-                    <PostsIcons style={{flex: 1}} tintColor={brand} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
+                    <PostsIcons style={{flex: 1}} tintColor={colors.brand} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
                 </PostsIconFrame>)}
                 {neitherVotesImages.includes(imageKey) && (<PostsIconFrame onPress={() => {DownVoteImage(imageKey, postNum)}}>
                     <PostsIcons style={{flex: 1}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
@@ -1310,9 +1310,9 @@ const Welcome = ({navigation, route}) => {
                 </PostsIconFrame>
             </PostHorizontalView>
             {postNumForMsg == postNum && (<MsgBox type={messageType}>{message}</MsgBox>)}
-            <SubTitle style={{flex: 1, alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{datePosted}</SubTitle>
+            <SubTitle style={{flex: 1, alignSelf: 'center', fontSize: 16, color: colors.descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{datePosted}</SubTitle>
             <TouchableOpacity onPress={() => navigation.navigate("ViewImagePostPage", {imageKey, imageB64, imageTitle, imageDescription, creatorName, creatorDisplayName, creatorPfpB64, datePosted})}>
-                <SubTitle style={{flex: 1, alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{imageComments.length} comments</SubTitle>
+                <SubTitle style={{flex: 1, alignSelf: 'center', fontSize: 16, color: colors.descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{imageComments.length} comments</SubTitle>
             </TouchableOpacity>
         </View>
     );
