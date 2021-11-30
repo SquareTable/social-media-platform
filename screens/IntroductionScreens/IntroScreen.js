@@ -77,7 +77,7 @@ const IntroScreen = ({navigation}) => {
         {
           key: 'three',
           title: 'Tracking',
-          text: 'SocialSquare is completely transparent with what we track, and we do not gather any personal information or data from our users.\n\nWe only gather the essentials to run the service, such as who follows you, who likes your posts, etc.\n\nFor more information please visit our ',
+          text: "SocialSquare is completely transparent with it's business practices, and we do not gather any personal information or data from our users.\n\nWe only gather the essentials to run the service, such as who follows you, who likes your posts, etc.\n\nFor more information please visit our ",
           image: require('../../assets/favicon.png'),
           backgroundColor: '#22bcb5',
           comingSoon: false

@@ -54,7 +54,7 @@ const Simple_ColorPickerScreen = ({navigation, route}) => {
                                 discrete={false}
                         />
                         <TouchableOpacity onPress={() => {alert('Coming soon. This button might be removed in future releases though and might never be in the release of SocialSquare. If you want to revert your color changes, please press the x button at the top of the screen.')}} style={{borderColor: borderColor, borderWidth: 3, padding: 10, marginTop: 20}}>
-                            <Text style={{color: 'red', fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>Revert</Text>
+                            <Text style={{color: errorColor, fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>Revert</Text>
                         </TouchableOpacity>
                     </View>
                 :

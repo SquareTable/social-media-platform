@@ -22,7 +22,9 @@ import {
     ReportProfileOptionsViewSubtitleText,
     ReportProfileOptionsViewText,
     ChatScreen_Title,
-    Navigator_BackButton
+    Navigator_BackButton,
+    StyledButton,
+    ButtonText
 } from '../screens/screenStylings/styling.js';
 import ProgressiveImage from '../posts/ProgressiveImage.js';
 import { CredentialsContext } from '../components/CredentialsContext.js';
@@ -53,6 +55,8 @@ const HomeScreen = ({navigation}) => {
     const [showCategories, setShowCategories] = useState(undefined);
     const [PlayVideoSoundInSilentMode, setPlayVideoSoundInSilentMode] = useState(undefined)
     const OutputAsyncStorageToConsole = false
+    const [updateSimpleStylesWarningHidden, setUpdateSimpleStylesWarningHidden] = useState(true);
+    const [ignoreUpdateSimpleStylesWarningButtonPressed, setIgnoreUpdateSimpleStylesWarningButtonPressed] = useState(false);
     useEffect(() => {
         async function setUp() {
             const showPhotosValue = await AsyncStorage.getItem('ShowPhotos_AppBehaviour_AsyncStorage')
@@ -490,11 +494,50 @@ const HomeScreen = ({navigation}) => {
         }
     }
 
+    useEffect(() => {
+        async function checkToShowUpdateSimpleStylesWarning() {
+            const lastVersionUsed = await AsyncStorage.getItem('versionLastShownForSimpleStylingUpdateWarning')
+            const simpleStylingData = JSON.parse(await AsyncStorage.getItem('simpleStylingData'))
+            let lowestVersion = 9999;
+            console.log(simpleStylingData)
+            if (simpleStylingData) {
+                for (let i = 0; i < simpleStylingData.length; i++) {
+                    if (simpleStylingData[i].stylingVersion < lowestVersion) {
+                        lowestVersion = simpleStylingData[i].stylingVersion
+                    }
+                    if (simpleStylingData[i].stylingVersion == undefined) {
+                        lowestVersion = 1
+                    }
+                }
+                console.log(lowestVersion)
+                console.log(lastVersionUsed)
+                if (lastVersionUsed == null) {
+                    console.log('Last version used is null. Now running the code for null')
+                    if (lowestVersion < SimpleStylingVersion) {
+                        setUpdateSimpleStylesWarningHidden(false)
+                        setFlatListElementsEnabledState(false)
+                    }
+                    AsyncStorage.setItem('versionLastShownForSimpleStylingUpdateWarning', SimpleStylingVersion.toString())
+                } else {
+                    if (parseInt(lastVersionUsed) < SimpleStylingVersion) {
+                        console.log('Last version used is less than current simple styling version')
+                        setUpdateSimpleStylesWarningHidden(false)
+                        setFlatListElementsEnabledState(false)
+                        AsyncStorage.setItem('versionLastShownForSimpleStylingUpdateWarning', SimpleStylingVersion.toString())
+                    }
+                }
+            } else {
+                console.log('No simple styling data')
+            }
+        }
+        checkToShowUpdateSimpleStylesWarning()
+    }, [])
+
     return(
         <View
          style={{flex: 1, backgroundColor: colors.primary, paddingTop: StatusBarHeight}}
          >
-             <StatusBar color={colors.StatusBarColor}/>
+            <StatusBar color={colors.StatusBarColor}/>
             <View style={{flexDirection:'row'}}>
                 <Text style={{fontSize: 28, fontWeight: 'bold', textAlign: 'center', color: colors.tertiary, marginLeft: 3}}>SocialSquare BETA</Text>
                 <TouchableOpacity style={{position: 'absolute', right: 55}} disabled={!FlatListElementsEnabledState} onPress={changeHomeScreenSettingsMenuView}>
@@ -510,6 +553,57 @@ const HomeScreen = ({navigation}) => {
                 </TouchableOpacity>
             </View>
             <OfflineNotice bottom={true}/>
+            <ProfileOptionsView style={{backgroundColor: colors.primary}} viewHidden={updateSimpleStylesWarningHidden}>
+                {ignoreUpdateSimpleStylesWarningButtonPressed == false ?
+                    <ScrollView style={{marginHorizontal: 10}}>
+                        <Text style={{color: colors.errorColor ? colors.errorColor : 'red', fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>SocialSquare has recently been updated and the simple styles that you currently have are now out of date.</Text>
+                        <Text style={{color: colors.tertiary, fontSize: 18, textAlign: 'center', marginVertical: 10}}>At least one of your simple styles are now outdated and SocialSquare now only supports version {SimpleStylingVersion}.</Text>
+                        <StyledButton 
+                            style={{marginVertical: 20, height: 'auto'}}
+                            onPress={() => {
+                                setUpdateSimpleStylesWarningHidden(true)
+                                setIgnoreUpdateSimpleStylesWarningButtonPressed(false)
+                                navigation.navigate('Profile', {
+                                    screen: 'SimpleStylingMenu',
+                                    params: {ableToRefresh: false, indexNumToUse: null},
+                                });
+                            }}
+                        >
+                            <ButtonText style={{textAlign: 'center'}}>Go to simple stylings screen and never show this message again</ButtonText>
+                        </StyledButton>
+                        <StyledButton onPress={() => {setIgnoreUpdateSimpleStylesWarningButtonPressed(true)}} style={{height: 'auto'}}>
+                            <ButtonText style={{textAlign: 'center'}}>Ignore this message and never show it again</ButtonText>
+                        </StyledButton>
+                    </ScrollView>
+                :
+                    <ScrollView style={{marginHorizontal: 10}}>
+                        <Text style={{color: colors.errorColor ? colors.errorColor : 'red', fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>SocialSquare can run SOME older simple stylings, but there may be some colour and styling issues and as such is not recommended to do so.</Text>
+                        <Text style={{color: colors.tertiary, fontSize: 18, textAlign: 'center', marginVertical: 20}}>Are you sure you want to continue?</Text>
+                        <StyledButton 
+                            onPress={() => {
+                                setUpdateSimpleStylesWarningHidden(true)
+                                setIgnoreUpdateSimpleStylesWarningButtonPressed(false)
+                            }}
+                            style={{marginBottom: 20, height: 'auto'}}
+                        >
+                            <ButtonText style={{textAlign: 'center'}}>Yes. Ignore this message and never show it again</ButtonText>
+                        </StyledButton>
+                        <StyledButton 
+                            style={{height: 'auto'}}
+                            onPress={() => {
+                                setUpdateSimpleStylesWarningHidden(true)
+                                setIgnoreUpdateSimpleStylesWarningButtonPressed(false)
+                                navigation.navigate('Profile', {
+                                    screen: 'SimpleStylingMenu',
+                                    params: {ableToRefresh: false, indexNumToUse: null},
+                                });
+                            }}
+                        >
+                            <ButtonText style={{textAlign: 'center'}}>Actually no. Take me to the simple stylings screen and never show this message again</ButtonText>
+                        </StyledButton>
+                    </ScrollView>
+                }
+            </ProfileOptionsView>
             <ProfileOptionsView style={{backgroundColor: colors.primary}} viewHidden={filterMenuShown}>
                 <View style={{flexDirection: 'row', width: '100%', justifyContent: 'center'}}>
                     <TouchableOpacity style={{position: 'absolute', left: 10}} onPress={changeFilterView}>
