@@ -67,7 +67,9 @@ import SimpleStylingMenu from "../screens/SimpleStylingScreens/SimpleStylingMenu
 import EditSimpleStyle from "../screens/SimpleStylingScreens/EditSimpleStyle.js";
 import Simple_ColorPickerScreen from "../screens/SimpleStylingScreens/ColorPicker.js";
 import BuiltInStylingMenu from "../screens/BuiltInStylingMenu.js";
-
+import Advanced_ColorPickerScreen from "../screens/AdvancedStylingScreens/Advanced_ColorPicker.js";
+import AdvancedStylingMenu from "../screens/AdvancedStylingScreens/AdvancedStylingMenu.js";
+import EditAdvancedStyle from "../screens/AdvancedStylingScreens/EditAdvancedStyle.js";
 
 
 const Stack = createStackNavigator();
@@ -411,6 +413,48 @@ const RootStack = () => {
                 }}
               />
               <Stack.Screen name="BuiltInStylingMenu" component={BuiltInStylingMenu}
+                options={{
+                  headerStyle: {
+                    backgroundColor: 'transparent',
+                  },
+                  headerTintColor: colors.tertiary,
+                  headerTransparent: true,
+                  headerTitle: '',
+                  headerLeftContainerStyle: {
+                      paddingLeft: 20,
+                  },
+                  headerLeft: null
+                }}
+              />
+              <Stack.Screen name="AdvancedStylingMenu" component={AdvancedStylingMenu}
+                options={{
+                  headerStyle: {
+                    backgroundColor: 'transparent',
+                  },
+                  headerTintColor: colors.tertiary,
+                  headerTransparent: true,
+                  headerTitle: '',
+                  headerLeftContainerStyle: {
+                      paddingLeft: 20,
+                  },
+                  headerLeft: null
+                }}
+              />
+              <Stack.Screen name="EditAdvancedStyle" component={EditAdvancedStyle}
+                options={{
+                  headerStyle: {
+                    backgroundColor: 'transparent',
+                  },
+                  headerTintColor: colors.tertiary,
+                  headerTransparent: true,
+                  headerTitle: '',
+                  headerLeftContainerStyle: {
+                      paddingLeft: 20,
+                  },
+                  headerLeft: null
+                }}
+              />
+              <Stack.Screen name="Advanced_ColorPickerScreen" component={Advanced_ColorPickerScreen}
                 options={{
                   headerStyle: {
                     backgroundColor: 'transparent',

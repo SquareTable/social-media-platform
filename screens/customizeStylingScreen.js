@@ -32,7 +32,13 @@ const customizeStylingScreen = ({navigation}) => {
                     <Text style={{fontSize: 30, color: colors.tertiary, fontWeight: 'bold', textAlign: 'center'}}>Simple Styling</Text>
                 </TouchableOpacity>
                 <View style={{height: 50}}/>
-                <TouchableOpacity onPress={() => {alert('Coming soon')}} style={{borderColor: colors.borderColor, borderWidth: 2, borderRadius: 50, padding: 40, width: width * 0.9}}>
+                <TouchableOpacity 
+                    onPress={() => {
+                        //alert('Coming soon')
+                        navigation.navigate('AdvancedStylingMenu', {ableToRefresh: false, indexNumToUse: null})
+                    }} 
+                    style={{borderColor: colors.borderColor, borderWidth: 2, borderRadius: 50, padding: 40, width: width * 0.9}}
+                >
                     <Text style={{fontSize: 30, color: colors.tertiary, fontWeight: 'bold', textAlign: 'center'}}>Advanced Styling</Text>
                 </TouchableOpacity>
             </View>

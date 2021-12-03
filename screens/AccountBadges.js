@@ -31,6 +31,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 //credentials context
 import { CredentialsContext } from '../components/CredentialsContext';
 import { set } from 'react-native-reanimated';
+import { useTheme } from '@react-navigation/native';
 
 const AccountBadges = () => {
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
@@ -42,6 +43,7 @@ const AccountBadges = () => {
     const [rarity, setRarity] = useState("")
     const [badgeText, setBadgeText] = useState("")
     const [badgeDescription, setBadgeDescription] = useState("")
+    const {colors, dark} = useTheme()
 
     const changeBadgeValue = (badgeName) => {
         if (badgeName == "onSignUpBadge") {
@@ -58,8 +60,8 @@ const AccountBadges = () => {
 
     return(
             <> 
-                <StatusBar style="dark"/>   
-                <WelcomeContainer>                
+                <StatusBar style={colors.StatusBarColor}/>   
+                <WelcomeContainer style={{backgroundColor: colors.primary}}>                
                     <PageTitle badges={true}>{name} Badges</PageTitle>
                     <BadgeGridLayout>
                         <React.Fragment>

@@ -85,9 +85,14 @@ const MultiMediaUploadPage = ({navigation, route}) => {
         });
         
         if (!result.cancelled) {
-            console.log(result)
-            setImage(result);
-            navigation.setParams({imageFromRoute: result})
+            if (result.type == 'video') {
+                console.log(result)
+                alert('Sorry we do not allow uploading videos yet. That will be coming soon though :)')
+            } else {
+                console.log(result)
+                setImage(result);
+                navigation.setParams({imageFromRoute: result})
+            }
         }
     };
 
