@@ -95,12 +95,6 @@ const IntroScreen = ({navigation}) => {
     const {colors, dark} = useTheme();
     const StatusBarHeight = Constants.statusBarHeight;
     const windowHeight = Dimensions.get('window').height;
-    const goToPrivacyPolicy = () => {
-        navigation.navigate("PrivacyPolicy");
-    }
-    const goToTermsOfService = () => {
-        navigation.navigate("TermsOfService");
-    }
     const [webBrowserResult, setWebBrowserResult] = useState(null);
     const goToLink = async (linkToGoTo) => {
         let result = await WebBrowser.openBrowserAsync(linkToGoTo);
@@ -116,11 +110,11 @@ const IntroScreen = ({navigation}) => {
                 <Image source={item.image} style={{height: 200, width: 200, alignSelf: 'center'}}/>}
                 <Text style={{color: colors.tertiary, fontSize: 18, textAlign: 'center', marginHorizontal: 20}}>{item.text}</Text>
                 {item.key == "three" ? 
-                <TextLink onPress={() => {goToLink('https://expo.dev')}}>
+                <TextLink onPress={() => {goToLink('https://squaretable.github.io/social-media-platform/PrivacyPolicy')}}>
                     <TextLinkContent style={{color: colors.brand, fontSize: 18}}>Privacy Policy</TextLinkContent>
                 </TextLink> : 
                 item.key == "four" ? 
-                <TextLink onPress={() => {goToLink('https://expo.dev')}}>
+                <TextLink onPress={() => {goToLink('https://squaretable.github.io/social-media-platform/TermsAndConditions')}}>
                     <TextLinkContent style={{color: colors.brand, fontSize: 18}}>Terms of Service</TextLinkContent>
                 </TextLink> :
                 null}

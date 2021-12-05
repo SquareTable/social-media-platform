@@ -222,11 +222,11 @@ const Signup = ({navigation}) => {
                                     </TextLink>
                                 </ExtraView>
                                 <Text style={{textAlign: 'center', color: colors.tertiary, marginTop: 20}}>By signing up, you agree to our </Text>
-                                <TextLink onPress={() => {goToLink('https://expo.dev')}}>
+                                <TextLink onPress={() => {goToLink('https://squaretable.github.io/social-media-platform/TermsAndConditions')}}>
                                     <TextLinkContent style={{color: colors.brand}}>Terms of Service</TextLinkContent>
                                 </TextLink>
                                 <Text style={{textAlign: 'center', color: colors.tertiary}}>and</Text>
-                                <TextLink onPress={() => {goToLink('https://expo.dev')}}>
+                                <TextLink onPress={() => {goToLink('https://squaretable.github.io/social-media-platform/PrivacyPolicy')}}>
                                     <TextLinkContent style={{color: colors.brand}}>Privacy Policy</TextLinkContent>
                                 </TextLink>
                             </StyledFormArea>)}

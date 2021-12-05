@@ -23,11 +23,8 @@ import FindScreen from "../screens/FindScreen.js";
 import Post_FullScreen from "../posts/post_fullscreen.js";
 import Tabs from "./tabs.js";
 
-import TermsOfService from "../screens/TermsOfService.js";
-
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import IntroScreen from "../screens/IntroductionScreens/IntroScreen.js";
-import PrivacyPolicy from "../screens/PrivacyPolicy.js";
 
 const Stack = createStackNavigator();
 
@@ -92,30 +89,13 @@ const Start_Stack = () => {
                                 }}
                             />
                             <Stack.Screen name="Tabs" component={Tabs}/>
-                            <Stack.Screen 
-                                name="Terms of Service" 
-                                component={TermsOfService}
-                                options={{
-                                    animationEnabled: false,
-                                }}
-                            />
-                            <Stack.Screen 
-                                name="PrivacyPolicy" 
-                                component={PrivacyPolicy}
-                                options={{
-                                    animationEnabled: false,
-                                }}
-                            />
                         </>
                     ) : (
                         <>
                             <Stack.Screen name="IntroScreen" component={IntroScreen}/>
-                            <Stack.Screen name="PrivacyPolicy" component={PrivacyPolicy}/>
-                            <Stack.Screen name="TermsOfService" component={TermsOfService}/>
                             <Stack.Screen name="Login_Screen" component={LoginScreen}/>
                             <Stack.Screen name="Signup" component={Signup}/>
                             <Stack.Screen name="Tabs" component={Tabs}/>
-                            <Stack.Screen name="Terms of Service" component={TermsOfService}/>
                         </>
                     )}
                 </Stack.Navigator>
