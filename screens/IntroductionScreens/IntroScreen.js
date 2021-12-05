@@ -1,8 +1,9 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {View, Text, SafeAreaView, TouchableOpacity, ScrollView, StatusBar, Image, Dimensions, StyleSheet} from 'react-native';
 import {useTheme} from '@react-navigation/native';
 import AppIntroSlider from 'react-native-app-intro-slider';
 import Icon from 'react-native-vector-icons/AntDesign';
+import * as WebBrowser from 'expo-web-browser';
 import {
     TextLink,
     TextLinkContent
@@ -100,6 +101,11 @@ const IntroScreen = ({navigation}) => {
     const goToTermsOfService = () => {
         navigation.navigate("TermsOfService");
     }
+    const [webBrowserResult, setWebBrowserResult] = useState(null);
+    const goToLink = async (linkToGoTo) => {
+        let result = await WebBrowser.openBrowserAsync(linkToGoTo);
+        setWebBrowserResult(result);
+      };
     const renderSlide = ({item}) => {
         return (
             <SafeAreaView style={{backgroundColor: colors.primary, height: '100%'}}>
@@ -110,11 +116,11 @@ const IntroScreen = ({navigation}) => {
                 <Image source={item.image} style={{height: 200, width: 200, alignSelf: 'center'}}/>}
                 <Text style={{color: colors.tertiary, fontSize: 18, textAlign: 'center', marginHorizontal: 20}}>{item.text}</Text>
                 {item.key == "three" ? 
-                <TextLink onPress={goToPrivacyPolicy}>
+                <TextLink onPress={() => {goToLink('https://expo.dev')}}>
                     <TextLinkContent style={{color: colors.brand, fontSize: 18}}>Privacy Policy</TextLinkContent>
                 </TextLink> : 
                 item.key == "four" ? 
-                <TextLink onPress={goToTermsOfService}>
+                <TextLink onPress={() => {goToLink('https://expo.dev')}}>
                     <TextLinkContent style={{color: colors.brand, fontSize: 18}}>Terms of Service</TextLinkContent>
                 </TextLink> :
                 null}

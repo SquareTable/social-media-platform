@@ -7,6 +7,7 @@ import {Formik} from 'formik';
 
 // icons
 import {Octicons, Ionicons, Fontisto} from '@expo/vector-icons';
+import * as WebBrowser from 'expo-web-browser';
 
 import {
     StyledContainer,
@@ -56,6 +57,12 @@ const Signup = ({navigation}) => {
     } else {
         var styling = lightModeStyling;
     }
+    const [webBrowserResult, setWebBrowserResult] = useState(null);
+
+    const goToLink = async (linkToGoTo) => {
+        let result = await WebBrowser.openBrowserAsync(linkToGoTo);
+        setWebBrowserResult(result);
+    };
 
     const {colors} = useTheme();
 
@@ -215,11 +222,11 @@ const Signup = ({navigation}) => {
                                     </TextLink>
                                 </ExtraView>
                                 <Text style={{textAlign: 'center', color: colors.tertiary, marginTop: 20}}>By signing up, you agree to our </Text>
-                                <TextLink onPress={goToTermsOfService}>
+                                <TextLink onPress={() => {goToLink('https://expo.dev')}}>
                                     <TextLinkContent style={{color: colors.brand}}>Terms of Service</TextLinkContent>
                                 </TextLink>
                                 <Text style={{textAlign: 'center', color: colors.tertiary}}>and</Text>
-                                <TextLink onPress={goToPrivacyPolicy}>
+                                <TextLink onPress={() => {goToLink('https://expo.dev')}}>
                                     <TextLinkContent style={{color: colors.brand}}>Privacy Policy</TextLinkContent>
                                 </TextLink>
                             </StyledFormArea>)}
