@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { useTheme } from '@react-navigation/native';
 
@@ -40,6 +40,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { CredentialsContext } from '../components/CredentialsContext';
 import { ImageBackground, ScrollView } from 'react-native';
 import OfflineNotice from '../components/OfflineNotice.js';
+import { AppStylingContext } from '../components/AppStylingContext.js';
 
 
 const PostScreen = ({navigation}) => {
@@ -54,6 +55,8 @@ const PostScreen = ({navigation}) => {
     const [formatTwoSelected, setFormatTwoSelected] = useState(false);
     const [formatThreeSelected, setFormatThreeSelected] = useState(false);
     const [formatFourSelected, setFormatFourSelected] = useState(false);
+    const [useCustomStyling, setUseCustomStyling] = useState(false)
+    const {AppStylingContextState, setAppStylingContextState} = useContext(AppStylingContext)
 
     const continuePressed = () => {
         if (formatOneSelected == true) {
@@ -110,36 +113,38 @@ const PostScreen = ({navigation}) => {
     }
 
     const {colors, dark} = useTheme();
+    const {post} = colors;
+
 
     return(
         <>    
-            <StatusBar style={dark ? 'light' : 'dark'}/>
-                <WelcomeContainer style={{backgroundColor: colors.primary}} postScreen={true}>
-                    <PageTitle>Post Screen</PageTitle>
-                    <SubTitle style={{color: colors.tertiary}}>Select a format</SubTitle>
-                    <PostCollectionView>
-                        <PostTypeSelector styleForSelected={formatOneSelected} onPress={formatOnePressed}>
-                            <PostIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/016-camera.png')}/>
+            <StatusBar style={post ? colors.post.postScreenColors.statusBarColor : colors.StatusBarColor}/>
+            <WelcomeContainer style={{backgroundColor: post ? colors.post.postScreenColors.backgroundColor : colors.primary}} postScreen={true}>
+                <PageTitle style={{color: post ? colors.post.postScreenColors.titleTextColor : colors.brand}}>Post Screen</PageTitle>
+                <SubTitle style={{color: post ? colors.post.postScreenColors.selectAFormatTextColor : colors.tertiary}}>Select a format</SubTitle>
+                <PostCollectionView>
+                    <PostTypeSelector style={{borderColor: formatOneSelected ? post ? colors.post.postScreenColors.multimediaImageActivatedBorderColor : colors.darkestBlue : post ? colors.post.postScreenColors.multimediaImageBorderColor : colors.brand}} styleForSelected={formatOneSelected} onPress={formatOnePressed}>
+                        <PostIcons style={{tintColor: post ? colors.post.postScreenColors.multimediaImageTintColor : colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/016-camera.png')}/>
+                    </PostTypeSelector>
+                    <PostHorizontalView>
+                        <PostTypeSelector style={{borderColor: formatTwoSelected ? post ? colors.post.postScreenColors.threadImageActivatedBorderColor : colors.darkestBlue : post ? colors.post.postScreenColors.threadImageBorderColor : colors.brand}} sideIcons={true} styleForSelected={formatTwoSelected} onPress={formatTwoPressed}>
+                            <PostIcons style={{tintColor: post ? colors.post.postScreenColors.threadImageTintColor : colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/007-pencil2.png')}/>
                         </PostTypeSelector>
-                        <PostHorizontalView>
-                            <PostTypeSelector sideIcons={true} styleForSelected={formatTwoSelected} onPress={formatTwoPressed}>
-                                <PostIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/007-pencil2.png')}/>
-                            </PostTypeSelector>
-                            <PostTypeSelector sideIcons={true} styleForSelected={formatThreeSelected} onPress={formatThreePressed}>
-                                <PostIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/157-stats-bars.png')}/>
-                            </PostTypeSelector>
-                        </PostHorizontalView>
-                        <PostTypeSelector styleForSelected={formatFourSelected} onPress={formatFourPressed}>
-                            <PostIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/018-music.png')}/>
+                        <PostTypeSelector style={{borderColor: formatThreeSelected ? post ? colors.post.postScreenColors.pollImageActivatedBorderColor : colors.darkestBlue : post ? colors.post.postScreenColors.pollImageBorderColor : colors.brand}} sideIcons={true} styleForSelected={formatThreeSelected} onPress={formatThreePressed}>
+                            <PostIcons style={{tintColor: post ? colors.post.postScreenColors.pollImageTintColor : colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/157-stats-bars.png')}/>
                         </PostTypeSelector>
-                        <PostMsgBox viewHidden={messageVisibility}> Select a format </PostMsgBox>
-                    </PostCollectionView>
-                    <StyledButton /*continueButton={true}*/ onPress={continuePressed}>
-                        <ButtonText /*continueButton={true}*/>
-                            Continue
-                        </ButtonText>
-                    </StyledButton>
-                </WelcomeContainer>
+                    </PostHorizontalView>
+                    <PostTypeSelector style={{borderColor: formatFourSelected ? post ? colors.post.postScreenColors.audioImageActivatedBorderColor : colors.darkestBlue : post ? colors.post.postScreenColors.audioImageBorderColor : colors.brand}} styleForSelected={formatFourSelected} onPress={formatFourPressed}>
+                        <PostIcons style={{tintColor: post ? colors.post.postScreenColors.audioImageTintColor : colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/018-music.png')}/>
+                    </PostTypeSelector>
+                    <PostMsgBox style={{color: post ? colors.post.postScreenColors.errorMessage : colors.red}} viewHidden={messageVisibility}> Select a format </PostMsgBox>
+                </PostCollectionView>
+                <StyledButton /*continueButton={true}*/ style={{backgroundColor: post ? colors.post.postScreenColors.continueButtonBackgroundColor : colors.brand}} onPress={continuePressed}>
+                    <ButtonText style={{color: post ? colors.post.postScreenColors.continuteButtonTextColor : 'black'}} /*continueButton={true}*/>
+                        Continue
+                    </ButtonText>
+                </StyledButton>
+            </WelcomeContainer>
         </>
     );
 }

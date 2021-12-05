@@ -54,7 +54,7 @@ const BuiltInStylingMenu = ({navigation}) => {
                             resizeMethod="resize"
                             />
                     </Navigator_BackButton>
-                    <TestText style={{textAlign: 'center', color: colors.tertiary}}>Other styles</TestText>
+                    <TestText style={{textAlign: 'center', color: colors.tertiary}}>Other Styles</TestText>
                 </ChatScreen_Title>
                 <View style={{height: '100%', backgroundColor: colors.primary}}>
                     <FlatList

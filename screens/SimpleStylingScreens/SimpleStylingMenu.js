@@ -112,7 +112,7 @@ const SimpleStylingMenu = ({navigation, route}) => {
         while (continueCheckIndexLoop == true) {
             continueCheckIndexLoop = false;
             for (let i = 0; i < simpleStylingData.length; i++) {
-                if (simpleStylingData[i].stylingVersion == tempLength) {
+                if (simpleStylingData[i].indexNum == tempLength) {
                     tempLength += 1;
                     continueCheckIndexLoop = true;
                 }
@@ -148,7 +148,42 @@ const SimpleStylingMenu = ({navigation, route}) => {
                 midWhite: colors.midWhite,
                 slightlyLighterPrimary: colors.slightlyLighterPrimary,
                 descTextColor: colors.descTextColor,
-                errorColor: '#FF0000'
+                errorColor: '#FF0000',
+                home: {
+
+                },
+                find: {
+
+                },
+                post: {
+                    postScreenColors: {
+                        backgroundColor: colors.primary,
+                        multimediaImageTintColor: colors.tertiary,
+                        threadImageTintColor: colors.tertiary,
+                        audioImageTintColor: colors.tertiary,
+                        pollImageTintColor: colors.tertiary,
+                        titleTextColor: colors.brand,
+                        selectAFormatTextColor: colors.tertiary,
+                        errorMessage: colors.errorColor,
+                        multimediaImageBorderColor: colors.brand,
+                        pollImageBorderColor: colors.brand,
+                        audioImageBorderColor: colors.brand,
+                        threadImageBorderColor: colors.brand,
+                        multimediaImageActivatedBorderColor: colors.darkestBlue,
+                        pollImageActivatedBorderColor: colors.darkestBlue,
+                        audioImageActivatedBorderColor: colors.darkestBlue,
+                        threadImageActivatedBorderColor: colors.darkestBlue,
+                        statusBarColor: colors.StatusBarColor,
+                        continueButtonBackgroundColor: colors.brand,
+                        continueButtonTextColor: '#000000'
+                    }
+                }, 
+                chat: {
+
+                },
+                profile: {
+                    
+                }
             }
         })
         AsyncStorage.setItem('simpleStylingData', JSON.stringify(tempData))
@@ -182,7 +217,7 @@ const SimpleStylingMenu = ({navigation, route}) => {
                 setTemp(temp => temp == 'abc' ? 'cba' : 'abc')
                 for (let i = 0; i < data_parsed.length; i++) {
                     try {
-                        if (data_parsed[i].stylingVersion != SimpleStylingVersion) {
+                        if (data_parsed[i].stylingVersion < SimpleStylingVersion) {
                             setAmountOfStylesToGetUpdated(amountOfStylesToGetUpdated => amountOfStylesToGetUpdated += 1)
                             let temp_data = stylingsThatNeedToBeUpdated;
                             let temp_data_two = indexsOfStylesToUpdate;
@@ -313,8 +348,31 @@ const SimpleStylingMenu = ({navigation, route}) => {
         }
     }
 
+    const handleForceStyleChange = (indexNum) => {
+        setRefreshAppStyling(true);
+        setAppStylingContextState(indexNum.toString())
+        setIndexNumStyleToRefresh(null);
+        AsyncStorage.setItem('App StylingContextState', indexNum.toString())
+        setShowRefreshButton(showRefreshButton => showRefreshButton == true ? false : false)
+        if (colors.primary != simpleStylingData[indexNum].colors.primary) {
+            setRefreshAppStyling(true);
+            setTemp(temp => temp == 'abc' ? 'cba' : 'abc')
+        }
+    }
+
     const handlePress = (indexNum, forceStyle) => {
-        if (SimpleStylingVersion == simpleStylingData[indexNum].stylingVersion || forceStyle == true) {
+        let indexNumToUse = undefined;
+        for (let i = 0; i < simpleStylingData.length; i++) {
+            if (simpleStylingData[i].indexNum == indexNum) {
+                indexNumToUse = i
+            }
+        }
+        if (indexNumToUse == undefined) {
+            alert('An error occured. Sorry :(')
+            console.warn(simpleStylingData)
+            return
+        }
+        if (forceStyle == true || SimpleStylingVersion == simpleStylingData[indexNum].stylingVersion) {
             setRefreshAppStyling(true);
             setAppStylingContextState(indexNum.toString())
             setIndexNumStyleToRefresh(null);
@@ -356,7 +414,7 @@ const SimpleStylingMenu = ({navigation, route}) => {
                             resizeMethod="resize"
                             />
                     </Navigator_BackButton>
-                    <TestText style={{textAlign: 'center', color: colors.tertiary}}>Simple Styling</TestText>
+                    <TestText style={{textAlign: 'center', color: colors.tertiary}}>Custom Styling</TestText>
                     {confirmUpdateScreenHidden == true && versionMismatchScreenHidden == true &&
                         <TouchableOpacity onPress={() => {versionReleaseNotesHidden == true ? setNamingNewStyle(NamingNewStyle == true ? false : true) : setVersionReleaseNotesHidden(true)}} style={{position: 'absolute', right: versionReleaseNotesHidden == false ? 15 : NamingNewStyle == true ? 10 : 15, top: StatusBarHeight + 2}}>
                             {NamingNewStyle == true ?
@@ -446,24 +504,8 @@ const SimpleStylingMenu = ({navigation, route}) => {
                 </ProfileOptionsView>
                 <ProfileOptionsView style={{backgroundColor: colors.primary}} viewHidden={versionMismatchScreenHidden}>
                     <View style={{flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
-                        {versionMismatchScreenVersion != undefined ?
-                            <>
-                                <Text style={{color: colors.errorColor, fontSize: 18, fontWeight: 'bold', textAlign: 'center', marginHorizontal: 10}}>This style is version {versionMismatchScreenVersion || 'ERROR'} and this version of SocialSquare only supports simple styles with version {SimpleStylingVersion}.</Text>
-                                <Text style={{color: colors.errorColor, fontSize: 16, textAlign: 'center', marginHorizontal: 10, marginVertical: 10}}>You can still use this style with this version of the app, but it is recommended to update the styling. Otherwise there may be styling and colour issues.</Text>
-                                <Text style={{color: colors.errorColor, fontSize: 16, textAlign: 'center', marginHorizontal: 10}}>{versionMismatchNewerOrOlder == 'older' ? 'Please update SocialSquare and this style to the latest version for this styling to be fully supported.' : versionMismatchNewerOrOlder == 'newer' ? 'Please update SocialSquare to the latest version for this style to be fully supported.' : 'ERROR OCCURED'}</Text>
-                                <StyledButton 
-                                    onPress={() => {
-                                        handlePress(versionMismatchScreenVersion, true);
-                                        setVersionMismatchScreenHidden(true);
-                                    }} 
-                                    style={{backgroundColor: colors.errorColor}}
-                                >
-                                    <ButtonText style={{color: colors.tertiary, fontSize: 20, fontWeight: 'bold'}}>Use this styling</ButtonText>
-                                </StyledButton>
-                            </>
-                        :
-                            <Text style={{color: colors.errorColor, fontSize: 20, marginHorizontal: 20, fontWeight: 'bold', textAlign: 'center', marginVertical: 30}}>This style is too outdated to be used with SocialSquare. Please update it.</Text>
-                        }
+                        <Text style={{color: colors.errorColor, fontSize: 18, fontWeight: 'bold', textAlign: 'center', marginHorizontal: 10}}>This style is version {versionMismatchScreenVersion || 'ERROR'} and this version of SocialSquare only supports custom styles with version {SimpleStylingVersion}.</Text>
+                        <Text style={{color: colors.errorColor, fontSize: 16, textAlign: 'center', marginHorizontal: 10}}>{versionMismatchNewerOrOlder == 'older' ? 'Please update SocialSquare and this style to the latest version for this styling to be fully supported.' : versionMismatchNewerOrOlder == 'newer' ? 'Please update SocialSquare to the latest version for this style to be fully supported.' : 'ERROR OCCURED'}</Text>
                         <StyledButton onPress={() => {setVersionMismatchScreenHidden(true)}} style={{backgroundColor: colors.brand}}>
                             <ButtonText style={{color: colors.tertiary}}>Take me back</ButtonText>
                         </StyledButton>
@@ -516,7 +558,7 @@ const SimpleStylingMenu = ({navigation, route}) => {
                         }
                         ListEmptyComponent={
                             <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: '50%'}}>
-                                <Text style={{color: colors.tertiary, fontSize: 20, fontWeight: 'bold', marginBottom: 20}}>There are no simple stylings here.</Text>
+                                <Text style={{color: colors.tertiary, fontSize: 20, fontWeight: 'bold', marginBottom: 20}}>There are no custom stylings here.</Text>
                                 <StyledButton onPress={() => {setNamingNewStyle(NamingNewStyle == true ? false : true)}}>
                                     <ButtonText>Create a new style</ButtonText>
                                 </StyledButton>
@@ -533,7 +575,7 @@ const SimpleStylingMenu = ({navigation, route}) => {
                                                     <TouchableOpacity onPress={() => {showVersionReleaseNotes(item.stylingVersion)}} style={{justifyContent: 'center', alignItems: 'center', alignSelf: 'center'}}>
                                                         <Text style={{borderColor: colors.borderColor, borderWidth: 1, borderRadius: 5, color: colors.tertiary, textAlign: 'center', marginLeft: 5, padding: 5}}>V{item.stylingVersion || ' ERROR'}</Text>
                                                     </TouchableOpacity>
-                                                    <TouchableOpacity onPress={() => {navigation.navigate('EditSimpleStyle', {name: item.name, indexNum: item.indexNum, type: null, dark: item.dark, stylingType: item.stylingType, stylingVersion: item.stylingVersion, primary: item.colors.primary, tertiary: item.colors.tertiary, borderColor: item.colors.borderColor, background: item.colors.background, secondary: item.colors.secondary, darkLight: item.colors.darkLight, brand: item.colors.brand, green: item.colors.green, red: item.colors.red, darkest: item.colors.darkest, greyish: item.colors.greyish, bronzeRarity: item.colors.bronzeRarity, darkestBlue: item.colors.darkestBlue, StatusBarColor: item.colors.StatusBarColor, navFocusedColor: item.colors.navFocusedColor, navNonFocusedColor: item.colors.navNonFocusedColor, orange: item.colors.orange, yellow: item.colors.yellow, purple: item.colors.purple, slightlyLighterGrey: item.colors.slightlyLighterGrey, midWhite: item.colors.midWhite, slightlyLighterPrimary: item.colors.slightlyLighterPrimary, descTextColor: item.colors.descTextColor, errorColor: item.colors.errorColor})}} style={{position: 'absolute', right: 45, top: -7}}>
+                                                    <TouchableOpacity onPress={() => {navigation.navigate('EditSimpleStyle', {name: item.name, indexNum: item.indexNum, type: null, dark: item.dark, stylingType: item.stylingType, stylingVersion: item.stylingVersion, primary: item.colors.primary, tertiary: item.colors.tertiary, borderColor: item.colors.borderColor, background: item.colors.background, secondary: item.colors.secondary, darkLight: item.colors.darkLight, brand: item.colors.brand, green: item.colors.green, red: item.colors.red, darkest: item.colors.darkest, greyish: item.colors.greyish, bronzeRarity: item.colors.bronzeRarity, darkestBlue: item.colors.darkestBlue, StatusBarColor: item.colors.StatusBarColor, navFocusedColor: item.colors.navFocusedColor, navNonFocusedColor: item.colors.navNonFocusedColor, orange: item.colors.orange, yellow: item.colors.yellow, purple: item.colors.purple, slightlyLighterGrey: item.colors.slightlyLighterGrey, midWhite: item.colors.midWhite, slightlyLighterPrimary: item.colors.slightlyLighterPrimary, descTextColor: item.colors.descTextColor, errorColor: item.colors.errorColor, home: item.colors.home, find: item.colors.find, post: item.colors.post, chat: item.colors.chat, profile: item.colors.profile})}} style={{position: 'absolute', right: 45, top: -7}}>
                                                         <Octicons name={"pencil"} size={40} color={colors.brand} />
                                                     </TouchableOpacity>
                                                     <TouchableOpacity onPress={() => {setListOfDataGettingDeleted(listOfDataGettingDeleted => [...listOfDataGettingDeleted, index])}} style={{position: 'absolute', right: 10, top: -7}}>

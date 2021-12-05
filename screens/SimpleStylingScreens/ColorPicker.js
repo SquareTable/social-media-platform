@@ -19,10 +19,22 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import ColorPicker from 'react-native-wheel-color-picker'
 
 const Simple_ColorPickerScreen = ({navigation, route}) => {
-    const {name, type, dark, primary, tertiary, borderColor, background, secondary, darkLight, brand, green, red, darkest, greyish, bronzeRarity, darkestBlue, StatusBarColor, navFocusedColor, navNonFocusedColor, orange, yellow, purple, slightlyLighterGrey, midWhite, slightlyLighterPrimary, descTextColor, errorColor} = route.params;
+    const {name, type, dark, primary, tertiary, borderColor, background, secondary, darkLight, brand, green, red, darkest, greyish, bronzeRarity, darkestBlue, StatusBarColor, navFocusedColor, navNonFocusedColor, orange, yellow, purple, slightlyLighterGrey, midWhite, slightlyLighterPrimary, descTextColor, errorColor, home, find, post, chat, profile, placeToNavigateBackTo} = route.params;
     let ColorPickerRef = createRef()
     const [reRender, setReRender] = useState(0)
     const StatusBarHeight = Constants.statusBarHeight
+
+    const setNavigationRouteToColor = (type, color) => {
+        if (type == 'PostScreenTitleColor') {
+            let temp = post;
+            temp.postScreenColors.titleTextColor = color;
+            navigation.setParams({post: temp})
+        } else if (type == 'PostScreenSelectFormatMessageColor') {
+            let temp = post;
+            temp.postScreenColors.selectAFormatTextColor = color;
+            navigation.setParams({post: temp})
+        }
+    }
 
     return (
         <>
@@ -31,8 +43,8 @@ const Simple_ColorPickerScreen = ({navigation, route}) => {
                 <Navigator_BackButton onPress={() => {navigation.goBack()}}>
                     <Octicons name={"x"} size={40} color={tertiary} />
                 </Navigator_BackButton>
-                <TestText style={{textAlign: 'center', color: tertiary, fontSize: 18}}>Edit {type == 'primary' ? 'Background' : type == 'tertiary' ? 'Text and Image Tint' : type == 'secondary' ? 'Secondary' : type == 'darkLight' ? 'Dark Light' : type == 'brand' ? 'Brand' : type == 'green' ? 'Green' : type == 'red' ? 'Red' : type == 'orange' ? 'Orange' : type == 'yellow' ? 'yellow' : type == 'purple' ? 'Purple' : type == 'greyish' ? 'Greyish' : type == 'bronzeRarity' ? 'Bronze Badge' : type == 'darkestBlue' ? 'Darkest Blue' : type == 'navFocusedColor' ? 'Nav Focused Color' : type == 'navNonFocusedColor' ? 'Nav Non Focused Color' : type == 'borderColor' ? 'Border' : type == 'slightlyLighterGrey' ? 'Slightly Lighter Grey' : type == 'midWhite' ? 'Mid White' : type == 'slightlyLighterPrimary' ? 'Slightly Lighter Primary' : type == 'descTextColor' ? 'Description Text' : type == 'statusBarColor' ? 'Status Bar' : type == 'errorColor' ? 'Error Colour' : 'ERROR OCCURED'} Color</TestText>
-                    <TouchableOpacity onPress={() => {navigation.navigate('EditSimpleStyle', {name: name, type: null, dark: dark, primary: primary, tertiary: tertiary, borderColor: borderColor, background: background, secondary: secondary, darkLight: darkLight, brand: brand, green: green, red: red, darkest: darkest, greyish: greyish, bronzeRarity: bronzeRarity, darkestBlue: darkestBlue, StatusBarColor: StatusBarColor, navFocusedColor: navFocusedColor, navNonFocusedColor: navNonFocusedColor, orange: orange, yellow: yellow, purple: purple, slightlyLighterGrey: slightlyLighterGrey, midWhite: midWhite, slightlyLighterPrimary: slightlyLighterPrimary, descTextColor: descTextColor})}} style={{position: 'absolute', right: 10, top: StatusBarHeight + 2}}>
+                <TestText style={{textAlign: 'center', color: tertiary, fontSize: 18}}>Edit {type == 'primary' ? 'Background' : type == 'tertiary' ? 'Text and Image Tint' : type == 'secondary' ? 'Secondary' : type == 'darkLight' ? 'Dark Light' : type == 'brand' ? 'Brand' : type == 'green' ? 'Green' : type == 'red' ? 'Red' : type == 'orange' ? 'Orange' : type == 'yellow' ? 'yellow' : type == 'purple' ? 'Purple' : type == 'greyish' ? 'Greyish' : type == 'bronzeRarity' ? 'Bronze Badge' : type == 'darkestBlue' ? 'Darkest Blue' : type == 'navFocusedColor' ? 'Nav Focused Color' : type == 'navNonFocusedColor' ? 'Nav Non Focused Color' : type == 'borderColor' ? 'Border' : type == 'slightlyLighterGrey' ? 'Slightly Lighter Grey' : type == 'midWhite' ? 'Mid White' : type == 'slightlyLighterPrimary' ? 'Slightly Lighter Primary' : type == 'descTextColor' ? 'Description Text' : type == 'statusBarColor' ? 'Status Bar' : type == 'errorColor' ? 'Error Colour' : type == 'PostScreenTitleColor' ? 'Post Screen Title' : type == 'PostScreenSelectFormatMessageColor' ? 'Select A Format Msg' : 'ERROR OCCURED'} Color</TestText>
+                    <TouchableOpacity onPress={() => {navigation.navigate(placeToNavigateBackTo, {name: name, type: null, dark: dark, primary: primary, tertiary: tertiary, borderColor: borderColor, background: background, secondary: secondary, darkLight: darkLight, brand: brand, green: green, red: red, darkest: darkest, greyish: greyish, bronzeRarity: bronzeRarity, darkestBlue: darkestBlue, StatusBarColor: StatusBarColor, navFocusedColor: navFocusedColor, navNonFocusedColor: navNonFocusedColor, orange: orange, yellow: yellow, purple: purple, slightlyLighterGrey: slightlyLighterGrey, midWhite: midWhite, slightlyLighterPrimary: slightlyLighterPrimary, descTextColor: descTextColor, errorColor: errorColor, home: home, find: find, post: post, chat: chat, profile: profile})}} style={{position: 'absolute', right: 10, top: StatusBarHeight + 2}}>
                         <Octicons name={"check"} size={40} color={tertiary} />
                     </TouchableOpacity>
             </ChatScreen_Title>
@@ -41,10 +53,10 @@ const Simple_ColorPickerScreen = ({navigation, route}) => {
                     <View style={{height: '85%', width: '80%'}}>
                         <ColorPicker
                                 ref={ColorPickerRef}
-                                color={eval(type)}
+                                color={type == 'PostScreenTitleColor' ? post.postScreenColors.titleTextColor : type == 'PostScreenSelectFormatMessageColor' ? post.postScreenColors.selectAFormatTextColor : eval(type)}
                                 swatchesOnly={false}
                                 onColorChange={(color) => {console.log(color)}}
-                                onColorChangeComplete={(color) => {type == 'primary' ? navigation.setParams({primary: color}) : type == 'tertiary' ? navigation.setParams({tertiary: color}) : type == 'secondary' ? navigation.setParams({secondary: color}) : type == 'darkLight' ? navigation.setParams({darkLight: color}) : type == 'brand' ? navigation.setParams({brand: color}) : type == 'green' ? navigation.setParams({green: color}) : type == 'red' ? navigation.setParams({red: color}) : type == 'orange' ? navigation.setParams({orange: color}) : type == 'yellow' ? navigation.setParams({yellow: color}) : type == 'purple' ? navigation.setParams({purple: color}) : type == 'greyish' ? navigation.setParams({greyish: color}) : type == 'bronzeRarity' ? navigation.setParams({bronzeRarity: color}) : type == 'darkestBlue' ? navigation.setParams({darkestBlue: color}) : type == 'navFocusedColor' ? navigation.setParams({navFocusedColor: color}) : type == 'navNonFocusedColor' ? navigation.setParams({navNonFocusedColor: color}) : type == 'borderColor' ? navigation.setParams({borderColor: color}) : type == 'slightlyLighterGrey' ? navigation.setParams({slightlyLighterGrey: color}) : type == 'midWhite' ? navigation.setParams({midWhite: color}) : type == 'slightlyLighterPrimary' ? navigation.setParams({slightlyLighterPrimary: color}) : type == 'descTextColor' ? navigation.setParams({descTextColor: color}) : type == 'errorColor' ? navigation.setParams({errorColor: color}) : null}}
+                                onColorChangeComplete={(color) => {type == 'primary' ? navigation.setParams({primary: color}) : type == 'tertiary' ? navigation.setParams({tertiary: color}) : type == 'secondary' ? navigation.setParams({secondary: color}) : type == 'darkLight' ? navigation.setParams({darkLight: color}) : type == 'brand' ? navigation.setParams({brand: color}) : type == 'green' ? navigation.setParams({green: color}) : type == 'red' ? navigation.setParams({red: color}) : type == 'orange' ? navigation.setParams({orange: color}) : type == 'yellow' ? navigation.setParams({yellow: color}) : type == 'purple' ? navigation.setParams({purple: color}) : type == 'greyish' ? navigation.setParams({greyish: color}) : type == 'bronzeRarity' ? navigation.setParams({bronzeRarity: color}) : type == 'darkestBlue' ? navigation.setParams({darkestBlue: color}) : type == 'navFocusedColor' ? navigation.setParams({navFocusedColor: color}) : type == 'navNonFocusedColor' ? navigation.setParams({navNonFocusedColor: color}) : type == 'borderColor' ? navigation.setParams({borderColor: color}) : type == 'slightlyLighterGrey' ? navigation.setParams({slightlyLighterGrey: color}) : type == 'midWhite' ? navigation.setParams({midWhite: color}) : type == 'slightlyLighterPrimary' ? navigation.setParams({slightlyLighterPrimary: color}) : type == 'descTextColor' ? navigation.setParams({descTextColor: color}) : type == 'errorColor' ? navigation.setParams({errorColor: color}) : setNavigationRouteToColor(type, color)}}
                                 thumbSize={40}
                                 sliderSize={40}
                                 noSnap={true}
@@ -53,9 +65,6 @@ const Simple_ColorPickerScreen = ({navigation, route}) => {
                                 swatches={true}
                                 discrete={false}
                         />
-                        <TouchableOpacity onPress={() => {alert('Coming soon. This button might be removed in future releases though and might never be in the release of SocialSquare. If you want to revert your color changes, please press the x button at the top of the screen.')}} style={{borderColor: borderColor, borderWidth: 3, padding: 10, marginTop: 20}}>
-                            <Text style={{color: errorColor, fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>Revert</Text>
-                        </TouchableOpacity>
                     </View>
                 :
                     <>

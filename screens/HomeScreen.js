@@ -556,8 +556,8 @@ const HomeScreen = ({navigation}) => {
             <ProfileOptionsView style={{backgroundColor: colors.primary}} viewHidden={updateSimpleStylesWarningHidden}>
                 {ignoreUpdateSimpleStylesWarningButtonPressed == false ?
                     <ScrollView style={{marginHorizontal: 10}}>
-                        <Text style={{color: colors.errorColor ? colors.errorColor : 'red', fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>SocialSquare has recently been updated and the simple styles that you currently have are now out of date.</Text>
-                        <Text style={{color: colors.tertiary, fontSize: 18, textAlign: 'center', marginVertical: 10}}>At least one of your simple styles are now outdated and SocialSquare now only supports version {SimpleStylingVersion}.</Text>
+                        <Text style={{color: colors.errorColor ? colors.errorColor : 'red', fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>SocialSquare has recently been updated and the custom styles that you currently have are now out of date.</Text>
+                        <Text style={{color: colors.tertiary, fontSize: 18, textAlign: 'center', marginVertical: 10}}>At least one of your custom styles are now outdated and SocialSquare now only supports version {SimpleStylingVersion}.</Text>
                         <StyledButton 
                             style={{marginVertical: 20, height: 'auto'}}
                             onPress={() => {
@@ -569,7 +569,7 @@ const HomeScreen = ({navigation}) => {
                                 });
                             }}
                         >
-                            <ButtonText style={{textAlign: 'center'}}>Go to simple stylings screen and never show this message again</ButtonText>
+                            <ButtonText style={{textAlign: 'center'}}>Go to custom stylings screen to update them and never show this message again</ButtonText>
                         </StyledButton>
                         <StyledButton onPress={() => {setIgnoreUpdateSimpleStylesWarningButtonPressed(true)}} style={{height: 'auto'}}>
                             <ButtonText style={{textAlign: 'center'}}>Ignore this message and never show it again</ButtonText>

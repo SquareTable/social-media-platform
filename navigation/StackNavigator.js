@@ -54,7 +54,6 @@ import ViewImagePostPage from '../screens/ViewImagePostPage'
 import ViewPollPostPage from '../screens/ViewPollPostPage'
 import CategoryHome from '../screens/CategoryHome'
 import CategoryCreationPage from "../screens/CategoryCreationPage.js";
-import customizeStylingScreen from "../screens/customizeStylingScreen.js";
 import TakeImage_Camera from "../screens/TakeImage_Camera.js";
 import GDPRCompliance from "../screens/SecuritySettingsScreens/GDPRCompliance.js";
 import SecuritySettingsScreen from "../screens/SecuritySettingsScreen.js";
@@ -67,9 +66,9 @@ import SimpleStylingMenu from "../screens/SimpleStylingScreens/SimpleStylingMenu
 import EditSimpleStyle from "../screens/SimpleStylingScreens/EditSimpleStyle.js";
 import Simple_ColorPickerScreen from "../screens/SimpleStylingScreens/ColorPicker.js";
 import BuiltInStylingMenu from "../screens/BuiltInStylingMenu.js";
-import Advanced_ColorPickerScreen from "../screens/AdvancedStylingScreens/Advanced_ColorPicker.js";
-import AdvancedStylingMenu from "../screens/AdvancedStylingScreens/AdvancedStylingMenu.js";
-import EditAdvancedStyle from "../screens/AdvancedStylingScreens/EditAdvancedStyle.js";
+import PerScreenEdit from "../screens/SimpleStylingScreens/PerScreenEdit.js";
+import EditPostGroupScreens from "../screens/SimpleStylingScreens/EditPostGroupScreens.js";
+import EditPostScreenStyle from "../screens/SimpleStylingScreens/EditPostScreenStyle.js";
 
 
 const Stack = createStackNavigator();
@@ -215,22 +214,6 @@ const RootStack = () => {
                 <Stack.Screen 
                   name="AppStyling" 
                   component={AppStyling}
-                  options={{
-                    headerStyle: {
-                        backgroundColor: 'transparent',
-                    },
-                    headerTintColor: colors.tertiary,
-                    headerTransparent: true,
-                    headerTitle: '',
-                    headerLeftContainerStyle: {
-                        paddingLeft: 20,
-                    },
-                    headerLeft: null
-                }}
-                />
-                <Stack.Screen 
-                  name="CustomizeAppStyling" 
-                  component={customizeStylingScreen}
                   options={{
                     headerStyle: {
                         backgroundColor: 'transparent',
@@ -426,7 +409,7 @@ const RootStack = () => {
                   headerLeft: null
                 }}
               />
-              <Stack.Screen name="AdvancedStylingMenu" component={AdvancedStylingMenu}
+              <Stack.Screen name="PerScreenEdit" component={PerScreenEdit}
                 options={{
                   headerStyle: {
                     backgroundColor: 'transparent',
@@ -440,7 +423,7 @@ const RootStack = () => {
                   headerLeft: null
                 }}
               />
-              <Stack.Screen name="EditAdvancedStyle" component={EditAdvancedStyle}
+              <Stack.Screen name="EditPostGroupScreens" component={EditPostGroupScreens}
                 options={{
                   headerStyle: {
                     backgroundColor: 'transparent',
@@ -454,7 +437,7 @@ const RootStack = () => {
                   headerLeft: null
                 }}
               />
-              <Stack.Screen name="Advanced_ColorPickerScreen" component={Advanced_ColorPickerScreen}
+               <Stack.Screen name="EditPostScreenStyle" component={EditPostScreenStyle}
                 options={{
                   headerStyle: {
                     backgroundColor: 'transparent',
