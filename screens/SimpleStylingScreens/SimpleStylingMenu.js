@@ -124,7 +124,7 @@ const SimpleStylingMenu = ({navigation, route}) => {
             indexNum: tempLength, 
             dark: true,
             stylingType: 'simple',
-            stylingVersion: 2,
+            stylingVersion: 3,
             colors: {
                 primary: colors.primary, 
                 tertiary: colors.tertiary, 
@@ -609,7 +609,7 @@ const SimpleStylingMenu = ({navigation, route}) => {
                     </View>
                 </ProfileOptionsView>
                 <ProfileOptionsView style={{backgroundColor: colors.primary, height: '80%'}} viewHidden={versionReleaseNotesHidden}>
-                    <View style={{width: '100%', height: '100%'}}>
+                    <View style={{width: '90%', height: '100%'}}>
                         <ScrollView>
                             <Text style={{color: colors.tertiary, fontSize: 24, fontWeight: 'bold', textAlign: 'center'}}>{versionReleaseNotesVersion == 2 || versionReleaseNotesVersion == undefined ? 'Release Notes for simple styling version ' + versionReleaseNotesVersion : null}</Text>
                             {versionReleaseNotesVersion == 2 ?
@@ -628,6 +628,14 @@ const SimpleStylingMenu = ({navigation, route}) => {
                                         <Text style={{color: colors.tertiary, fontSize: 18, textAlign: 'center', marginVertical: 7}}>{`\u2022 Added pure light and pure dark styles to the built-in styling menu`}</Text>
                                     </>
                                 :
+                                    versionReleaseNotesVersion == 3 ?
+                                        <>
+                                            <Text style={{color: colors.tertiary, fontSize: 22, fontWeight: 'bold', marginBottom: 7, marginTop: 25}}>Frontend changes -</Text>
+                                            <Text style={{color: colors.tertiary, fontSize: 18, textAlign: 'center', marginVertical: 7}}>{`\u2022 Added fully customizable styling for the Post Screen`}</Text>
+                                            <Text style={{color: colors.tertiary, fontSize: 22, fontWeight: 'bold', marginVertical: 7}}>Backend changes -</Text>
+                                            <Text style={{color: colors.tertiary, fontSize: 18, textAlign: 'center', marginVertical: 7}}>{`\u2022 Fixed app crashing bugs that were caused from custom stylings`}</Text>
+                                        </>
+                                    :
                                         <Text style={{color: colors.errorColor, fontSize: 30, fontWeight: 'bold', marginHorizontal: 20, marginTop: '80%', textAlign: 'center'}}>Error occured</Text>
                             }
                         </ScrollView>
