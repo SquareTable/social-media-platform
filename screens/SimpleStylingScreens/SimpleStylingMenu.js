@@ -52,9 +52,10 @@ const SimpleStylingMenu = ({navigation, route}) => {
     const [versionReleaseNotesHidden, setVersionReleaseNotesHidden] = useState(true);
     const [versionReleaseNotesVersion, setVersionReleaseNotesVersion] = useState(null);
     const [indexsOfStylesToUpdate, setIndexsOfStylesToUpdate] = useState([]);
+    const [outdatedStyleWarningWhenEditingHidden, setOutdatedStyleWarningWhenEditingHidden] = useState(true);
     const isOnBuiltInStyling = useRef();
     const {displayName} = storedCredentials;
-    const {ableToRefresh, indexNumToUse} = route.params;
+    const {ableToRefresh, indexNumToUse, backToProfileScreen} = route.params;
     if (IndexNumStyleToRefresh == null && indexNumToUse != null) {
         setIndexNumStyleToRefresh(indexNumToUse);
     }
@@ -183,6 +184,12 @@ const SimpleStylingMenu = ({navigation, route}) => {
                 },
                 profile: {
                     
+                },
+                bottomNavigationBar: {
+
+                },
+                postViews: {
+
                 }
             }
         })
@@ -285,6 +292,79 @@ const SimpleStylingMenu = ({navigation, route}) => {
                             errorColor: '#FF0000'
                         }
                     });
+                } else if (data_parsed[i].stylingVersion == 2) {
+                    let {name, indexNum, dark, colors} = data_parsed[i];
+                    let { primary, tertiary, borderColor, background, secondary, darkLight, brand, green, red, darkest, greyish, bronzeRarity, darkestBlue, StatusBarColor, navFocusedColor, navNonFocusedColor, orange, yellow, purple, slightlyLighterGrey, midWhite, slightlyLighterPrimary, descTextColor, errorColor } = colors;
+                    console.log(name)
+                    confirmDelete(name, indexNum);
+                    temp_data.push({
+                        name: name,
+                        indexNum: indexNum,
+                        dark: dark,
+                        stylingType: 'simple',
+                        stylingVersion: 3,
+                        colors: {
+                            primary: primary,
+                            tertiary: tertiary,
+                            borderColor: borderColor,
+                            background: background,
+                            secondary: secondary,
+                            darkLight: darkLight,
+                            brand: brand,
+                            green: green,
+                            red: red,
+                            darkest: darkest,
+                            greyish: greyish,
+                            bronzeRarity: bronzeRarity,
+                            darkestBlue: darkestBlue,
+                            StatusBarColor: StatusBarColor,
+                            navFocusedColor: navFocusedColor,
+                            navNonFocusedColor: navNonFocusedColor,
+                            orange: orange,
+                            yellow: yellow,
+                            purple: purple,
+                            slightlyLighterGrey: slightlyLighterGrey,
+                            midWhite: midWhite,
+                            slightlyLighterPrimary: slightlyLighterPrimary,
+                            descTextColor: descTextColor,
+                            errorColor: errorColor,
+                            home: {
+
+                            },
+                            find: {
+
+                            },
+                            post: {
+                                postScreenColors: {
+                                    backgroundColor: colors.primary,
+                                    multimediaImageTintColor: colors.tertiary,
+                                    threadImageTintColor: colors.tertiary,
+                                    audioImageTintColor: colors.tertiary,
+                                    pollImageTintColor: colors.tertiary,
+                                    titleTextColor: colors.brand,
+                                    selectAFormatTextColor: colors.tertiary,
+                                    errorMessage: colors.errorColor,
+                                    multimediaImageBorderColor: colors.brand,
+                                    pollImageBorderColor: colors.brand,
+                                    audioImageBorderColor: colors.brand,
+                                    threadImageBorderColor: colors.brand,
+                                    multimediaImageActivatedBorderColor: colors.darkestBlue,
+                                    pollImageActivatedBorderColor: colors.darkestBlue,
+                                    audioImageActivatedBorderColor: colors.darkestBlue,
+                                    threadImageActivatedBorderColor: colors.darkestBlue,
+                                    statusBarColor: colors.StatusBarColor,
+                                    continueButtonBackgroundColor: colors.brand,
+                                    continueButtonTextColor: '#000000'
+                                }
+                            },
+                            chat: {
+
+                            },
+                            profile: {
+
+                            }
+                        }
+                    })
                 }
             }
             data = await AsyncStorage.getItem('simpleStylingData');
@@ -402,20 +482,30 @@ const SimpleStylingMenu = ({navigation, route}) => {
         setVersionReleaseNotesHidden(false);
     }
 
+    const showCannotEditStyleBecauseOfOutdatedStylingMessage = () => {
+        setOutdatedStyleWarningWhenEditingHidden(false)
+    }
+
     return (
         <KeyboardAvoidingWrapper_NoScrollview style={{backgroundColor: colors.primary}}>
             <>
                 <ChatScreen_Title style={{backgroundColor: colors.primary, borderWidth: 0}}>
-                    <Navigator_BackButton onPress={() => {navigation.goBack()}}>
+                    {backToProfileScreen == false ?
+                        <Navigator_BackButton onPress={() => {navigation.goBack()}}>
                             <Image
                             source={require('../../assets/app_icons/back_arrow.png')}
                             style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2, tintColor: colors.tertiary}}
                             resizeMode="contain"
                             resizeMethod="resize"
                             />
-                    </Navigator_BackButton>
+                        </Navigator_BackButton>
+                    :
+                        <Navigator_BackButton onPress={() => {navigation.replace('Welcome', {goToStylingMenu: false, backButtonHidden: true, imageFromRoute: null})}}>
+                            <Octicons name={"x"} size={40} color={colors.tertiary}/>
+                        </Navigator_BackButton>
+                    }
                     <TestText style={{textAlign: 'center', color: colors.tertiary}}>Custom Styling</TestText>
-                    {confirmUpdateScreenHidden == true && versionMismatchScreenHidden == true &&
+                    {confirmUpdateScreenHidden == true && versionMismatchScreenHidden == true && outdatedStyleWarningWhenEditingHidden == true &&
                         <TouchableOpacity onPress={() => {versionReleaseNotesHidden == true ? setNamingNewStyle(NamingNewStyle == true ? false : true) : setVersionReleaseNotesHidden(true)}} style={{position: 'absolute', right: versionReleaseNotesHidden == false ? 15 : NamingNewStyle == true ? 10 : 15, top: StatusBarHeight + 2}}>
                             {NamingNewStyle == true ?
                                 versionReleaseNotesHidden == true ?
@@ -428,6 +518,13 @@ const SimpleStylingMenu = ({navigation, route}) => {
                         </TouchableOpacity>
                     }
                 </ChatScreen_Title>
+                <ProfileOptionsView style={{backgroundColor: colors.primary, justifyContent: 'space-around', alignItems: 'center'}} viewHidden={outdatedStyleWarningWhenEditingHidden}>
+                    <Text style={{color: colors.errorColor, fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>This styling is outdated</Text>
+                    <Text style={{color: colors.errorColor, fontSize: 18, textAlign: 'center'}}>You cannot edit this styling. If you want to be able to edit this style, please update it.</Text>
+                    <StyledButton onPress={() => {setOutdatedStyleWarningWhenEditingHidden(true)}}>
+                        <ButtonText>Go back</ButtonText>
+                    </StyledButton>
+                </ProfileOptionsView>
                 <ProfileOptionsView style={{backgroundColor: colors.primary}} viewHidden={NamingNewStyle}>
                     <ScrollView style={{width: '92%', backgroundColor: colors.primary}}>
                         <Text style={{color: colors.tertiary, fontSize: 30, textAlign: 'center'}}>Create new styling</Text>
@@ -542,7 +639,7 @@ const SimpleStylingMenu = ({navigation, route}) => {
                         keyExtractor={(item, index) => 'key'+index}
                         ListHeaderComponent={
                             <>
-                                {amountOfStylesToGetUpdated != null && confirmUpdateScreenHidden == true && versionMismatchScreenHidden == true && versionReleaseNotesHidden == true && amountOfStylesToGetUpdated != 0 &&
+                                {amountOfStylesToGetUpdated != null && confirmUpdateScreenHidden == true && versionMismatchScreenHidden == true && versionReleaseNotesHidden == true && amountOfStylesToGetUpdated != 0 && outdatedStyleWarningWhenEditingHidden == true && NamingNewStyle == true &&
                                     <TouchableOpacity onPress={() => {confirmUpdateScreenHidden == true ? setConfirmUpdateScreenHidden(false) : setConfirmUpdateScreenHidden(true)}} style={{padding: 5, backgroundColor: colors.primary, justifyContent: 'center', alignSelf: 'center', alignItems: 'center', borderColor: colors.borderColor, borderWidth: 3, borderRadius: 10, marginBottom: 10}}>
                                         <Text style={{fontSize: 20, fontWeight: 'bold', color: colors.tertiary, textAlign: 'center'}}>{displayName || 'Cannot find name'} has {amountOfStylesToGetUpdated} {amountOfStylesToGetUpdated == 1 ? 'style' : 'stylings'} that {amountOfStylesToGetUpdated == 1 ? 'needs' : 'need'} to be updated to V{SimpleStylingVersion}</Text>
                                         <Text style={{fontSize: 16, color: colors.tertiary, textAlign: 'center'}}>Press this button to update {amountOfStylesToGetUpdated == 1 ? 'it' : 'all of them'}</Text>
@@ -566,7 +663,7 @@ const SimpleStylingMenu = ({navigation, route}) => {
                         }
                         renderItem={({ item, index }) => ( 
                             <>
-                                {confirmUpdateScreenHidden == true && versionMismatchScreenHidden == true && versionReleaseNotesHidden == true && item &&
+                                {confirmUpdateScreenHidden == true && versionMismatchScreenHidden == true && versionReleaseNotesHidden == true && item && outdatedStyleWarningWhenEditingHidden == true && NamingNewStyle == true &&
                                     <View style={{borderColor: colors.borderColor, borderWidth: 3, flex: 1, paddingVertical: listOfDataGettingDeleted.includes(index) ? 0 : 15, flexDirection: 'row', borderTopWidth: index != 0 ? 1.5 : 3, borderBottomWidth: simpleStylingData.length - 1 == index ? 3 : 1.5, primaryColor: colors.primary}}>
                                         {!listOfDataGettingDeleted.includes(index) && (
                                             <>
@@ -575,7 +672,7 @@ const SimpleStylingMenu = ({navigation, route}) => {
                                                     <TouchableOpacity onPress={() => {showVersionReleaseNotes(item.stylingVersion)}} style={{justifyContent: 'center', alignItems: 'center', alignSelf: 'center'}}>
                                                         <Text style={{borderColor: colors.borderColor, borderWidth: 1, borderRadius: 5, color: colors.tertiary, textAlign: 'center', marginLeft: 5, padding: 5}}>V{item.stylingVersion || ' ERROR'}</Text>
                                                     </TouchableOpacity>
-                                                    <TouchableOpacity onPress={() => {navigation.navigate('EditSimpleStyle', {name: item.name, indexNum: item.indexNum, type: null, dark: item.dark, stylingType: item.stylingType, stylingVersion: item.stylingVersion, primary: item.colors.primary, tertiary: item.colors.tertiary, borderColor: item.colors.borderColor, background: item.colors.background, secondary: item.colors.secondary, darkLight: item.colors.darkLight, brand: item.colors.brand, green: item.colors.green, red: item.colors.red, darkest: item.colors.darkest, greyish: item.colors.greyish, bronzeRarity: item.colors.bronzeRarity, darkestBlue: item.colors.darkestBlue, StatusBarColor: item.colors.StatusBarColor, navFocusedColor: item.colors.navFocusedColor, navNonFocusedColor: item.colors.navNonFocusedColor, orange: item.colors.orange, yellow: item.colors.yellow, purple: item.colors.purple, slightlyLighterGrey: item.colors.slightlyLighterGrey, midWhite: item.colors.midWhite, slightlyLighterPrimary: item.colors.slightlyLighterPrimary, descTextColor: item.colors.descTextColor, errorColor: item.colors.errorColor, home: item.colors.home, find: item.colors.find, post: item.colors.post, chat: item.colors.chat, profile: item.colors.profile})}} style={{position: 'absolute', right: 45, top: -7}}>
+                                                    <TouchableOpacity onPress={() => {item.stylingVersion == SimpleStylingVersion ? navigation.navigate('EditSimpleStyle', {name: item.name, indexNum: item.indexNum, type: null, dark: item.dark, stylingType: item.stylingType, stylingVersion: item.stylingVersion, primary: item.colors.primary, tertiary: item.colors.tertiary, borderColor: item.colors.borderColor, background: item.colors.background, secondary: item.colors.secondary, darkLight: item.colors.darkLight, brand: item.colors.brand, green: item.colors.green, red: item.colors.red, darkest: item.colors.darkest, greyish: item.colors.greyish, bronzeRarity: item.colors.bronzeRarity, darkestBlue: item.colors.darkestBlue, StatusBarColor: item.colors.StatusBarColor, navFocusedColor: item.colors.navFocusedColor, navNonFocusedColor: item.colors.navNonFocusedColor, orange: item.colors.orange, yellow: item.colors.yellow, purple: item.colors.purple, slightlyLighterGrey: item.colors.slightlyLighterGrey, midWhite: item.colors.midWhite, slightlyLighterPrimary: item.colors.slightlyLighterPrimary, descTextColor: item.colors.descTextColor, errorColor: item.colors.errorColor, home: item.colors.home, find: item.colors.find, post: item.colors.post, chat: item.colors.chat, profile: item.colors.profile, bottomNavigationBar: item.colors.bottomNavigationBar, postViews: item.colors.postViews}) : showCannotEditStyleBecauseOfOutdatedStylingMessage()}} style={{position: 'absolute', right: 45, top: -7}}>
                                                         <Octicons name={"pencil"} size={40} color={colors.brand} />
                                                     </TouchableOpacity>
                                                     <TouchableOpacity onPress={() => {setListOfDataGettingDeleted(listOfDataGettingDeleted => [...listOfDataGettingDeleted, index])}} style={{position: 'absolute', right: 10, top: -7}}>

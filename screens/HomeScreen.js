@@ -4,7 +4,7 @@ import { StatusBar } from 'expo-status-bar';
 import styled from "styled-components";
 import Images from "../posts/images.js";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useTheme, useFocusEffect, useIsFocused } from '@react-navigation/native';
+import { useTheme, useFocusEffect, useIsFocused, CommonActions } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Constants from "expo-constants";
 import {
@@ -44,6 +44,7 @@ import { Audio } from 'expo-av';
 import OfflineNotice from '../components/OfflineNotice.js';
 import SwitchToggle from "react-native-switch-toggle";
 import { SimpleStylingVersion } from '../components/StylingVersionsFile.js';
+import { AppStylingContext } from '../components/AppStylingContext.js';
 
 const HomeScreen = ({navigation}) => {
     // Filter code
@@ -56,7 +57,7 @@ const HomeScreen = ({navigation}) => {
     const [PlayVideoSoundInSilentMode, setPlayVideoSoundInSilentMode] = useState(undefined)
     const OutputAsyncStorageToConsole = false
     const [updateSimpleStylesWarningHidden, setUpdateSimpleStylesWarningHidden] = useState(true);
-    const [ignoreUpdateSimpleStylesWarningButtonPressed, setIgnoreUpdateSimpleStylesWarningButtonPressed] = useState(false);
+    const {AppStylingContextState, setAppStylingContextState} = useContext(AppStylingContext);
     useEffect(() => {
         async function setUp() {
             const showPhotosValue = await AsyncStorage.getItem('ShowPhotos_AppBehaviour_AsyncStorage')
@@ -499,7 +500,7 @@ const HomeScreen = ({navigation}) => {
             const lastVersionUsed = await AsyncStorage.getItem('versionLastShownForSimpleStylingUpdateWarning')
             const simpleStylingData = JSON.parse(await AsyncStorage.getItem('simpleStylingData'))
             let lowestVersion = 9999;
-            console.log(simpleStylingData)
+            console.log('LAST VERSION USED IS ' + lastVersionUsed)
             if (simpleStylingData) {
                 for (let i = 0; i < simpleStylingData.length; i++) {
                     if (simpleStylingData[i].stylingVersion < lowestVersion) {
@@ -514,6 +515,10 @@ const HomeScreen = ({navigation}) => {
                 if (lastVersionUsed == null) {
                     console.log('Last version used is null. Now running the code for null')
                     if (lowestVersion < SimpleStylingVersion) {
+                        if (AppStylingContextState == 'Default' || AppStylingContextState == 'Dark' || AppStylingContextState == 'Light' || AppStylingContextState == 'PureDark' || AppStylingContextState == 'PureLight') {
+                            setAppStylingContextState('Default')
+                            console.warn('Setting styling to Default')
+                        }
                         setUpdateSimpleStylesWarningHidden(false)
                         setFlatListElementsEnabledState(false)
                     }
@@ -521,6 +526,10 @@ const HomeScreen = ({navigation}) => {
                 } else {
                     if (parseInt(lastVersionUsed) < SimpleStylingVersion) {
                         console.log('Last version used is less than current simple styling version')
+                        if (AppStylingContextState == 'Default' || AppStylingContextState == 'Dark' || AppStylingContextState == 'Light' || AppStylingContextState == 'PureDark' || AppStylingContextState == 'PureLight') {
+                            setAppStylingContextState('Default')
+                            console.warn('Setting styling to Default')
+                        }
                         setUpdateSimpleStylesWarningHidden(false)
                         setFlatListElementsEnabledState(false)
                         AsyncStorage.setItem('versionLastShownForSimpleStylingUpdateWarning', SimpleStylingVersion.toString())
@@ -554,55 +563,25 @@ const HomeScreen = ({navigation}) => {
             </View>
             <OfflineNotice bottom={true}/>
             <ProfileOptionsView style={{backgroundColor: colors.primary}} viewHidden={updateSimpleStylesWarningHidden}>
-                {ignoreUpdateSimpleStylesWarningButtonPressed == false ?
-                    <ScrollView style={{marginHorizontal: 10}}>
-                        <Text style={{color: colors.errorColor ? colors.errorColor : 'red', fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>SocialSquare has recently been updated and the custom styles that you currently have are now out of date.</Text>
-                        <Text style={{color: colors.tertiary, fontSize: 18, textAlign: 'center', marginVertical: 10}}>At least one of your custom styles are now outdated and SocialSquare now only supports version {SimpleStylingVersion}.</Text>
-                        <StyledButton 
-                            style={{marginVertical: 20, height: 'auto'}}
-                            onPress={() => {
-                                setUpdateSimpleStylesWarningHidden(true)
-                                setIgnoreUpdateSimpleStylesWarningButtonPressed(false)
-                                navigation.navigate('Profile', {
-                                    screen: 'SimpleStylingMenu',
-                                    params: {ableToRefresh: false, indexNumToUse: null},
-                                });
-                            }}
-                        >
-                            <ButtonText style={{textAlign: 'center'}}>Go to custom stylings screen to update them and never show this message again</ButtonText>
-                        </StyledButton>
-                        <StyledButton onPress={() => {setIgnoreUpdateSimpleStylesWarningButtonPressed(true)}} style={{height: 'auto'}}>
-                            <ButtonText style={{textAlign: 'center'}}>Ignore this message and never show it again</ButtonText>
-                        </StyledButton>
-                    </ScrollView>
-                :
-                    <ScrollView style={{marginHorizontal: 10}}>
-                        <Text style={{color: colors.errorColor ? colors.errorColor : 'red', fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>SocialSquare can run SOME older simple stylings, but there may be some colour and styling issues and as such is not recommended to do so.</Text>
-                        <Text style={{color: colors.tertiary, fontSize: 18, textAlign: 'center', marginVertical: 20}}>Are you sure you want to continue?</Text>
-                        <StyledButton 
-                            onPress={() => {
-                                setUpdateSimpleStylesWarningHidden(true)
-                                setIgnoreUpdateSimpleStylesWarningButtonPressed(false)
-                            }}
-                            style={{marginBottom: 20, height: 'auto'}}
-                        >
-                            <ButtonText style={{textAlign: 'center'}}>Yes. Ignore this message and never show it again</ButtonText>
-                        </StyledButton>
-                        <StyledButton 
-                            style={{height: 'auto'}}
-                            onPress={() => {
-                                setUpdateSimpleStylesWarningHidden(true)
-                                setIgnoreUpdateSimpleStylesWarningButtonPressed(false)
-                                navigation.navigate('Profile', {
-                                    screen: 'SimpleStylingMenu',
-                                    params: {ableToRefresh: false, indexNumToUse: null},
-                                });
-                            }}
-                        >
-                            <ButtonText style={{textAlign: 'center'}}>Actually no. Take me to the simple stylings screen and never show this message again</ButtonText>
-                        </StyledButton>
-                    </ScrollView>
-                }
+                <ScrollView style={{marginHorizontal: 10}}>
+                    <Text style={{color: colors.errorColor ? colors.errorColor : 'red', fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>SocialSquare has recently been updated and the custom styles that you currently have are now out of date.</Text>
+                    <Text style={{color: colors.tertiary, fontSize: 18, textAlign: 'center', marginVertical: 10}}>At least one of your custom styles are now outdated and SocialSquare now only supports version {SimpleStylingVersion}.</Text>
+                    <StyledButton 
+                        style={{marginVertical: 20, height: 'auto'}}
+                        onPress={() => {
+                            setUpdateSimpleStylesWarningHidden(true)
+                            navigation.navigate('Profile', {
+                                screen: 'Welcome',
+                                params: {backButtonHidden: true, imageFromRoute: null, goToStylingMenu: true},
+                            });
+                        }}
+                    >
+                        <ButtonText style={{textAlign: 'center'}}>Go to custom stylings screen to update them and never show this message again</ButtonText>
+                    </StyledButton>
+                    <StyledButton onPress={() => {setUpdateSimpleStylesWarningHidden(true)}} style={{height: 'auto'}}>
+                        <ButtonText style={{textAlign: 'center'}}>Ignore this message and never show it again</ButtonText>
+                    </StyledButton>
+                </ScrollView>
             </ProfileOptionsView>
             <ProfileOptionsView style={{backgroundColor: colors.primary}} viewHidden={filterMenuShown}>
                 <View style={{flexDirection: 'row', width: '100%', justifyContent: 'center'}}>
@@ -910,216 +889,9 @@ const HomeScreen = ({navigation}) => {
                     </ReportProfileOptionsViewButtons> 
                 </ScrollView>
             </ReportProfileOptionsView>
-            <Viewport.Tracker>
-                <FlatList 
-                    data={Posts}
-                    scrollEnabled={FlatListElementsEnabledState}
-                    showsVerticalScrollIndicator={false}
-                    keyExtractor={(item, index) => 'key'+index}
-                    onEndReached={() => {setShowEndOfListMessage(true)}}
-                    ListFooterComponent={<Text style={{color: colors.tertiary, borderColor: colors.borderColor, borderWidth: 3, fontSize: 20, fontWeight: 'bold', textAlign: 'center', paddingVertical: 10}}>It looks like you have reached the end</Text>}
-                    renderItem={({ item, index }) => ( 
-                        <View>
-                            {item.type == 'post'?
-                            <View style={{marginBottom: 20}}>
-                                <View style={{flex: 2, flexDirection: 'row', justifyContent: 'flex-start', marginTop: 10}}>
-                                    <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={() => goToProfileScreen(name, item.username, item.profilePictureSource, item.displayName)}>
-                                        <Image
-                                            source={item.profilePictureSource || require('../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/266-question.png')}
-                                            style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2}}
-                                            resizeMode="contain"
-                                            resizeMethod="resize"
-                                        />
-                                    </TouchableOpacity>
-                                    <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={() => goToProfileScreen(name, item.username, item.profilePictureSource, item.displayName)}>
-                                        <Text numberOfLines={1} style={{color: colors.tertiary, textAlign: 'left', fontWeight:'bold', fontSize: 20, textAlignVertical:'bottom', marginLeft: 10, marginRight: item.encrypted ? 135 : 100, flex: 1}}>{item.displayName || item.username || "Couldn't get name"}</Text>
-                                    </TouchableOpacity>
-                                    {item.encrypted == 'true' ?
-                                        <View style={{position: 'absolute', right: 55}}>
-                                            <TouchableOpacity onPress={() => {alert('This icon being next to the post means that the post is encrypted. Encryption is coming soon.')}}>
-                                                <Icon
-                                                    name="lock-closed-outline"
-                                                    size={35}
-                                                    color={colors.tertiary}
-                                                />
-                                            </TouchableOpacity>
-                                        </View>
-                                    : null
-                                    }
-                                    <View style={{position: 'absolute', right: 10}}>
-                                        <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={() => changeOptionsView(item.username, item.encrypted)}>
-                                            <Image
-                                                source={require('../assets/app_icons/3dots.png')}
-                                                style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, tintColor: colors.tertiary}}
-                                                resizeMode="contain"
-                                                resizeMethod="resize"
-                                            />
-                                        </TouchableOpacity>
-                                    </View>
-                                </View>
-                                <View>
-                                    <ScalableProgressiveImage
-                                        source={dark? item.postSource || require('../assets/app_icons/cannot_get_post_darkmode.png') : item.postSource || require('../assets/app_icons/cannot_get_post_lightmode.png')}
-                                        width={deviceWidth}
-                                        height={1000}
-                                    />
-                                </View>
-                                <View style={{flex: 2, flexDirection: 'row', marginTop: 10}}>
-                                    <TouchableOpacity style={{marginLeft: '1%'}} disabled={!FlatListElementsEnabledState} onPress={() => {alert("The Like Button does not work yet. We will add functionality to this very shortly.")}}>
-                                        <Image
-                                            source={Images.posts.heart}
-                                            style={{width: 40, height: 40, tintColor: colors.tertiary}}
-                                            resizeMode="contain"
-                                            resizeMethod="resize"
-                                        />
-                                    </TouchableOpacity>
-                                    <TouchableOpacity style={{marginHorizontal: '8%'}} disabled={!FlatListElementsEnabledState} onPress={() => {alert("The Comment Button does not work yet. We will add functionality to this very shortly.")}}>
-                                        <Image
-                                            source={Images.posts.message_bubbles}
-                                            style={{width: 40, height: 40, tintColor: colors.tertiary}}
-                                            resizeMode="contain"
-                                            resizeMethod="resize"
-                                        />
-                                    </TouchableOpacity>
-                                    <TouchableOpacity style={{marginLeft: '50%'}} disabled={!FlatListElementsEnabledState} onPress={() => {alert("The Save Button does not work yet. We will add functionality to this very shortly.")}}>
-                                        <Image
-                                            source={Images.posts.bookmark}
-                                            style={{width: 40, height: 40, tintColor: colors.tertiary}}
-                                            resizeMode="contain"
-                                            resizeMethod="resize"
-                                        />
-                                    </TouchableOpacity>
-                                </View>
-                                <View style={{flex: 2, flexDirection: 'row', justifyContent: 'flex-start', marginTop: 10}}>
-                                    <Text style={{color: colors.tertiary, fontSize: 16, marginLeft: 2, fontWeight: 'bold'}}>{item.timeUploadedAgo}</Text>
-                                    <Text style={{color: colors.tertiary, fontSize: 16, marginLeft: 10, flex: 1, marginRight: 5}}>{item.bio}</Text>
-                                </View>
-                            </View>
-                            : null}
-                            {item.type == 'audio'?
-                                <ViewportAwareView
-                                    onViewportEnter={() => {intentionallyPaused? null : isFocused ? playAudio(item.postSource) : null}}
-                                    onViewportLeave={() => {playRecording? unloadAudio() : null}}
-                                    preTriggerRatio={-0.5} // Makes it so half of the element has to be shown before it triggers onViewportEnter
-                                >
-                                    <View style={{marginBottom: 20}}>
-                                        <View style={{flex: 2, flexDirection: 'row', justifyContent: 'flex-start', marginTop: 10, marginHorizontal: 10}}>
-                                            <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={() => goToProfileScreen(name, item.username, item.profilePictureSource, item.displayName)}>
-                                                <Image
-                                                    source={item.profilePictureSource || require('../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/266-question.png')}
-                                                    style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2}}
-                                                    resizeMode="cover"
-                                                    resizeMethod="resize"
-                                                />
-                                            </TouchableOpacity>
-                                            <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={() => goToProfileScreen(name, item.username, item.profilePictureSource, item.displayName)}>
-                                                <Text numberOfLines={1} style={{color: colors.tertiary, textAlign: 'left', fontWeight:'bold', fontSize: 20, textAlignVertical:'bottom', marginLeft: 10, marginRight: 100, flex: 1}}>{item.displayName || item.username || "Couldn't get name"}</Text>
-                                            </TouchableOpacity>
-                                            {item.encrypted == 'true' ?
-                                                <View style={{position: 'absolute', right: 55}}>
-                                                    <TouchableOpacity onPress={() => {alert('This icon being next to the post means that the post is encrypted. Encryption is coming soon.')}}>
-                                                        <Icon
-                                                            name="lock-closed-outline"
-                                                            size={35}
-                                                            color={colors.tertiary}
-                                                        />
-                                                    </TouchableOpacity>
-                                                </View>
-                                            : null
-                                            }
-                                            <View style={{position: 'absolute', right: 10}}>
-                                                <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={() => changeOptionsView(item.username, item.encrypted)}>
-                                                    <Image
-                                                        source={require('../assets/app_icons/3dots.png')}
-                                                        style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, tintColor: colors.tertiary}}
-                                                        resizeMode="contain"
-                                                        resizeMethod="resize"
-                                                    />
-                                                </TouchableOpacity>
-                                            </View>
-                                        </View>
-                                        <View style={{backgroundColor: colors.borderColor, flex: 2, justifyContent: 'center', alignItems: 'center', marginTop: 10, height: deviceWidth, width: deviceWidth}}>
-                                            {playbackStatus ? 
-                                            playbackStatus.isBuffering? 
-                                            <View>
-                                                <Text style={{color: colors.tertiary, fontSize: 24, textAlign: 'center', fontWeight: 'bold'}}>BUFFERING</Text> 
-                                                <Icon
-                                                    name="musical-notes-sharp"
-                                                    size={200}
-                                                    color={colors.tertiary}
-                                                />
-                                            </View>
-                                            : playbackStatus.isPlaying? 
-                                            <TouchableOpacity onPress={() => {pauseAudio(true)}}>
-                                                <Icon 
-                                                    name="pause-circle-outline"
-                                                    size={200}
-                                                    color={colors.tertiary}
-                                                />
-                                            </TouchableOpacity>
-                                            :
-                                            <TouchableOpacity onPress={() => {playAudio(item.postSource)}}>
-                                                <Icon 
-                                                    name="play-circle-outline"
-                                                    size={200}
-                                                    color={colors.tertiary}
-                                                /> 
-                                            </TouchableOpacity>
-                                            : 
-                                            <View>
-                                                <Icon
-                                                    name="musical-notes-sharp"
-                                                    size={200}
-                                                    color={colors.tertiary}
-                                                />
-                                            </View>}
-                                        </View>
-                                        <View style={{flex: 2, flexDirection: 'row', marginTop: 10}}>
-                                            <TouchableOpacity style={{marginHorizontal: '1%'}} disabled={!FlatListElementsEnabledState} onPress={() => {alert("The Like Button does not work yet. We will add functionality to this very shortly.")}}>
-                                                <Image
-                                                    source={Images.posts.heart}
-                                                    style={{width: 40, height: 40, tintColor: colors.tertiary}}
-                                                    resizeMode="contain"
-                                                    resizeMethod="resize"
-                                                />
-                                            </TouchableOpacity>
-                                            <TouchableOpacity style={{marginHorizontal: '8%'}} disabled={!FlatListElementsEnabledState} onPress={() => {alert("The Comment Button does not work yet. We will add functionality to this very shortly.")}}>
-                                                <Image
-                                                    source={Images.posts.message_bubbles}
-                                                    style={{width: 40, height: 40, tintColor: colors.tertiary}}
-                                                    resizeMode="contain"
-                                                    resizeMethod="resize"
-                                                />
-                                            </TouchableOpacity>
-                                            <TouchableOpacity style={{marginLeft: '50%'}} disabled={!FlatListElementsEnabledState} onPress={() => {alert("The Save Button does not work yet. We will add functionality to this very shortly.")}}>
-                                                <Image
-                                                    source={Images.posts.bookmark}
-                                                    style={{width: 40, height: 40, tintColor: colors.tertiary}}
-                                                    resizeMode="contain"
-                                                    resizeMethod="resize"
-                                                />
-                                            </TouchableOpacity>
-                                        </View>
-                                        <View style={{flex: 2, flexDirection: 'row', justifyContent: 'flex-start', marginTop: 10}}>
-                                            <Text style={{color: colors.tertiary, fontSize: 16, marginLeft: 2, fontWeight: 'bold'}}>{item.timeUploadedAgo}</Text>
-                                            <Text style={{color: colors.tertiary, fontSize: 16, marginLeft: 10, flex: 1}}>{item.bio}</Text>
-                                        </View>
-                                    </View>
-                                </ViewportAwareView>     
-                            : null}
-                            {index % 4 == 0 && index != 0 ? 
-                            <View style={{alignSelf: 'center'}}>
-                                <AdMobBanner
-                                    bannerSize="mediumRectangle"
-                                    adUnitID={AdID}
-                                    servePersonalizedAds={false}
-                                    onDidFailToReceiveAdWithError={(e) => {console.log(e)}}
-                                />
-                            </View> : null}
-                        </View>
-                    )}
-                />
-            </Viewport.Tracker>
+            <View style={{flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+                <Text style={{fontSize: 30, color: colors.tertiary, textAlign: 'center', fontWeight: 'bold'}}>Feed coming soon :-)</Text>
+            </View>
         </View>
     );
 };

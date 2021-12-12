@@ -1,1 +1,1 @@
-export const SimpleStylingVersion = 2;
+export const SimpleStylingVersion = 3;

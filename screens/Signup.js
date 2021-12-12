@@ -124,13 +124,6 @@ const Signup = ({navigation}) => {
         });
     }
 
-    const goToTermsOfService = () => {
-        navigation.navigate("Terms of Service");
-    }
-    const goToPrivacyPolicy = () => {
-        navigation.navigate("PrivacyPolicy");
-    }
-
     return(
         <KeyboardAvoidingWrapper>
             <StyledContainer style={{backgroundColor: colors.primary}}>

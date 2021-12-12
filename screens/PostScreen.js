@@ -140,7 +140,7 @@ const PostScreen = ({navigation}) => {
                     <PostMsgBox style={{color: post ? colors.post.postScreenColors.errorMessage : colors.red}} viewHidden={messageVisibility}> Select a format </PostMsgBox>
                 </PostCollectionView>
                 <StyledButton /*continueButton={true}*/ style={{backgroundColor: post ? colors.post.postScreenColors.continueButtonBackgroundColor : colors.brand}} onPress={continuePressed}>
-                    <ButtonText style={{color: post ? colors.post.postScreenColors.continuteButtonTextColor : 'black'}} /*continueButton={true}*/>
+                    <ButtonText style={{color: post ? colors.post.postScreenColors.continueButtonTextColor : 'black'}} /*continueButton={true}*/>
                         Continue
                     </ButtonText>
                 </StyledButton>

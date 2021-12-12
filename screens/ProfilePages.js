@@ -2394,7 +2394,6 @@ const ProfilePages = ({ route, navigation }) => {
 
     const handleScroll = (event) => {
         var scrollY = event.nativeEvent.contentOffset.y
-        console.log(scrollY)
         if (scrollY < 550) {
             Animated.timing(TopProfileBarFadeAnim, {
                 toValue: 0,
@@ -2414,9 +2413,9 @@ const ProfilePages = ({ route, navigation }) => {
 
     return (
         <>
-            <StatusBar style="dark" />
-            <Animated.View style={{paddingTop: StatusBarHeight - 20, backgroundColor: colors.primary, borderColor: colors.borderColor, borderBottomWidth: 1, alignItems: 'center', opacity: TopProfileBarFadeAnim, zIndex: 1000}}>
-                <View style={{position: 'absolute', top: StatusBarHeight - 10, left: 10}}>
+            <StatusBar style={colors.StatusBarColor} />
+            <Animated.View style={{paddingTop: StatusBarHeight - 10, backgroundColor: colors.primary, borderColor: colors.borderColor, borderBottomWidth: 1, alignItems: 'center', opacity: TopProfileBarFadeAnim, zIndex: 1000}}>
+                <View style={{position: 'absolute', top: StatusBarHeight, left: 10}}>
                     <TouchableOpacity style={{marginRight: '75.5%'}} disabled={PageElementsState} onPress={() => {navigation.goBack()}}>
                         <Image
                             source={require('../assets/app_icons/back_arrow.png')}
@@ -2469,20 +2468,20 @@ const ProfilePages = ({ route, navigation }) => {
                         <ProfileHorizontalViewItem profLeftIcon={true}>
                             <TouchableOpacity onPress={() => {navigation.navigate('ProfileStats', {name: profilesName, followers: followers, type: 'Followers'})}} style={{alignItems: 'center'}}>
                                 <SubTitle style={{color: colors.tertiary}} welcome={true}> Followers </SubTitle>
-                                <ProfIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/114-user.png')} />
+                                <ProfIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/114-user.png')} />
                                 <SubTitle style={{color: colors.tertiary}} welcome={true}> {followers.length} </SubTitle>
                             </TouchableOpacity>
                         </ProfileHorizontalViewItem>
                         <ProfileHorizontalViewItem profCenterIcon={true}>
                             <TouchableOpacity onPress={() => {navigation.navigate('ProfileStats', {name: profilesName, followers: following, type: 'Following'})}} style={{alignItems: 'center'}}>
                                 <SubTitle style={{color: colors.tertiary}} welcome={true}> Following </SubTitle>
-                                <ProfIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/115-users.png')} />
+                                <ProfIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/115-users.png')} />
                                 <SubTitle style={{color: colors.tertiary}} welcome={true}> {following.length} </SubTitle>
                             </TouchableOpacity>
                         </ProfileHorizontalViewItem>
                         <ProfileHorizontalViewItem profRightIcon={true}>
                             <SubTitle style={{color: colors.tertiary}} welcome={true}> Likes </SubTitle>
-                            <ProfIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/219-heart.png')} />
+                            <ProfIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/219-heart.png')} />
                             <SubTitle style={{color: colors.tertiary}} welcome={true}> {totalLikes} </SubTitle>
                         </ProfileHorizontalViewItem>
                     </ProfileHorizontalView>
@@ -2497,27 +2496,27 @@ const ProfilePages = ({ route, navigation }) => {
                     <ProfileSelectMediaTypeHorizontalView>
                         <ProfileSelectMediaTypeItem onPress={changeToOne}>
                             <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor, borderColor: colors.borderColor}}>
-                                <ProfileSelectMediaTypeIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/015-images.png')} />
+                                <ProfileSelectMediaTypeIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/015-images.png')} />
                             </ProfileSelectMediaTypeIconsBorder>
                         </ProfileSelectMediaTypeItem>
                         <ProfileSelectMediaTypeItem onPress={changeToTwo}>
                             <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor, borderColor: colors.borderColor}}>
-                                <ProfileSelectMediaTypeIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/020-film.png')} />
+                                <ProfileSelectMediaTypeIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/020-film.png')} />
                             </ProfileSelectMediaTypeIconsBorder>
                         </ProfileSelectMediaTypeItem>
                         <ProfileSelectMediaTypeItem onPress={changeToThree}>
                             <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor, borderColor: colors.borderColor}}>
-                                <ProfileSelectMediaTypeIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/157-stats-bars.png')} />
+                                <ProfileSelectMediaTypeIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/157-stats-bars.png')} />
                             </ProfileSelectMediaTypeIconsBorder>
                         </ProfileSelectMediaTypeItem>
                         <ProfileSelectMediaTypeItem onPress={changeToFour}>
                             <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor, borderColor: colors.borderColor}}>
-                                <ProfileSelectMediaTypeIcons style={{ height: '80%', width: '80%' }} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/007-pencil2.png')} />
+                                <ProfileSelectMediaTypeIcons style={{ height: '80%', width: '80%', tintColor: colors.tertiary }} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/007-pencil2.png')} />
                             </ProfileSelectMediaTypeIconsBorder>
                         </ProfileSelectMediaTypeItem>
                         <ProfileSelectMediaTypeItem onPress={changeToFive}>
                             <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor, borderColor: colors.borderColor}}>
-                                <ProfileSelectMediaTypeIcons style={{ height: '80%', width: '80%' }} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/093-drawer.png')} />
+                                <ProfileSelectMediaTypeIcons style={{ height: '80%', width: '80%', tintColor: colors.tertiary }} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/093-drawer.png')} />
                             </ProfileSelectMediaTypeIconsBorder>
                         </ProfileSelectMediaTypeItem>
                     </ProfileSelectMediaTypeHorizontalView>

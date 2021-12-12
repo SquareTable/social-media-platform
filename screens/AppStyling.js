@@ -147,7 +147,7 @@ const AppStyling = ({navigation}) => {
                     ) : null}
                 </View>
             </TouchableOpacity>
-            <TouchableOpacity style={{flexDirection: 'column', alignItems: 'center', marginHorizontal: '15%', width: '70%', minWidth: '70%', maxWidth: '70%', backgroundColor: colors.primary, borderColor: colors.borderColor, borderWidth: 2, borderRadius: 50, marginVertical: 20}} onPress={() => {navigation.navigate('SimpleStylingMenu', {ableToRefresh: false, indexNumToUse: null})}}>
+            <TouchableOpacity style={{flexDirection: 'column', alignItems: 'center', marginHorizontal: '15%', width: '70%', minWidth: '70%', maxWidth: '70%', backgroundColor: colors.primary, borderColor: colors.borderColor, borderWidth: 2, borderRadius: 50, marginVertical: 20}} onPress={() => {navigation.navigate('SimpleStylingMenu', {ableToRefresh: false, indexNumToUse: null, backToProfileScreen: false})}}>
                 <Text style={{fontSize: 24, fontWeight: 'bold', color: colors.tertiary, textAlign: 'center'}}>Customize Styling</Text>
                 <View style={{marginVertical: 10, backgroundColor: colors.borderColor, minHeight: 30, height: 30, maxHeight: 30, minWidth: 30, width: 30, maxWidth: 30, borderRadius: 30/2, borderColor: AppStylingContextState != 'Dark' && AppStylingContextState != 'Light' && AppStylingContextState != 'Default' && AppStylingContextState != 'PureDark' && AppStylingContextState != 'PureLight' ? colors.brand : colors.tertiary, borderWidth: 2}}>
                     {AppStylingContextState != 'Dark' && AppStylingContextState != 'Light' && AppStylingContextState != 'Default' && AppStylingContextState != 'PureLight' && AppStylingContextState != 'PureDark' && (

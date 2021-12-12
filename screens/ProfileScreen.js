@@ -98,8 +98,11 @@ import SocialSquareLogo_B64_png from '../assets/SocialSquareLogo_Base64_png.js';
 const Welcome = ({navigation, route}) => {
     const StatusBarHeight = Constants.statusBarHeight;
     if (route.params) {
-        var {backButtonHidden, imageFromRoute} = route.params;
+        var {backButtonHidden, imageFromRoute, goToStylingMenu} = route.params;
         console.log(backButtonHidden)
+        if (goToStylingMenu == true) {
+            navigation.replace('SimpleStylingMenu', {ableToRefresh: false, indexNumToUse: null, backToProfileScreen: true})
+        }
     } else {
         var backButtonHidden = false;
     }
@@ -2732,27 +2735,27 @@ const Welcome = ({navigation, route}) => {
                     <ProfileSelectMediaTypeHorizontalView>
                         <ProfileSelectMediaTypeItem onPress={changeToOne}>
                             <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor, borderColor: colors.borderColor}}>
-                                <ProfileSelectMediaTypeIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/015-images.png')}/>
+                                <ProfileSelectMediaTypeIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/015-images.png')}/>
                             </ProfileSelectMediaTypeIconsBorder>
                         </ProfileSelectMediaTypeItem>
                         <ProfileSelectMediaTypeItem onPress={changeToTwo}>
                             <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor, borderColor: colors.borderColor}}>
-                                <ProfileSelectMediaTypeIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/020-film.png')}/>
+                                <ProfileSelectMediaTypeIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/020-film.png')}/>
                             </ProfileSelectMediaTypeIconsBorder>                        
                         </ProfileSelectMediaTypeItem>
                         <ProfileSelectMediaTypeItem onPress={changeToThree}>
                             <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor, borderColor: colors.borderColor}}>     
-                                <ProfileSelectMediaTypeIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/157-stats-bars.png')}/>
+                                <ProfileSelectMediaTypeIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/157-stats-bars.png')}/>
                             </ProfileSelectMediaTypeIconsBorder>     
                         </ProfileSelectMediaTypeItem>
                         <ProfileSelectMediaTypeItem onPress={changeToFour}>
                             <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor, borderColor: colors.borderColor}}>     
-                                <ProfileSelectMediaTypeIcons style={{height: '80%', width: '80%'}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/007-pencil2.png')}/>
+                                <ProfileSelectMediaTypeIcons style={{height: '80%', width: '80%', tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/007-pencil2.png')}/>
                             </ProfileSelectMediaTypeIconsBorder>     
                         </ProfileSelectMediaTypeItem>
                         <ProfileSelectMediaTypeItem onPress={changeToFive}>
                             <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor, borderColor: colors.borderColor}}>     
-                                <ProfileSelectMediaTypeIcons style={{height: '80%', width: '80%'}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/093-drawer.png')}/>
+                                <ProfileSelectMediaTypeIcons style={{height: '80%', width: '80%', tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/093-drawer.png')}/>
                             </ProfileSelectMediaTypeIconsBorder>     
                         </ProfileSelectMediaTypeItem>
                     </ProfileSelectMediaTypeHorizontalView>

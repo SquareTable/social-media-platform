@@ -15,7 +15,9 @@ import {
     darkModeOn,
     darkModeStyling,
     lightModeStyling,
-    BackgroundDarkColor
+    BackgroundDarkColor,
+    TextLink,
+    TextLinkContent
 } from '../screens/screenStylings/styling.js';
 import {useTheme} from "@react-navigation/native";
 
@@ -29,6 +31,7 @@ import { CredentialsContext } from '../components/CredentialsContext';
 import { ImageBackground, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import * as Linking from 'expo-linking';
 import SocialSquareLogo_B64_png from '../assets/SocialSquareLogo_Base64_png.js';
+import * as WebBrowser from 'expo-web-browser';
 
 
 const SettingsPage = ({navigation}) => {
@@ -37,6 +40,7 @@ const SettingsPage = ({navigation}) => {
     if (storedCredentials) {var {name, email, photoUrl} = storedCredentials}
     const [AvatarImg, setAvatarImage] = useState(SocialSquareLogo_B64_png)
     const [logoutViewState, setLogoutViewState] = useState("false")
+    const [webBrowserResult, setWebBrowserResult] = useState(null)
 
     const clearLogin = () => {
         AsyncStorage.removeItem('socialSquareCredentials').then(() => {
@@ -52,7 +56,7 @@ const SettingsPage = ({navigation}) => {
                 routes: [{ name: 'LoginScreen' }],
             });
         } catch (e) {
-            console.log(e + "Error with resetting navigation after logout from SettingsScreen.js");
+            console.error(e + "Error with resetting navigation after logout from SettingsScreen.js");
         }
     }
 
@@ -135,6 +139,11 @@ const SettingsPage = ({navigation}) => {
 
     checkForUserProfilePictureFromAsyncStorage()
 
+    const goToLink = async (linkToGoTo) => {
+        let result = await WebBrowser.openBrowserAsync(linkToGoTo);
+        setWebBrowserResult(result);
+    };
+
     return(
         <> 
             <StatusBar style={colors.StatusBarColor}/>   
@@ -188,6 +197,12 @@ const SettingsPage = ({navigation}) => {
                                 <Text style={{color: colors.tertiary, fontSize: 16, textAlign: 'center', padding: 7}}>See app introduction screen again</Text>
                             </View>
                         </TouchableOpacity>
+                        <TextLink style={{marginTop: 10}} onPress={() => {goToLink('https://squaretable.github.io/social-media-platform/TermsAndConditions')}}>
+                            <TextLinkContent style={{color: colors.brand}}>Terms of Service</TextLinkContent>
+                        </TextLink>
+                        <TextLink onPress={() => {goToLink('https://squaretable.github.io/social-media-platform/PrivacyPolicy')}}>
+                            <TextLinkContent style={{color: colors.brand}}>Privacy Policy</TextLinkContent>
+                        </TextLink>
                     </WelcomeContainer>
                 </ScrollView>
             </BackgroundDarkColor>

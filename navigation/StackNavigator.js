@@ -69,6 +69,9 @@ import BuiltInStylingMenu from "../screens/BuiltInStylingMenu.js";
 import PerScreenEdit from "../screens/SimpleStylingScreens/PerScreenEdit.js";
 import EditPostGroupScreens from "../screens/SimpleStylingScreens/EditPostGroupScreens.js";
 import EditPostScreenStyle from "../screens/SimpleStylingScreens/EditPostScreenStyle.js";
+import EditPostScreenBackgroundColor from "../screens/SimpleStylingScreens/EditPostScreenBackgroundColor.js";
+import EditPostScreenIconColors from "../screens/SimpleStylingScreens/EditPostScreenIconColors.js";
+import EditPostScreenContinueButtonStyle from "../screens/SimpleStylingScreens/EditPostScreenContinueButtonStyle.js";
 
 
 const Stack = createStackNavigator();
@@ -438,6 +441,48 @@ const RootStack = () => {
                 }}
               />
                <Stack.Screen name="EditPostScreenStyle" component={EditPostScreenStyle}
+                options={{
+                  headerStyle: {
+                    backgroundColor: 'transparent',
+                  },
+                  headerTintColor: colors.tertiary,
+                  headerTransparent: true,
+                  headerTitle: '',
+                  headerLeftContainerStyle: {
+                      paddingLeft: 20,
+                  },
+                  headerLeft: null
+                }}
+              />
+              <Stack.Screen name="EditPostScreenBackgroundColor" component={EditPostScreenBackgroundColor}
+                options={{
+                  headerStyle: {
+                    backgroundColor: 'transparent',
+                  },
+                  headerTintColor: colors.tertiary,
+                  headerTransparent: true,
+                  headerTitle: '',
+                  headerLeftContainerStyle: {
+                      paddingLeft: 20,
+                  },
+                  headerLeft: null
+                }}
+              />
+              <Stack.Screen name="EditPostScreenIconColors" component={EditPostScreenIconColors}
+                options={{
+                  headerStyle: {
+                    backgroundColor: 'transparent',
+                  },
+                  headerTintColor: colors.tertiary,
+                  headerTransparent: true,
+                  headerTitle: '',
+                  headerLeftContainerStyle: {
+                      paddingLeft: 20,
+                  },
+                  headerLeft: null
+                }}
+              />
+               <Stack.Screen name="EditPostScreenContinueButtonStyle" component={EditPostScreenContinueButtonStyle}
                 options={{
                   headerStyle: {
                     backgroundColor: 'transparent',
