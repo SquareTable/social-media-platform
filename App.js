@@ -434,7 +434,7 @@ const App = () => {
               {AppStylingContextState != 'Default' && AppStylingContextState != 'Light' && AppStylingContextState != 'Dark' && AppStylingContextState != 'PureDark' && AppStylingContextState != 'PureLight' ? previousStylingState.current != AppStylingContextState ? setCurrentSimpleStylingDataToStyle(AppStylingContextState) : null : null}
               <AppearanceProvider>
                 <NavigationContainer theme={AppStylingContextState == 'Default' ? scheme === 'dark' ? AppDarkTheme : AppLightTheme : AppStylingContextState == 'Dark' ? AppDarkTheme : AppStylingContextState == 'Light' ? AppLightTheme : AppStylingContextState == 'PureDark' ? AppPureDarkTheme : AppStylingContextState == 'PureLight' ? AppPureLightTheme : currentSimpleStylingData} onStateChange={() => {console.log('Screen changed')}}>
-                  <NotificationBox/>
+                  {/*<NotificationBox/>*/}
                   <Start_Stack/>
                 </NavigationContainer>
               </AppearanceProvider>

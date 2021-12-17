@@ -4,8 +4,6 @@ import { StatusBar } from 'expo-status-bar';
 // formik
 import {Formik} from 'formik';
 
-import { Camera } from 'expo-camera';
-
 import {
     InnerContainer,
     PageTitle,
@@ -115,16 +113,8 @@ const MultiMediaUploadPage = ({navigation, route}) => {
 
     const {colors, dark} = useTheme()
 
-    const [hasCameraPermission, setHasCameraPermission] = useState(null);
     const checkForCameraPermissions = async () => {
-        var { status } = await Camera.requestPermissionsAsync();
-        setHasCameraPermission(status === 'granted');
-        if (hasCameraPermission == false) {
-            alert('Please enable camera permissions for this feature to work.')
-        } else {
-            console.log('Camera permissions have been granted')
-            navigation.navigate('TakeImage_Camera', {locationToGoTo: 'MultiMediaUploadPage'})
-        }
+        navigation.navigate('TakeImage_Camera', {locationToGoTo: 'MultiMediaUploadPage'})
     }
 
     const UserTextInput = ({label, icon, isPassword, hidePassword, setHidePassword, ...props}) => {
