@@ -316,6 +316,10 @@ const RecordAudioPage = ({navigation}) => {
     const tabBarHeight = useBottomTabBarHeight();
     const windowHeight = Dimensions.get('window').height
 
+    useEffect(() => {
+        alert('Audio posting functionality coming soon')
+    }, [])
+
     
 
 

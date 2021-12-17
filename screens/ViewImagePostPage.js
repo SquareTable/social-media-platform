@@ -1,4 +1,4 @@
-import React, {useState, useContext} from 'react';
+import React, {useState, useContext, Component, useRef} from 'react';
 import { StatusBar } from 'expo-status-bar';
 
 // formik
@@ -6,6 +6,7 @@ import {Formik} from 'formik';
 
 // icons
 import {Octicons, Ionicons, Fontisto} from '@expo/vector-icons';
+import { PinchGestureHandler, State } from 'react-native-gesture-handler';
 
 
 import {
@@ -100,7 +101,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 //credentials context
 import { CredentialsContext } from './../components/CredentialsContext';
 
-import { View, ImageBackground, ScrollView, SectionList, ActivityIndicator, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { View, ImageBackground, ScrollView, SectionList, ActivityIndicator, StyleSheet, TouchableOpacity, Image, Animated } from 'react-native';
 
 import { useTheme } from '@react-navigation/native';
 
@@ -457,7 +458,57 @@ const ViewImagePostPage = ({route, navigation}) => {
         })
     }
 
-
+    const PinchableBox = ({ imageUri }) => {
+        let scale = new Animated.Value(1)
+        let translateX = useRef(new Animated.Value(0)).current;
+        let translateY = useRef(new Animated.Value(0)).current;
+        let translate = useRef(new Animated.ValueXY(0)).current
+        const onPinchEvent = Animated.event(
+          [
+            {
+              nativeEvent: { scale: scale, focalX: translate.x, focalY: translate.y }
+            }
+          ],
+          {
+            useNativeDriver: true
+          }
+        )
+        const onPinchStateChange = event => {
+          if (event.nativeEvent.oldState === State.ACTIVE) {
+            Animated.spring(scale, {
+              toValue: 1,
+              useNativeDriver: true
+            }).start()
+            Animated.spring(translate, {
+                toValue: 0,
+                useNativeDriver: true
+            }).start()
+          }
+        }
+        return (
+            <PinchGestureHandler
+                onGestureEvent={onPinchEvent}
+                onHandlerStateChange={onPinchStateChange}
+            >
+                <Animated.Image
+                    source={{ uri: `data:image/jpg;base64,${imageUri}` }}
+                    style={{
+                    width: '100%',
+                    height: '100%',
+                    borderRadius: 20,
+                    position: 'absolute',
+                    top: 0,
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    zIndex: 2,
+                    transform: [{ scale: scale}/*, {translateX: translate.x}, {translateY: translate.y}*/]
+                    }}
+                    resizeMode='cover'
+                />
+            </PinchGestureHandler>
+        )
+    }
     return(
         <>    
             <StatusBar style="dark"/>
@@ -472,9 +523,9 @@ const ViewImagePostPage = ({route, navigation}) => {
                                 <SubTitle style={{fontSize: 12, marginBottom: 0, color: colors.tertiary}}>@{creatorName}</SubTitle>
                             </PostsVerticalView>
                         </PostsHorizontalView>
-                        <PostsHorizontalView style={{alignItems: 'center', justifyContent: 'center'}}>
-                            <MultiMediaPostFrame postOnProfile={true} style={{ aspectRatio: 1/1 }}>
-                                <Image style={{width: '100%', height: '100%', resizeMode : 'cover', borderRadius: 20}} source={{uri: `data:image/jpg;base64,${imageB64}`}}/>
+                        <PostsHorizontalView style={{alignItems: 'center', justifyContent: 'center', zIndex: 2}}>
+                            <MultiMediaPostFrame postOnProfile={true} style={{ aspectRatio: 1/1, zIndex: 2 }}>
+                                <PinchableBox imageUri={imageB64}/>
                             </MultiMediaPostFrame>
                         </PostsHorizontalView>
                         <ImagePostFrame style={{textAlign: 'left'}}>

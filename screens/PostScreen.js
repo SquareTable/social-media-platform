@@ -70,7 +70,7 @@ const PostScreen = ({navigation}) => {
             navigation.navigate("PollUploadPage")
         } else if (formatFourSelected == true) {
             setMessageVisibility(false)
-            navigation.navigate("AudioUploadPage")
+            navigation.navigate("RecordAudioPage")
         } else {
             setMessageVisibility(true)
         }

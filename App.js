@@ -3,12 +3,12 @@ import Constants from 'expo-constants';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { StatusBar } from 'expo-status-bar';
-import React, { useEffect, useState, useRef } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Alert, SafeAreaView, Platform} from 'react-native';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
+import { StyleSheet, Text, View, TouchableOpacity, Alert, SafeAreaView, Platform, Image, Animated, Vibration} from 'react-native';
 import styled from "styled-components";
 import LoginScreen from './screens/LoginScreen.js';
 import { Start_Stack } from './navigation/Start_Stack.js';
-import * as Notifications from "expo-notifications";
+import * as Notifications from 'expo-notifications';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AppLoading from 'expo-app-loading';
 import { Asset } from 'expo-asset';
@@ -19,6 +19,11 @@ import { AdIDContext } from './components/AdIDContext.js';
 import { AppStylingContext } from './components/AppStylingContext.js';
 import { RefreshAppStylingContext } from './components/RefreshAppStylingContext.js';
 import { SimpleStylingVersion } from './components/StylingVersionsFile.js';
+import SocialSquareLogo_B64_png from './assets/SocialSquareLogo_Base64_png.js';
+import { PanGestureHandler, State } from 'react-native-gesture-handler';
+import { 
+  Avatar 
+} from './screens/screenStylings/styling.js';
 
 const Stack = createStackNavigator();
 
@@ -26,12 +31,12 @@ const Stack = createStackNavigator();
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
     shouldShowAlert: true,
-    shouldPlaySound: true,
+    shouldPlaySound: false,
     shouldSetBadge: false,
   }),
 });
-
 const App = () => {
+  const StatusBarHeight = Constants.statusBarHeight;
   const [AppStylingContextState, setAppStylingContextState] = useState(null)
   const [AdID, setAdID] = useState('');
   const [refreshAppStyling, setRefreshAppStyling] = useState(false);
@@ -281,6 +286,59 @@ const App = () => {
     setCurrentSimpleStylingDataToStyle(AppStylingContextState)
   }
 
+  const NotificationBox = () => {
+    let GoDownByY = new Animated.Value(StatusBarHeight - 40);
+    const onPanGestureEvent = Animated.event(
+      [
+        {
+          nativeEvent: {
+            translationY: GoDownByY,
+          },
+        },
+      ],
+      { useNativeDriver: true }
+    );
+    const NotificationPressed = () => {
+      Animated.timing(GoDownByY, {
+        toValue: -100,
+        duration: 250,
+        useNativeDriver: true
+      }).start();
+    }
+    const onHandlerStateChange = event => {
+      if (event.nativeEvent.oldState === State.ACTIVE) {
+        if (event.nativeEvent.absoluteY < StatusBarHeight) {
+          Animated.timing(GoDownByY, {
+            toValue: -100,
+            duration: 100,
+            useNativeDriver: true
+          }).start();
+        } else {
+          Animated.timing(GoDownByY, {
+            toValue: StatusBarHeight - 40,
+            duration: 100,
+            useNativeDriver: true
+          }).start();
+        }
+      }
+    }
+    return(
+      <PanGestureHandler onGestureEvent={onPanGestureEvent} onHandlerStateChange={onHandlerStateChange}>
+        <Animated.View style={{backgroundColor: 'rgba(0, 0, 0, 0.8)', height: 60, width: '90%', position: 'absolute', zIndex: 1000, top: 40, marginHorizontal: '5%', flexDirection: 'row', borderColor: 'black', borderRadius: 15, borderWidth: 1, transform: [{translateY: GoDownByY.interpolate({inputRange: [0, 10], outputRange: [0, 10]})}]}}>
+          <TouchableOpacity onPress={NotificationPressed} style={{flexDirection: 'row'}}>
+            <View style={{width: '20%', minWidth: '20%', maxWidth: '20%', justifyContent: 'center', alignItems: 'center'}}>
+              <Avatar style={{width: 40, height: 40}} resizeMode="cover" source={{uri: SocialSquareLogo_B64_png}}/>
+            </View>
+            <View style={{width: '80%', minWidth: '80%', maxWidth: '80%'}}>
+              <Text numberOfLines={1} style={{color: 'white', fontSize: 16, fontWeight: 'bold', marginRight: 15}}>SebTheMan</Text>
+              <Text numberOfLines={2} style={{color: 'white', fontSize: 14, marginTop: 2, marginRight: 15}}>Ayo guys are we still going to go to the mall today?</Text>
+            </View>
+          </TouchableOpacity>
+        </Animated.View>
+      </PanGestureHandler>
+    )
+  }
+
   if (isReady == false) {
     async function cacheResourcesAsync() {
       AsyncStorage.getItem('socialSquareCredentials').then((result) => {
@@ -376,6 +434,7 @@ const App = () => {
               {AppStylingContextState != 'Default' && AppStylingContextState != 'Light' && AppStylingContextState != 'Dark' && AppStylingContextState != 'PureDark' && AppStylingContextState != 'PureLight' ? previousStylingState.current != AppStylingContextState ? setCurrentSimpleStylingDataToStyle(AppStylingContextState) : null : null}
               <AppearanceProvider>
                 <NavigationContainer theme={AppStylingContextState == 'Default' ? scheme === 'dark' ? AppDarkTheme : AppLightTheme : AppStylingContextState == 'Dark' ? AppDarkTheme : AppStylingContextState == 'Light' ? AppLightTheme : AppStylingContextState == 'PureDark' ? AppPureDarkTheme : AppStylingContextState == 'PureLight' ? AppPureLightTheme : currentSimpleStylingData} onStateChange={() => {console.log('Screen changed')}}>
+                  <NotificationBox/>
                   <Start_Stack/>
                 </NavigationContainer>
               </AppearanceProvider>

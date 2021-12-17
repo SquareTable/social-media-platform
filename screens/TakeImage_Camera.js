@@ -2,11 +2,13 @@ import React, {useState, useRef} from 'react';
 import {View, Text, TouchableOpacity, Image, Dimensions} from 'react-native';
 import {Camera} from 'expo-camera';
 import { AntDesign, MaterialIcons } from '@expo/vector-icons';
+import { useIsFocused } from '@react-navigation/native';
 
 const TakeImage_Camera = ({navigation, route}) => {
     const [cameraType, setCameraType] = useState(Camera.Constants.Type.back);
     const [cameraIsReady, setCameraIsReady] = useState(false)
     const [cameraIsInPreview, setCameraIsInPreview] = useState(false)
+    const [showCamera, setShowCamera] = useState(true)
     const [image, setImage] = useState(null)
     const cameraRef = useRef()
     const {locationToGoTo} = route.params;
@@ -43,58 +45,71 @@ const TakeImage_Camera = ({navigation, route}) => {
             alert('An error occured')
         }
     }
+
+    const isFocused = useIsFocused()
+    isFocused ? showCamera ? null : setShowCamera(true) : showCamera ? setShowCamera(false) : null
+    
     return(
         <>
-            <View style={{height: screenHeight / 4, minHeight: screenHeight / 4, maxHeight: screenHeight / 4, backgroundColor: 'black'}}/>
-            <Camera style={{flex: 1, width: screenWidth, minWidth: screenWidth, maxWidth: screenWidth, height: screenWidth, minHeight: screenWidth, maxHeight: screenWidth}} type={cameraType} ratio={'1:1'} onCameraReady={() => {setCameraIsReady(true)}} ref={cameraRef}/>
-            <View style={{flex: 1, backgroundColor: 'black', flexDirection: 'row'}}>
-                    {cameraIsInPreview == false &&
-                        <>
-                            <TouchableOpacity 
-                                disabled={!cameraIsReady}
-                                onPress={() => {
-                                    setCameraType(
-                                        cameraType === Camera.Constants.Type.back
-                                        ? Camera.Constants.Type.front
-                                        : Camera.Constants.Type.back
-                                    );
-                                }}
-                                style={{flex: 0.3, alignSelf: 'flex-end', alignItems: 'center', paddingBottom: 25}}
-                            >
-                                <MaterialIcons name='flip-camera-ios' size={50} color='white' />
-                            </TouchableOpacity>
-                            <TouchableOpacity
-                                disabled={!cameraIsReady}
-                                onPress={takePicture}
-                                style={{flex: 0.4, alignSelf: 'flex-end', alignItems: 'center'}}
-                            >
-                                <Image source={require('../assets/TakePhotoImg.png')} style={{width: 100, height: 100}}/>
-                            </TouchableOpacity>
-                        </>
-                    }
-                    {cameraIsInPreview == true &&
-                        <>
-                            <View style={{flex: 1, backgroundColor: 'transparent', flexDirection: 'row', margin: 20}}>
+            {showCamera == true ?
+                <>
+                    <View style={{height: screenHeight / 4, minHeight: screenHeight / 4, maxHeight: screenHeight / 4, backgroundColor: 'black'}}/>
+                    <Camera style={{flex: 1, width: screenWidth, minWidth: screenWidth, maxWidth: screenWidth, height: screenWidth, minHeight: screenWidth, maxHeight: screenWidth}} type={cameraType} ratio={'1:1'} onCameraReady={() => {setCameraIsReady(true)}} ref={cameraRef}/>
+                    <View style={{flex: 1, backgroundColor: 'black', flexDirection: 'row'}}>
+                        {cameraIsInPreview == false &&
+                            <>
                                 <TouchableOpacity 
-                                    onPress={retakeImage}
-                                    style={{flex: 0.5, alignSelf: 'flex-end', alignItems: 'center'}}
+                                    disabled={!cameraIsReady}
+                                    onPress={() => {
+                                        setCameraType(
+                                            cameraType === Camera.Constants.Type.back
+                                            ? Camera.Constants.Type.front
+                                            : Camera.Constants.Type.back
+                                        );
+                                    }}
+                                    style={{flex: 0.3, alignSelf: 'flex-end', alignItems: 'center', paddingBottom: 25}}
                                 >
-                                    <View style={{width: 80, height: 80, backgroundColor: 'black', borderRadius: 10000, borderWidth: 1, borderColor: 'black', padding: 10, alignItems: 'center', justifyContent: 'center'}}>
-                                        <Text style={{fontSize: 50}}>❌</Text>
-                                    </View>
+                                    <MaterialIcons name='flip-camera-ios' size={50} color='white' />
                                 </TouchableOpacity>
                                 <TouchableOpacity
-                                    onPress={chooseImage}
-                                    style={{flex: 0.5, alignSelf: 'flex-end', alignItems: 'center'}}
+                                    disabled={!cameraIsReady}
+                                    onPress={takePicture}
+                                    style={{flex: 0.4, alignSelf: 'flex-end', alignItems: 'center'}}
                                 >
-                                    <View style={{width: 80, height: 80, backgroundColor: 'black', borderRadius: 10000, borderWidth: 1, borderColor: 'black', padding: 10, alignItems: 'center', justifyContent: 'center'}}>
-                                        <Text style={{fontSize: 50}}>✅</Text>
-                                    </View>
+                                    <Image source={require('../assets/TakePhotoImg.png')} style={{width: 100, height: 100}}/>
                                 </TouchableOpacity>
-                            </View>
-                        </>
-                    }
+                            </>
+                        }
+                        {cameraIsInPreview == true &&
+                            <>
+                                <View style={{flex: 1, backgroundColor: 'transparent', flexDirection: 'row', margin: 20}}>
+                                    <TouchableOpacity 
+                                        onPress={retakeImage}
+                                        style={{flex: 0.5, alignSelf: 'flex-end', alignItems: 'center'}}
+                                    >
+                                        <View style={{width: 80, height: 80, backgroundColor: 'black', borderRadius: 10000, borderWidth: 1, borderColor: 'black', padding: 10, alignItems: 'center', justifyContent: 'center'}}>
+                                            <Text style={{fontSize: 50}}>❌</Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        onPress={chooseImage}
+                                        style={{flex: 0.5, alignSelf: 'flex-end', alignItems: 'center'}}
+                                    >
+                                        <View style={{width: 80, height: 80, backgroundColor: 'black', borderRadius: 10000, borderWidth: 1, borderColor: 'black', padding: 10, alignItems: 'center', justifyContent: 'center'}}>
+                                            <Text style={{fontSize: 50}}>✅</Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                </View>
+                            </>
+                        }
+                    </View>
+                </>
+            :
+                <View style={{height: '100%', backgroundColor: 'black', justifyContent: 'center', alignItems: 'center'}}>
+                    <Text style={{color: 'red', fontSize: 20, fontWeight: 'bold', textAlign: 'center', marginBottom: 30}}>Camera was disabled for security reasons because you left this screen.</Text>
+                    <Text style={{color: 'red', fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>Camera will be re-enabled shortly.</Text>
                 </View>
+            }
         </>
     );
 }
