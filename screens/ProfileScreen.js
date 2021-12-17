@@ -2,7 +2,6 @@ import React, {useCallback, useContext, useState, useRef, useEffect} from 'react
 import { StatusBar } from 'expo-status-bar';
 import * as Haptics from 'expo-haptics';
 import ActionSheet from 'react-native-actionsheet';
-import { Camera } from 'expo-camera';
 
 import {
     InnerContainer,
@@ -2578,16 +2577,8 @@ const Welcome = ({navigation, route}) => {
 
     let PfpPickerActionMenu = useRef()
 
-    const [hasCameraPermission, setHasCameraPermission] = useState(null);
     const checkForCameraPermissions = async () => {
-        var { status } = await Camera.requestPermissionsAsync();
-        setHasCameraPermission(status === 'granted');
-        if (hasCameraPermission == false) {
-            alert('Please enable camera permissions for this feature to work.')
-        } else {
-            console.log('Camera permissions have been granted')
-            navigation.navigate('TakeImage_Camera', {locationToGoTo: 'Welcome'})
-        }
+        navigation.navigate('TakeImage_Camera', {locationToGoTo: 'Welcome'})
     }
 
     useEffect(() => {

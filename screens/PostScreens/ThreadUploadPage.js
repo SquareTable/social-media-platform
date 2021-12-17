@@ -56,8 +56,6 @@ import * as ImagePicker from 'expo-image-picker';
 import CategoryCreationPage from '../CategoryCreationPage';
 import { useTheme } from '@react-navigation/native';
 
-import { Camera } from 'expo-camera';
-
 const ThreadUploadPage = ({route, navigation}) => {
     const {colors, dark} = useTheme();
     const [hidePassword, setHidePassword] = useState(true);
@@ -299,16 +297,8 @@ const ThreadUploadPage = ({route, navigation}) => {
         }
     }
 
-    const [hasCameraPermission, setHasCameraPermission] = useState(null);
     const checkForCameraPermissions = async () => {
-        var { status } = await Camera.requestPermissionsAsync();
-        setHasCameraPermission(status === 'granted');
-        if (hasCameraPermission == false) {
-            alert('Please enable camera permissions for this feature to work.')
-        } else {
-            console.log('Camera permissions have been granted')
-            navigation.navigate('TakeImage_Camera', {locationToGoTo: 'ThreadUploadPage'})
-        }
+        navigation.navigate('TakeImage_Camera', {locationToGoTo: 'ThreadUploadPage'})
     }
 
     return(

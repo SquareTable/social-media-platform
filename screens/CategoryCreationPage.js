@@ -8,8 +8,6 @@ import {Formik} from 'formik';
 // icons
 import {Octicons, Ionicons, Fontisto} from '@expo/vector-icons';
 
-import { Camera } from 'expo-camera';
-
 import ActionSheet from 'react-native-actionsheet';
 
 import {
@@ -227,16 +225,8 @@ const CategoryCreationPage = ({navigation, route}) => {
 
     let CategoryIconPickerActionMenu = useRef()
 
-    const [hasCameraPermission, setHasCameraPermission] = useState(null);
     const checkForCameraPermissions = async () => {
-        var { status } = await Camera.requestPermissionsAsync();
-        setHasCameraPermission(status === 'granted');
-        if (hasCameraPermission == false) {
-            alert('Please enable camera permissions for this feature to work.')
-        } else {
-            console.log('Camera permissions have been granted')
-            navigation.navigate('TakeImage_Camera', {locationToGoTo: 'CategoryCreationPage'})
-        }
+        navigation.navigate('TakeImage_Camera', {locationToGoTo: 'CategoryCreationPage'})
     }
 
     return(
