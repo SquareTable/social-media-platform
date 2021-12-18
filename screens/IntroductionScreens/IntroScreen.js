@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import {View, Text, SafeAreaView, TouchableOpacity, ScrollView, StatusBar, Image, Dimensions, StyleSheet} from 'react-native';
 import {useTheme} from '@react-navigation/native';
 import AppIntroSlider from 'react-native-app-intro-slider';
@@ -9,7 +9,6 @@ import {
     TextLinkContent
 } from '../screenStylings/styling.js';
 import Constants from "expo-constants";
-import { collapseTextChangeRangesAcrossMultipleVersions } from 'typescript';
 
 const IntroScreen = ({navigation}) => {
     const styles = StyleSheet.create({
