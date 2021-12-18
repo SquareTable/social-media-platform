@@ -102,7 +102,7 @@ const ChatScreen_Stack = () => {
           },
           headerTintColor: colors.tertiary,
           headerTransparent: true,
-          headerTitle: '',
+          title: '',
           headerLeftContainerStyle: {
               paddingLeft: 20,
           },
@@ -115,7 +115,7 @@ const ChatScreen_Stack = () => {
           },
           headerTintColor: colors.tertiary,
           headerTransparent: true,
-          headerTitle: '',
+          title: '',
           headerLeftContainerStyle: {
               paddingLeft: 20,
           },
@@ -129,7 +129,7 @@ const ChatScreen_Stack = () => {
           },
           headerTintColor: colors.tertiary,
           headerTransparent: true,
-          headerTitle: '',
+          title: '',
           headerLeftContainerStyle: {
               paddingLeft: 20,
           },
@@ -143,7 +143,7 @@ const ChatScreen_Stack = () => {
           },
           headerTintColor: colors.tertiary,
           headerTransparent: true,
-          headerTitle: '',
+          title: '',
           headerLeftContainerStyle: {
               paddingLeft: 20,
           },
@@ -157,7 +157,7 @@ const ChatScreen_Stack = () => {
           },
           headerTintColor: colors.tertiary,
           headerTransparent: true,
-          headerTitle: '',
+          title: '',
           headerLeftContainerStyle: {
               paddingLeft: 20,
           },
@@ -171,7 +171,7 @@ const ChatScreen_Stack = () => {
           },
           headerTintColor: colors.tertiary,
           headerTransparent: true,
-          headerTitle: '',
+          title: '',
           headerLeftContainerStyle: {
               paddingLeft: 20,
           },
@@ -192,7 +192,7 @@ const RootStack = () => {
             },
             headerTintColor: colors.tertiary,
             headerTransparent: true,
-            headerTitle: '',
+            title: '',
             headerLeftContainerStyle: {
                 paddingLeft: 20,
             },
@@ -223,7 +223,7 @@ const RootStack = () => {
                     },
                     headerTintColor: colors.tertiary,
                     headerTransparent: true,
-                    headerTitle: '',
+                    title: '',
                     headerLeftContainerStyle: {
                         paddingLeft: 20,
                     },
@@ -239,7 +239,7 @@ const RootStack = () => {
                     },
                     headerTintColor: 'white',
                     headerTransparent: true,
-                    headerTitle: '',
+                    title: '',
                     headerLeftContainerStyle: {
                         paddingLeft: 20,
                     },
@@ -254,7 +254,7 @@ const RootStack = () => {
                     },
                     headerTintColor: colors.tertiary,
                     headerTransparent: true,
-                    headerTitle: '',
+                    title: '',
                     headerLeftContainerStyle: {
                         paddingLeft: 20,
                     },
@@ -270,7 +270,7 @@ const RootStack = () => {
                     },
                     headerTintColor: colors.tertiary,
                     headerTransparent: true,
-                    headerTitle: '',
+                    title: '',
                     headerLeftContainerStyle: {
                         paddingLeft: 20,
                     },
@@ -286,7 +286,7 @@ const RootStack = () => {
                     },
                     headerTintColor: colors.tertiary,
                     headerTransparent: true,
-                    headerTitle: '',
+                    title: '',
                     headerLeftContainerStyle: {
                         paddingLeft: 20,
                     },
@@ -302,7 +302,7 @@ const RootStack = () => {
                     },
                     headerTintColor: colors.tertiary,
                     headerTransparent: true,
-                    headerTitle: '',
+                    title: '',
                     headerLeftContainerStyle: {
                         paddingLeft: 20,
                     },
@@ -318,7 +318,7 @@ const RootStack = () => {
                     },
                     headerTintColor: colors.tertiary,
                     headerTransparent: true,
-                    headerTitle: '',
+                    title: '',
                     headerLeftContainerStyle: {
                         paddingLeft: 20,
                     },
@@ -334,7 +334,7 @@ const RootStack = () => {
                     },
                     headerTintColor: colors.tertiary,
                     headerTransparent: true,
-                    headerTitle: '',
+                    title: '',
                     headerLeftContainerStyle: {
                         paddingLeft: 20,
                     },
@@ -348,7 +348,7 @@ const RootStack = () => {
                   },
                   headerTintColor: colors.tertiary,
                   headerTransparent: true,
-                  headerTitle: '',
+                  title: '',
                   headerLeftContainerStyle: {
                       paddingLeft: 20,
                   },
@@ -362,7 +362,7 @@ const RootStack = () => {
                   },
                   headerTintColor: colors.tertiary,
                   headerTransparent: true,
-                  headerTitle: '',
+                  title: '',
                   headerLeftContainerStyle: {
                       paddingLeft: 20,
                   },
@@ -376,7 +376,7 @@ const RootStack = () => {
                   },
                   headerTintColor: colors.tertiary,
                   headerTransparent: true,
-                  headerTitle: '',
+                  title: '',
                   headerLeftContainerStyle: {
                       paddingLeft: 20,
                   },
@@ -391,7 +391,7 @@ const RootStack = () => {
                   },
                   headerTintColor: colors.tertiary,
                   headerTransparent: true,
-                  headerTitle: '',
+                  title: '',
                   headerLeftContainerStyle: {
                       paddingLeft: 20,
                   },
@@ -405,7 +405,7 @@ const RootStack = () => {
                   },
                   headerTintColor: colors.tertiary,
                   headerTransparent: true,
-                  headerTitle: '',
+                  title: '',
                   headerLeftContainerStyle: {
                       paddingLeft: 20,
                   },
@@ -419,7 +419,7 @@ const RootStack = () => {
                   },
                   headerTintColor: colors.tertiary,
                   headerTransparent: true,
-                  headerTitle: '',
+                  title: '',
                   headerLeftContainerStyle: {
                       paddingLeft: 20,
                   },
@@ -433,7 +433,7 @@ const RootStack = () => {
                   },
                   headerTintColor: colors.tertiary,
                   headerTransparent: true,
-                  headerTitle: '',
+                  title: '',
                   headerLeftContainerStyle: {
                       paddingLeft: 20,
                   },
@@ -447,7 +447,7 @@ const RootStack = () => {
                   },
                   headerTintColor: colors.tertiary,
                   headerTransparent: true,
-                  headerTitle: '',
+                  title: '',
                   headerLeftContainerStyle: {
                       paddingLeft: 20,
                   },
@@ -461,7 +461,7 @@ const RootStack = () => {
                   },
                   headerTintColor: colors.tertiary,
                   headerTransparent: true,
-                  headerTitle: '',
+                  title: '',
                   headerLeftContainerStyle: {
                       paddingLeft: 20,
                   },
@@ -475,7 +475,7 @@ const RootStack = () => {
                   },
                   headerTintColor: colors.tertiary,
                   headerTransparent: true,
-                  headerTitle: '',
+                  title: '',
                   headerLeftContainerStyle: {
                       paddingLeft: 20,
                   },
@@ -489,7 +489,7 @@ const RootStack = () => {
                   },
                   headerTintColor: colors.tertiary,
                   headerTransparent: true,
-                  headerTitle: '',
+                  title: '',
                   headerLeftContainerStyle: {
                       paddingLeft: 20,
                   },
@@ -516,7 +516,7 @@ const FindScreen_Stack = () => {
           },
           headerTintColor: colors.tertiary,
           headerTransparent: true,
-          headerTitle: '',
+          title: '',
           headerLeftContainerStyle: {
               paddingLeft: 20,
           },
@@ -530,7 +530,7 @@ const FindScreen_Stack = () => {
           },
           headerTintColor: colors.tertiary,
           headerTransparent: true,
-          headerTitle: '',
+          title: '',
           headerLeftContainerStyle: {
               paddingLeft: 20,
           },
@@ -544,7 +544,7 @@ const FindScreen_Stack = () => {
           },
           headerTintColor: colors.tertiary,
           headerTransparent: true,
-          headerTitle: '',
+          title: '',
           headerLeftContainerStyle: {
               paddingLeft: 20,
           },
@@ -558,7 +558,7 @@ const FindScreen_Stack = () => {
           },
           headerTintColor: colors.tertiary,
           headerTransparent: true,
-          headerTitle: '',
+          title: '',
           headerLeftContainerStyle: {
               paddingLeft: 20,
           },
@@ -572,7 +572,7 @@ const FindScreen_Stack = () => {
           },
           headerTintColor: colors.tertiary,
           headerTransparent: true,
-          headerTitle: '',
+          title: '',
           headerLeftContainerStyle: {
               paddingLeft: 20,
           },
@@ -585,7 +585,7 @@ const FindScreen_Stack = () => {
           },
           headerTintColor: colors.tertiary,
           headerTransparent: true,
-          headerTitle: '',
+          title: '',
           headerLeftContainerStyle: {
               paddingLeft: 20,
           },
@@ -598,7 +598,7 @@ const FindScreen_Stack = () => {
           },
           headerTintColor: colors.tertiary,
           headerTransparent: true,
-          headerTitle: '',
+          title: '',
           headerLeftContainerStyle: {
               paddingLeft: 20,
           },
@@ -611,7 +611,7 @@ const FindScreen_Stack = () => {
           },
           headerTintColor: colors.tertiary,
           headerTransparent: true,
-          headerTitle: '',
+          title: '',
           headerLeftContainerStyle: {
               paddingLeft: 20,
           },
@@ -624,7 +624,7 @@ const FindScreen_Stack = () => {
           },
           headerTintColor: colors.tertiary,
           headerTransparent: true,
-          headerTitle: '',
+          title: '',
           headerLeftContainerStyle: {
               paddingLeft: 20,
           },
@@ -637,7 +637,7 @@ const FindScreen_Stack = () => {
           },
           headerTintColor: colors.tertiary,
           headerTransparent: true,
-          headerTitle: '',
+          title: '',
           headerLeftContainerStyle: {
               paddingLeft: 20,
           },
@@ -650,7 +650,7 @@ const FindScreen_Stack = () => {
           },
           headerTintColor: colors.tertiary,
           headerTransparent: true,
-          headerTitle: '',
+          title: '',
           headerLeftContainerStyle: {
               paddingLeft: 20,
           },
@@ -670,7 +670,7 @@ const home_screen_post_to_profile_screen = () => {
       },
       headerTintColor: colors.tertiary,
       headerTransparent: true,
-      headerTitle: '',
+      title: '',
       headerLeft: null,
       headerLeftContainerStyle: {
           paddingLeft: 20,
@@ -694,7 +694,7 @@ const post_screen_navigator = () => {
         },
         headerTintColor: colors.tertiary,
         headerTransparent: true,
-        headerTitle: '',
+        title: '',
         headerLeftContainerStyle: {
             paddingLeft: 20,
         },
@@ -706,7 +706,7 @@ const post_screen_navigator = () => {
         },
         headerTintColor: colors.tertiary,
         headerTransparent: true,
-        headerTitle: '',
+        title: '',
         headerLeftContainerStyle: {
             paddingLeft: 20,
         },
@@ -718,7 +718,7 @@ const post_screen_navigator = () => {
         },
         headerTintColor: colors.tertiary,
         headerTransparent: true,
-        headerTitle: '',
+        title: '',
         headerLeftContainerStyle: {
             paddingLeft: 20,
         },
@@ -730,7 +730,7 @@ const post_screen_navigator = () => {
         },
         headerTintColor: colors.tertiary,
         headerTransparent: true,
-        headerTitle: '',
+        title: '',
         headerLeftContainerStyle: {
             paddingLeft: 20,
         },
@@ -742,7 +742,7 @@ const post_screen_navigator = () => {
         },
         headerTintColor: colors.tertiary,
         headerTransparent: true,
-        headerTitle: '',
+        title: '',
         headerLeftContainerStyle: {
             paddingLeft: 20,
         },
@@ -756,7 +756,7 @@ const post_screen_navigator = () => {
         },
         headerTintColor: colors.tertiary,
         headerTransparent: true,
-        headerTitle: '',
+        title: '',
         headerLeftContainerStyle: {
             paddingLeft: 20,
         },
@@ -770,7 +770,7 @@ const post_screen_navigator = () => {
         },
         headerTintColor: colors.tertiary,
         headerTransparent: true,
-        headerTitle: '',
+        title: '',
         headerLeftContainerStyle: {
             paddingLeft: 20,
         },
@@ -784,7 +784,7 @@ const post_screen_navigator = () => {
         },
         headerTintColor: colors.tertiary,
         headerTransparent: true,
-        headerTitle: '',
+        title: '',
         headerLeftContainerStyle: {
             paddingLeft: 20,
         },
@@ -796,7 +796,7 @@ const post_screen_navigator = () => {
         },
         headerTintColor: colors.tertiary,
         headerTransparent: true,
-        headerTitle: '',
+        title: '',
         headerLeftContainerStyle: {
             paddingLeft: 20,
         },
@@ -808,7 +808,7 @@ const post_screen_navigator = () => {
         },
         headerTintColor: 'white',
         headerTransparent: true,
-        headerTitle: '',
+        title: '',
         headerLeftContainerStyle: {
             paddingLeft: 20,
         },
@@ -841,7 +841,7 @@ const RootStack = () => {
                         },
                         headerTintColor: tertiary,
                         headerTransparent: true,
-                        headerTitle: '',
+                        title: '',
                         headerLeftContainerStyle: {
                             paddingLeft: 20,
                         },
@@ -875,7 +875,7 @@ headerStyle: {
             ...styling.navBackgroundColor,
             ...styling.borderColor
           },
-          headerTitleStyle: {
+          titleStyle: {
             fontWeight: 'bold',
             fontSize: 20,
             textAlign: 'center',
@@ -884,7 +884,7 @@ headerStyle: {
           headerBackTitleStyle: {
             ...styling.textColor,
           },
-          headerTitle: 'Chat (Not working yet)',
+          title: 'Chat (Not working yet)',
         }}
 
 */

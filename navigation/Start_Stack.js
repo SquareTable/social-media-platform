@@ -48,7 +48,7 @@ const Start_Stack = () => {
                         headerShown: false,
                         headerTintColor: tertiary,
                         headerTransparent: true,
-                        headerTitle: '',
+                        title: '',
                         headerLeftContainerStyle: {
                             paddingLeft: 20,
                         },

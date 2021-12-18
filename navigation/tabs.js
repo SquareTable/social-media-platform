@@ -172,9 +172,10 @@ const Tabs = ({navigation}) => {
     CheckForAsyncStoragePfp()
     return(
         <Tab.Navigator
-            tabBarOptions={{
-                showLabel: false,
-                style: {
+            screenOptions={{
+                tabBarShowLabel: false,
+                headerShown: false,
+                tabBarStyle: {
                     /*position: 'absolute',*/
                     bottom: 0, /*Change the margin from the bottom of the screen for the tab navigator*/
                     left: 0, /*Change the margin from the left of the screen for the tab navigator*/
