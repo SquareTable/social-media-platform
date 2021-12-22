@@ -3,7 +3,6 @@ import { StatusBar } from 'expo-status-bar';
 import { Audio } from 'expo-av';
 import { useTheme } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/AntDesign';
-import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 
 import {
     InnerContainer,
@@ -65,6 +64,9 @@ import { CredentialsContext } from './../../components/CredentialsContext';
 import { ImageBackground, ScrollView, Image, TouchableOpacity, Text, View, SafeAreaView, Alert, Dimensions } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { convertCompilerOptionsFromJson } from 'typescript';
+import Constants from 'expo-constants'
+import * as IntentLauncher from 'expo-intent-launcher'
+import * as Linking from 'expo-linking';
 
 
 
@@ -82,6 +84,10 @@ const RecordAudioPage = ({navigation}) => {
         const [recordButtonDisabled, setRecordButtonDisabled] = useState(false);
         const [playButtonDisabled, setPlayButtonDisabled] = useState(false);
         console.log(timeSpentRecording);
+
+        const pkg = Constants.manifest.releaseChannel
+        ? Constants.manifest.android.package 
+        : 'host.exp.exponent'
 
         const onChangeRecordingStatus = (status) => {
             var recordingDuration = status.durationMillis % 1000;
@@ -130,7 +136,31 @@ const RecordAudioPage = ({navigation}) => {
                 console.log('Recording started');
             } catch (err) {
                 console.error('Failed to start recording', err);
+                var {status} = await Audio.requestPermissionsAsync();
+                if (status == 'denied') {
+                    Alert.alert(
+                        "No Microphone Permission",
+                        "SocialSquare does not have microphone permissions enabled. If you want to record audio, you will have to go into Settings and enable microphone permission for SocialSquare.",
+                        [
+                          { text: "Cancel", style: "cancel" },
+                          {
+                            text: "Settings",
+                            onPress: () => {
+                                if (Platform.OS === 'ios') {
+                                    Linking.openURL('app-settings:')
+                                } else {
+                                    IntentLauncher.startActivityAsync(
+                                        IntentLauncher.ACTION_APPLICATION_DETAILS_SETTINGS,
+                                        { data: 'package:' + pkg },
+                                    )
+                                }
+                            }
+                          },
+                        ]
+                      );
+                }
                 setRecordButtonDisabled(false);
+                setRecordingStatus(false)
             }
         }
 
@@ -312,9 +342,6 @@ const RecordAudioPage = ({navigation}) => {
             navigation.goBack();
         }
     }
-
-    const tabBarHeight = useBottomTabBarHeight();
-    const windowHeight = Dimensions.get('window').height
 
     useEffect(() => {
         alert('Audio posting functionality coming soon')

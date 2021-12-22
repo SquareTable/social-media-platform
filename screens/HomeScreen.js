@@ -597,137 +597,137 @@ const HomeScreen = ({navigation}) => {
                 </View>
                 <ProfileOptionsViewSubtitleText style={{color: colors.tertiary}}>Coming soon</ProfileOptionsViewSubtitleText>
                 <ScrollView style={{width: '100%'}}>
-                    <View style={{flex: 2, flexDirection: 'row', marginHorizontal: 30, marginVertical: 20, justifyContent: 'space-evenly', minHeight: 30, height: 30, maxHeight: 30}}>
-                        <Text style={{color: colors.tertiary, fontSize: 18, fontWeight: 'bold'}}>Photos</Text>
-                        <SwitchToggle
-                            switchOn={showPhotos}
-                            onPress={() => {setContextAndAsyncStorage('ShowPhotos')}}
-                            circleColorOff={colors.tertiary}
-                            circleColorOn={dark? colors.teritary : colors.primary}
-                            backgroundColorOn={colors.darkestBlue}
-                            backgroundColorOff={colors.borderColor}
-                            containerStyle={{
-                                width: 50,
-                                height: 28,
-                                borderRadius: 25,
-                                padding: 5,
-                            }}
-                            circleStyle={{
-                                width: 20,
-                                height: 20,
-                                borderRadius: 20,
-                            }}
-                        />
-                    </View>
-                    <View style={{flex: 2, flexDirection: 'row', marginHorizontal: 30, marginVertical: 20, justifyContent: 'space-evenly', minHeight: 30, height: 30, maxHeight: 30}}>
-                        <Text style={{color: colors.tertiary, fontSize: 18, fontWeight: 'bold'}}>Videos</Text>
-                        <SwitchToggle
-                            switchOn={showVideos}
-                            onPress={() => {setContextAndAsyncStorage('ShowVideos')}}
-                            circleColorOff={colors.tertiary}
-                            circleColorOn={dark? colors.teritary : colors.primary}
-                            backgroundColorOn={colors.darkestBlue}
-                            backgroundColorOff={colors.borderColor}
-                            containerStyle={{
-                                width: 50,
-                                height: 28,
-                                borderRadius: 25,
-                                padding: 5,
-                            }}
-                            circleStyle={{
-                                width: 20,
-                                height: 20,
-                                borderRadius: 20,
-                            }}
-                        />
-                    </View>
-                    <View style={{flex: 2, flexDirection: 'row', marginHorizontal: 30, marginVertical: 20, justifyContent: 'space-evenly', minHeight: 30, height: 30, maxHeight: 30}}>
-                        <Text style={{color: colors.tertiary, fontSize: 18, fontWeight: 'bold'}}>Audio</Text>
-                        <SwitchToggle
-                            switchOn={showAudio}
-                            onPress={() => {setContextAndAsyncStorage('ShowAudio')}}
-                            circleColorOff={colors.tertiary}
-                            circleColorOn={dark? colors.teritary : colors.primary}
-                            backgroundColorOn={colors.darkestBlue}
-                            backgroundColorOff={colors.borderColor}
-                            containerStyle={{
-                                width: 50,
-                                height: 28,
-                                borderRadius: 25,
-                                padding: 5,
-                            }}
-                            circleStyle={{
-                                width: 20,
-                                height: 20,
-                                borderRadius: 20,
-                            }}
-                        />
-                    </View>
-                    <View style={{flex: 2, flexDirection: 'row', marginHorizontal: 30, marginVertical: 20, justifyContent: 'space-evenly', minHeight: 30, height: 30, maxHeight: 30}}>
-                        <Text style={{color: colors.tertiary, fontSize: 18, fontWeight: 'bold'}}>Threads</Text>
-                        <SwitchToggle
-                            switchOn={showThreads}
-                            onPress={() => {setContextAndAsyncStorage('ShowThreads')}}
-                            circleColorOff={colors.tertiary}
-                            circleColorOn={dark? colors.teritary : colors.primary}
-                            backgroundColorOn={colors.darkestBlue}
-                            backgroundColorOff={colors.borderColor}
-                            containerStyle={{
-                                width: 50,
-                                height: 28,
-                                borderRadius: 25,
-                                padding: 5,
-                            }}
-                            circleStyle={{
-                                width: 20,
-                                height: 20,
-                                borderRadius: 20,
-                            }}
-                        />
-                    </View>
-                    <View style={{flex: 2, flexDirection: 'row', marginHorizontal: 30, marginVertical: 20, justifyContent: 'space-evenly', minHeight: 30, height: 30, maxHeight: 30}}>
-                        <Text style={{color: colors.tertiary, fontSize: 18, fontWeight: 'bold'}}>Polls</Text>
-                        <SwitchToggle
-                            switchOn={showPolls}
-                            onPress={() => {setContextAndAsyncStorage('ShowPolls')}}
-                            circleColorOff={colors.tertiary}
-                            circleColorOn={dark? colors.teritary : colors.primary}
-                            backgroundColorOn={colors.darkestBlue}
-                            backgroundColorOff={colors.borderColor}
-                            containerStyle={{
-                                width: 50,
-                                height: 28,
-                                borderRadius: 25,
-                                padding: 5,
-                            }}
-                            circleStyle={{
-                                width: 20,
-                                height: 20,
-                                borderRadius: 20,
-                            }}
-                        />
-                    </View>
-                    <View style={{flex: 2, flexDirection: 'row', marginHorizontal: 30, marginVertical: 20, justifyContent: 'space-evenly', minHeight: 30, height: 30, maxHeight: 30}}>
-                        <Text style={{color: colors.tertiary, fontSize: 18, fontWeight: 'bold'}}>Categories</Text>
-                        <SwitchToggle
-                            switchOn={showCategories}
-                            onPress={() => {setContextAndAsyncStorage('ShowCategories')}}
-                            circleColorOff={colors.tertiary}
-                            circleColorOn={dark? colors.teritary : colors.primary}
-                            backgroundColorOn={colors.darkestBlue}
-                            backgroundColorOff={colors.borderColor}
-                            containerStyle={{
-                                width: 50,
-                                height: 28,
-                                borderRadius: 25,
-                                padding: 5,
-                            }}
-                            circleStyle={{
-                                width: 20,
-                                height: 20,
-                                borderRadius: 20,
-                            }}
-                        />
+                    <View style={{flex: 2, flexDirection: 'row'}}>
+                        <View style={{flexDirection: 'column', flex: 1, alignItems: 'center'}}>
+                            <Text style={{color: colors.tertiary, fontSize: 18, fontWeight: 'bold', marginVertical: 10}}>Photos</Text>
+                            <Text style={{color: colors.tertiary, fontSize: 18, fontWeight: 'bold', marginVertical: 10}}>Videos</Text>
+                            <Text style={{color: colors.tertiary, fontSize: 18, fontWeight: 'bold', marginVertical: 10}}>Audio</Text>
+                            <Text style={{color: colors.tertiary, fontSize: 18, fontWeight: 'bold', marginVertical: 10}}>Threads</Text>
+                            <Text style={{color: colors.tertiary, fontSize: 18, fontWeight: 'bold', marginVertical: 10}}>Polls</Text>
+                            <Text style={{color: colors.tertiary, fontSize: 18, fontWeight: 'bold', marginVertical: 10}}>Categories</Text>
+                        </View>
+                        <View style={{flex: 1, flexDirection: 'column', alignItems: 'center'}}>
+                            <SwitchToggle
+                                switchOn={showPhotos}
+                                onPress={() => {setContextAndAsyncStorage('ShowPhotos')}}
+                                circleColorOff={colors.tertiary}
+                                circleColorOn={dark? colors.teritary : colors.primary}
+                                backgroundColorOn={colors.darkestBlue}
+                                backgroundColorOff={colors.borderColor}
+                                containerStyle={{
+                                    width: 50,
+                                    height: 28,
+                                    borderRadius: 25,
+                                    padding: 5,
+                                    marginVertical: 6.7
+                                }}
+                                circleStyle={{
+                                    width: 20,
+                                    height: 20,
+                                    borderRadius: 20,
+                                }}
+                            />
+                            <SwitchToggle
+                                switchOn={showVideos}
+                                onPress={() => {setContextAndAsyncStorage('ShowVideos')}}
+                                circleColorOff={colors.tertiary}
+                                circleColorOn={dark? colors.teritary : colors.primary}
+                                backgroundColorOn={colors.darkestBlue}
+                                backgroundColorOff={colors.borderColor}
+                                containerStyle={{
+                                    width: 50,
+                                    height: 28,
+                                    borderRadius: 25,
+                                    padding: 5,
+                                    marginVertical: 6.7
+                                }}
+                                circleStyle={{
+                                    width: 20,
+                                    height: 20,
+                                    borderRadius: 20,
+                                }}
+                            />
+                            <SwitchToggle
+                                switchOn={showAudio}
+                                onPress={() => {setContextAndAsyncStorage('ShowAudio')}}
+                                circleColorOff={colors.tertiary}
+                                circleColorOn={dark? colors.teritary : colors.primary}
+                                backgroundColorOn={colors.darkestBlue}
+                                backgroundColorOff={colors.borderColor}
+                                containerStyle={{
+                                    width: 50,
+                                    height: 28,
+                                    borderRadius: 25,
+                                    padding: 5,
+                                    marginVertical: 6.7
+                                }}
+                                circleStyle={{
+                                    width: 20,
+                                    height: 20,
+                                    borderRadius: 20,
+                                }}
+                            />
+                            <SwitchToggle
+                                switchOn={showThreads}
+                                onPress={() => {setContextAndAsyncStorage('ShowThreads')}}
+                                circleColorOff={colors.tertiary}
+                                circleColorOn={dark? colors.teritary : colors.primary}
+                                backgroundColorOn={colors.darkestBlue}
+                                backgroundColorOff={colors.borderColor}
+                                containerStyle={{
+                                    width: 50,
+                                    height: 28,
+                                    borderRadius: 25,
+                                    padding: 5,
+                                    marginVertical: 6.7
+                                }}
+                                circleStyle={{
+                                    width: 20,
+                                    height: 20,
+                                    borderRadius: 20,
+                                }}
+                            />
+                            <SwitchToggle
+                                switchOn={showPolls}
+                                onPress={() => {setContextAndAsyncStorage('ShowPolls')}}
+                                circleColorOff={colors.tertiary}
+                                circleColorOn={dark? colors.teritary : colors.primary}
+                                backgroundColorOn={colors.darkestBlue}
+                                backgroundColorOff={colors.borderColor}
+                                containerStyle={{
+                                    width: 50,
+                                    height: 28,
+                                    borderRadius: 25,
+                                    padding: 5,
+                                    marginVertical: 6.7
+                                }}
+                                circleStyle={{
+                                    width: 20,
+                                    height: 20,
+                                    borderRadius: 20,
+                                }}
+                            />
+                            <SwitchToggle
+                                switchOn={showCategories}
+                                onPress={() => {setContextAndAsyncStorage('ShowCategories')}}
+                                circleColorOff={colors.tertiary}
+                                circleColorOn={dark? colors.teritary : colors.primary}
+                                backgroundColorOn={colors.darkestBlue}
+                                backgroundColorOff={colors.borderColor}
+                                containerStyle={{
+                                    width: 50,
+                                    height: 28,
+                                    borderRadius: 25,
+                                    padding: 5,
+                                    marginVertical: 6.7
+                                }}
+                                circleStyle={{
+                                    width: 20,
+                                    height: 20,
+                                    borderRadius: 20,
+                                }}
+                            />
+                        </View>
                     </View>
                 </ScrollView>
             </ProfileOptionsView>
@@ -890,7 +890,20 @@ const HomeScreen = ({navigation}) => {
                 </ScrollView>
             </ReportProfileOptionsView>
             <View style={{flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
-                <Text style={{fontSize: 30, color: colors.tertiary, textAlign: 'center', fontWeight: 'bold'}}>Feed coming soon :-)</Text>
+                <Text style={{fontSize: 30, color: colors.tertiary, textAlign: 'center', fontWeight: 'bold'}}>Feed coming soon</Text>
+                <Text style={{fontSize: 80, color: colors.tertiary, textAlign: 'center', fontWeight: 'bold'}}>😀</Text>
+                <View style={{borderColor: colors.borderColor, borderWidth: 3, borderRadius: 20, padding: 30, marginHorizontal: '3%'}}>
+                    <Text style={{fontSize: 15, color: colors.tertiary, textAlign: 'center', fontWeight: 'bold'}}>If there is an ad showing in this box that means the code is working lol</Text>
+                    <Text style={{fontSize: 15, color: colors.tertiary, textAlign: 'center', fontWeight: 'bold', marginVertical: 20}}>If there is no ad then Google sucks</Text>
+                    <View style={{alignSelf: 'center'}}>
+                        <AdMobBanner
+                            bannerSize="mediumRectangle"
+                            adUnitID={AdID}
+                            servePersonalizedAds={false}
+                            onDidFailToReceiveAdWithError={(e) => {console.log(e)}}
+                        />
+                    </View>
+                </View>
             </View>
         </View>
     );

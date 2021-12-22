@@ -452,23 +452,24 @@ const SimpleStylingMenu = ({navigation, route}) => {
             console.warn(simpleStylingData)
             return
         }
-        if (forceStyle == true || SimpleStylingVersion == simpleStylingData[indexNum].stylingVersion) {
+        console.warn(simpleStylingData[indexNumToUse])
+        if (forceStyle == true || SimpleStylingVersion == simpleStylingData[indexNumToUse].stylingVersion) {
             setRefreshAppStyling(true);
-            setAppStylingContextState(indexNum.toString())
+            setAppStylingContextState(indexNumToUse.toString())
             setIndexNumStyleToRefresh(null);
             AsyncStorage.setItem('AppStylingContextState', indexNum.toString())
             setShowRefreshButton(showRefreshButton => showRefreshButton == true ? false : false)
-            if (colors.primary != simpleStylingData[indexNum].colors.primary) {
+            if (colors.primary != simpleStylingData[indexNumToUse].colors.primary) {
                 setRefreshAppStyling(true);
                 setTemp(temp => temp == 'abc' ? 'cba' : 'abc');
             }
-        } else if (SimpleStylingVersion < simpleStylingData[indexNum].stylingVersion) {
-            let stylingVersionUsed = simpleStylingData[indexNum].stylingVersion;
+        } else if (SimpleStylingVersion < simpleStylingData[indexNumToUse].stylingVersion) {
+            let stylingVersionUsed = simpleStylingData[indexNumToUse].stylingVersion;
             setVersionMismatchScreenVersion(stylingVersionUsed);
             setVersionMismatchNewerOrOlder('newer');
             setVersionMismatchScreenHidden(false);
-        } else if (simpleStylingData[indexNum].stylingVersion == undefined || SimpleStylingVersion > simpleStylingData[indexNum].stylingVersion) {
-            let stylingVersionUsed = simpleStylingData[indexNum].stylingVersion;
+        } else if (simpleStylingData[indexNumToUse].stylingVersion == undefined || SimpleStylingVersion > simpleStylingData[indexNumToUse].stylingVersion) {
+            let stylingVersionUsed = simpleStylingData[indexNumToUse].stylingVersion;
             setVersionMismatchScreenVersion(stylingVersionUsed);
             setVersionMismatchNewerOrOlder('older');
             setVersionMismatchScreenHidden(false);

@@ -1,8 +1,11 @@
 import React, {useState, useRef, useEffect} from 'react';
-import {View, Text, TouchableOpacity, Image, Dimensions} from 'react-native';
+import {View, Text, TouchableOpacity, Image, Dimensions, Alert, Platform} from 'react-native';
 import {Camera} from 'expo-camera';
 import { AntDesign, MaterialIcons } from '@expo/vector-icons';
 import { useIsFocused } from '@react-navigation/native';
+import Constants from 'expo-constants'
+import * as IntentLauncher from 'expo-intent-launcher'
+import * as Linking from 'expo-linking';
 
 const TakeImage_Camera = ({navigation, route}) => {
     const [cameraType, setCameraType] = useState(Camera.Constants.Type.back);
@@ -13,7 +16,7 @@ const TakeImage_Camera = ({navigation, route}) => {
     const [cameraPermissionsAreGranted, setCameraPermissionsAreGranted] = useState(null);
     const [microphonePermissionsAreGranted, setMicrophonePermissionsAreGranted] = useState(null);
     const [showContinueWithoutMicButton, setShowContinueWithoutMicButton] = useState(false);
-    const [allowVideo, setAllowVideo] = useState(false)
+    const [allowVideoSound, setAllowVideoSound] = useState(false)
     const [temp, setTemp] = useState('abc')
     const cameraRef = useRef()
     const {locationToGoTo} = route.params;
@@ -26,19 +29,16 @@ const TakeImage_Camera = ({navigation, route}) => {
         if (cameraRef.current) {
             const options = { quality: 1, base64: false };
             const data = await cameraRef.current.takePictureAsync(options);
-            //const source = data.base64;
             console.log(data)
             setImage(data)
 
             if (data) {
-                await cameraRef.current.pausePreview();
                 setCameraIsInPreview(true);
             }
         }
     };
 
     const retakeImage = async () => {
-        await cameraRef.current.resumePreview();
         setCameraIsInPreview(false)
     }
 
@@ -57,24 +57,72 @@ const TakeImage_Camera = ({navigation, route}) => {
     useEffect(() => {
         const checkForCameraPermissions = async () => {
             var { status } = await Camera.getCameraPermissionsAsync();
-            setCameraPermissionsAreGranted(status === 'denied' ? 'denied' : status === 'granted');
+            setCameraPermissionsAreGranted(status === 'granted');
             var { status } = await Camera.getMicrophonePermissionsAsync();
-            setMicrophonePermissionsAreGranted(status === 'denied' ? 'denied' : status === 'granted');
+            setMicrophonePermissionsAreGranted(status === 'granted');
             if (microphonePermissionsAreGranted == true && cameraPermissionsAreGranted == true) {
                 setContinueToCamera(true)
-                setAllowVideo(true)
+                setAllowVideoSound(true)
             }
         }
         checkForCameraPermissions()
     }, [])
 
+    const pkg = Constants.manifest.releaseChannel
+        ? Constants.manifest.android.package 
+        : 'host.exp.exponent'
+
     const requestPermissions = async (type) => {
         if (type == 'camera') {
             var { status } = await Camera.requestCameraPermissionsAsync();
-            setCameraPermissionsAreGranted(status === 'denied' ? 'denied' : status === 'granted');
+            setCameraPermissionsAreGranted(status === 'granted');
+            if (status == 'denied') {
+                Alert.alert(
+                    "No Camera Permission",
+                    "SocialSquare does not have camera permissions enabled. If you want to take photos or videos with your camera, please go into your device settings and enable camera permission for SocialSquare.",
+                    [
+                      { text: "Cancel", style: "cancel" },
+                      {
+                        text: "Settings",
+                        onPress: () => {
+                            if (Platform.OS === 'ios') {
+                                Linking.openURL('app-settings:')
+                            } else {
+                                IntentLauncher.startActivityAsync(
+                                    IntentLauncher.ACTION_APPLICATION_DETAILS_SETTINGS,
+                                    { data: 'package:' + pkg },
+                                )
+                            }
+                        }
+                      },
+                    ]
+                  );
+            }
         } else if (type == 'microphone') {
             var { status } = await Camera.requestMicrophonePermissionsAsync();
-            setMicrophonePermissionsAreGranted(status === 'denied' ? 'denied' : status === 'granted');
+            setMicrophonePermissionsAreGranted(status === 'granted');
+            if (status == 'denied') {
+                Alert.alert(
+                    "No Microphone Permission",
+                    "SocialSquare does not have microphone permissions enabled. If you want to record video with sound, please go into your device settings and allow SocialSquare to use your microphone",
+                    [
+                      { text: "Cancel", style: "cancel" },
+                      {
+                        text: "Settings",
+                        onPress: () => {
+                            if (Platform.OS === 'ios') {
+                                Linking.openURL('app-settings:')
+                            } else {
+                                IntentLauncher.startActivityAsync(
+                                    IntentLauncher.ACTION_APPLICATION_DETAILS_SETTINGS,
+                                    { data: 'package:' + pkg },
+                                )
+                            }
+                        }
+                      },
+                    ]
+                  );
+            }
         }
     }
 
@@ -89,20 +137,20 @@ const TakeImage_Camera = ({navigation, route}) => {
             {cameraPermissionsAreGranted == null || microphonePermissionsAreGranted == null ?
                 <View style={{width: '100%', height: '100%', backgroundColor: 'black'}}/>
             :
-                cameraPermissionsAreGranted == false || microphonePermissionsAreGranted == false  || cameraPermissionsAreGranted == 'denied' || microphonePermissionsAreGranted == 'denied' ?
+                cameraPermissionsAreGranted == false || microphonePermissionsAreGranted == false ?
                     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'black'}}>
-                        {cameraPermissionsAreGranted == 'denied' ? <TouchableOpacity onPress={() => {requestPermissions('camera')}}><Text style={{color: 'red', fontSize: 16, fontWeight: 'bold', textDecorationLine: 'underline', textDecorationColor: 'red', textAlign: 'center', marginHorizontal: 10}}>Camera permissions are disabled in device settings. Please enable camera use for SocialSquare and then press this text to be able to use this feature.</Text></TouchableOpacity> : cameraPermissionsAreGranted == false ? <TouchableOpacity onPress={() => {requestPermissions('camera')}}><Text style={{color: '#88C0D0', fontSize: 20, textDecorationLine: 'underline', textDecorationColor: '#88C0D0'}}>Enable camera permissions</Text></TouchableOpacity> : <Text style={{color: 'white', fontSize: 20, fontWeight: 'bold'}}>Camera permissions enabled ✓</Text>}
+                        {cameraPermissionsAreGranted == false ? <TouchableOpacity onPress={() => {requestPermissions('camera')}}><Text style={{color: '#88C0D0', fontSize: 20, textDecorationLine: 'underline', textDecorationColor: '#88C0D0'}}>Enable camera permissions</Text></TouchableOpacity> : <Text style={{color: 'white', fontSize: 20, fontWeight: 'bold'}}>Camera permissions enabled ✓</Text>}
                         <Space space={30}/>
-                        {microphonePermissionsAreGranted == 'denied' ? <TouchableOpacity onPress={() => {requestPermissions('microphone')}}><Text style={{color: 'red', fontSize: 16, fontWeight: 'bold', textDecorationLine: 'underline', textDecorationColor: 'red', textAlign: 'center', marginHorizontal: 10}}>Microphone permissions are disabled in device settings. Please enable microphone use for SocialSquare and then press this text to be able to use this feature.</Text></TouchableOpacity> : microphonePermissionsAreGranted == false ? <TouchableOpacity onPress={() => {requestPermissions('microphone')}}><Text style={{color: '#88C0D0', fontSize: 20, textDecorationLine: 'underline', textDecorationColor: '#88C0D0'}}>Enable Microphone permissions</Text></TouchableOpacity> : <Text style={{color: 'white', fontSize: 20, fontWeight: 'bold'}}>Microphone permissions enabled ✓</Text>}
-                        {cameraPermissionsAreGranted == true && microphonePermissionsAreGranted == 'denied' &&
+                        {microphonePermissionsAreGranted == false ? <TouchableOpacity onPress={() => {requestPermissions('microphone')}}><Text style={{color: '#88C0D0', fontSize: 20, textDecorationLine: 'underline', textDecorationColor: '#88C0D0'}}>Enable microphone permissions</Text></TouchableOpacity> : <Text style={{color: 'white', fontSize: 20, fontWeight: 'bold'}}>Microphone permissions enabled ✓</Text>}
+                        {cameraPermissionsAreGranted == true && microphonePermissionsAreGranted == false &&
                             <>
                                 <Space space={80}/>
                                 <TouchableOpacity onPress={() => {
                                     setMicrophonePermissionsAreGranted(true)
-                                    setAllowVideo(false)
+                                    setAllowVideoSound(false)
                                 }}>
                                     <Text style={{color: '#88C0D0', fontSize: 20, textDecorationLine: 'underline', textDecorationColor: '#88C0D0', textAlign: 'center'}}>Continue without microphone</Text>
-                                    <Text style={{color: '#88C0D0', fontSize: 20, textDecorationLine: 'underline', textDecorationColor: '#88C0D0', textAlign: 'center'}}>(Video won't work)</Text>
+                                    <Text style={{color: '#88C0D0', fontSize: 20, textAlign: 'center'}}>(Video will be muted)</Text>
                                 </TouchableOpacity>
                             </>
                         }
@@ -111,7 +159,11 @@ const TakeImage_Camera = ({navigation, route}) => {
                     showCamera == true ?
                         <>
                             <View style={{height: screenHeight / 4, minHeight: screenHeight / 4, maxHeight: screenHeight / 4, backgroundColor: 'black'}}/>
-                            <Camera style={{flex: 1, width: screenWidth, minWidth: screenWidth, maxWidth: screenWidth, height: screenWidth, minHeight: screenWidth, maxHeight: screenWidth}} type={cameraType} ratio={'1:1'} onCameraReady={() => {setCameraIsReady(true)}} ref={cameraRef}/>
+                            {cameraIsInPreview == false ?
+                                <Camera style={{flex: 1, width: screenWidth, minWidth: screenWidth, maxWidth: screenWidth, height: screenWidth, minHeight: screenWidth, maxHeight: screenWidth}} type={cameraType} ratio={'1:1'} onCameraReady={() => {setCameraIsReady(true)}} ref={cameraRef}/>
+                            :
+                                <Image style={{width: screenWidth, height: screenWidth}} source={{uri: image.uri}}/>
+                            }
                             <View style={{flex: 1, backgroundColor: 'black', flexDirection: 'row'}}>
                                 {cameraIsInPreview == false &&
                                     <>

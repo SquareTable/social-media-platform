@@ -24,13 +24,16 @@ import { PanGestureHandler, State } from 'react-native-gesture-handler';
 import { 
   Avatar 
 } from './screens/screenStylings/styling.js';
+import { ProfilePictureURIContext } from './components/ProfilePictureURIContext.js';
+import NetInfo from "@react-native-community/netinfo";
+import axios from 'axios';
 
 const Stack = createStackNavigator();
 
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
-    shouldShowAlert: true,
+    shouldShowAlert: false,
     shouldPlaySound: false,
     shouldSetBadge: false,
   }),
@@ -40,6 +43,7 @@ const App = () => {
   const [AppStylingContextState, setAppStylingContextState] = useState(null)
   const [AdID, setAdID] = useState('');
   const [refreshAppStyling, setRefreshAppStyling] = useState(false);
+  const [profilePictureUri, setProfilePictureUri] = useState(SocialSquareLogo_B64_png)
   const [AsyncStorageSimpleStylingData, setAsyncStorageSimpleStylingData] = useState()
   const [currentSimpleStylingData, setCurrentSimpleStylingData] = useState()
   const testID = Platform.OS == "ios" ? 'ca-app-pub-3940256099942544/2934735716' : 'ca-app-pub-3940256099942544/6300978111';
@@ -96,6 +100,7 @@ const App = () => {
     // This listener is fired whenever a notification is received while the app is foregrounded
     notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
       setNotification(notification);
+      console.log(notification)
     });
 
     // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
@@ -108,6 +113,25 @@ const App = () => {
       Notifications.removeNotificationSubscription(responseListener.current);
     };
   }, []);
+
+  useEffect(() => {
+    if (notification != false) {
+      Vibration.vibrate()
+      Animated.sequence([
+        Animated.timing(GoDownByY, {
+          toValue: StatusBarHeight - 40,
+          duration: 100,
+          useNativeDriver: true
+        }),
+        Animated.delay(5000),
+        Animated.timing(GoDownByY, {
+          toValue: StatusBarHeight - 200,
+          duration: 300,
+          useNativeDriver: true
+        }),
+      ]).start();
+    }
+  }, [notification])
 
   const [isReady, setIsReady] = useState(false);
   const scheme = useColorScheme();
@@ -285,9 +309,10 @@ const App = () => {
     getAsyncSimpleStyling()
     setCurrentSimpleStylingDataToStyle(AppStylingContextState)
   }
+  
+  let GoDownByY = useRef(new Animated.Value(StatusBarHeight - 200)).current;
 
   const NotificationBox = () => {
-    let GoDownByY = new Animated.Value(StatusBarHeight - 40);
     const onPanGestureEvent = Animated.event(
       [
         {
@@ -314,11 +339,19 @@ const App = () => {
             useNativeDriver: true
           }).start();
         } else {
-          Animated.timing(GoDownByY, {
-            toValue: StatusBarHeight - 40,
-            duration: 100,
-            useNativeDriver: true
-          }).start();
+          Animated.sequence([
+            Animated.timing(GoDownByY, {
+              toValue: StatusBarHeight - 40,
+              duration: 100,
+              useNativeDriver: true
+            }),
+            Animated.delay(3000),
+            Animated.timing(GoDownByY, {
+              toValue: -100,
+              duration: 100,
+              useNativeDriver: true
+            })
+          ]).start();
         }
       }
     }
@@ -327,17 +360,95 @@ const App = () => {
         <Animated.View style={{backgroundColor: 'rgba(0, 0, 0, 0.8)', height: 60, width: '90%', position: 'absolute', zIndex: 1000, top: 40, marginHorizontal: '5%', flexDirection: 'row', borderColor: 'black', borderRadius: 15, borderWidth: 1, transform: [{translateY: GoDownByY.interpolate({inputRange: [0, 10], outputRange: [0, 10]})}]}}>
           <TouchableOpacity onPress={NotificationPressed} style={{flexDirection: 'row'}}>
             <View style={{width: '20%', minWidth: '20%', maxWidth: '20%', justifyContent: 'center', alignItems: 'center'}}>
-              <Avatar style={{width: 40, height: 40}} resizeMode="cover" source={{uri: SocialSquareLogo_B64_png}}/>
+              <Avatar style={{width: 40, height: 40}} resizeMode="cover" source={{uri: notification != false ? notification.request.content.data.profilePicture : SocialSquareLogo_B64_png}}/>
             </View>
             <View style={{width: '80%', minWidth: '80%', maxWidth: '80%'}}>
-              <Text numberOfLines={1} style={{color: 'white', fontSize: 16, fontWeight: 'bold', marginRight: 15}}>SebTheMan</Text>
-              <Text numberOfLines={2} style={{color: 'white', fontSize: 14, marginTop: 2, marginRight: 15}}>Ayo guys are we still going to go to the mall today?</Text>
+              <Text numberOfLines={1} style={{color: 'white', fontSize: 16, fontWeight: 'bold', marginRight: 15}}>{notification != false ? notification.request.content.title : 'No Notification Data'}</Text>
+              <Text numberOfLines={2} style={{color: 'white', fontSize: 14, marginTop: 2, marginRight: 15}}>{notification != false ? notification.request.content.body : 'No Notification Data'}</Text>
             </View>
           </TouchableOpacity>
         </Animated.View>
       </PanGestureHandler>
     )
   }
+
+  useEffect(() => {
+    async function refreshProfilePictureContext() {
+      const getProfilePicture = () => {
+        const url = `https://nameless-dawn-41038.herokuapp.com/user/getProfilePic/${storedCredentials.name}`;
+
+        axios.get(url).then((response) => {
+            const result = response.data;
+            const {message, status, data} = result;
+
+            if (status !== 'SUCCESS') {
+                console.warn('GETTING PROFILE PICTURE FOR ProfilePictureUriContext WAS NOT A SUCCESS')
+                console.log(status)
+                console.log(message)
+            } else {
+                console.log(status)
+                console.log(message)
+                axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${data}`)
+                .then((response) => {
+                    const result = response.data;
+                    const {message, status, data} = result;
+                    console.log(status)
+                    console.log(message)
+                    console.log(data)
+                    //set image
+                    if (message == 'No profile image.' && status == 'FAILED') {
+                        console.log('Setting logo to SocialSquare logo')
+                        setProfilePictureUri(SocialSquareLogo_B64_png)
+                    } else if (data) {
+                        //convert back to image
+                        console.log('Setting logo in tab bar to profile logo')
+                        var base64Icon = `data:image/jpg;base64,${data}`
+                        setProfilePictureUri(base64Icon)
+                        const SetUserPfpToAsyncStorage = async () => {await AsyncStorage.setItem('UserProfilePicture', base64Icon)}
+                        SetUserPfpToAsyncStorage()
+                    } else {
+                        console.log('Setting logo to SocialSquare logo')
+                        setProfilePictureUri(SocialSquareLogo_B64_png)
+                    }
+                })
+                .catch(function (error) {
+                    console.log("Image not recieved")
+                    console.log(error);
+                });
+            }
+            //setSubmitting(false);
+
+        }).catch(error => {
+            console.log(error);
+            //setSubmitting(false);
+            handleMessage("An error occured. Try checking your network connection and retry.");
+        })
+      }
+      if (await AsyncStorage.getItem('UserProfilePicture') != null) {
+        console.log('Setting ProfilePictureUri context to profile picture in Async Storage')
+        setProfilePictureUri(await AsyncStorage.getItem('UserProfilePicture'))
+      } else {
+        NetInfo.fetch().then(state => {
+          console.log("Connection type", state.type);
+          console.log("Is connected?", state.isConnected);
+          if (state.isConnected == true) {
+            if (storedCredentials) {
+              console.log('There is no profile picture in AsyncStorage. Loading profile picture for ProfilePictureUri Context using internet connection')
+              getProfilePicture()
+            } else {
+              console.log('There is no stored credentials and no profile picture in Async Storage. Setting ProfilePictureUri to SocialSquareB64Logo')
+              setProfilePictureUri(SocialSquareLogo_B64_png)
+            }
+          } else {
+            console.log('There is no internet connection and no saved profile picture in Async Storage. Setting ProfilePictureUri to SocialSquareB64Logo')
+            setProfilePictureUri(SocialSquareLogo_B64_png)
+          }
+        });
+      }
+    }
+    console.log('Getting profile picture for ProfilePictureUriContext')
+    refreshProfilePictureContext()
+  }, [storedCredentials])
 
   if (isReady == false) {
     async function cacheResourcesAsync() {
@@ -409,6 +520,77 @@ const App = () => {
         require('./assets/appstyling_darkmode.png'),
         require('./assets/appstyling_lightmode.png'),
       ];
+
+      const getProfilePicture = () => {
+        const url = `https://nameless-dawn-41038.herokuapp.com/user/getProfilePic/${storedCredentials.name}`;
+
+        axios.get(url).then((response) => {
+            const result = response.data;
+            const {message, status, data} = result;
+
+            if (status !== 'SUCCESS') {
+                console.log('GETTING PROFILE PICTURE FOR TABS.JS WAS NOT A SUCCESS')
+                console.log(status)
+                console.log(message)
+            } else {
+                console.log(status)
+                console.log(message)
+                axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${data}`)
+                .then((response) => {
+                    const result = response.data;
+                    const {message, status, data} = result;
+                    console.log(status)
+                    console.log(message)
+                    console.log(data)
+                    //set image
+                    if (message == 'No profile image.' && status == 'FAILED') {
+                        console.log('Setting logo to SocialSquare logo')
+                        setProfilePictureUri(SocialSquareLogo_B64_png)
+                    } else if (data) {
+                        //convert back to image
+                        console.log('Setting logo in tab bar to profile logo')
+                        var base64Icon = `data:image/jpg;base64,${data}`
+                        setProfilePictureUri(base64Icon)
+                        const SetUserPfpToAsyncStorage = async () => {await AsyncStorage.setItem('UserProfilePicture', base64Icon)}
+                        SetUserPfpToAsyncStorage()
+                    } else {
+                        console.log('Setting logo to SocialSquare logo')
+                        setProfilePictureUri(SocialSquareLogo_B64_png)
+                    }
+                })
+                .catch(function (error) {
+                    console.log("Image not recieved")
+                    console.log(error);
+                });
+            }
+            //setSubmitting(false);
+
+        }).catch(error => {
+            console.log(error);
+        })
+      }
+
+      if (await AsyncStorage.getItem('UserProfilePicture') != null) {
+        console.log('Setting ProfilePictureUri context to profile picture in Async Storage')
+        setProfilePictureUri(await AsyncStorage.getItem('UserProfilePicture'))
+      } else {
+        NetInfo.fetch().then(state => {
+          console.log("Connection type", state.type);
+          console.log("Is connected?", state.isConnected);
+          if (state.isConnected == true) {
+            if (storedCredentials) {
+              console.log('There is no profile picture in AsyncStorage. Loading profile picture for ProfilePictureUri Context using internet connection')
+              getProfilePicture()
+            } else {
+              console.log('There is no stored credentials and no profile picture in Async Storage. Setting ProfilePictureUri to SocialSquareB64Logo')
+              setProfilePictureUri(SocialSquareLogo_B64_png)
+            }
+          } else {
+            console.log('There is no internet connection and no saved profile picture in Async Storage. Setting ProfilePictureUri to SocialSquareB64Logo')
+            setProfilePictureUri(SocialSquareLogo_B64_png)
+          }
+        });
+      }
   
       const cacheImages = images.map(image => {
         return Asset.fromModule(image).downloadAsync();
@@ -431,13 +613,15 @@ const App = () => {
         <AdIDContext.Provider value={{AdID, setAdID}}>
           <AppStylingContext.Provider value={{AppStylingContextState, setAppStylingContextState}}>
             <RefreshAppStylingContext.Provider value={{refreshAppStyling, setRefreshAppStyling}}>
-              {AppStylingContextState != 'Default' && AppStylingContextState != 'Light' && AppStylingContextState != 'Dark' && AppStylingContextState != 'PureDark' && AppStylingContextState != 'PureLight' ? previousStylingState.current != AppStylingContextState ? setCurrentSimpleStylingDataToStyle(AppStylingContextState) : null : null}
-              <AppearanceProvider>
-                <NavigationContainer theme={AppStylingContextState == 'Default' ? scheme === 'dark' ? AppDarkTheme : AppLightTheme : AppStylingContextState == 'Dark' ? AppDarkTheme : AppStylingContextState == 'Light' ? AppLightTheme : AppStylingContextState == 'PureDark' ? AppPureDarkTheme : AppStylingContextState == 'PureLight' ? AppPureLightTheme : currentSimpleStylingData} onStateChange={() => {console.log('Screen changed')}}>
-                  {/*<NotificationBox/>*/}
-                  <Start_Stack/>
-                </NavigationContainer>
-              </AppearanceProvider>
+              <ProfilePictureURIContext.Provider value={{profilePictureUri, setProfilePictureUri}}>
+                {AppStylingContextState != 'Default' && AppStylingContextState != 'Light' && AppStylingContextState != 'Dark' && AppStylingContextState != 'PureDark' && AppStylingContextState != 'PureLight' ? previousStylingState.current != AppStylingContextState ? setCurrentSimpleStylingDataToStyle(AppStylingContextState) : null : null}
+                <AppearanceProvider>
+                  <NavigationContainer theme={AppStylingContextState == 'Default' ? scheme === 'dark' ? AppDarkTheme : AppLightTheme : AppStylingContextState == 'Dark' ? AppDarkTheme : AppStylingContextState == 'Light' ? AppLightTheme : AppStylingContextState == 'PureDark' ? AppPureDarkTheme : AppStylingContextState == 'PureLight' ? AppPureLightTheme : currentSimpleStylingData} onStateChange={() => {console.log('Screen changed')}}>
+                    <NotificationBox/>
+                    <Start_Stack/>
+                  </NavigationContainer>
+                </AppearanceProvider>
+              </ProfilePictureURIContext.Provider>
             </RefreshAppStylingContext.Provider>
           </AppStylingContext.Provider>
         </AdIDContext.Provider>

@@ -1,6 +1,5 @@
 import React, {useContext, useState} from 'react';
 import { StatusBar } from 'expo-status-bar';
-import * as Haptics from 'expo-haptics';
 
 import {
     WelcomeContainer,
@@ -21,89 +20,13 @@ import {
     TestText
 } from '../screens/screenStylings/styling.js';
 import {useTheme} from "@react-navigation/native";
-
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-
-// async-storage
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-//credentials context
-import { CredentialsContext } from '../components/CredentialsContext';
 import { ImageBackground, ScrollView, Text, TouchableOpacity, View, Image } from 'react-native';
-import * as Linking from 'expo-linking';
-import SocialSquareLogo_B64_png from '../assets/SocialSquareLogo_Base64_png.js';
+import { ProfilePictureURIContext } from '../components/ProfilePictureURIContext.js';
 
 
 const NotificationsSettingsScreen = ({navigation}) => {
-     //context
-    const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
-    if (storedCredentials) {var {name, email, photoUrl} = storedCredentials}
-    const [AvatarImg, setAvatarImage] = useState(SocialSquareLogo_B64_png)
     const {colors, dark} = useTheme();
-
-    const getProfilePicture = () => {
-        const url = `https://nameless-dawn-41038.herokuapp.com/user/getProfilePic/${name}`;
-
-        axios.get(url).then((response) => {
-            const result = response.data;
-            const {message, status, data} = result;
-
-            if (status !== 'SUCCESS') {
-                handleMessage(message, status);
-                console.log(status)
-                console.log(message)
-            } else {
-                console.log(status)
-                console.log(message)
-                axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${data}`)
-                .then((response) => {
-                    const result = response.data;
-                    const {message, status, data} = result;
-                    console.log(status)
-                    console.log(message)
-                    console.log(data)
-                    //set image
-                    if (message == 'No profile image.' && status == 'FAILED') {
-                        console.log('Setting logo to SocialSquare logo')
-                        setAvatarImage(SocialSquareLogo_B64_png)
-                    } else if (data) {
-                        //convert back to image
-                        console.log('Setting logo to profile logo')
-                        var base64Icon = `data:image/jpg;base64,${data}`
-                        setAvatarImage(base64Icon)
-                        AsyncStorage.setItem('UserProfilePicture', base64Icon)
-                    } else {
-                        console.log('Setting logo to SocialSquare logo')
-                        setAvatarImage(SocialSquareLogo_B64_png)
-                    }
-                })
-                .catch(function (error) {
-                    console.log("Image not recieved")
-                    console.log(error);
-                });
-            }
-            //setSubmitting(false);
-
-        }).catch(error => {
-            console.log(error);
-            //setSubmitting(false);
-            handleMessage("An error occured. Try checking your network connection and retry.");
-        })
-    }
-
-    const checkForUserProfilePictureFromAsyncStorage = async () => {
-        const image = await AsyncStorage.getItem('UserProfilePicture')
-        if (image == null) {
-            getProfilePicture()
-            console.log('Getting profile picture from server from SecuritySettingsScreen.js')
-        } else {
-            setAvatarImage(image)
-            console.log('Getting profile picture from AsyncStorage from SecuritySettingsScreen.js')
-        }
-    }
-
-    checkForUserProfilePictureFromAsyncStorage()
-
+    const {profilePictureUri, setProfilePictureUri} = useContext(ProfilePictureURIContext)
     return(
         <> 
             <StatusBar style={colors.StatusBarColor}/>   
@@ -121,7 +44,7 @@ const NotificationsSettingsScreen = ({navigation}) => {
                 </ChatScreen_Title>
                 <ScrollView>
                     <WelcomeContainer style={{backgroundColor: colors.primary, marginTop: -50}}>
-                        <Avatar resizeMode="cover" source={{uri: AvatarImg}} />
+                        <Avatar resizeMode="cover" source={{uri: profilePictureUri}} />
                         <Text style={{fontSize: 30, fontWeight: 'bold', color: colors.tertiary}}>Coming soon :0</Text>
                         <Text style={{fontSize: 100, fontWeight: 'bold', color: colors.tertiary}}>🚧</Text>
                         <Text style={{color: colors.tertiary, fontSize: 24, textAlign: 'center'}}>© SquareTable 2021</Text>

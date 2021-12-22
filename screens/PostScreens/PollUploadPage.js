@@ -1,4 +1,4 @@
-import React, {useState, useContext, useEffect} from 'react';
+import React, {useState, useContext, useEffect, useRef} from 'react';
 
 import { StatusBar } from 'expo-status-bar';
 
@@ -61,6 +61,7 @@ import styled from 'styled-components';
 import { set } from 'react-native-reanimated';
 
 import { useTheme } from '@react-navigation/native';
+import KeyboardAvoidingWrapper_NoScrollview from '../../components/KeyboardAvoidingWrapper_NoScrollview.js';
 
 
 const PollUploadPage = ({navigation}) => {
@@ -232,608 +233,624 @@ const PollUploadPage = ({navigation}) => {
         setMessageType(type);
     }
 
+    const scrollViewRef = useRef()
+    const scrollAmount = useRef()
+
+    const onScroll = (event) => {
+        var test = event.nativeEvent.contentOffset.y;
+        scrollAmount.current = test;
+    }
+
     return(
-        <KeyboardAvoidingWrapper style={{backgroundColor: colors.primary}}>
-            <StyledContainer style={{backgroundColor: colors.primary}}>
-                    <StatusBar style={dark ? 'light' : 'dark'}/>
-                    <InnerContainer>
-                        <PageLogo style={{tintColor: colors.tertiary}} source={require('./../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/157-stats-bars.png')} />
-                        
-                        <PageTitle>Create Poll</PageTitle>
-                        <Formik
-                            initialValues={{pollTitle: "", pollSubTitle: "", optionOne: "", optionOnesColor: "Not Specified", optionTwo: "", optionTwosColor: "Not Specified", optionThree: "", optionThreesColor: "Not Specified", optionFour: "", optionFoursColor: "Not Specified", optionFive: "", optionFivesColor: "Not Specified", optionSix: "", optionSixesColor: "Not Specified", totalNumberOfOptions: "Two", pollCreatorId: _id}}
-                            onSubmit={(values, {setSubmitting}) => {
-                                if (values.pollTitle == "" || values.pollSubTitle == "" || values.optionOne == "" || values.optionTwo == "") {
-                                    handleMessage('Please fill all the fields.');
-                                    setSubmitting(false);
-                                } else {
-                                    handleCreatePost(values, setSubmitting);
-                                }
-                            }}
-                        >
-                            {({handleChange, handleBlur, handleSubmit, values, isSubmitting}) => (
-                                <StyledFormArea theOutline={true}>
-                                    <UserTextInput
-                                        label="Poll Title"
-                                        icon="note"
-                                        placeholder=""
-                                        placeholderTextColor={colors.tertiary}
-                                        onChangeText={handleChange('pollTitle')}
-                                        onBlur={handleBlur('pollTitle')}
-                                        value={values.pollTitle}
-                                        style={{color: colors.tertiary, backgroundColor: colors.primary}}
-                                    />
-                                    <UserTextInput
-                                        label="Poll Subtitle"
-                                        icon="note"
-                                        placeholder=""
-                                        placeholderTextColor={colors.tertiary}
-                                        onChangeText={handleChange('pollSubTitle')}
-                                        onBlur={handleBlur('pollSubTitle')}
-                                        value={values.pollSubTitle}
-                                        style={{color: colors.tertiary, backgroundColor: colors.primary}}
-                                    />
-                                    <AboveButtonText style={{color: colors.tertiary}}>Poll Options</AboveButtonText>
-                                    <UserTextInput
-                                        label="Option One"
-                                        icon="pencil"
-                                        placeholder=""
-                                        placeholderTextColor={colors.tertiary}
-                                        isOptionOne={true}
-                                        onChangeText={handleChange('optionOne')}
-                                        onBlur={handleBlur('optionOne')}
-                                        value={values.optionOne}
-                                        setOptionOneColor={setOptionOneColor}
-                                        setOptionOneColorChangeViewVisible={setOptionOneColorChangeViewVisible}
-                                        style={{borderColor: optionOneColor !== '' ? eval(optionOneColor.toLowerCase()) : brand, backgroundColor: colors.primary, color: colors.tertiary}}
-                                        optionOneColor={optionOneColor}
-                                    />
-                                    <ChangePollOptionColorView style={{backgroundColor: colors.primary}} viewHidden={optionOneColorChangeViewVisible}>
-                                        <ChangePollOptionColorText style={{color: colors.tertiary}}>Associate with color:</ChangePollOptionColorText>
-                                        <PostHorizontalView>
-                                            <RedCheckBoxForColor style={{borderColor: optionOneColor == 'Red' ? brand : colors.tertiary}} selectedState={optionOneColor} 
-                                            onPress={() => {
-                                                if (values.optionOnesColor !== "Red") {
-                                                    values.optionOnesColor = "Red"
-                                                    setOptionOneColor("Red")
-                                                    console.log(values.optionOnesColor)
-                                                } else {
-                                                    values.optionOnesColor = "Not Specified"
-                                                    setOptionOneColor("")
-                                                    console.log(values.optionOnesColor)
-                                                }
-                                            }}></RedCheckBoxForColor>
-                                            <OrangeCheckBoxForColor style={{borderColor: optionOneColor == 'Orange' ? brand : colors.tertiary}} selectedState={optionOneColor} 
-                                            onPress={() => {
-                                                if (values.optionOnesColor !== "Orange") {
-                                                    values.optionOnesColor = "Orange"
-                                                    setOptionOneColor("Orange")
-                                                    console.log(values.optionOnesColor)
-                                                } else {
-                                                    values.optionOnesColor = "Not Specified"
-                                                    setOptionOneColor("")
-                                                    console.log(values.optionOnesColor)
-                                                }
-                                            }}></OrangeCheckBoxForColor>
-                                            <YellowCheckBoxForColor style={{borderColor: optionOneColor == 'Yellow' ? brand : colors.tertiary}} selectedState={optionOneColor} 
-                                            onPress={() => {
-                                                if (values.optionOnesColor !== "Yellow") {
-                                                    values.optionOnesColor = "Yellow"
-                                                    setOptionOneColor("Yellow")
-                                                    console.log(values.optionOnesColor)
-                                                } else {
-                                                    values.optionOnesColor = "Not Specified"
-                                                    setOptionOneColor("")
-                                                    console.log(values.optionOnesColor)
-                                                }
-                                            }}></YellowCheckBoxForColor>
-                                            <GreenCheckBoxForColor style={{borderColor: optionOneColor == 'Green' ? brand : colors.tertiary}} selectedState={optionOneColor} 
-                                            onPress={() => {
-                                                if (values.optionOnesColor !== "Green") {
-                                                    values.optionOnesColor = "Green"
-                                                    setOptionOneColor("Green")
-                                                    console.log(values.optionOnesColor)
-                                                } else {
-                                                    values.optionOnesColor = "Not Specified"
-                                                    setOptionOneColor("")
-                                                    console.log(values.optionOnesColor)
-                                                }
-                                            }}></GreenCheckBoxForColor>
-                                            <PurpleCheckBoxForColor style={{borderColor: optionOneColor == 'Purple' ? brand : colors.tertiary}} selectedState={optionOneColor} 
-                                            onPress={() => {
-                                                if (values.optionOnesColor !== "Purple") {
-                                                    values.optionOnesColor = "Purple"
-                                                    setOptionOneColor("Purple")
-                                                    console.log(values.optionOnesColor)
-                                                } else {
-                                                    values.optionOnesColor = "Not Specified"
-                                                    setOptionOneColor("")
-                                                    console.log(values.optionOnesColor)
-                                                }
-                                            }}></PurpleCheckBoxForColor>
-                                        </PostHorizontalView>
-                                        <ChangePollOptionColorButtons cancelButton={true} onPress={changePollOneColorChangeView}>
-                                            <ChangePollOptionColorButtonText cancelButton={true}>Close</ChangePollOptionColorButtonText>
-                                        </ChangePollOptionColorButtons> 
-                                    </ChangePollOptionColorView>
-                                    <UserTextInput
-                                        label="Option Two"
-                                        icon="pencil"
-                                        placeholder=""
-                                        placeholderTextColor={tertiary}
-                                        isOptionTwo={true}
-                                        onChangeText={handleChange('optionTwo')}
-                                        onBlur={handleBlur('optionTwo')}
-                                        value={values.optionTwo}
-                                        setOptionTwoColor={setOptionTwoColor}
-                                        setOptionTwoColorChangeViewVisible={setOptionTwoColorChangeViewVisible}
-                                        style={{borderColor: optionTwoColor !== '' ? eval(optionTwoColor.toLowerCase()) : brand, backgroundColor: colors.primary, color: colors.tertiary}}
-                                        optionTwoColor={optionTwoColor}
-                                    />
-                                    <ChangePollOptionColorView style={{backgroundColor: colors.primary}} viewHidden={optionTwoColorChangeViewVisible}>
-                                        <ChangePollOptionColorText style={{color: colors.tertiary}}>Associate with color:</ChangePollOptionColorText>
-                                        <PostHorizontalView>
-                                            <RedCheckBoxForColor style={{borderColor: optionTwoColor == 'Red' ? brand : colors.tertiary}} selectedState={optionTwoColor} 
-                                            onPress={() => {
-                                                if (values.optionTwosColor !== "Red") {
-                                                    values.optionTwosColor = "Red"
-                                                    setOptionTwoColor("Red")
-                                                    console.log(values.optionTwosColor)
-                                                } else {
-                                                    values.optionTwosColor = "Not Specified"
-                                                    setOptionTwoColor("")
-                                                    console.log(values.optionTwosColor)
-                                                }
-                                            }}></RedCheckBoxForColor>
-                                            <OrangeCheckBoxForColor style={{borderColor: optionTwoColor == 'Orange' ? brand : colors.tertiary}} selectedState={optionTwoColor} 
-                                            onPress={() => {
-                                                if (values.optionTwosColor !== "Orange") {
-                                                    values.optionTwosColor = "Orange"
-                                                    setOptionTwoColor("Orange")
-                                                    console.log(values.optionTwosColor)
-                                                } else {
-                                                    values.optionTwosColor = "Not Specified"
-                                                    setOptionTwoColor("")
-                                                    console.log(values.optionTwosColor)
-                                                }
-                                            }}></OrangeCheckBoxForColor>
-                                            <YellowCheckBoxForColor style={{borderColor: optionTwoColor == 'Yellow' ? brand : colors.tertiary}} selectedState={optionTwoColor} 
-                                            onPress={() => {
-                                                if (values.optionTwosColor !== "Yellow") {
-                                                    values.optionTwosColor = "Yellow"
-                                                    setOptionTwoColor("Yellow")
-                                                    console.log(values.optionTwosColor)
-                                                } else {
-                                                    values.optionTwosColor = "Not Specified"
-                                                    setOptionTwoColor("")
-                                                    console.log(values.optionTwosColor)
-                                                }
-                                            }}></YellowCheckBoxForColor>
-                                            <GreenCheckBoxForColor style={{borderColor: optionTwoColor == 'Green' ? brand : colors.tertiary}} selectedState={optionTwoColor} 
-                                            onPress={() => {
-                                                if (values.optionTwosColor !== "Green") {
-                                                    values.optionTwosColor = "Green"
-                                                    setOptionTwoColor("Green")
-                                                    console.log(values.optionTwosColor)
-                                                } else {
-                                                    values.optionTwosColor = "Not Specified"
-                                                    setOptionTwoColor("")
-                                                    console.log(values.optionTwosColor)
-                                                }
-                                            }}></GreenCheckBoxForColor>
-                                            <PurpleCheckBoxForColor style={{borderColor: optionTwoColor == 'Purple' ? brand : colors.tertiary}} selectedState={optionTwoColor} 
-                                            onPress={() => {
-                                                if (values.optionTwosColor !== "Purple") {
-                                                    values.optionTwosColor = "Purple"
-                                                    setOptionTwoColor("Purple")
-                                                    console.log(values.optionTwosColor)
-                                                } else {
-                                                    values.optionTwosColor = "Not Specified"
-                                                    setOptionTwoColor("")
-                                                    console.log(values.optionTwosColor)
-                                                }
-                                            }}></PurpleCheckBoxForColor>
-                                        </PostHorizontalView>
-                                        <ChangePollOptionColorButtons cancelButton={true} onPress={changePollTwoColorChangeView}>
-                                            <ChangePollOptionColorButtonText cancelButton={true}>Close</ChangePollOptionColorButtonText>
-                                        </ChangePollOptionColorButtons> 
-                                    </ChangePollOptionColorView>
-                                    <StyledFormArea visibility={optionThreeVisible}>
+        <KeyboardAvoidingWrapper_NoScrollview style={{backgroundColor: colors.primary}}>
+            <ScrollView ref={scrollViewRef} onScroll={onScroll} scrollEventThrottle={200}>
+                <StyledContainer style={{backgroundColor: colors.primary}}>
+                        <StatusBar style={dark ? 'light' : 'dark'}/>
+                        <InnerContainer>
+                            <PageLogo style={{tintColor: colors.tertiary}} source={require('./../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/157-stats-bars.png')} />
+                            
+                            <PageTitle>Create Poll</PageTitle>
+                            <Formik
+                                initialValues={{pollTitle: "", pollSubTitle: "", optionOne: "", optionOnesColor: "Not Specified", optionTwo: "", optionTwosColor: "Not Specified", optionThree: "", optionThreesColor: "Not Specified", optionFour: "", optionFoursColor: "Not Specified", optionFive: "", optionFivesColor: "Not Specified", optionSix: "", optionSixesColor: "Not Specified", totalNumberOfOptions: "Two", pollCreatorId: _id}}
+                                onSubmit={(values, {setSubmitting}) => {
+                                    if (values.pollTitle == "" || values.pollSubTitle == "" || values.optionOne == "" || values.optionTwo == "") {
+                                        handleMessage('Please fill all the fields.');
+                                        setSubmitting(false);
+                                    } else {
+                                        handleCreatePost(values, setSubmitting);
+                                    }
+                                }}
+                            >
+                                {({handleChange, handleBlur, handleSubmit, values, isSubmitting}) => (
+                                    <StyledFormArea theOutline={true}>
                                         <UserTextInput
-                                            label="Option Three"
+                                            label="Poll Title"
+                                            icon="note"
+                                            placeholder=""
+                                            placeholderTextColor={colors.tertiary}
+                                            onChangeText={handleChange('pollTitle')}
+                                            onBlur={handleBlur('pollTitle')}
+                                            value={values.pollTitle}
+                                            style={{color: colors.tertiary, backgroundColor: colors.primary}}
+                                        />
+                                        <UserTextInput
+                                            label="Poll Subtitle"
+                                            icon="note"
+                                            placeholder=""
+                                            placeholderTextColor={colors.tertiary}
+                                            onChangeText={handleChange('pollSubTitle')}
+                                            onBlur={handleBlur('pollSubTitle')}
+                                            value={values.pollSubTitle}
+                                            style={{color: colors.tertiary, backgroundColor: colors.primary}}
+                                        />
+                                        <AboveButtonText style={{color: colors.tertiary}}>Poll Options</AboveButtonText>
+                                        <UserTextInput
+                                            label="Option One"
                                             icon="pencil"
                                             placeholder=""
-                                            placeholderTextColor={tertiary}
-                                            isOptionThree={true}
-                                            onChangeText={handleChange('optionThree')}
-                                            onBlur={handleBlur('optionThree')}
-                                            value={values.optionThree}
-                                            setOptionThreeColor={setOptionThreeColor}
-                                            setOptionThreeColorChangeViewVisible={setOptionThreeColorChangeViewVisible}
-                                            style={{borderColor: optionThreeColor !== '' ? eval(optionThreeColor.toLowerCase()) : brand, backgroundColor: colors.primary, color: colors.tertiary}}
-                                            optionThreeColor={optionThreeColor}
+                                            placeholderTextColor={colors.tertiary}
+                                            isOptionOne={true}
+                                            onChangeText={handleChange('optionOne')}
+                                            onBlur={handleBlur('optionOne')}
+                                            value={values.optionOne}
+                                            setOptionOneColor={setOptionOneColor}
+                                            setOptionOneColorChangeViewVisible={setOptionOneColorChangeViewVisible}
+                                            style={{borderColor: optionOneColor !== '' ? eval(optionOneColor.toLowerCase()) : brand, backgroundColor: colors.primary, color: colors.tertiary}}
+                                            optionOneColor={optionOneColor}
                                         />
-                                        <ChangePollOptionColorView style={{backgroundColor: colors.primary}} viewHidden={optionThreeColorChangeViewVisible}>
+                                        <ChangePollOptionColorView style={{backgroundColor: colors.primary}} viewHidden={optionOneColorChangeViewVisible}>
                                             <ChangePollOptionColorText style={{color: colors.tertiary}}>Associate with color:</ChangePollOptionColorText>
                                             <PostHorizontalView>
-                                                <RedCheckBoxForColor style={{borderColor: optionThreeColor == 'Red' ? brand : colors.tertiary}} selectedState={optionThreeColor} 
+                                                <RedCheckBoxForColor style={{borderColor: optionOneColor == 'Red' ? brand : colors.tertiary}} selectedState={optionOneColor} 
                                                 onPress={() => {
-                                                    if (values.optionThreesColor !== "Red") {
-                                                        values.optionThreesColor = "Red"
-                                                        setOptionThreeColor("Red")
-                                                        console.log(values.optionThreesColor)
+                                                    if (values.optionOnesColor !== "Red") {
+                                                        values.optionOnesColor = "Red"
+                                                        setOptionOneColor("Red")
+                                                        console.log(values.optionOnesColor)
                                                     } else {
-                                                        values.optionThreesColor = "Not Specified"
-                                                        setOptionThreeColor("")
-                                                        console.log(values.optionThreesColor)
+                                                        values.optionOnesColor = "Not Specified"
+                                                        setOptionOneColor("")
+                                                        console.log(values.optionOnesColor)
                                                     }
                                                 }}></RedCheckBoxForColor>
-                                                <OrangeCheckBoxForColor style={{borderColor: optionThreeColor == 'Orange' ? brand : colors.tertiary}} selectedState={optionThreeColor} 
+                                                <OrangeCheckBoxForColor style={{borderColor: optionOneColor == 'Orange' ? brand : colors.tertiary}} selectedState={optionOneColor} 
                                                 onPress={() => {
-                                                    if (values.optionThreesColor !== "Orange") {
-                                                        values.optionThreesColor = "Orange"
-                                                        setOptionThreeColor("Orange")
-                                                        console.log(values.optionThreesColor)
+                                                    if (values.optionOnesColor !== "Orange") {
+                                                        values.optionOnesColor = "Orange"
+                                                        setOptionOneColor("Orange")
+                                                        console.log(values.optionOnesColor)
                                                     } else {
-                                                        values.optionThreesColor = "Not Specified"
-                                                        setOptionThreeColor("")
-                                                        console.log(values.optionThreesColor)
+                                                        values.optionOnesColor = "Not Specified"
+                                                        setOptionOneColor("")
+                                                        console.log(values.optionOnesColor)
                                                     }
                                                 }}></OrangeCheckBoxForColor>
-                                                <YellowCheckBoxForColor style={{borderColor: optionThreeColor == 'Yellow' ? brand : colors.tertiary}} selectedState={optionThreeColor} 
+                                                <YellowCheckBoxForColor style={{borderColor: optionOneColor == 'Yellow' ? brand : colors.tertiary}} selectedState={optionOneColor} 
                                                 onPress={() => {
-                                                    if (values.optionThreesColor !== "Yellow") {
-                                                        values.optionThreesColor = "Yellow"
-                                                        setOptionThreeColor("Yellow")
-                                                        console.log(values.optionThreesColor)
+                                                    if (values.optionOnesColor !== "Yellow") {
+                                                        values.optionOnesColor = "Yellow"
+                                                        setOptionOneColor("Yellow")
+                                                        console.log(values.optionOnesColor)
                                                     } else {
-                                                        values.optionThreesColor = "Not Specified"
-                                                        setOptionThreeColor("")
-                                                        console.log(values.optionThreesColor)
+                                                        values.optionOnesColor = "Not Specified"
+                                                        setOptionOneColor("")
+                                                        console.log(values.optionOnesColor)
                                                     }
                                                 }}></YellowCheckBoxForColor>
-                                                <GreenCheckBoxForColor style={{borderColor: optionThreeColor == 'Green' ? brand : colors.tertiary}} selectedState={optionThreeColor} 
+                                                <GreenCheckBoxForColor style={{borderColor: optionOneColor == 'Green' ? brand : colors.tertiary}} selectedState={optionOneColor} 
                                                 onPress={() => {
-                                                    if (values.optionThreesColor !== "Green") {
-                                                        values.optionThreesColor = "Green"
-                                                        setOptionThreeColor("Green")
-                                                        console.log(values.optionThreesColor)
+                                                    if (values.optionOnesColor !== "Green") {
+                                                        values.optionOnesColor = "Green"
+                                                        setOptionOneColor("Green")
+                                                        console.log(values.optionOnesColor)
                                                     } else {
-                                                        values.optionThreesColor = "Not Specified"
-                                                        setOptionThreeColor("")
-                                                        console.log(values.optionThreesColor)
+                                                        values.optionOnesColor = "Not Specified"
+                                                        setOptionOneColor("")
+                                                        console.log(values.optionOnesColor)
                                                     }
                                                 }}></GreenCheckBoxForColor>
-                                                <PurpleCheckBoxForColor style={{borderColor: optionThreeColor == 'Purple' ? brand : colors.tertiary}} selectedState={optionThreeColor} 
+                                                <PurpleCheckBoxForColor style={{borderColor: optionOneColor == 'Purple' ? brand : colors.tertiary}} selectedState={optionOneColor} 
                                                 onPress={() => {
-                                                    if (values.optionThreesColor !== "Purple") {
-                                                        values.optionThreesColor = "Purple"
-                                                        setOptionThreeColor("Purple")
-                                                        console.log(values.optionThreesColor)
+                                                    if (values.optionOnesColor !== "Purple") {
+                                                        values.optionOnesColor = "Purple"
+                                                        setOptionOneColor("Purple")
+                                                        console.log(values.optionOnesColor)
                                                     } else {
-                                                        values.optionThreesColor = "Not Specified"
-                                                        setOptionThreeColor("")
-                                                        console.log(values.optionThreesColor)
+                                                        values.optionOnesColor = "Not Specified"
+                                                        setOptionOneColor("")
+                                                        console.log(values.optionOnesColor)
                                                     }
                                                 }}></PurpleCheckBoxForColor>
                                             </PostHorizontalView>
-                                            <ChangePollOptionColorButtons cancelButton={true} onPress={changePollThreeColorChangeView}>
+                                            <ChangePollOptionColorButtons cancelButton={true} onPress={changePollOneColorChangeView}>
                                                 <ChangePollOptionColorButtonText cancelButton={true}>Close</ChangePollOptionColorButtonText>
                                             </ChangePollOptionColorButtons> 
                                         </ChangePollOptionColorView>
-                                    </StyledFormArea>
-                                    <StyledFormArea visibility={optionFourVisible}>
                                         <UserTextInput
-                                            label="Option Four"
+                                            label="Option Two"
                                             icon="pencil"
                                             placeholder=""
                                             placeholderTextColor={tertiary}
-                                            isOptionFour={true}
-                                            onChangeText={handleChange('optionFour')}
-                                            onBlur={handleBlur('optionFour')}
-                                            value={values.optionFour}
-                                            setOptionFourColor={setOptionFourColor}
-                                            setOptionFourColorChangeViewVisible={setOptionFourColorChangeViewVisible}
-                                            style={{borderColor: optionFourColor !== '' ? eval(optionFourColor.toLowerCase()) : brand, backgroundColor: colors.primary, color: colors.tertiary}}
-                                            optionFourColor={optionFourColor}
+                                            isOptionTwo={true}
+                                            onChangeText={handleChange('optionTwo')}
+                                            onBlur={handleBlur('optionTwo')}
+                                            value={values.optionTwo}
+                                            setOptionTwoColor={setOptionTwoColor}
+                                            setOptionTwoColorChangeViewVisible={setOptionTwoColorChangeViewVisible}
+                                            style={{borderColor: optionTwoColor !== '' ? eval(optionTwoColor.toLowerCase()) : brand, backgroundColor: colors.primary, color: colors.tertiary}}
+                                            optionTwoColor={optionTwoColor}
                                         />
-                                        <ChangePollOptionColorView style={{backgroundColor: colors.primary}} viewHidden={optionFourColorChangeViewVisible}>
+                                        <ChangePollOptionColorView style={{backgroundColor: colors.primary}} viewHidden={optionTwoColorChangeViewVisible}>
                                             <ChangePollOptionColorText style={{color: colors.tertiary}}>Associate with color:</ChangePollOptionColorText>
                                             <PostHorizontalView>
-                                                <RedCheckBoxForColor style={{borderColor: optionFourColor == 'Red' ? brand : colors.tertiary}} selectedState={optionFourColor} 
+                                                <RedCheckBoxForColor style={{borderColor: optionTwoColor == 'Red' ? brand : colors.tertiary}} selectedState={optionTwoColor} 
                                                 onPress={() => {
-                                                    if (values.optionFoursColor !== "Red") {
-                                                        values.optionFoursColor = "Red"
-                                                        setOptionFourColor("Red")
-                                                        console.log(values.optionFoursColor)
+                                                    if (values.optionTwosColor !== "Red") {
+                                                        values.optionTwosColor = "Red"
+                                                        setOptionTwoColor("Red")
+                                                        console.log(values.optionTwosColor)
                                                     } else {
-                                                        values.optionFoursColor = "Not Specified"
-                                                        setOptionFourColor("")
-                                                        console.log(values.optionFoursColor)
+                                                        values.optionTwosColor = "Not Specified"
+                                                        setOptionTwoColor("")
+                                                        console.log(values.optionTwosColor)
                                                     }
                                                 }}></RedCheckBoxForColor>
-                                                <OrangeCheckBoxForColor style={{borderColor: optionFourColor == 'Orange' ? brand : colors.tertiary}} selectedState={optionFourColor} 
+                                                <OrangeCheckBoxForColor style={{borderColor: optionTwoColor == 'Orange' ? brand : colors.tertiary}} selectedState={optionTwoColor} 
                                                 onPress={() => {
-                                                    if (values.optionFoursColor !== "Orange") {
-                                                        values.optionFoursColor = "Orange"
-                                                        setOptionFourColor("Orange")
-                                                        console.log(values.optionFoursColor)
+                                                    if (values.optionTwosColor !== "Orange") {
+                                                        values.optionTwosColor = "Orange"
+                                                        setOptionTwoColor("Orange")
+                                                        console.log(values.optionTwosColor)
                                                     } else {
-                                                        values.optionFoursColor = "Not Specified"
-                                                        setOptionFourColor("")
-                                                        console.log(values.optionFoursColor)
+                                                        values.optionTwosColor = "Not Specified"
+                                                        setOptionTwoColor("")
+                                                        console.log(values.optionTwosColor)
                                                     }
                                                 }}></OrangeCheckBoxForColor>
-                                                <YellowCheckBoxForColor style={{borderColor: optionFourColor == 'Yellow' ? brand : colors.tertiary}} selectedState={optionFourColor} 
+                                                <YellowCheckBoxForColor style={{borderColor: optionTwoColor == 'Yellow' ? brand : colors.tertiary}} selectedState={optionTwoColor} 
                                                 onPress={() => {
-                                                    if (values.optionFoursColor !== "Yellow") {
-                                                        values.optionFoursColor = "Yellow"
-                                                        setOptionFourColor("Yellow")
-                                                        console.log(values.optionFoursColor)
+                                                    if (values.optionTwosColor !== "Yellow") {
+                                                        values.optionTwosColor = "Yellow"
+                                                        setOptionTwoColor("Yellow")
+                                                        console.log(values.optionTwosColor)
                                                     } else {
-                                                        values.optionFoursColor = "Not Specified"
-                                                        setOptionFourColor("")
-                                                        console.log(values.optionFoursColor)
+                                                        values.optionTwosColor = "Not Specified"
+                                                        setOptionTwoColor("")
+                                                        console.log(values.optionTwosColor)
                                                     }
                                                 }}></YellowCheckBoxForColor>
-                                                <GreenCheckBoxForColor style={{borderColor: optionFourColor == 'Green' ? brand : colors.tertiary}} selectedState={optionFourColor} 
+                                                <GreenCheckBoxForColor style={{borderColor: optionTwoColor == 'Green' ? brand : colors.tertiary}} selectedState={optionTwoColor} 
                                                 onPress={() => {
-                                                    if (values.optionFoursColor !== "Green") {
-                                                        values.optionFoursColor = "Green"
-                                                        setOptionFourColor("Green")
-                                                        console.log(values.optionFoursColor)
+                                                    if (values.optionTwosColor !== "Green") {
+                                                        values.optionTwosColor = "Green"
+                                                        setOptionTwoColor("Green")
+                                                        console.log(values.optionTwosColor)
                                                     } else {
-                                                        values.optionFoursColor = "Not Specified"
-                                                        setOptionFourColor("")
-                                                        console.log(values.optionFoursColor)
+                                                        values.optionTwosColor = "Not Specified"
+                                                        setOptionTwoColor("")
+                                                        console.log(values.optionTwosColor)
                                                     }
                                                 }}></GreenCheckBoxForColor>
-                                                <PurpleCheckBoxForColor style={{borderColor: optionFourColor == 'Purple' ? brand : colors.tertiary}} selectedState={optionFourColor} 
+                                                <PurpleCheckBoxForColor style={{borderColor: optionTwoColor == 'Purple' ? brand : colors.tertiary}} selectedState={optionTwoColor} 
                                                 onPress={() => {
-                                                    if (values.optionFoursColor !== "Purple") {
-                                                        values.optionFoursColor = "Purple"
-                                                        setOptionFourColor("Green")
-                                                        console.log(values.optionFoursColor)
+                                                    if (values.optionTwosColor !== "Purple") {
+                                                        values.optionTwosColor = "Purple"
+                                                        setOptionTwoColor("Purple")
+                                                        console.log(values.optionTwosColor)
                                                     } else {
-                                                        values.optionFoursColor = "Not Specified"
-                                                        setOptionFourColor("")
-                                                        console.log(values.optionFoursColor)
+                                                        values.optionTwosColor = "Not Specified"
+                                                        setOptionTwoColor("")
+                                                        console.log(values.optionTwosColor)
                                                     }
                                                 }}></PurpleCheckBoxForColor>
                                             </PostHorizontalView>
-                                            <ChangePollOptionColorButtons cancelButton={true} onPress={changePollFourColorChangeView}>
+                                            <ChangePollOptionColorButtons cancelButton={true} onPress={changePollTwoColorChangeView}>
                                                 <ChangePollOptionColorButtonText cancelButton={true}>Close</ChangePollOptionColorButtonText>
                                             </ChangePollOptionColorButtons> 
                                         </ChangePollOptionColorView>
-                                    </StyledFormArea>
-                                    <StyledFormArea visibility={optionFiveVisible}>
-                                        <UserTextInput
-                                            label="Option Five"
-                                            icon="pencil"
-                                            placeholder=""
-                                            placeholderTextColor={tertiary}
-                                            isOptionFive={true}
-                                            onChangeText={handleChange('optionFive')}
-                                            onBlur={handleBlur('optionFive')}
-                                            value={values.optionFive}
-                                            setOptionFiveColor={setOptionFiveColor}
-                                            setOptionFiveColorChangeViewVisible={setOptionFiveColorChangeViewVisible}
-                                            style={{borderColor: optionFiveColor !== '' ? eval(optionFiveColor.toLowerCase()) : brand, backgroundColor: colors.primary, color: colors.tertiary}}
-                                            optionFiveColor={optionFiveColor}
-                                        />
-                                        <ChangePollOptionColorView style={{backgroundColor: colors.primary}} viewHidden={optionFiveColorChangeViewVisible}>
-                                            <ChangePollOptionColorText style={{color: colors.tertiary}}>Associate with color:</ChangePollOptionColorText>
-                                            <PostHorizontalView>
-                                                <RedCheckBoxForColor style={{borderColor: optionFiveColor == 'Red' ? brand : colors.tertiary}} selectedState={optionFiveColor} 
-                                                onPress={() => {
-                                                    if (values.optionFivesColor !== "Red") {
-                                                        values.optionFivesColor = "Red"
-                                                        setOptionFiveColor("Red")
-                                                        console.log(values.optionFivesColor)
+                                        <StyledFormArea visibility={optionThreeVisible}>
+                                            <UserTextInput
+                                                label="Option Three"
+                                                icon="pencil"
+                                                placeholder=""
+                                                placeholderTextColor={tertiary}
+                                                isOptionThree={true}
+                                                onChangeText={handleChange('optionThree')}
+                                                onBlur={handleBlur('optionThree')}
+                                                value={values.optionThree}
+                                                setOptionThreeColor={setOptionThreeColor}
+                                                setOptionThreeColorChangeViewVisible={setOptionThreeColorChangeViewVisible}
+                                                style={{borderColor: optionThreeColor !== '' ? eval(optionThreeColor.toLowerCase()) : brand, backgroundColor: colors.primary, color: colors.tertiary}}
+                                                optionThreeColor={optionThreeColor}
+                                            />
+                                            <ChangePollOptionColorView style={{backgroundColor: colors.primary}} viewHidden={optionThreeColorChangeViewVisible}>
+                                                <ChangePollOptionColorText style={{color: colors.tertiary}}>Associate with color:</ChangePollOptionColorText>
+                                                <PostHorizontalView>
+                                                    <RedCheckBoxForColor style={{borderColor: optionThreeColor == 'Red' ? brand : colors.tertiary}} selectedState={optionThreeColor} 
+                                                    onPress={() => {
+                                                        if (values.optionThreesColor !== "Red") {
+                                                            values.optionThreesColor = "Red"
+                                                            setOptionThreeColor("Red")
+                                                            console.log(values.optionThreesColor)
+                                                        } else {
+                                                            values.optionThreesColor = "Not Specified"
+                                                            setOptionThreeColor("")
+                                                            console.log(values.optionThreesColor)
+                                                        }
+                                                    }}></RedCheckBoxForColor>
+                                                    <OrangeCheckBoxForColor style={{borderColor: optionThreeColor == 'Orange' ? brand : colors.tertiary}} selectedState={optionThreeColor} 
+                                                    onPress={() => {
+                                                        if (values.optionThreesColor !== "Orange") {
+                                                            values.optionThreesColor = "Orange"
+                                                            setOptionThreeColor("Orange")
+                                                            console.log(values.optionThreesColor)
+                                                        } else {
+                                                            values.optionThreesColor = "Not Specified"
+                                                            setOptionThreeColor("")
+                                                            console.log(values.optionThreesColor)
+                                                        }
+                                                    }}></OrangeCheckBoxForColor>
+                                                    <YellowCheckBoxForColor style={{borderColor: optionThreeColor == 'Yellow' ? brand : colors.tertiary}} selectedState={optionThreeColor} 
+                                                    onPress={() => {
+                                                        if (values.optionThreesColor !== "Yellow") {
+                                                            values.optionThreesColor = "Yellow"
+                                                            setOptionThreeColor("Yellow")
+                                                            console.log(values.optionThreesColor)
+                                                        } else {
+                                                            values.optionThreesColor = "Not Specified"
+                                                            setOptionThreeColor("")
+                                                            console.log(values.optionThreesColor)
+                                                        }
+                                                    }}></YellowCheckBoxForColor>
+                                                    <GreenCheckBoxForColor style={{borderColor: optionThreeColor == 'Green' ? brand : colors.tertiary}} selectedState={optionThreeColor} 
+                                                    onPress={() => {
+                                                        if (values.optionThreesColor !== "Green") {
+                                                            values.optionThreesColor = "Green"
+                                                            setOptionThreeColor("Green")
+                                                            console.log(values.optionThreesColor)
+                                                        } else {
+                                                            values.optionThreesColor = "Not Specified"
+                                                            setOptionThreeColor("")
+                                                            console.log(values.optionThreesColor)
+                                                        }
+                                                    }}></GreenCheckBoxForColor>
+                                                    <PurpleCheckBoxForColor style={{borderColor: optionThreeColor == 'Purple' ? brand : colors.tertiary}} selectedState={optionThreeColor} 
+                                                    onPress={() => {
+                                                        if (values.optionThreesColor !== "Purple") {
+                                                            values.optionThreesColor = "Purple"
+                                                            setOptionThreeColor("Purple")
+                                                            console.log(values.optionThreesColor)
+                                                        } else {
+                                                            values.optionThreesColor = "Not Specified"
+                                                            setOptionThreeColor("")
+                                                            console.log(values.optionThreesColor)
+                                                        }
+                                                    }}></PurpleCheckBoxForColor>
+                                                </PostHorizontalView>
+                                                <ChangePollOptionColorButtons cancelButton={true} onPress={changePollThreeColorChangeView}>
+                                                    <ChangePollOptionColorButtonText cancelButton={true}>Close</ChangePollOptionColorButtonText>
+                                                </ChangePollOptionColorButtons> 
+                                            </ChangePollOptionColorView>
+                                        </StyledFormArea>
+                                        <StyledFormArea visibility={optionFourVisible}>
+                                            <UserTextInput
+                                                label="Option Four"
+                                                icon="pencil"
+                                                placeholder=""
+                                                placeholderTextColor={tertiary}
+                                                isOptionFour={true}
+                                                onChangeText={handleChange('optionFour')}
+                                                onBlur={handleBlur('optionFour')}
+                                                value={values.optionFour}
+                                                setOptionFourColor={setOptionFourColor}
+                                                setOptionFourColorChangeViewVisible={setOptionFourColorChangeViewVisible}
+                                                style={{borderColor: optionFourColor !== '' ? eval(optionFourColor.toLowerCase()) : brand, backgroundColor: colors.primary, color: colors.tertiary}}
+                                                optionFourColor={optionFourColor}
+                                            />
+                                            <ChangePollOptionColorView style={{backgroundColor: colors.primary}} viewHidden={optionFourColorChangeViewVisible}>
+                                                <ChangePollOptionColorText style={{color: colors.tertiary}}>Associate with color:</ChangePollOptionColorText>
+                                                <PostHorizontalView>
+                                                    <RedCheckBoxForColor style={{borderColor: optionFourColor == 'Red' ? brand : colors.tertiary}} selectedState={optionFourColor} 
+                                                    onPress={() => {
+                                                        if (values.optionFoursColor !== "Red") {
+                                                            values.optionFoursColor = "Red"
+                                                            setOptionFourColor("Red")
+                                                            console.log(values.optionFoursColor)
+                                                        } else {
+                                                            values.optionFoursColor = "Not Specified"
+                                                            setOptionFourColor("")
+                                                            console.log(values.optionFoursColor)
+                                                        }
+                                                    }}></RedCheckBoxForColor>
+                                                    <OrangeCheckBoxForColor style={{borderColor: optionFourColor == 'Orange' ? brand : colors.tertiary}} selectedState={optionFourColor} 
+                                                    onPress={() => {
+                                                        if (values.optionFoursColor !== "Orange") {
+                                                            values.optionFoursColor = "Orange"
+                                                            setOptionFourColor("Orange")
+                                                            console.log(values.optionFoursColor)
+                                                        } else {
+                                                            values.optionFoursColor = "Not Specified"
+                                                            setOptionFourColor("")
+                                                            console.log(values.optionFoursColor)
+                                                        }
+                                                    }}></OrangeCheckBoxForColor>
+                                                    <YellowCheckBoxForColor style={{borderColor: optionFourColor == 'Yellow' ? brand : colors.tertiary}} selectedState={optionFourColor} 
+                                                    onPress={() => {
+                                                        if (values.optionFoursColor !== "Yellow") {
+                                                            values.optionFoursColor = "Yellow"
+                                                            setOptionFourColor("Yellow")
+                                                            console.log(values.optionFoursColor)
+                                                        } else {
+                                                            values.optionFoursColor = "Not Specified"
+                                                            setOptionFourColor("")
+                                                            console.log(values.optionFoursColor)
+                                                        }
+                                                    }}></YellowCheckBoxForColor>
+                                                    <GreenCheckBoxForColor style={{borderColor: optionFourColor == 'Green' ? brand : colors.tertiary}} selectedState={optionFourColor} 
+                                                    onPress={() => {
+                                                        if (values.optionFoursColor !== "Green") {
+                                                            values.optionFoursColor = "Green"
+                                                            setOptionFourColor("Green")
+                                                            console.log(values.optionFoursColor)
+                                                        } else {
+                                                            values.optionFoursColor = "Not Specified"
+                                                            setOptionFourColor("")
+                                                            console.log(values.optionFoursColor)
+                                                        }
+                                                    }}></GreenCheckBoxForColor>
+                                                    <PurpleCheckBoxForColor style={{borderColor: optionFourColor == 'Purple' ? brand : colors.tertiary}} selectedState={optionFourColor} 
+                                                    onPress={() => {
+                                                        if (values.optionFoursColor !== "Purple") {
+                                                            values.optionFoursColor = "Purple"
+                                                            setOptionFourColor("Green")
+                                                            console.log(values.optionFoursColor)
+                                                        } else {
+                                                            values.optionFoursColor = "Not Specified"
+                                                            setOptionFourColor("")
+                                                            console.log(values.optionFoursColor)
+                                                        }
+                                                    }}></PurpleCheckBoxForColor>
+                                                </PostHorizontalView>
+                                                <ChangePollOptionColorButtons cancelButton={true} onPress={changePollFourColorChangeView}>
+                                                    <ChangePollOptionColorButtonText cancelButton={true}>Close</ChangePollOptionColorButtonText>
+                                                </ChangePollOptionColorButtons> 
+                                            </ChangePollOptionColorView>
+                                        </StyledFormArea>
+                                        <StyledFormArea visibility={optionFiveVisible}>
+                                            <UserTextInput
+                                                label="Option Five"
+                                                icon="pencil"
+                                                placeholder=""
+                                                placeholderTextColor={tertiary}
+                                                isOptionFive={true}
+                                                onChangeText={handleChange('optionFive')}
+                                                onBlur={handleBlur('optionFive')}
+                                                value={values.optionFive}
+                                                setOptionFiveColor={setOptionFiveColor}
+                                                setOptionFiveColorChangeViewVisible={setOptionFiveColorChangeViewVisible}
+                                                style={{borderColor: optionFiveColor !== '' ? eval(optionFiveColor.toLowerCase()) : brand, backgroundColor: colors.primary, color: colors.tertiary}}
+                                                optionFiveColor={optionFiveColor}
+                                            />
+                                            <ChangePollOptionColorView style={{backgroundColor: colors.primary}} viewHidden={optionFiveColorChangeViewVisible}>
+                                                <ChangePollOptionColorText style={{color: colors.tertiary}}>Associate with color:</ChangePollOptionColorText>
+                                                <PostHorizontalView>
+                                                    <RedCheckBoxForColor style={{borderColor: optionFiveColor == 'Red' ? brand : colors.tertiary}} selectedState={optionFiveColor} 
+                                                    onPress={() => {
+                                                        if (values.optionFivesColor !== "Red") {
+                                                            values.optionFivesColor = "Red"
+                                                            setOptionFiveColor("Red")
+                                                            console.log(values.optionFivesColor)
+                                                        } else {
+                                                            values.optionFivesColor = "Not Specified"
+                                                            setOptionFiveColor("")
+                                                            console.log(values.optionFivesColor)
+                                                        }
+                                                    }}></RedCheckBoxForColor>
+                                                    <OrangeCheckBoxForColor style={{borderColor: optionFiveColor == 'Orange' ? brand : colors.tertiary}} selectedState={optionFiveColor} 
+                                                    onPress={() => {
+                                                        if (values.optionFivesColor !== "Orange") {
+                                                            values.optionFivesColor = "Orange"
+                                                            setOptionFiveColor("Orange")
+                                                            console.log(values.optionFivesColor)
+                                                        } else {
+                                                            values.optionFivesColor = "Not Specified"
+                                                            setOptionFiveColor("")
+                                                            console.log(values.optionFivesColor)
+                                                        }
+                                                    }}></OrangeCheckBoxForColor>
+                                                    <YellowCheckBoxForColor style={{borderColor: optionFiveColor == 'Yellow' ? brand : colors.tertiary}} selectedState={optionFiveColor} 
+                                                    onPress={() => {
+                                                        if (values.optionFivesColor !== "Yellow") {
+                                                            values.optionFivesColor = "Yellow"
+                                                            setOptionFiveColor("Yellow")
+                                                            console.log(values.optionFivesColor)
+                                                        } else {
+                                                            values.optionFivesColor = "Not Specified"
+                                                            setOptionFiveColor("")
+                                                            console.log(values.optionFivesColor)
+                                                        }
+                                                    }}></YellowCheckBoxForColor>
+                                                    <GreenCheckBoxForColor style={{borderColor: optionFiveColor == 'Green' ? brand : colors.tertiary}} selectedState={optionFiveColor} 
+                                                    onPress={() => {
+                                                        if (values.optionFivesColor !== "Green") {
+                                                            values.optionFivesColor = "Green"
+                                                            setOptionFiveColor("Green")
+                                                            console.log(values.optionFivesColor)
+                                                        } else {
+                                                            values.optionFivesColor = "Not Specified"
+                                                            setOptionFiveColor("")
+                                                            console.log(values.optionFivesColor)
+                                                        }
+                                                    }}></GreenCheckBoxForColor>
+                                                    <PurpleCheckBoxForColor style={{borderColor: optionFiveColor == 'Purple' ? brand : colors.tertiary}} selectedState={optionFiveColor} 
+                                                    onPress={() => {
+                                                        if (values.optionFivesColor !== "Purple") {
+                                                            values.optionFivesColor = "Purple"
+                                                            setOptionFiveColor("Purple")
+                                                            console.log(values.optionFivesColor)
+                                                        } else {
+                                                            values.optionFivesColor = "Not Specified"
+                                                            setOptionFiveColor("")
+                                                            console.log(values.optionFivesColor)
+                                                        }
+                                                    }}></PurpleCheckBoxForColor>
+                                                </PostHorizontalView>
+                                                <ChangePollOptionColorButtons cancelButton={true} onPress={changePollFiveColorChangeView}>
+                                                    <ChangePollOptionColorButtonText cancelButton={true}>Close</ChangePollOptionColorButtonText>
+                                                </ChangePollOptionColorButtons> 
+                                            </ChangePollOptionColorView>
+                                        </StyledFormArea>
+                                        <StyledFormArea visibility={optionSixVisible}>
+                                            <UserTextInput
+                                                label="Option Six"
+                                                icon="pencil"
+                                                placeholder=""
+                                                placeholderTextColor={tertiary}
+                                                isOptionSix={true}
+                                                onChangeText={handleChange('optionSix')}
+                                                onBlur={handleBlur('optionSix')}
+                                                value={values.optionSix}
+                                                setOptionSixColor={setOptionSixColor}
+                                                setOptionSixColorChangeViewVisible={setOptionSixColorChangeViewVisible}
+                                                style={{borderColor: optionSixColor !== '' ? eval(optionSixColor.toLowerCase()) : brand, backgroundColor: colors.primary, color: colors.tertiary}}
+                                                optionSixColor={optionSixColor}
+                                            />
+                                            <ChangePollOptionColorView style={{backgroundColor: colors.primary}} viewHidden={optionSixColorChangeViewVisible}>
+                                                <ChangePollOptionColorText style={{color: colors.tertiary}}>Associate with color:</ChangePollOptionColorText>
+                                                <PostHorizontalView>
+                                                    <RedCheckBoxForColor style={{borderColor: optionSixColor == 'Red' ? brand : colors.tertiary}} selectedState={optionSixColor} 
+                                                    onPress={() => {
+                                                        if (values.optionSixesColor !== "Red") {
+                                                            values.optionSixesColor = "Red"
+                                                            setOptionSixColor("Red")
+                                                            console.log(values.optionSixesColor)
+                                                        } else {
+                                                            values.optionSixesColor = "Not Specified"
+                                                            setOptionSixColor("")
+                                                            console.log(values.optionSixesColor)
+                                                        }
+                                                    }}></RedCheckBoxForColor>
+                                                    <OrangeCheckBoxForColor style={{borderColor: optionSixColor == 'Orange' ? brand : colors.tertiary}} selectedState={optionSixColor} 
+                                                    onPress={() => {
+                                                        if (values.optionSixesColor !== "Orange") {
+                                                            values.optionSixesColor = "Orange"
+                                                            setOptionSixColor("Orange")
+                                                            console.log(values.optionSixesColor)
+                                                        } else {
+                                                            values.optionSixesColor = "Not Specified"
+                                                            setOptionSixColor("")
+                                                            console.log(values.optionSixesColor)
+                                                        }
+                                                    }}></OrangeCheckBoxForColor>
+                                                    <YellowCheckBoxForColor style={{borderColor: optionSixColor == 'Yellow' ? brand : colors.tertiary}} selectedState={optionSixColor} 
+                                                    onPress={() => {
+                                                        if (values.optionSixesColor !== "Yellow") {
+                                                            values.optionSixesColor = "Yellow"
+                                                            setOptionSixColor("Yellow")
+                                                            console.log(values.optionSixesColor)
+                                                        } else {
+                                                            values.optionSixesColor = "Not Specified"
+                                                            setOptionSixColor("")
+                                                            console.log(values.optionSixesColor)
+                                                        }
+                                                    }}></YellowCheckBoxForColor>
+                                                    <GreenCheckBoxForColor style={{borderColor: optionSixColor == 'Green' ? brand : colors.tertiary}} selectedState={optionSixColor} 
+                                                    onPress={() => {
+                                                        if (values.optionSixesColor !== "Green") {
+                                                            values.optionSixesColor = "Green"
+                                                            setOptionSixColor("Green")
+                                                            console.log(values.optionSixesColor)
+                                                        } else {
+                                                            values.optionSixesColor = "Not Specified"
+                                                            setOptionSixColor("")
+                                                            console.log(values.optionSixesColor)
+                                                        }
+                                                    }}></GreenCheckBoxForColor>
+                                                    <PurpleCheckBoxForColor style={{borderColor: optionSixColor == 'Purple' ? brand : colors.tertiary}} selectedState={optionSixColor} 
+                                                    onPress={() => {
+                                                        if (values.optionSixesColor !== "Purple") {
+                                                            values.optionSixesColor = "Purple"
+                                                            setOptionSixColor("Purple")
+                                                            console.log(values.optionSixesColor)
+                                                        } else {
+                                                            values.optionSixesColor = "Not Specified"
+                                                            setOptionSixColor("")
+                                                            console.log(values.optionSixesColor)
+                                                        }
+                                                    }}></PurpleCheckBoxForColor>
+                                                </PostHorizontalView>
+                                                <ChangePollOptionColorButtons cancelButton={true} onPress={changePollSixColorChangeView}>
+                                                    <ChangePollOptionColorButtonText cancelButton={true}>Close</ChangePollOptionColorButtonText>
+                                                </ChangePollOptionColorButtons> 
+                                            </ChangePollOptionColorView>
+                                        </StyledFormArea>
+                                        <PostHorizontalView centerAlign={true}>
+                                            {optionSixVisible == false &&
+                                                <TextLink addPollText={true} onPress={() => {
+                                                    handleMessage('', 'FAILED')
+                                                    scrollViewRef.current.scrollTo({ y: scrollAmount.current + 10000 })
+                                                    if (optionThreeVisible == false) {
+                                                        setOptionThreeVisible(true)
+                                                        values.totalNumberOfOptions= "Three"
+                                                    } else if (optionFourVisible == false) {
+                                                        setOptionFourVisible(true)
+                                                        values.totalNumberOfOptions= "Four"
+                                                    } else if (optionFiveVisible == false) {
+                                                        setOptionFiveVisible(true)
+                                                        values.totalNumberOfOptions= "Five"
+                                                    } else if (optionSixVisible == false) {
+                                                        setOptionSixVisible(true)
+                                                        values.totalNumberOfOptions= "Six"
                                                     } else {
-                                                        values.optionFivesColor = "Not Specified"
-                                                        setOptionFiveColor("")
-                                                        console.log(values.optionFivesColor)
+                                                        handleMessage("Max options reached","FAILED");
                                                     }
-                                                }}></RedCheckBoxForColor>
-                                                <OrangeCheckBoxForColor style={{borderColor: optionFiveColor == 'Orange' ? brand : colors.tertiary}} selectedState={optionFiveColor} 
-                                                onPress={() => {
-                                                    if (values.optionFivesColor !== "Orange") {
-                                                        values.optionFivesColor = "Orange"
-                                                        setOptionFiveColor("Orange")
-                                                        console.log(values.optionFivesColor)
-                                                    } else {
-                                                        values.optionFivesColor = "Not Specified"
-                                                        setOptionFiveColor("")
-                                                        console.log(values.optionFivesColor)
-                                                    }
-                                                }}></OrangeCheckBoxForColor>
-                                                <YellowCheckBoxForColor style={{borderColor: optionFiveColor == 'Yellow' ? brand : colors.tertiary}} selectedState={optionFiveColor} 
-                                                onPress={() => {
-                                                    if (values.optionFivesColor !== "Yellow") {
-                                                        values.optionFivesColor = "Yellow"
-                                                        setOptionFiveColor("Yellow")
-                                                        console.log(values.optionFivesColor)
-                                                    } else {
-                                                        values.optionFivesColor = "Not Specified"
-                                                        setOptionFiveColor("")
-                                                        console.log(values.optionFivesColor)
-                                                    }
-                                                }}></YellowCheckBoxForColor>
-                                                <GreenCheckBoxForColor style={{borderColor: optionFiveColor == 'Green' ? brand : colors.tertiary}} selectedState={optionFiveColor} 
-                                                onPress={() => {
-                                                    if (values.optionFivesColor !== "Green") {
-                                                        values.optionFivesColor = "Green"
-                                                        setOptionFiveColor("Green")
-                                                        console.log(values.optionFivesColor)
-                                                    } else {
-                                                        values.optionFivesColor = "Not Specified"
-                                                        setOptionFiveColor("")
-                                                        console.log(values.optionFivesColor)
-                                                    }
-                                                }}></GreenCheckBoxForColor>
-                                                <PurpleCheckBoxForColor style={{borderColor: optionFiveColor == 'Purple' ? brand : colors.tertiary}} selectedState={optionFiveColor} 
-                                                onPress={() => {
-                                                    if (values.optionFivesColor !== "Purple") {
-                                                        values.optionFivesColor = "Purple"
-                                                        setOptionFiveColor("Purple")
-                                                        console.log(values.optionFivesColor)
-                                                    } else {
-                                                        values.optionFivesColor = "Not Specified"
-                                                        setOptionFiveColor("")
-                                                        console.log(values.optionFivesColor)
-                                                    }
-                                                }}></PurpleCheckBoxForColor>
-                                            </PostHorizontalView>
-                                            <ChangePollOptionColorButtons cancelButton={true} onPress={changePollFiveColorChangeView}>
-                                                <ChangePollOptionColorButtonText cancelButton={true}>Close</ChangePollOptionColorButtonText>
-                                            </ChangePollOptionColorButtons> 
-                                        </ChangePollOptionColorView>
-                                    </StyledFormArea>
-                                    <StyledFormArea visibility={optionSixVisible}>
-                                        <UserTextInput
-                                            label="Option Six"
-                                            icon="pencil"
-                                            placeholder=""
-                                            placeholderTextColor={tertiary}
-                                            isOptionSix={true}
-                                            onChangeText={handleChange('optionSix')}
-                                            onBlur={handleBlur('optionSix')}
-                                            value={values.optionSix}
-                                            setOptionSixColor={setOptionSixColor}
-                                            setOptionSixColorChangeViewVisible={setOptionSixColorChangeViewVisible}
-                                            style={{borderColor: optionSixColor !== '' ? eval(optionSixColor.toLowerCase()) : brand, backgroundColor: colors.primary, color: colors.tertiary}}
-                                            optionSixColor={optionSixColor}
-                                        />
-                                        <ChangePollOptionColorView style={{backgroundColor: colors.primary}} viewHidden={optionSixColorChangeViewVisible}>
-                                            <ChangePollOptionColorText style={{color: colors.tertiary}}>Associate with color:</ChangePollOptionColorText>
-                                            <PostHorizontalView>
-                                                <RedCheckBoxForColor style={{borderColor: optionSixColor == 'Red' ? brand : colors.tertiary}} selectedState={optionSixColor} 
-                                                onPress={() => {
-                                                    if (values.optionSixesColor !== "Red") {
-                                                        values.optionSixesColor = "Red"
-                                                        setOptionSixColor("Red")
-                                                        console.log(values.optionSixesColor)
-                                                    } else {
-                                                        values.optionSixesColor = "Not Specified"
-                                                        setOptionSixColor("")
-                                                        console.log(values.optionSixesColor)
-                                                    }
-                                                }}></RedCheckBoxForColor>
-                                                <OrangeCheckBoxForColor style={{borderColor: optionSixColor == 'Orange' ? brand : colors.tertiary}} selectedState={optionSixColor} 
-                                                onPress={() => {
-                                                    if (values.optionSixesColor !== "Orange") {
-                                                        values.optionSixesColor = "Orange"
-                                                        setOptionSixColor("Orange")
-                                                        console.log(values.optionSixesColor)
-                                                    } else {
-                                                        values.optionSixesColor = "Not Specified"
-                                                        setOptionSixColor("")
-                                                        console.log(values.optionSixesColor)
-                                                    }
-                                                }}></OrangeCheckBoxForColor>
-                                                <YellowCheckBoxForColor style={{borderColor: optionSixColor == 'Yellow' ? brand : colors.tertiary}} selectedState={optionSixColor} 
-                                                onPress={() => {
-                                                    if (values.optionSixesColor !== "Yellow") {
-                                                        values.optionSixesColor = "Yellow"
-                                                        setOptionSixColor("Yellow")
-                                                        console.log(values.optionSixesColor)
-                                                    } else {
-                                                        values.optionSixesColor = "Not Specified"
-                                                        setOptionSixColor("")
-                                                        console.log(values.optionSixesColor)
-                                                    }
-                                                }}></YellowCheckBoxForColor>
-                                                <GreenCheckBoxForColor style={{borderColor: optionSixColor == 'Green' ? brand : colors.tertiary}} selectedState={optionSixColor} 
-                                                onPress={() => {
-                                                    if (values.optionSixesColor !== "Green") {
-                                                        values.optionSixesColor = "Green"
-                                                        setOptionSixColor("Green")
-                                                        console.log(values.optionSixesColor)
-                                                    } else {
-                                                        values.optionSixesColor = "Not Specified"
-                                                        setOptionSixColor("")
-                                                        console.log(values.optionSixesColor)
-                                                    }
-                                                }}></GreenCheckBoxForColor>
-                                                <PurpleCheckBoxForColor style={{borderColor: optionSixColor == 'Purple' ? brand : colors.tertiary}} selectedState={optionSixColor} 
-                                                onPress={() => {
-                                                    if (values.optionSixesColor !== "Purple") {
-                                                        values.optionSixesColor = "Purple"
-                                                        setOptionSixColor("Purple")
-                                                        console.log(values.optionSixesColor)
-                                                    } else {
-                                                        values.optionSixesColor = "Not Specified"
-                                                        setOptionSixColor("")
-                                                        console.log(values.optionSixesColor)
-                                                    }
-                                                }}></PurpleCheckBoxForColor>
-                                            </PostHorizontalView>
-                                            <ChangePollOptionColorButtons cancelButton={true} onPress={changePollSixColorChangeView}>
-                                                <ChangePollOptionColorButtonText cancelButton={true}>Close</ChangePollOptionColorButtonText>
-                                            </ChangePollOptionColorButtons> 
-                                        </ChangePollOptionColorView>
-                                    </StyledFormArea>
-                                    <PostHorizontalView centerAlign={true}>
-                                        <TextLink addPollText={true} onPress={() => {
-                                            handleMessage('', 'FAILED')
-                                            if (optionThreeVisible == false) {
-                                                setOptionThreeVisible(true)
-                                                values.totalNumberOfOptions= "Three"
-                                            } else if (optionFourVisible == false) {
-                                                setOptionFourVisible(true)
-                                                values.totalNumberOfOptions= "Four"
-                                            } else if (optionFiveVisible == false) {
-                                                setOptionFiveVisible(true)
-                                                values.totalNumberOfOptions= "Five"
-                                            } else if (optionSixVisible == false) {
-                                                setOptionSixVisible(true)
-                                                values.totalNumberOfOptions= "Six"
-                                            } else {
-                                                handleMessage("Max options reached","FAILED");
+                                                }}>
+                                                    <TextLinkContent addPollText={true}>+ Add Option</TextLinkContent>
+                                                </TextLink>
                                             }
-                                        }}>
-                                            <TextLinkContent addPollText={true}>+ Add Option   </TextLinkContent>
-                                        </TextLink>
-                                        <TextLink removePollText={true} onPress={() => {
-                                            handleMessage('', 'FAILED')
-                                            if (optionSixVisible == true) {
-                                                setOptionSixVisible(false)
-                                                values.totalNumberOfOptions = "Five"
-                                            } else if (optionFiveVisible == true) {
-                                                setOptionFiveVisible(false)
-                                                values.totalNumberOfOptions = "Four"
-                                            } else if (optionFourVisible == true) {
-                                                setOptionFourVisible(false)
-                                                values.totalNumberOfOptions = "Three"
-                                            } else if (optionThreeVisible == true) {
-                                                setOptionThreeVisible(false)
-                                                values.totalNumberOfOptions = "Two"
-                                            } else {
-                                                handleMessage("A poll requires a minimum of 2 options","FAILED");
+                                            {optionThreeVisible == true &&
+                                                <TextLink removePollText={true} onPress={() => {
+                                                    handleMessage('', 'FAILED')
+                                                    scrollViewRef.current.scrollTo({ y: scrollAmount.current - 50 })
+                                                    if (optionSixVisible == true) {
+                                                        setOptionSixVisible(false)
+                                                        values.totalNumberOfOptions = "Five"
+                                                    } else if (optionFiveVisible == true) {
+                                                        setOptionFiveVisible(false)
+                                                        values.totalNumberOfOptions = "Four"
+                                                    } else if (optionFourVisible == true) {
+                                                        setOptionFourVisible(false)
+                                                        values.totalNumberOfOptions = "Three"
+                                                    } else if (optionThreeVisible == true) {
+                                                        setOptionThreeVisible(false)
+                                                        values.totalNumberOfOptions = "Two"
+                                                    } else {
+                                                        handleMessage("A poll requires a minimum of 2 options","FAILED");
+                                                    }
+                                                }}>
+                                                    <TextLinkContent removePollText={true}>- Remove Option</TextLinkContent>
+                                                </TextLink>
                                             }
-                                        }}>
-                                            <TextLinkContent removePollText={true}>- Remove Option</TextLinkContent>
-                                        </TextLink>
-                                    </PostHorizontalView>
-                                    <MsgBox type={messageType}>{message}</MsgBox>
-                                    {!isSubmitting && (<StyledButton onPress={handleSubmit}>
-                                        <ButtonText> Submit </ButtonText>
-                                    </StyledButton>)}
+                                        </PostHorizontalView>
+                                        <MsgBox type={messageType}>{message}</MsgBox>
+                                        {!isSubmitting && (<StyledButton onPress={handleSubmit}>
+                                            <ButtonText> Submit </ButtonText>
+                                        </StyledButton>)}
 
-                                    {isSubmitting && (<StyledButton disabled={true}>
-                                        <ActivityIndicator size="large" color={primary} />
-                                    </StyledButton>)}
-                                    
-                                    <StyledButton style={{backgroundColor: colors.primary}} signUpButton={true} onPress={() => navigation.navigate("PostScreen")}>
-                                            <ButtonText signUpButton={true}> Back </ButtonText>
-                                    </StyledButton>
-                                </StyledFormArea>)}
-                        </Formik>
-                    </InnerContainer>
+                                        {isSubmitting && (<StyledButton disabled={true}>
+                                            <ActivityIndicator size="large" color={primary} />
+                                        </StyledButton>)}
+                                        
+                                        <StyledButton style={{backgroundColor: colors.primary}} signUpButton={true} onPress={() => navigation.navigate("PostScreen")}>
+                                                <ButtonText signUpButton={true}> Back </ButtonText>
+                                        </StyledButton>
+                                    </StyledFormArea>)}
+                            </Formik>
+                        </InnerContainer>
 
-            </StyledContainer>
-        </KeyboardAvoidingWrapper>
+                </StyledContainer>
+            </ScrollView>
+        </KeyboardAvoidingWrapper_NoScrollview>
     );
 }
 

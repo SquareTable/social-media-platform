@@ -53,6 +53,7 @@ const Start_Stack = () => {
                             paddingLeft: 20,
                         },
                     }}
+                    initialRouteName={storedCredentials ? "Tabs" : "IntroScreen"}
                 >
                     {HasOpened == 'true' ?
                     storedCredentials ? (
@@ -71,6 +72,7 @@ const Start_Stack = () => {
                                     animationEnabled: false,
                                 }}
                             />
+                            <Stack.Screen name="IntroScreen" component={IntroScreen}/>
                         </>
                     ) : ( 
                         <>

@@ -4,6 +4,7 @@ import {useTheme} from '@react-navigation/native';
 import AppIntroSlider from 'react-native-app-intro-slider';
 import Icon from 'react-native-vector-icons/AntDesign';
 import * as WebBrowser from 'expo-web-browser';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
     TextLink,
     TextLinkContent
@@ -136,7 +137,7 @@ const IntroScreen = ({navigation}) => {
             showPrevButton={true} 
             renderItem={renderSlide} 
             data={slides} 
-            onDone={() => {navigation.replace("Login_Screen")}}
+            onDone={async () => {await AsyncStorage.getItem('HasOpenedSocialSquare') == 'true' ? navigation.replace('Tabs', {screen: 'Profile', params: {backButtonHidden: true, imageFromRoute: null, goToStylingMenu: false}}) : navigation.replace('Login_Screen')}}
             activeDotStyle={{backgroundColor: colors.tertiary}}
             dotStyle={{backgroundColor: colors.borderColor}}
             renderNextButton={renderNextButton}

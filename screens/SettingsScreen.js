@@ -32,15 +32,16 @@ import { ImageBackground, ScrollView, Text, TouchableOpacity, View } from 'react
 import * as Linking from 'expo-linking';
 import SocialSquareLogo_B64_png from '../assets/SocialSquareLogo_Base64_png.js';
 import * as WebBrowser from 'expo-web-browser';
+import { ProfilePictureURIContext } from '../components/ProfilePictureURIContext.js';
 
 
 const SettingsPage = ({navigation}) => {
      //context
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
     if (storedCredentials) {var {name, email, photoUrl} = storedCredentials}
-    const [AvatarImg, setAvatarImage] = useState(SocialSquareLogo_B64_png)
     const [logoutViewState, setLogoutViewState] = useState("false")
     const [webBrowserResult, setWebBrowserResult] = useState(null)
+    const {profilePictureUri, setProfilePictureUri} = useContext(ProfilePictureURIContext);
 
     const clearLogin = () => {
         AsyncStorage.removeItem('socialSquareCredentials').then(() => {
@@ -49,7 +50,8 @@ const SettingsPage = ({navigation}) => {
         .catch(error => console.log(error));
         AsyncStorage.removeItem('SocialSquareDMsList');
         AsyncStorage.removeItem('PlayAudioInSilentMode_AppBehaviour_AsyncStorage');
-        AsyncStorage.removeItem('UserProfilePicture')
+        AsyncStorage.removeItem('UserProfilePicture');
+        setProfilePictureUri(SocialSquareLogo_B64_png);
         try {
             navigation.reset({
                 index: 0,
@@ -72,72 +74,8 @@ const SettingsPage = ({navigation}) => {
     const {colors} = useTheme();
 
     const seeAppIntroductionScreenAgainButtonOnPress = () => {
-        AsyncStorage.removeItem('HasOpenedSocialSquare');
-        alert('The next time you reload the app the introduction screen will show :)')
+        navigation.replace('IntroScreen')
     }
-
-    const getProfilePicture = () => {
-        const url = `https://nameless-dawn-41038.herokuapp.com/user/getProfilePic/${name}`;
-
-        axios.get(url).then((response) => {
-            const result = response.data;
-            const {message, status, data} = result;
-
-            if (status !== 'SUCCESS') {
-                handleMessage(message, status);
-                console.log(status)
-                console.log(message)
-            } else {
-                console.log(status)
-                console.log(message)
-                axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${data}`)
-                .then((response) => {
-                    const result = response.data;
-                    const {message, status, data} = result;
-                    console.log(status)
-                    console.log(message)
-                    console.log(data)
-                    //set image
-                    if (message == 'No profile image.' && status == 'FAILED') {
-                        console.log('Setting logo to SocialSquare logo')
-                        setAvatarImage(SocialSquareLogo_B64_png)
-                    } else if (data) {
-                        //convert back to image
-                        console.log('Setting logo to profile logo')
-                        var base64Icon = `data:image/jpg;base64,${data}`
-                        setAvatarImage(base64Icon)
-                        AsyncStorage.setItem('UserProfilePicture', base64Icon)
-                    } else {
-                        console.log('Setting logo to SocialSquare logo')
-                        setAvatarImage(SocialSquareLogo_B64_png)
-                    }
-                })
-                .catch(function (error) {
-                    console.log("Image not recieved")
-                    console.log(error);
-                });
-            }
-            //setSubmitting(false);
-
-        }).catch(error => {
-            console.log(error);
-            //setSubmitting(false);
-            handleMessage("An error occured. Try checking your network connection and retry.");
-        })
-    }
-
-    const checkForUserProfilePictureFromAsyncStorage = async () => {
-        const image = await AsyncStorage.getItem('UserProfilePicture')
-        if (image == null) {
-            getProfilePicture()
-            console.log('Getting profile picture from server from SettingsScreen.js')
-        } else {
-            setAvatarImage(image)
-            console.log('Getting profile picture from AsyncStorage from SettingsScreen.js')
-        }
-    }
-
-    checkForUserProfilePictureFromAsyncStorage()
 
     const goToLink = async (linkToGoTo) => {
         let result = await WebBrowser.openBrowserAsync(linkToGoTo);
@@ -159,7 +97,7 @@ const SettingsPage = ({navigation}) => {
                                 <ConfirmLogoutButtonText confirmButton>Confirm</ConfirmLogoutButtonText>
                             </ConfirmLogoutButtons> 
                     </ConfirmLogoutView>
-                        <Avatar resizeMode="cover" source={{uri: AvatarImg}} />  
+                        <Avatar resizeMode="cover" source={{uri: profilePictureUri}} />  
                         <SettingsPageItemTouchableOpacity style={{borderColor: colors.borderColor}} onPress={() => {navigation.navigate('SecuritySettingsScreen')}}>
                             <Icon name="security" size={60} color={colors.tertiary}/>
                             <SettingsItemText style={{color: colors.tertiary}}>Security</SettingsItemText>

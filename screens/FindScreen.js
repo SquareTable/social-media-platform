@@ -56,8 +56,6 @@ const FindScreen = ({navigation}) => {
     const {colors, dark} = useTheme();
      //context
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
-    const {photoUrl} = storedCredentials;
-    const AvatarImg = photoUrl ? {uri: photoUrl} : require('./../assets/img/Logo.png');
     const [filterFormatSearch, setFilterFormatSearch] = useState("Users")
     var submitting = false;
     const [message, setMessage] = useState();

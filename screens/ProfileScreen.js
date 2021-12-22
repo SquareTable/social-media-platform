@@ -93,6 +93,7 @@ import {useTheme, useIsFocused} from "@react-navigation/native"
 
 import Constants from "expo-constants";
 import SocialSquareLogo_B64_png from '../assets/SocialSquareLogo_Base64_png.js';
+import { ProfilePictureURIContext } from '../components/ProfilePictureURIContext.js';
 
 const Welcome = ({navigation, route}) => {
     const StatusBarHeight = Constants.statusBarHeight;
@@ -103,7 +104,7 @@ const Welcome = ({navigation, route}) => {
             navigation.replace('SimpleStylingMenu', {ableToRefresh: false, indexNumToUse: null, backToProfileScreen: true})
         }
     } else {
-        var backButtonHidden = false;
+        var backButtonHidden = true;
     }
     const [PageElementsState, setPageElementsState] = useState(false);
     const { colors, dark } = useTheme();
@@ -113,8 +114,8 @@ const Welcome = ({navigation, route}) => {
     }
      //context
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
-    const {_id, name, displayName, email, photoUrl, followers, following} = storedCredentials;
-    const [AvatarImg, setAvatarImage] = useState(SocialSquareLogo_B64_png)
+    const {profilePictureUri, setProfilePictureUri} = useContext(ProfilePictureURIContext);
+    if (storedCredentials) {var {_id, name, displayName, email, photoUrl, followers, following} = storedCredentials}
     const [gridViewState, setGridViewState] = useState("flex")
     const [featuredViewState, setFeaturedViewState] = useState("none")
     const [selectedPostFormat, setSelectedPostFormat] = useState("One")
@@ -308,73 +309,6 @@ const Welcome = ({navigation, route}) => {
         } else {
             setPostNumForMsg(null)
         }
-    }
-
-    const getProfilePicture = () => {
-        const url = `https://nameless-dawn-41038.herokuapp.com/user/getProfilePic/${name}`;
-
-        axios.get(url).then((response) => {
-            const result = response.data;
-            const {message, status, data} = result;
-
-            if (status !== 'SUCCESS') {
-                handleMessage(message, status);
-                console.log(status)
-                console.log(message)
-            } else {
-                console.log(status)
-                console.log(message)
-                axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${data}`)
-                .then((response) => {
-                    const result = response.data;
-                    const {message, status, data} = result;
-                    console.log(status)
-                    console.log(message)
-                    console.log(data)
-                    //set image
-                    if (message == 'No profile image.' && status == 'FAILED') {
-                        console.log('Setting logo to SocialSquare logo')
-                        setAvatarImage(SocialSquareLogo_B64_png)
-                    } else if (data) {
-                        //convert back to image
-                        console.log('Setting logo to profile logo')
-                        var base64Icon = `data:image/jpg;base64,${data}`
-                        setAvatarImage(base64Icon)
-                        AsyncStorage.setItem('UserProfilePicture', base64Icon)
-                    } else {
-                        console.log('Setting logo to SocialSquare logo')
-                        setAvatarImage(SocialSquareLogo_B64_png)
-                    }
-                })
-                .catch(function (error) {
-                    console.log("Image not recieved")
-                    console.log(error);
-                });
-            }
-            //setSubmitting(false);
-
-        }).catch(error => {
-            console.log(error);
-            //setSubmitting(false);
-            handleMessage("An error occured. Try checking your network connection and retry.");
-        })
-    }
-
-    const checkForUserProfilePictureFromAsyncStorage = async () => {
-        const image = await AsyncStorage.getItem('UserProfilePicture')
-        if (image == null) {
-            getProfilePicture()
-            setGetPfp(true)
-            console.log('Getting profile picture from server from ProfileScreen.js')
-        } else {
-            setAvatarImage(image)
-            setGetPfp(true)
-            console.log('Getting profile picture from AsyncStorage from ProfileScreen.js')
-        }
-    }
-
-    if (getPfp !== true) {
-        checkForUserProfilePictureFromAsyncStorage()
     }
 
     const UpVoteImage = (imageId, postNum) => {
@@ -2635,7 +2569,7 @@ const Welcome = ({navigation, route}) => {
                 }
                 <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
                     <PageTitle style={{fontSize: 24}} welcome={true}>{displayName || name || "Couldn't get name"}</PageTitle>
-                    <Avatar style={{width: 40, height: 40}} resizeMode="cover" source={{uri: AvatarImg}}/>
+                    <Avatar style={{width: 40, height: 40}} resizeMode="cover" source={{uri: profilePictureUri}}/>
                 </View>
                 <View style={{position: 'absolute', right: 10, top: StatusBarHeight}}>
                     <TouchableOpacity disabled={PageElementsState} onPress={goToSettingsScreen}>
@@ -2679,7 +2613,7 @@ const Welcome = ({navigation, route}) => {
                         </TouchableOpacity>
                     </ProfileHorizontalView>
                     <ProfInfoAreaImage>
-                        <Avatar resizeMode="cover" source={{uri: AvatarImg}}/>
+                        <Avatar style={{resizeMode: 'cover'}} source={{uri: profilePictureUri}}/>
                         <TouchableOpacity onPress={() => {PfpPickerActionMenu.current.show();}}>
                             <SubTitle style={{marginBottom: 0, color: darkestBlue}}>Change</SubTitle>
                         </TouchableOpacity>

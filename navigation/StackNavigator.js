@@ -72,6 +72,7 @@ import EditPostScreenStyle from "../screens/SimpleStylingScreens/EditPostScreenS
 import EditPostScreenBackgroundColor from "../screens/SimpleStylingScreens/EditPostScreenBackgroundColor.js";
 import EditPostScreenIconColors from "../screens/SimpleStylingScreens/EditPostScreenIconColors.js";
 import EditPostScreenContinueButtonStyle from "../screens/SimpleStylingScreens/EditPostScreenContinueButtonStyle.js";
+import IntroScreen from "../screens/IntroductionScreens/IntroScreen.js";
 
 
 const Stack = createStackNavigator();
