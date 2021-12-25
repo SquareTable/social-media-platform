@@ -86,17 +86,17 @@ const SettingsPage = ({navigation}) => {
         <> 
             <StatusBar style={colors.StatusBarColor}/>   
             <BackgroundDarkColor style={{backgroundColor: colors.primary}}>
+                <ConfirmLogoutView style={{backgroundColor: colors.primary}} viewHidden={logoutViewState}>
+                    <ConfirmLogoutText style={{color: colors.tertiary}}>Are you sure you want to logout?</ConfirmLogoutText>
+                    <ConfirmLogoutButtons cancelButton={true} onPress={changeLogoutView}>
+                        <ConfirmLogoutButtonText cancelButton={true}>Cancel</ConfirmLogoutButtonText>
+                    </ConfirmLogoutButtons> 
+                    <ConfirmLogoutButtons confirmButton={true} onPress={clearLogin}>
+                        <ConfirmLogoutButtonText confirmButton>Confirm</ConfirmLogoutButtonText>
+                    </ConfirmLogoutButtons> 
+                </ConfirmLogoutView>
                 <ScrollView>
-                    <WelcomeContainer style={{backgroundColor: colors.primary}}>                
-                    <ConfirmLogoutView style={{backgroundColor: colors.primary}} viewHidden={logoutViewState}>
-                        <ConfirmLogoutText style={{color: colors.tertiary}}>Are you sure you want to logout?</ConfirmLogoutText>
-                        <ConfirmLogoutButtons cancelButton={true} onPress={changeLogoutView}>
-                            <ConfirmLogoutButtonText cancelButton={true}>Cancel</ConfirmLogoutButtonText>
-                            </ConfirmLogoutButtons> 
-                            <ConfirmLogoutButtons confirmButton={true} onPress={clearLogin}>
-                                <ConfirmLogoutButtonText confirmButton>Confirm</ConfirmLogoutButtonText>
-                            </ConfirmLogoutButtons> 
-                    </ConfirmLogoutView>
+                    <WelcomeContainer style={{backgroundColor: colors.primary}}>
                         <Avatar resizeMode="cover" source={{uri: profilePictureUri}} />  
                         <SettingsPageItemTouchableOpacity style={{borderColor: colors.borderColor}} onPress={() => {navigation.navigate('SecuritySettingsScreen')}}>
                             <Icon name="security" size={60} color={colors.tertiary}/>

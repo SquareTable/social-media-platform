@@ -1,18 +1,18 @@
 # Summary
 
-Date : 2021-12-14 17:33:35
+Date : 2021-12-24 11:26:50
 
 Directory /Users/sebastianwebster/GitHub/social-media-platform
 
-Total : 593 files,  88060 codes, 1318 comments, 2215 blanks, all 91593 lines
+Total : 594 files,  83646 codes, 1298 comments, 2200 blanks, all 87144 lines
 
 [details](details.md)
 
 ## Languages
 | language | files | code | comment | blank | total |
 | :--- | ---: | ---: | ---: | ---: | ---: |
-| JSON | 6 | 52,247 | 26 | 3 | 52,276 |
-| JavaScript | 83 | 24,509 | 780 | 1,690 | 26,979 |
+| JSON | 6 | 47,392 | 26 | 3 | 47,421 |
+| JavaScript | 84 | 24,950 | 760 | 1,675 | 27,385 |
 | HTML | 4 | 6,529 | 2 | 1 | 6,532 |
 | XML | 494 | 2,767 | 491 | 491 | 3,749 |
 | CSS | 1 | 1,936 | 3 | 7 | 1,946 |
@@ -22,7 +22,7 @@ Total : 593 files,  88060 codes, 1318 comments, 2215 blanks, all 91593 lines
 ## Directories
 | path | files | code | comment | blank | total |
 | :--- | ---: | ---: | ---: | ---: | ---: |
-| . | 593 | 88,060 | 1,318 | 2,215 | 91,593 |
+| . | 594 | 83,646 | 1,298 | 2,200 | 87,144 |
 | .expo-shared | 2 | 7 | 0 | 7 | 14 |
 | .idea | 3 | 23 | 0 | 0 | 23 |
 | assets | 500 | 38,079 | 501 | 514 | 39,094 |
@@ -32,16 +32,16 @@ Total : 593 files,  88060 codes, 1318 comments, 2215 blanks, all 91593 lines
 | assets/icomoon-icons/IcoMoon-Free-master/Font | 5 | 26,324 | 10 | 12 | 26,346 |
 | assets/icomoon-icons/IcoMoon-Free-master/Font/demo-files | 3 | 2,988 | 8 | 11 | 3,007 |
 | assets/icomoon-icons/IcoMoon-Free-master/SVG | 491 | 2,744 | 491 | 491 | 3,726 |
-| components | 12 | 214 | 6 | 32 | 252 |
+| components | 13 | 216 | 7 | 33 | 256 |
 | docs | 3 | 112 | 0 | 0 | 112 |
-| navigation | 4 | 1,189 | 67 | 51 | 1,307 |
+| navigation | 4 | 1,135 | 62 | 46 | 1,243 |
 | posts | 4 | 433 | 2 | 11 | 446 |
 | python_scripts | 3 | 59 | 16 | 10 | 85 |
-| screens | 57 | 21,245 | 697 | 1,561 | 23,503 |
+| screens | 57 | 21,506 | 674 | 1,538 | 23,718 |
 | screens/IntroductionScreens | 1 | 149 | 0 | 2 | 151 |
-| screens/PostScreens | 7 | 2,172 | 77 | 191 | 2,440 |
-| screens/SecuritySettingsScreens | 4 | 169 | 0 | 8 | 177 |
-| screens/SimpleStylingScreens | 9 | 1,626 | 6 | 109 | 1,741 |
+| screens/PostScreens | 7 | 2,199 | 77 | 192 | 2,468 |
+| screens/SecuritySettingsScreens | 4 | 174 | 0 | 8 | 182 |
+| screens/SimpleStylingScreens | 9 | 1,634 | 6 | 110 | 1,750 |
 | screens/screenStylings | 1 | 1,930 | 7 | 183 | 2,120 |
 
 [details](details.md)

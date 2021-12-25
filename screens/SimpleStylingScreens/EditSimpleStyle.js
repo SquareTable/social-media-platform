@@ -15,10 +15,11 @@ import {Octicons} from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const EditSimpleStyle = ({navigation, route}) => {
-    const {name, indexNum, type, dark, stylingType, stylingVersion, primary, tertiary, borderColor, background, secondary, darkLight, brand, green, red, darkest, greyish, bronzeRarity, darkestBlue, StatusBarColor, navFocusedColor, navNonFocusedColor, orange, yellow, purple, slightlyLighterGrey, midWhite, slightlyLighterPrimary, descTextColor, errorColor, home, find, post, chat, profile, bottomNavigationBar, postViews} = route.params;
+    const {name, indexNum, type, dark, stylingType, stylingVersion, primary, tertiary, borderColor, background, secondary, darkLight, brand, green, red, darkest, greyish, bronzeRarity, darkestBlue, StatusBarColor, navFocusedColor, navNonFocusedColor, orange, yellow, purple, slightlyLighterGrey, midWhite, slightlyLighterPrimary, descTextColor, errorColor, home, find, post, chat, profile, bottomNavigationBar, postViews, backToProfileScreen} = route.params;
     const [showCrossAndTick, setShowCrossAndTick] = useState(false)
     const StatusBarHeight = Constants.statusBarHeight;
     const [InfoPageIsHidden, setInfoPageIsHidden] = useState(true)
+    const [goBackToProfileScreen, setGoBackToProfileScreen] = useState(backToProfileScreen)
 
     const leaveAndSave = async () => {
         let currentSimpleStyleData = await AsyncStorage.getItem('simpleStylingData')
@@ -37,7 +38,7 @@ const EditSimpleStyle = ({navigation, route}) => {
         currentSimpleStyleData.push({name: name, indexNum: indexNum, stylingType: stylingType, stylingVersion: stylingVersion, dark: dark, colors: {primary: primary, tertiary: tertiary, borderColor: borderColor, background: primary, secondary: secondary, darkLight: darkLight, brand: brand, green: green, red: red, darkest: darkest, greyish: greyish, bronzeRarity: bronzeRarity, darkestBlue: darkestBlue, StatusBarColor: StatusBarColor, navNonFocusedColor: navNonFocusedColor, navFocusedColor: navFocusedColor, orange: orange, yellow: yellow, purple: purple, slightlyLighterGrey: slightlyLighterGrey, midWhite: midWhite, slightlyLighterPrimary: slightlyLighterPrimary, descTextColor: descTextColor, errorColor: errorColor, home: home, find: find, post: post, chat: chat, profile: profile, bottomNavigationBar: bottomNavigationBar, postViews: postViews}})
         console.log(currentSimpleStyleData)
         AsyncStorage.setItem('simpleStylingData', JSON.stringify(currentSimpleStyleData))
-        navigation.navigate('SimpleStylingMenu', {ableToRefresh: true, indexNumToUse: indexNum});
+        navigation.navigate('SimpleStylingMenu', {ableToRefresh: true, indexNumToUse: indexNum, backToProfileScreen: goBackToProfileScreen});
     }
     const ColourInformationText = ({titleText, text}) => {
         return(

@@ -41,7 +41,7 @@ const WhatIsStoredOnOurServers = ({navigation}) => {
                     <ListItem style={{color: colors.tertiary}}>{`\u2022 The comments you have upvoted and downvoted`}</ListItem>
                     <ListItem style={{color: colors.tertiary}}>{`\u2022 Messages you have sent (optional encryption)`}</ListItem>
                 </View>
-                <View style={{borderColor: colors.borderColor, borderWidth: 3}}>
+                <View style={{borderColor: colors.borderColor, borderWidth: 3, marginBottom: 10}}>
                     <Text style={{fontSize: 20, textAlign: 'center', fontWeight: 'bold', color: colors.tertiary, marginVertical: 20}}>This is a full list of the data we store on our servers that is hashed:</Text>
                     <ListItem style={{color: colors.tertiary}}>{`\u2022 Your password`}</ListItem>
                 </View>

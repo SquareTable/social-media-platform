@@ -30,7 +30,7 @@ import { SimpleStylingVersion } from '../../components/StylingVersionsFile.js';
 import {CredentialsContext} from '../../components/CredentialsContext.js';
 
 const SimpleStylingMenu = ({navigation, route}) => {
-    const {dark, colors} = useTheme()
+    const {dark, colors, indexNum} = useTheme()
     const StatusBarHeight = Constants.statusBarHeight
     const [NamingNewStyle, setNamingNewStyle] = useState(true);
     const [message, handleMessage] = useState('')
@@ -210,6 +210,12 @@ const SimpleStylingMenu = ({navigation, route}) => {
         }
         getSimpleStylingData()
     }, [])
+
+    useEffect(() => {
+        for (let i = 0; i < simpleStylingData.length; i++) {
+            console.log(simpleStylingData[i].indexNum)
+        }
+    })
 
     const calculateAmountOfStylesToUpdate = (forceRefresh) => {
         async function getSimpleStylingData() {
@@ -681,16 +687,17 @@ const SimpleStylingMenu = ({navigation, route}) => {
                                                     <TouchableOpacity onPress={() => {showVersionReleaseNotes(item.stylingVersion)}} style={{justifyContent: 'center', alignItems: 'center', alignSelf: 'center'}}>
                                                         <Text style={{borderColor: colors.borderColor, borderWidth: 1, borderRadius: 5, color: colors.tertiary, textAlign: 'center', marginLeft: 5, padding: 5}}>V{item.stylingVersion || ' ERROR'}</Text>
                                                     </TouchableOpacity>
-                                                    <TouchableOpacity onPress={() => {item.stylingVersion == SimpleStylingVersion ? navigation.navigate('EditSimpleStyle', {name: item.name, indexNum: item.indexNum, type: null, dark: item.dark, stylingType: item.stylingType, stylingVersion: item.stylingVersion, primary: item.colors.primary, tertiary: item.colors.tertiary, borderColor: item.colors.borderColor, background: item.colors.background, secondary: item.colors.secondary, darkLight: item.colors.darkLight, brand: item.colors.brand, green: item.colors.green, red: item.colors.red, darkest: item.colors.darkest, greyish: item.colors.greyish, bronzeRarity: item.colors.bronzeRarity, darkestBlue: item.colors.darkestBlue, StatusBarColor: item.colors.StatusBarColor, navFocusedColor: item.colors.navFocusedColor, navNonFocusedColor: item.colors.navNonFocusedColor, orange: item.colors.orange, yellow: item.colors.yellow, purple: item.colors.purple, slightlyLighterGrey: item.colors.slightlyLighterGrey, midWhite: item.colors.midWhite, slightlyLighterPrimary: item.colors.slightlyLighterPrimary, descTextColor: item.colors.descTextColor, errorColor: item.colors.errorColor, home: item.colors.home, find: item.colors.find, post: item.colors.post, chat: item.colors.chat, profile: item.colors.profile, bottomNavigationBar: item.colors.bottomNavigationBar, postViews: item.colors.postViews}) : showCannotEditStyleBecauseOfOutdatedStylingMessage()}} style={{position: 'absolute', right: 45, top: -7}}>
+                                                    <TouchableOpacity onPress={() => {item.stylingVersion == SimpleStylingVersion ? navigation.navigate('EditSimpleStyle', {name: item.name, indexNum: item.indexNum, type: null, dark: item.dark, stylingType: item.stylingType, stylingVersion: item.stylingVersion, primary: item.colors.primary, tertiary: item.colors.tertiary, borderColor: item.colors.borderColor, background: item.colors.background, secondary: item.colors.secondary, darkLight: item.colors.darkLight, brand: item.colors.brand, green: item.colors.green, red: item.colors.red, darkest: item.colors.darkest, greyish: item.colors.greyish, bronzeRarity: item.colors.bronzeRarity, darkestBlue: item.colors.darkestBlue, StatusBarColor: item.colors.StatusBarColor, navFocusedColor: item.colors.navFocusedColor, navNonFocusedColor: item.colors.navNonFocusedColor, orange: item.colors.orange, yellow: item.colors.yellow, purple: item.colors.purple, slightlyLighterGrey: item.colors.slightlyLighterGrey, midWhite: item.colors.midWhite, slightlyLighterPrimary: item.colors.slightlyLighterPrimary, descTextColor: item.colors.descTextColor, errorColor: item.colors.errorColor, home: item.colors.home, find: item.colors.find, post: item.colors.post, chat: item.colors.chat, profile: item.colors.profile, bottomNavigationBar: item.colors.bottomNavigationBar, postViews: item.colors.postViews, backToProfileScreen: backToProfileScreen}) : showCannotEditStyleBecauseOfOutdatedStylingMessage()}} style={{position: 'absolute', right: 45, top: -7}}>
                                                         <Octicons name={"pencil"} size={40} color={colors.brand} />
                                                     </TouchableOpacity>
                                                     <TouchableOpacity onPress={() => {setListOfDataGettingDeleted(listOfDataGettingDeleted => [...listOfDataGettingDeleted, index])}} style={{position: 'absolute', right: 10, top: -7}}>
                                                         <Octicons name={"x"} size={40} color={colors.brand} />
                                                     </TouchableOpacity>
-                                                        {console.log('AppStylingContextState is: ' + AppStylingContextState)}
-                                                        {console.log('HI ' + (AppStylingContextState == item.indexNum))}
-                                                        <View style={{backgroundColor: colors.borderColor, minHeight: 45, height: 45, maxHeight: 45, minWidth: 45, width: 45, maxWidth: 45, borderRadius: 45/2, borderColor: AppStylingContextState == item.indexNum ? colors.brand : colors.tertiary, borderWidth: 2, position: 'absolute', right: 85, top: -8}}>
-                                                            {AppStylingContextState == item.indexNum && (
+                                                        {console.log('indexNum is : ' + indexNum)}
+                                                        {console.log('index is : ' + index)}
+                                                        {console.log('indexNum is the same as index ' + (indexNum == index))}
+                                                        <View style={{backgroundColor: colors.borderColor, minHeight: 45, height: 45, maxHeight: 45, minWidth: 45, width: 45, maxWidth: 45, borderRadius: 45/2, borderColor: indexNum == index ? colors.brand : colors.tertiary, borderWidth: 2, position: 'absolute', right: 85, top: -8}}>
+                                                            {indexNum == index && (
                                                                 <View style={{backgroundColor: colors.tertiary, marginTop: 5, marginLeft: 5.5, minHeight: 30, height: 30, maxHeight: 30, minWidth: 30, width: 30, maxWidth: 30, borderRadius: 30/2}}/>
                                                             )}
                                                         </View>
