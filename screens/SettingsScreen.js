@@ -39,7 +39,7 @@ const SettingsPage = ({navigation}) => {
      //context
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
     if (storedCredentials) {var {name, email, photoUrl} = storedCredentials}
-    const [logoutViewState, setLogoutViewState] = useState("false")
+    const [logoutViewState, setLogoutViewState] = useState(true)
     const [webBrowserResult, setWebBrowserResult] = useState(null)
     const {profilePictureUri, setProfilePictureUri} = useContext(ProfilePictureURIContext);
 
@@ -95,50 +95,50 @@ const SettingsPage = ({navigation}) => {
                         <ConfirmLogoutButtonText confirmButton>Confirm</ConfirmLogoutButtonText>
                     </ConfirmLogoutButtons> 
                 </ConfirmLogoutView>
-                <ScrollView>
+                <ScrollView scrollEnabled={logoutViewState}>
                     <WelcomeContainer style={{backgroundColor: colors.primary}}>
                         <Avatar resizeMode="cover" source={{uri: profilePictureUri}} />  
-                        <SettingsPageItemTouchableOpacity style={{borderColor: colors.borderColor}} onPress={() => {navigation.navigate('SecuritySettingsScreen')}}>
+                        <SettingsPageItemTouchableOpacity disabled={!logoutViewState} style={{borderColor: colors.borderColor}} onPress={() => {navigation.navigate('SecuritySettingsScreen')}}>
                             <Icon name="security" size={60} color={colors.tertiary}/>
                             <SettingsItemText style={{color: colors.tertiary}}>Security</SettingsItemText>
                         </SettingsPageItemTouchableOpacity>
-                        <SettingsPageItemTouchableOpacity style={{borderColor: colors.borderColor}} onPress={() => {navigation.navigate('NotificationsSettingsScreen')}}>
+                        <SettingsPageItemTouchableOpacity disabled={!logoutViewState} style={{borderColor: colors.borderColor}} onPress={() => {navigation.navigate('NotificationsSettingsScreen')}}>
                             <Icon name="alarm-light-outline" size={60} color={colors.tertiary}/>
                             <SettingsItemText style={{color: colors.tertiary}}>Notifications</SettingsItemText>
                         </SettingsPageItemTouchableOpacity>
-                        <SettingsPageItemTouchableOpacity style={{borderColor: colors.borderColor}} onPress={() => navigation.navigate("AccountSettings")}>
+                        <SettingsPageItemTouchableOpacity disabled={!logoutViewState} style={{borderColor: colors.borderColor}} onPress={() => navigation.navigate("AccountSettings")}>
                             <SettingsItemImage style={{tintColor: colors.tertiary}} source={require('./../assets/app_icons/settings.png')}/>
                             <SettingsItemText style={{color: colors.tertiary}}>Account Settings</SettingsItemText>
                         </SettingsPageItemTouchableOpacity>
-                        <SettingsPageItemTouchableOpacity style={{borderColor: colors.borderColor}} onPress={() => navigation.navigate("AppStyling")}>
+                        <SettingsPageItemTouchableOpacity disabled={!logoutViewState} style={{borderColor: colors.borderColor}} onPress={() => navigation.navigate("AppStyling")}>
                             <SettingsItemImage style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/207-eye.png')}/>
                             <SettingsItemText style={{color: colors.tertiary}}>App Styling</SettingsItemText>
                         </SettingsPageItemTouchableOpacity>
-                        <SettingsPageItemTouchableOpacity style={{borderColor: colors.borderColor}} onPress={() => {navigation.navigate('ReportBugScreen')}}>
+                        <SettingsPageItemTouchableOpacity disabled={!logoutViewState} style={{borderColor: colors.borderColor}} onPress={() => {navigation.navigate('ReportBugScreen')}}>
                             <SettingsItemImage style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/265-notification.png')}/>
                             <SettingsItemText style={{color: colors.tertiary}}>Report bug</SettingsItemText>
                         </SettingsPageItemTouchableOpacity>
-                        <SettingsPageItemTouchableOpacity style={{borderColor: colors.borderColor}} onPressOut={changeLogoutView}>
+                        <SettingsPageItemTouchableOpacity disabled={!logoutViewState} style={{borderColor: colors.borderColor}} onPressOut={changeLogoutView}>
                             <SettingsItemImage style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/277-exit.png')}/>
                             <SettingsItemText style={{color: colors.tertiary}}>Logout</SettingsItemText>
                         </SettingsPageItemTouchableOpacity>
                         <Text style={{color: colors.tertiary, fontSize: 24, textAlign: 'center'}}>© SquareTable 2021</Text>
                         <Text style={{color: colors.tertiary, fontSize: 24, textAlign: 'center', marginBottom: 10}}>All Rights Reserved</Text>
                         <Text style={{color: colors.tertiary, fontSize: 18, textAlign: 'center', marginBottom: 10}}>Made by Sebastian Webster, Kovid Dev, and Jacob Bowden</Text>
-                        <TouchableOpacity style={{marginHorizontal: '20%', borderColor: colors.borderColor, borderWidth: 5, borderRadius: 20/2}} onPressOut={() => {Linking.openURL('https://github.com/SquareTable/social-media-platform')}}>
+                        <TouchableOpacity disabled={!logoutViewState} style={{marginHorizontal: '20%', borderColor: colors.borderColor, borderWidth: 5, borderRadius: 20/2}} onPressOut={() => {Linking.openURL('https://github.com/SquareTable/social-media-platform')}}>
                             <View>
                                 <Text style={{color: colors.tertiary, fontSize: 16, textAlign: 'center', padding: 7}}>Press here to visit the SocialSquare GitHub repo</Text>
                             </View>
                         </TouchableOpacity>
-                        <TouchableOpacity style={{marginHorizontal: '20%', borderColor: colors.borderColor, borderWidth: 5, borderRadius: 20/2, marginTop: 20}} onPress={seeAppIntroductionScreenAgainButtonOnPress}>
+                        <TouchableOpacity disabled={!logoutViewState} style={{marginHorizontal: '20%', borderColor: colors.borderColor, borderWidth: 5, borderRadius: 20/2, marginTop: 20}} onPress={seeAppIntroductionScreenAgainButtonOnPress}>
                             <View>
                                 <Text style={{color: colors.tertiary, fontSize: 16, textAlign: 'center', padding: 7}}>See app introduction screen again</Text>
                             </View>
                         </TouchableOpacity>
-                        <TextLink style={{marginTop: 10}} onPress={() => {goToLink('https://squaretable.github.io/social-media-platform/TermsAndConditions')}}>
+                        <TextLink disabled={!logoutViewState} style={{marginTop: 10}} onPress={() => {goToLink('https://squaretable.github.io/social-media-platform/TermsAndConditions')}}>
                             <TextLinkContent style={{color: colors.brand}}>Terms of Service</TextLinkContent>
                         </TextLink>
-                        <TextLink onPress={() => {goToLink('https://squaretable.github.io/social-media-platform/PrivacyPolicy')}}>
+                        <TextLink disabled={!logoutViewState} onPress={() => {goToLink('https://squaretable.github.io/social-media-platform/PrivacyPolicy')}}>
                             <TextLinkContent style={{color: colors.brand}}>Privacy Policy</TextLinkContent>
                         </TextLink>
                     </WelcomeContainer>

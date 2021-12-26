@@ -4,7 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState, useRef, useCallback } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Alert, SafeAreaView, Platform, Image, Animated, Vibration} from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Alert, SafeAreaView, Platform, Image, Animated, Vibration, AppState} from 'react-native';
 import styled from "styled-components";
 import LoginScreen from './screens/LoginScreen.js';
 import { Start_Stack } from './navigation/Start_Stack.js';
@@ -21,13 +21,16 @@ import { RefreshAppStylingContext } from './components/RefreshAppStylingContext.
 import { SimpleStylingVersion } from './components/StylingVersionsFile.js';
 import SocialSquareLogo_B64_png from './assets/SocialSquareLogo_Base64_png.js';
 import { PanGestureHandler, State } from 'react-native-gesture-handler';
+import * as Device from 'expo-device';
 import { 
   Avatar 
 } from './screens/screenStylings/styling.js';
 import { ProfilePictureURIContext } from './components/ProfilePictureURIContext.js';
 import NetInfo from "@react-native-community/netinfo";
 import axios from 'axios';
-
+import { LockSocialSquareContext } from './components/LockSocialSquareContext.js';
+import { ShowPlaceholderSceeenContext } from './components/ShowPlaceholderScreenContext.js';
+import * as LocalAuthentication from 'expo-local-authentication';
 const Stack = createStackNavigator();
 
 
@@ -42,6 +45,8 @@ const App = () => {
   const StatusBarHeight = Constants.statusBarHeight;
   const [AppStylingContextState, setAppStylingContextState] = useState(null)
   const [AdID, setAdID] = useState('');
+  const [showPlaceholderScreen, setShowPlaceholderScreen] = useState(null)
+  const [lockSocialSquare, setLockSocialSquare] = useState(null)
   const [refreshAppStyling, setRefreshAppStyling] = useState(false);
   const [profilePictureUri, setProfilePictureUri] = useState(SocialSquareLogo_B64_png)
   const [AsyncStorageSimpleStylingData, setAsyncStorageSimpleStylingData] = useState()
@@ -49,9 +54,43 @@ const App = () => {
   const testID = Platform.OS == "ios" ? 'ca-app-pub-3940256099942544/2934735716' : 'ca-app-pub-3940256099942544/6300978111';
   const productionID = Platform.OS == 'ios' ? 'ca-app-pub-6980968247752885/8710919560' : 'ca-app-pub-6980968247752885/3057291726';
   // Is a real device and running in production.
-  const adUnitID = Constants.isDevice && !__DEV__ ? productionID : testID;
+  const adUnitID = Device.isDevice && !__DEV__ ? productionID : testID;
   const previousStylingState = useRef(null)
   const AsyncSimpleStyling_ParsedRef = useRef(null)
+  // Check App State code
+  const appState = useRef(AppState.currentState);
+  const [appStateVisible, setAppStateVisible] = useState(appState.current)
+  const [previousAppStateVisible, setPreviousAppStateVisible] = useState(appState.current)
+  const [biometricSupported, setBiometricSupported] = useState(false);
+  const [openApp, setOpenApp] = useState(false);
+  const [biometricsEnrolled, setBiometricsEnrolled] = useState(false)
+  const [AppOwnershipValue, setAppOwnershipValue] = useState(undefined)
+  const [biometricsCanBeUsed, setBiometricsCanBeUsed] = useState(false)
+
+  useEffect(() => {
+      AppState.addEventListener("change", _handleAppStateChange);
+
+      return () => {
+      AppState.removeEventListener("change", _handleAppStateChange);
+      };
+  }, []);
+
+  const _handleAppStateChange = (nextAppState) => {
+      if (
+      appState.current.match(/inactive|background/) &&
+      nextAppState === "active"
+      ) {
+      console.log("App has come to the foreground!");
+      } else {
+        console.log('App is not in the foreground')
+        setOpenApp(false)
+      }
+      setPreviousAppStateVisible(appState.current)
+      appState.current = nextAppState;
+      setAppStateVisible(appState.current)
+      console.log("AppState", appState.current);
+  };
+  //End of check app state code
 
   const [storedCredentials, setStoredCredentials] = useState('');
   const clearAsyncStorageOnLogin = false;
@@ -450,6 +489,26 @@ const App = () => {
     refreshProfilePictureContext()
   }, [storedCredentials])
 
+  const handleAppAuth = async () => {  
+    const biometricAuth = await LocalAuthentication.authenticateAsync({
+      promptMessage: 'SocialSquare is currently locked.',
+      disableDeviceFallback: false,
+    });
+    if (biometricAuth.success == false) {
+      setOpenApp(false)
+    } else {
+      setOpenApp(true)
+    }
+  }
+
+  useEffect(() => {
+    if ((previousAppStateVisible == 'background' || previousAppStateVisible == 'inactive') && openApp == false && lockSocialSquare == true && biometricSupported == true && biometricsEnrolled == true && AppOwnershipValue != 'expo') {
+      handleAppAuth()
+    } else {
+      console.warn('Biometrics are not available')
+    }
+  }, [appStateVisible])
+
   if (isReady == false) {
     async function cacheResourcesAsync() {
       AsyncStorage.getItem('socialSquareCredentials').then((result) => {
@@ -591,6 +650,43 @@ const App = () => {
           }
         });
       }
+
+      const compatibleWithBiometrics = await LocalAuthentication.hasHardwareAsync();
+      const enrolledForBiometrics = await LocalAuthentication.isEnrolledAsync()
+      const AppEnvironment = Constants.appOwnership
+      setBiometricSupported(compatibleWithBiometrics);
+      setBiometricsEnrolled(enrolledForBiometrics)
+      setAppOwnershipValue(AppEnvironment)
+      if (compatibleWithBiometrics == false || enrolledForBiometrics == false || AppEnvironment == 'expo') {
+        setBiometricsCanBeUsed(false)
+        setLockSocialSquare(false)
+        AsyncStorage.setItem('LockSocialSquare', 'false')
+      } else {
+        setBiometricsCanBeUsed(true)
+      }
+
+      const LockSocialSquareValue = await AsyncStorage.getItem('LockSocialSquare')
+      const ShowPlaceholderScreenValue = await AsyncStorage.getItem('ShowPlaceholderScreen')
+
+      if (LockSocialSquareValue == null) {
+        setLockSocialSquare(false)
+        AsyncStorage.setItem('LockSocialSquare', 'false')
+      } else if (LockSocialSquareValue == 'true') {
+        setLockSocialSquare(true)
+      } else if (LockSocialSquareValue == 'false') {
+        setLockSocialSquare(false)
+      } else {
+        console.error('LockSocialSquareValue is not what it is supposed to be: ' + LockSocialSquareValue)
+      }
+
+      if (ShowPlaceholderScreenValue == null) {
+        setShowPlaceholderScreen(true)
+        AsyncStorage.setItem('ShowPlaceholderScreen', 'true')
+      } else if (ShowPlaceholderScreenValue == 'true') {
+        setShowPlaceholderScreen(true)
+      } else if (ShowPlaceholderScreenValue == 'false') {
+        setShowPlaceholderScreen(false)
+      }
   
       const cacheImages = images.map(image => {
         return Asset.fromModule(image).downloadAsync();
@@ -614,13 +710,32 @@ const App = () => {
           <AppStylingContext.Provider value={{AppStylingContextState, setAppStylingContextState}}>
             <RefreshAppStylingContext.Provider value={{refreshAppStyling, setRefreshAppStyling}}>
               <ProfilePictureURIContext.Provider value={{profilePictureUri, setProfilePictureUri}}>
-                {AppStylingContextState != 'Default' && AppStylingContextState != 'Light' && AppStylingContextState != 'Dark' && AppStylingContextState != 'PureDark' && AppStylingContextState != 'PureLight' ? previousStylingState.current != AppStylingContextState ? setCurrentSimpleStylingDataToStyle(AppStylingContextState) : null : null}
-                <AppearanceProvider>
-                  <NavigationContainer theme={AppStylingContextState == 'Default' ? scheme === 'dark' ? AppDarkTheme : AppLightTheme : AppStylingContextState == 'Dark' ? AppDarkTheme : AppStylingContextState == 'Light' ? AppLightTheme : AppStylingContextState == 'PureDark' ? AppPureDarkTheme : AppStylingContextState == 'PureLight' ? AppPureLightTheme : currentSimpleStylingData} onStateChange={() => {console.log('Screen changed')}}>
-                    <NotificationBox/>
-                    <Start_Stack/>
-                  </NavigationContainer>
-                </AppearanceProvider>
+                <ShowPlaceholderSceeenContext.Provider value={{showPlaceholderScreen, setShowPlaceholderScreen}}>
+                  <LockSocialSquareContext.Provider value={{lockSocialSquare, setLockSocialSquare}}>
+                    {AppStylingContextState != 'Default' && AppStylingContextState != 'Light' && AppStylingContextState != 'Dark' && AppStylingContextState != 'PureDark' && AppStylingContextState != 'PureLight' ? previousStylingState.current != AppStylingContextState ? setCurrentSimpleStylingDataToStyle(AppStylingContextState) : null : null}
+                    <AppearanceProvider>
+                      <NavigationContainer theme={AppStylingContextState == 'Default' ? scheme === 'dark' ? AppDarkTheme : AppLightTheme : AppStylingContextState == 'Dark' ? AppDarkTheme : AppStylingContextState == 'Light' ? AppLightTheme : AppStylingContextState == 'PureDark' ? AppPureDarkTheme : AppStylingContextState == 'PureLight' ? AppPureLightTheme : currentSimpleStylingData} onStateChange={() => {console.log('Screen changed')}}>
+                        {lockSocialSquare == false ?
+                          showPlaceholderScreen == true && (appStateVisible == 'background' || appStateVisible == 'inactive') &&
+                            <Image source={require('./assets/Splash_Screen.png')} resizeMode="cover" style={{width: '100%', height: '100%', position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, zIndex: 100}}/>
+                          :
+                            previousAppStateVisible == 'inactive' || previousAppStateVisible == 'background' ?
+                              biometricsCanBeUsed == false ? null :
+                                openApp == false ?
+                                  <>
+                                    <Image source={require('./assets/Splash_Screen.png')} resizeMode="cover" style={{width: '100%', height: '100%', position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, zIndex: 100}}/>
+                                  </>
+                                : null
+                          : appStateVisible == 'inactive' || appStateVisible == 'background' ?
+                                <Image source={require('./assets/Splash_Screen.png')} resizeMode="cover" style={{width: '100%', height: '100%', position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, zIndex: 100}}/>
+                              : null
+                        }
+                        <NotificationBox/>
+                        <Start_Stack/>
+                      </NavigationContainer>
+                    </AppearanceProvider>
+                  </LockSocialSquareContext.Provider>
+                </ShowPlaceholderSceeenContext.Provider>
               </ProfilePictureURIContext.Provider>
             </RefreshAppStylingContext.Provider>
           </AppStylingContext.Provider>

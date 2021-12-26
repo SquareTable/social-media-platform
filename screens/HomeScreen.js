@@ -58,6 +58,7 @@ const HomeScreen = ({navigation}) => {
     const OutputAsyncStorageToConsole = false
     const [updateSimpleStylesWarningHidden, setUpdateSimpleStylesWarningHidden] = useState(true);
     const {AppStylingContextState, setAppStylingContextState} = useContext(AppStylingContext);
+
     useEffect(() => {
         async function setUp() {
             const showPhotosValue = await AsyncStorage.getItem('ShowPhotos_AppBehaviour_AsyncStorage')
