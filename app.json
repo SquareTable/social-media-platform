@@ -23,6 +23,9 @@
       "userInterfaceStyle": "automatic",
       "config": {
         "googleMobileAdsAppId": "ca-app-pub-6980968247752885~4685804835"
+      },
+      "infoPlist": {
+        "NSFaceIDUsageDescription": "SocialSquare will use FaceID (optionally) to unlock the app."
       }
     },
     "android": {

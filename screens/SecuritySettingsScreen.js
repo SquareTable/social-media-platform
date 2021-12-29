@@ -28,6 +28,7 @@ import { ShowPlaceholderSceeenContext } from '../components/ShowPlaceholderScree
 import { LockSocialSquareContext } from '../components/LockSocialSquareContext.js';
 import * as LocalAuthentication from 'expo-local-authentication';
 import Constants from "expo-constants";
+import { OpenAppContext } from '../components/OpenAppContext.js';
 
 
 const SecuritySettingsScreen = ({navigation}) => {
@@ -40,6 +41,7 @@ const SecuritySettingsScreen = ({navigation}) => {
     const [AppEnvironment, setAppEnvironment] = useState(undefined)
     const marginVerticalOnSwitches = 11
     const fontSizeForText = 15
+    const {openApp, setOpenApp} = useContext(OpenAppContext)
 
     useEffect(() => {
         async function getBiometricsSupportData() {
@@ -65,19 +67,38 @@ const SecuritySettingsScreen = ({navigation}) => {
                 setShowPlaceholderScreen(showPlaceholderScreen => !showPlaceholderScreen)
             }
         } else if (type == 'LockSocialSquare') {
-            if (biometricsEnrolled == false) {
-                alert('Cannot activate SocialSquare automatic locking because you have no fingerprint/facial/iris recognition profiles on your device. Please create one for this feature to work.')
-            } else if (biometricsSupported == false) {
-                alert('Cannot activate SocialSquare automatic locking because your device does not have fingerprint/facial/iris recognition hardware. Support for SocialSquare automatic locking without biometrics hardware on your device is coming soon.')
+            if (lockSocialSquare == true) {
+                AsyncStorage.setItem('LockSocialSquare', 'false')
+                setLockSocialSquare(false)
+            } else if (LocalAuthentication.SecurityLevel == 0) {
+                alert("This feature cannot be enabled because there are no authentication profiles on your device to use. Please cereate a biometric profile or password on your device to use this feature.")
             } else if (AppEnvironment == 'expo') {
-                alert("Cannot activate SocialSquare automatic locking because you are currently running SocialSquare in Expo Go. Expo Go does not support biometric features yet. Please run an Apple App Store or Google Play Store version of SocialSquare. If you can't, unlocking SocialSquare with your device's password will be coming soon.")
+                alert("Cannot activate SocialSquare automatic locking because you are currently running SocialSquare in Expo Go. Expo Go does not support biometric features. Please run an Apple App Store or Google Play Store version of SocialSquare for this feature to work.")
             } else {
-                AsyncStorage.setItem('LockSocialSquare', lockSocialSquare == true ? 'false' : 'true')
-                if (showPlaceholderScreen == false && lockSocialSquare == false) {
-                    setShowPlaceholderScreen(true)
-                    AsyncStorage.setItem('ShowPlaceholderScreen', 'true')
+                setOpenApp(false)
+                const authenticate = async () => {
+                    const biometricAuth = await LocalAuthentication.authenticateAsync({
+                      promptMessage: 'Please authenticate to allow for biometric scanning',
+                      disableDeviceFallback: false,
+                      fallbackLabel: "Unlock with password"
+                    });
+                    checkIfAuthenticationWasASuccess(biometricAuth)
                 }
-                setLockSocialSquare(lockSocialSquare => !lockSocialSquare)
+                const checkIfAuthenticationWasASuccess = (authenticationObject) => {
+                    if (authenticationObject.success == false) {
+                        setOpenApp(true)
+                        alert('An error occured. Please try again.')
+                    } else {
+                        setOpenApp(true)
+                        AsyncStorage.setItem('LockSocialSquare', 'true')
+                        if (showPlaceholderScreen == false && lockSocialSquare == false) {
+                            setShowPlaceholderScreen(true)
+                            AsyncStorage.setItem('ShowPlaceholderScreen', 'true')
+                        }
+                        setLockSocialSquare(true)
+                    }
+                }
+                authenticate()
             }
         } else {
             console.error('Wrong type was passed into setContextAndAsyncStorage for SocialSquareSettings.js: ' + type)
@@ -115,8 +136,8 @@ const SecuritySettingsScreen = ({navigation}) => {
                         </SettingsPageItemTouchableOpacity>
                         <View style={{flex: 1, flexDirection: 'row'}}>
                             <View style={{flexDirection: 'column', flex: 1}}>
-                                <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Show a placeholder screen when leaving SocialSquare to hide screen contents</Text>
-                                <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>{Platform.OS == 'ios' ? 'Lock SocialSquare with FaceID, TouchID, or password' : Platform.OS == 'android' ? 'Lock SocialSquare with fingerprint, facial, or iris recognition.' : null}</Text>
+                                <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10, textAlign: 'center'}}>Show a placeholder screen when leaving SocialSquare to hide screen contents</Text>
+                                <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10, textAlign: 'center'}}>{Platform.OS == 'ios' ? 'Lock SocialSquare with FaceID, TouchID, or password' : Platform.OS == 'android' ? 'Lock SocialSquare with fingerprint, facial, or iris recognition or password.' : null}</Text>
                             </View>
                             <View style={{flex: 0.3, flexDirection: 'column', alignItems: 'center'}}>
                                 <SwitchToggle

@@ -13,7 +13,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import AppLoading from 'expo-app-loading';
 import { Asset } from 'expo-asset';
 import { AppearanceProvider, useColorScheme } from 'react-native-appearance';
-import { DefaultTheme, DarkTheme } from '@react-navigation/native';
+import { DefaultTheme, DarkTheme, useRoute } from '@react-navigation/native';
 import { CredentialsContext } from './components/CredentialsContext';
 import { AdIDContext } from './components/AdIDContext.js';
 import { AppStylingContext } from './components/AppStylingContext.js';
@@ -31,6 +31,7 @@ import axios from 'axios';
 import { LockSocialSquareContext } from './components/LockSocialSquareContext.js';
 import { ShowPlaceholderSceeenContext } from './components/ShowPlaceholderScreenContext.js';
 import * as LocalAuthentication from 'expo-local-authentication';
+import { OpenAppContext } from './components/OpenAppContext.js';
 const Stack = createStackNavigator();
 
 
@@ -60,12 +61,13 @@ const App = () => {
   // Check App State code
   const appState = useRef(AppState.currentState);
   const [appStateVisible, setAppStateVisible] = useState(appState.current)
-  const [previousAppStateVisible, setPreviousAppStateVisible] = useState(appState.current)
+  const [previousAppStateVisible, setPreviousAppStateVisible] = useState('justStarted')
   const [biometricSupported, setBiometricSupported] = useState(false);
   const [openApp, setOpenApp] = useState(false);
   const [biometricsEnrolled, setBiometricsEnrolled] = useState(false)
   const [AppOwnershipValue, setAppOwnershipValue] = useState(undefined)
   const [biometricsCanBeUsed, setBiometricsCanBeUsed] = useState(false)
+  const [showSocialSquareLockedWarning, setShowSocialSquareLockedWarning] = useState(false)
 
   useEffect(() => {
       AppState.addEventListener("change", _handleAppStateChange);
@@ -489,25 +491,48 @@ const App = () => {
     refreshProfilePictureContext()
   }, [storedCredentials])
 
-  const handleAppAuth = async () => {  
-    const biometricAuth = await LocalAuthentication.authenticateAsync({
-      promptMessage: 'SocialSquare is currently locked.',
-      disableDeviceFallback: false,
-    });
-    if (biometricAuth.success == false) {
-      setOpenApp(false)
-    } else {
-      setOpenApp(true)
+  const handleAppAuth = () => {  
+    const authenticate = async () => {
+      const biometricAuth = await LocalAuthentication.authenticateAsync({
+        promptMessage: 'Authenticate to unlock SocialSquare',
+        disableDeviceFallback: false,
+        fallbackLabel: "Unlock with password"
+      });
+      checkIfAuthenticationWasASuccess(biometricAuth)
     }
+    const checkIfAuthenticationWasASuccess = (authenticationObject) => {
+      if (authenticationObject.success == false) {
+        setOpenApp(false)
+        setShowSocialSquareLockedWarning(true)
+      } else {
+        setOpenApp(true)
+        setShowSocialSquareLockedWarning(false)
+      }
+    }
+    authenticate()
   }
-
+  //If app goes into the background and then comes back into the foreground, if SocialSquare automatic locking is enabled, this will start biometric authentication
   useEffect(() => {
-    if ((previousAppStateVisible == 'background' || previousAppStateVisible == 'inactive') && openApp == false && lockSocialSquare == true && biometricSupported == true && biometricsEnrolled == true && AppOwnershipValue != 'expo') {
+    if ((previousAppStateVisible == 'background' || previousAppStateVisible == 'inactive' || previousAppStateVisible == 'justStarted') && openApp == false && lockSocialSquare == true && LocalAuthentication.SecurityLevel != 0 && AppOwnershipValue != 'expo' && appStateVisible == 'active' && showSocialSquareLockedWarning == false) {
       handleAppAuth()
     } else {
-      console.warn('Biometrics are not available')
+      console.log('Biometrics are not available')
     }
   }, [appStateVisible])
+  //If app gets quit and then reopened again and SocialSquare automatic locking is enabled, this will start biometric authentication
+  useEffect(() => {
+    async function checkToSeeIfAppShouldAthenticateOnLaunch() {
+      if (await AsyncStorage.getItem('LockSocialSquare') == 'true' && appStateVisible == 'active' && LocalAuthentication.SecurityLevel != 0 && Constants.appOwnership != 'expo') {
+        handleAppAuth()
+      } else if (appStateVisible == 'active' && await AsyncStorage.getItem('LockSocialSquare') == 'true') {
+        setOpenApp(true)
+        alert('Error happened with biometric/password automatic locking')
+      } else if (appStateVisible == 'active') {
+        setOpenApp(true)
+      }
+    }
+    checkToSeeIfAppShouldAthenticateOnLaunch()
+  }, [])
 
   if (isReady == false) {
     async function cacheResourcesAsync() {
@@ -651,22 +676,12 @@ const App = () => {
         });
       }
 
-      const compatibleWithBiometrics = await LocalAuthentication.hasHardwareAsync();
-      const enrolledForBiometrics = await LocalAuthentication.isEnrolledAsync()
-      const AppEnvironment = Constants.appOwnership
-      setBiometricSupported(compatibleWithBiometrics);
-      setBiometricsEnrolled(enrolledForBiometrics)
-      setAppOwnershipValue(AppEnvironment)
-      if (compatibleWithBiometrics == false || enrolledForBiometrics == false || AppEnvironment == 'expo') {
-        setBiometricsCanBeUsed(false)
-        setLockSocialSquare(false)
-        AsyncStorage.setItem('LockSocialSquare', 'false')
-      } else {
-        setBiometricsCanBeUsed(true)
-      }
-
       const LockSocialSquareValue = await AsyncStorage.getItem('LockSocialSquare')
       const ShowPlaceholderScreenValue = await AsyncStorage.getItem('ShowPlaceholderScreen')
+
+      if (LockSocialSquareValue != 'true') {
+        setOpenApp(true)
+      }
 
       if (LockSocialSquareValue == null) {
         setLockSocialSquare(false)
@@ -687,6 +702,23 @@ const App = () => {
       } else if (ShowPlaceholderScreenValue == 'false') {
         setShowPlaceholderScreen(false)
       }
+
+      const compatibleWithBiometrics = await LocalAuthentication.hasHardwareAsync();
+      const enrolledForBiometrics = await LocalAuthentication.isEnrolledAsync()
+      const AppEnvironment = Constants.appOwnership
+      setBiometricSupported(compatibleWithBiometrics);
+      setBiometricsEnrolled(enrolledForBiometrics)
+      setAppOwnershipValue(AppEnvironment)
+      if (LocalAuthentication.SecurityLevel == 0 || AppEnvironment == 'expo') {
+        setBiometricsCanBeUsed(false)
+        setLockSocialSquare(false)
+        AsyncStorage.setItem('LockSocialSquare', 'false')
+        if (LockSocialSquareValue == 'true') {
+          alert('Biometric locking has been turned off because SocialSquare cannot access biometric scanning. Please check that SocialSquare has biometric permissions and that your device has biometric profiles.')
+        }
+      } else {
+        setBiometricsCanBeUsed(true)
+      }
   
       const cacheImages = images.map(image => {
         return Asset.fromModule(image).downloadAsync();
@@ -703,7 +735,6 @@ const App = () => {
         onError={console.warn}
       />
     ); } else {
-
     return (
       <CredentialsContext.Provider value={{storedCredentials, setStoredCredentials}}>
         <AdIDContext.Provider value={{AdID, setAdID}}>
@@ -712,28 +743,41 @@ const App = () => {
               <ProfilePictureURIContext.Provider value={{profilePictureUri, setProfilePictureUri}}>
                 <ShowPlaceholderSceeenContext.Provider value={{showPlaceholderScreen, setShowPlaceholderScreen}}>
                   <LockSocialSquareContext.Provider value={{lockSocialSquare, setLockSocialSquare}}>
-                    {AppStylingContextState != 'Default' && AppStylingContextState != 'Light' && AppStylingContextState != 'Dark' && AppStylingContextState != 'PureDark' && AppStylingContextState != 'PureLight' ? previousStylingState.current != AppStylingContextState ? setCurrentSimpleStylingDataToStyle(AppStylingContextState) : null : null}
-                    <AppearanceProvider>
-                      <NavigationContainer theme={AppStylingContextState == 'Default' ? scheme === 'dark' ? AppDarkTheme : AppLightTheme : AppStylingContextState == 'Dark' ? AppDarkTheme : AppStylingContextState == 'Light' ? AppLightTheme : AppStylingContextState == 'PureDark' ? AppPureDarkTheme : AppStylingContextState == 'PureLight' ? AppPureLightTheme : currentSimpleStylingData} onStateChange={() => {console.log('Screen changed')}}>
-                        {lockSocialSquare == false ?
-                          showPlaceholderScreen == true && (appStateVisible == 'background' || appStateVisible == 'inactive') &&
-                            <Image source={require('./assets/Splash_Screen.png')} resizeMode="cover" style={{width: '100%', height: '100%', position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, zIndex: 100}}/>
-                          :
-                            previousAppStateVisible == 'inactive' || previousAppStateVisible == 'background' ?
-                              biometricsCanBeUsed == false ? null :
-                                openApp == false ?
-                                  <>
+                    <OpenAppContext.Provider value={{openApp, setOpenApp}}>
+                      {AppStylingContextState != 'Default' && AppStylingContextState != 'Light' && AppStylingContextState != 'Dark' && AppStylingContextState != 'PureDark' && AppStylingContextState != 'PureLight' ? previousStylingState.current != AppStylingContextState ? setCurrentSimpleStylingDataToStyle(AppStylingContextState) : null : null}
+                      <AppearanceProvider>
+                        <NavigationContainer theme={AppStylingContextState == 'Default' ? scheme === 'dark' ? AppDarkTheme : AppLightTheme : AppStylingContextState == 'Dark' ? AppDarkTheme : AppStylingContextState == 'Light' ? AppLightTheme : AppStylingContextState == 'PureDark' ? AppPureDarkTheme : AppStylingContextState == 'PureLight' ? AppPureLightTheme : currentSimpleStylingData} onStateChange={() => {console.log('Screen changed')}}>
+                          {lockSocialSquare == false ?
+                            showPlaceholderScreen == true && (appStateVisible == 'background' || appStateVisible == 'inactive') &&
+                              <Image source={require('./assets/Splash_Screen.png')} resizeMode="cover" style={{width: '100%', height: '100%', position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, zIndex: 100}}/>
+                            :
+                              showSocialSquareLockedWarning == false ?
+                                previousAppStateVisible == 'inactive' || previousAppStateVisible == 'background' ?
+                                  biometricsCanBeUsed == false ? null :
+                                    openApp == false ?
+                                      <>
+                                        <Image source={require('./assets/Splash_Screen.png')} resizeMode="cover" style={{width: '100%', height: '100%', position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, zIndex: 100}}/>
+                                      </>
+                                    : null
+                                : appStateVisible == 'inactive' || appStateVisible == 'background' ?
                                     <Image source={require('./assets/Splash_Screen.png')} resizeMode="cover" style={{width: '100%', height: '100%', position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, zIndex: 100}}/>
-                                  </>
-                                : null
-                          : appStateVisible == 'inactive' || appStateVisible == 'background' ?
-                                <Image source={require('./assets/Splash_Screen.png')} resizeMode="cover" style={{width: '100%', height: '100%', position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, zIndex: 100}}/>
-                              : null
-                        }
-                        <NotificationBox/>
-                        <Start_Stack/>
-                      </NavigationContainer>
-                    </AppearanceProvider>
+                                  : openApp == false ? biometricsCanBeUsed == false ? null :
+                                      <Image source={require('./assets/Splash_Screen.png')} resizeMode="cover" style={{width: '100%', height: '100%', position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, zIndex: 100}}/>
+                                  : null
+                              :
+                                <View style={{position: 'absolute', height: '100%', width: '100%', top: 0, right: 0, backgroundColor: '#3B4252', zIndex: 1000}}>
+                                  <Image style={{width: 200, height: 200, position: 'absolute', top: StatusBarHeight, right: '25%', zIndex: 1001}} source={require('./assets/img/LogoWithBorder.png')}/>
+                                  <Text style={{color: '#eceff4', fontSize: 30, position: 'absolute', right: '10%', textAlign: 'center', fontWeight: 'bold', top: StatusBarHeight + 230, zIndex: 1001, width: '80%'}}>SocialSquare is currently locked</Text>
+                                  <TouchableOpacity onPress={handleAppAuth} style={{position: 'absolute', top: 400, right: '25%', zIndex: 1001, width: '50%'}}>
+                                    <Text style={{color: '#88c0d0', fontSize: 24, fontWeight: 'bold', textDecorationLine: 'underline', textDecorationColor: '#88c0d0', textAlign: 'center'}}>Unlock now</Text>
+                                  </TouchableOpacity>
+                                </View>
+                          }
+                          <NotificationBox/>
+                          <Start_Stack/>
+                        </NavigationContainer>
+                      </AppearanceProvider>
+                    </OpenAppContext.Provider>
                   </LockSocialSquareContext.Provider>
                 </ShowPlaceholderSceeenContext.Provider>
               </ProfilePictureURIContext.Provider>

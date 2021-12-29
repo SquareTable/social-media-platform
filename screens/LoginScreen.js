@@ -54,23 +54,6 @@ const LoginScreen = ({navigation}) => {
     const [message, setMessage] = useState();
     const [messageType, setMessageType] = useState();
 
-    const UserTextInput = ({label, icon, isPassword, hidePassword, setHidePassword, ...props}) => {
-        return(
-            <View>
-                <LeftIcon>
-                    <Octicons name={icon} size={30} color={colors.brand} />
-                </LeftIcon>
-                <StyledInputLabel>{label}</StyledInputLabel>
-                <StyledTextInput {...props} />
-                {isPassword && (
-                    <RightIcon onPress={() => setHidePassword(!hidePassword)}>
-                        <Ionicons name={hidePassword ? 'md-eye-off' : 'md-eye'} size={30} color={brand}/>
-                    </RightIcon>
-                )}
-            </View>
-        )
-    }
-
     //context
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
 
@@ -152,6 +135,7 @@ const LoginScreen = ({navigation}) => {
                                         keyboardType="email-address"
                                         autoCapitalize="none"
                                         style={{backgroundColor: colors.primary, color: colors.tertiary}}
+                                        octiconColor={colors.brand}
                                     />
 
                                     <UserTextInput
@@ -166,6 +150,7 @@ const LoginScreen = ({navigation}) => {
                                         hidePassword={hidePassword}
                                         setHidePassword={setHidePassword}
                                         style={{backgroundColor: colors.primary, color: colors.tertiary}}
+                                        octiconColor={colors.brand}
                                     />
                                     <MsgBox type={messageType}>{message}</MsgBox>
                                     {!isSubmitting && (<StyledButton onPress={handleSubmit}>
@@ -194,6 +179,23 @@ const styles = StyleSheet.create({
       justifyContent: "center"
     }
 })
+
+const UserTextInput = ({label, icon, isPassword, hidePassword, setHidePassword, octiconColor, ...props}) => {
+    return(
+        <View>
+            <LeftIcon>
+                <Octicons name={icon} size={30} color={octiconColor} />
+            </LeftIcon>
+            <StyledInputLabel>{label}</StyledInputLabel>
+            <StyledTextInput {...props} />
+            {isPassword && (
+                <RightIcon onPress={() => setHidePassword(!hidePassword)}>
+                    <Ionicons name={hidePassword ? 'md-eye-off' : 'md-eye'} size={30} color={brand}/>
+                </RightIcon>
+            )}
+        </View>
+    )
+}
 
 
 
