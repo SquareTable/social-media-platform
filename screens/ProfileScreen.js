@@ -2554,7 +2554,7 @@ const Welcome = ({navigation, route}) => {
                 }}
             />
             <StatusBar style={colors.StatusBarColor}/>
-            <Animated.View style={{paddingTop: StatusBarHeight - 10, backgroundColor: colors.primary, borderColor: colors.borderColor, borderBottomWidth: 1, alignItems: 'center', opacity: TopProfileBarFadeAnim, zIndex: 10}}>
+            <Animated.View style={{paddingTop: StatusBarHeight - 10, backgroundColor: colors.primary, borderColor: colors.borderColor, borderBottomWidth: 1, alignItems: 'center', opacity: TopProfileBarFadeAnim, zIndex: TopProfileBarFadeAnim.interpolate({inputRange: [0, 1], outputRange: [-10, 100]}), position: 'absolute', top: 0, width: '100%'}}>
                 {backButtonHidden == false &&
                     <View style={{position: 'absolute', top: StatusBarHeight, left: 10}}>
                         <TouchableOpacity style={{marginRight: '75.5%'}} disabled={PageElementsState} onPress={() => {navigation.goBack()}}>
@@ -2582,8 +2582,7 @@ const Welcome = ({navigation, route}) => {
                     </TouchableOpacity>
                 </View>
             </Animated.View>
-            <ScrollView 
-                style={{flex: 1, marginTop: -100}} 
+            <ScrollView
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
                 onScroll={handleScroll}
                 scrollEventThrottle={1}

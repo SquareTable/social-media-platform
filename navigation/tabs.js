@@ -121,7 +121,7 @@ const Tabs = ({navigation}) => {
         >
             <Tab.Screen name="Home" component={home_screen_post_to_profile_screen} options={{
                 tabBarIcon: ({focused}) => (
-                    <TouchableOpacity style={{backgroundColor: colors.primary, width: '100%', height: 75, marginTop: 30}} onPressIn={() => {onHomeScreenNavigate()}}>
+                    <TouchableOpacity style={{backgroundColor: colors.primary, width: 'auto', height: 75, marginTop: 30}} onPressIn={() => {onHomeScreenNavigate()}}>
                         <View style={{alignItems: 'center', justifyContent: 'center', top: 10}}>
                             <Image
                                 source={require('../assets/app_icons/home.png')}
@@ -132,14 +132,14 @@ const Tabs = ({navigation}) => {
                                     tintColor: focused ? colors.navFocusedColor : colors.navNonFocusedColor
                                 }}
                             />
-                            <Text style={{color: focused ? colors.navFocusedColor : colors.navNonFocusedColor, fontSize: 10,}}>HOME</Text>
+                            <Text style={{color: focused ? colors.navFocusedColor : colors.navNonFocusedColor, fontSize: 10}}>HOME</Text>
                         </View>
                     </TouchableOpacity>
                 ),
             }} />
             <Tab.Screen name="Find" component={FindScreen_Stack} options={{
                 tabBarIcon: ({focused}) => (
-                    <TouchableOpacity style={{backgroundColor: colors.primary, width: '100%', height: 75, marginTop: 30}} onPressIn={() => {onFindScreenNavigate()}}>
+                    <TouchableOpacity style={{backgroundColor: colors.primary, width: 'auto', height: 75, marginTop: 30}} onPressIn={() => {onFindScreenNavigate()}}>
                         <View style={{alignItems: 'center', justifyContent: 'center', top: 10}}>
                             <Image
                                 source={require('../assets/app_icons/find.png')}
@@ -150,7 +150,7 @@ const Tabs = ({navigation}) => {
                                     tintColor: focused ? colors.navFocusedColor : colors.navNonFocusedColor
                                 }}
                             />
-                            <Text style={{color: focused ? colors.navFocusedColor : colors.navNonFocusedColor, fontSize: 10,}}>FIND</Text>
+                            <Text style={{color: focused ? colors.navFocusedColor : colors.navNonFocusedColor, fontSize: 10}}>FIND</Text>
                         </View>
                     </TouchableOpacity>
                 ),
@@ -176,7 +176,7 @@ const Tabs = ({navigation}) => {
             }}/>
             <Tab.Screen name="Chat" component={ChatScreen_Stack} options={{
                 tabBarIcon: ({focused}) => (
-                    <TouchableOpacity style={{backgroundColor: colors.primary, width: '100%', height: 75, marginTop: 30}} onPressIn={() => {onChatScreenNavigate()}}>
+                    <TouchableOpacity style={{backgroundColor: colors.primary, width: 'auto', height: 75, marginTop: 30}} onPressIn={() => {onChatScreenNavigate()}}>
                         <View style={{alignItems: 'center', justifyContent: 'center', top: 10}}>
                             <Image
                                 source={require('../assets/app_icons/chat.png')}
@@ -187,14 +187,14 @@ const Tabs = ({navigation}) => {
                                     tintColor: focused ? colors.navFocusedColor : colors.navNonFocusedColor
                                 }}
                             />
-                            <Text style={{color: focused ? colors.navFocusedColor : colors.navNonFocusedColor, fontSize: 10,}}>CHAT</Text>
+                            <Text style={{color: focused ? colors.navFocusedColor : colors.navNonFocusedColor, fontSize: 10}}>CHAT</Text>
                         </View>
                     </TouchableOpacity>
                 ),
             }}/>
             <Tab.Screen name="Profile" component={RootStack} options={{
                 tabBarIcon: ({focused}) => (
-                    <TouchableOpacity style={{backgroundColor: colors.primary, width: '100%', height: 75, marginTop: 30}} onPressIn={() => {onProfileScreenNavigate()}}>
+                    <TouchableOpacity style={{backgroundColor: colors.primary, width: 'auto', height: 75, marginTop: 30}} onPressIn={() => {onProfileScreenNavigate()}}>
                         <View style={{alignItems: 'center', justifyContent: 'center', top: 10}}>
                             <Image
                                 source={{uri: profilePictureUri}}
@@ -207,7 +207,7 @@ const Tabs = ({navigation}) => {
                                     borderRadius: 40/2
                                 }}
                             />
-                            <Text style={{color: focused ? colors.navFocusedColor : colors.navNonFocusedColor, fontSize: 10,}}>PROFILE</Text>
+                            <Text style={{color: focused ? colors.navFocusedColor : colors.navNonFocusedColor, fontSize: 10}}>PROFILE</Text>
                         </View>
                     </TouchableOpacity>
                 ),

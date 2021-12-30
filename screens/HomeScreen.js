@@ -1,5 +1,5 @@
-import React, { useState, useContext, useRef, useEffect, useCallback } from 'react';
-import { StyleSheet, Text, View, Button, Image, TouchableOpacity, SafeAreaView, ScrollView, FlatList, Alert, Dimensions} from 'react-native';
+import React, { useState, useContext, useRef, useEffect, useCallback, memo } from 'react';
+import { StyleSheet, Text, View, Button, Image, TouchableOpacity, SafeAreaView, ScrollView, FlatList, Alert, useWindowDimensions} from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import styled from "styled-components";
 import Images from "../posts/images.js";
@@ -31,13 +31,6 @@ import { CredentialsContext } from '../components/CredentialsContext.js';
 import { AdIDContext } from '../components/AdIDContext.js';
 import VisitingProfileScreen from '../screens/VisitingProfileScreen.js';
 import devModeOn from '../components/devModeOn.js';
-import {
-    AdMobBanner,
-    AdMobInterstitial,
-    PublisherBanner,
-    AdMobRewarded,
-    setTestDeviceIDAsync,
-} from 'expo-ads-admob';
 import ScalableProgressiveImage from '../components/ScalableProgressiveImage.js';
 import { Viewport } from '@skele/components';
 import { Audio } from 'expo-av';
@@ -45,6 +38,9 @@ import OfflineNotice from '../components/OfflineNotice.js';
 import SwitchToggle from "react-native-switch-toggle";
 import { SimpleStylingVersion } from '../components/StylingVersionsFile.js';
 import { AppStylingContext } from '../components/AppStylingContext.js';
+import HTML from 'react-native-render-html';
+import IframeRenderer, { iframeModel } from '@native-html/iframe-plugin';
+import WebView from 'react-native-webview';
 
 const HomeScreen = ({navigation}) => {
     // Filter code
@@ -58,6 +54,7 @@ const HomeScreen = ({navigation}) => {
     const OutputAsyncStorageToConsole = false
     const [updateSimpleStylesWarningHidden, setUpdateSimpleStylesWarningHidden] = useState(true);
     const {AppStylingContextState, setAppStylingContextState} = useContext(AppStylingContext);
+    const adContent = `<iframe data-aa='1882208' src='https://ad.a-ads.com/1882208?size=300x250' style='width:300px; height:250px; border:0px; padding:0; overflow:hidden; background-color: transparent;'></iframe>`
 
     useEffect(() => {
         async function setUp() {
@@ -280,14 +277,14 @@ const HomeScreen = ({navigation}) => {
     const {colors, dark, indexNum, stylingType} = useTheme();
 
     const [Posts, setPosts] = useState([
-        { postSource: Images.posts.social_studies_1, profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', displayName: 'sebthemancreator', type: 'post', timeUploadedAgo: '4 hours ago', bio: 'Seb and Kovid are cool', encrypted: 'true' },
+        /*{ postSource: Images.posts.social_studies_1, profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', displayName: 'sebthemancreator', type: 'post', timeUploadedAgo: '4 hours ago', bio: 'Seb and Kovid are cool', encrypted: 'true' },
         { postSource: Images.posts.seb_and_azaria_1, profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', displayName: 'sebthemancreator', type: 'post', timeUploadedAgo: '4 hours ago', bio: 'Seb and Kovid are cool', encrypted: 'true' },
         { postSource: Images.posts.seb_and_azaria_2, profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', displayName: 'sebthemancreator', type: 'post', timeUploadedAgo: '4 hours ago', bio: 'Seb and Kovid are cool', encrypted: 'true' },
         { postSource: Images.posts.seb_and_azaria_3, profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', displayName: 'sebthemancreator', type: 'post', timeUploadedAgo: '4 hours ago', bio: 'Seb and Kovid are cool', encrypted: 'true' },
         { postSource: Images.posts.background, profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', displayName: 'sebthemancreator', type: 'post', timeUploadedAgo: '4 hours ago', bio: 'Seb and Kovid are cool', encrypted: 'true' },
         { postSource: Images.posts.apple, profilePictureSource: Images.posts.apple, username: 'ILoveApples', displayName: 'AppleKid', type: 'post', timeUploadedAgo: '4 hours ago', bio: 'Seb and Kovid are cool', encrypted: 'false' },
         { postSource: 'https://github.com/SquareTable/social-media-platform/raw/main/assets/MorningMood_song.mp3', profilePictureSource: Images.posts.profile_picture, username: 'testing_audio', displayName: 'sebthemancreator', type: 'audio', timeUploadedAgo: '1 sec ago', bio: "Hello! This is an audio post. There are quite a few bugs with it right now, but we will be fixing those shortly :) For now just listen to this peaceful song", encrypted: 'false' },
-        { postSource: 'https://github.com/SquareTable/social-media-platform/raw/main/assets/ComputerSong.mp3', profilePictureSource: Images.posts.profile_picture, username: 'testing_audio', displayName: 'sebthemancreator', type: 'audio', timeUploadedAgo: '1 sec ago', bio: "Computer error song :) Also we are aware that sometimes the posts play the wrong audio and we will be fixing that shortly lol", encrypted: 'true' },
+        { postSource: 'https://github.com/SquareTable/social-media-platform/raw/main/assets/ComputerSong.mp3', profilePictureSource: Images.posts.profile_picture, username: 'testing_audio', displayName: 'sebthemancreator', type: 'audio', timeUploadedAgo: '1 sec ago', bio: "Computer error song :) Also we are aware that sometimes the posts play the wrong audio and we will be fixing that shortly lol", encrypted: 'true' },*/
     ]);
     const goToProfileScreen = (name, userToNavigateTo, profilePictureUrl, displayName) => {
         name? 
@@ -383,7 +380,7 @@ const HomeScreen = ({navigation}) => {
     }, [])
     // End of checking for update and announcing the update
 
-    var deviceWidth = Dimensions.get('window').width
+    var deviceDimensions = useWindowDimensions()
 
     const [showEndOfListMessage, setShowEndOfListMessage] = useState(false);
 
@@ -542,6 +539,14 @@ const HomeScreen = ({navigation}) => {
         }
         checkToShowUpdateSimpleStylesWarning()
     }, [])
+
+    const HTMLRenderers = {
+        iframe: IframeRenderer
+      };
+      
+    const customHTMLElementModels = {
+        iframe: iframeModel
+    };
 
     return(
         <View
@@ -890,22 +895,24 @@ const HomeScreen = ({navigation}) => {
                     </ReportProfileOptionsViewButtons> 
                 </ScrollView>
             </ReportProfileOptionsView>
-            <View style={{flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
-                <Text style={{fontSize: 30, color: colors.tertiary, textAlign: 'center', fontWeight: 'bold'}}>Feed coming soon</Text>
-                <Text style={{fontSize: 80, color: colors.tertiary, textAlign: 'center', fontWeight: 'bold'}}>😀</Text>
-                <View style={{borderColor: colors.borderColor, borderWidth: 3, borderRadius: 20, padding: 30, marginHorizontal: '3%'}}>
-                    <Text style={{fontSize: 15, color: colors.tertiary, textAlign: 'center', fontWeight: 'bold'}}>If there is an ad showing in this box that means the code is working lol</Text>
-                    <Text style={{fontSize: 15, color: colors.tertiary, textAlign: 'center', fontWeight: 'bold', marginVertical: 20}}>If there is no ad then Google sucks</Text>
-                    <View style={{alignSelf: 'center'}}>
-                        <AdMobBanner
-                            bannerSize="mediumRectangle"
-                            adUnitID={AdID}
-                            servePersonalizedAds={false}
-                            onDidFailToReceiveAdWithError={(e) => {console.log(e)}}
-                        />
+            <FlatList
+                data={Posts}
+                scrollEnabled={FlatListElementsEnabledState}
+                ListEmptyComponent={
+                    <View style={{flex: 1, flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
+                        <View style={{borderColor: colors.borderColor, borderWidth: 3, borderRadius: 20, padding: 30, marginHorizontal: '3%'}}>
+                            <Text style={{fontSize: 30, color: colors.tertiary, textAlign: 'center', fontWeight: 'bold', marginTop: 10}}>Feed coming soon</Text>
+                            <Text style={{fontSize: 80, color: colors.tertiary, textAlign: 'center', fontWeight: 'bold'}}>😀</Text>
+                            <Text style={{fontSize: 15, color: colors.tertiary, textAlign: 'center', fontWeight: 'bold'}}>We are using a different ad company provider because Google sucked</Text>
+                            <Text style={{fontSize: 15, color: colors.tertiary, textAlign: 'center', fontWeight: 'bold', marginVertical: 20}}>If there is an ad in this box, the new ad provider is really cool and Google sucks</Text>
+                            <View style={{alignSelf: 'center', backgroundColor: colors.primary}}>
+                                <HTML source={{ html: adContent }} contentWidth={deviceDimensions.width} customHTMLElementModels={customHTMLElementModels} renderers={HTMLRenderers} WebView={WebView}/>
+                            </View>
+                        </View>
                     </View>
-                </View>
-            </View>
+                }
+            />
+        
         </View>
     );
 };

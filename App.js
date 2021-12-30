@@ -603,6 +603,10 @@ const App = () => {
         require('./assets/appstyling_fusion.png'),
         require('./assets/appstyling_darkmode.png'),
         require('./assets/appstyling_lightmode.png'),
+        require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/035-file-text.png'),
+        require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/093-drawer.png'),
+        require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/015-images.png'),
+        require('./assets/Splash_Screen.png')
       ];
 
       const getProfilePicture = () => {
@@ -749,18 +753,16 @@ const App = () => {
                         <NavigationContainer theme={AppStylingContextState == 'Default' ? scheme === 'dark' ? AppDarkTheme : AppLightTheme : AppStylingContextState == 'Dark' ? AppDarkTheme : AppStylingContextState == 'Light' ? AppLightTheme : AppStylingContextState == 'PureDark' ? AppPureDarkTheme : AppStylingContextState == 'PureLight' ? AppPureLightTheme : currentSimpleStylingData} onStateChange={() => {console.log('Screen changed')}}>
                           {lockSocialSquare == false ?
                             showPlaceholderScreen == true && (appStateVisible == 'background' || appStateVisible == 'inactive') &&
-                              <Image source={require('./assets/Splash_Screen.png')} resizeMode="cover" style={{width: '100%', height: '100%', position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, zIndex: 100}}/>
+                                <Image source={require('./assets/Splash_Screen.png')} resizeMode="cover" style={{width: '100%', height: '100%', position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, zIndex: 100}}/>
                             :
                               showSocialSquareLockedWarning == false ?
                                 previousAppStateVisible == 'inactive' || previousAppStateVisible == 'background' ?
                                   biometricsCanBeUsed == false ? null :
                                     openApp == false ?
-                                      <>
                                         <Image source={require('./assets/Splash_Screen.png')} resizeMode="cover" style={{width: '100%', height: '100%', position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, zIndex: 100}}/>
-                                      </>
                                     : null
                                 : appStateVisible == 'inactive' || appStateVisible == 'background' ?
-                                    <Image source={require('./assets/Splash_Screen.png')} resizeMode="cover" style={{width: '100%', height: '100%', position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, zIndex: 100}}/>
+                                      <Image source={require('./assets/Splash_Screen.png')} resizeMode="cover" style={{width: '100%', height: '100%', position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, zIndex: 100}}/>
                                   : openApp == false ? biometricsCanBeUsed == false ? null :
                                       <Image source={require('./assets/Splash_Screen.png')} resizeMode="cover" style={{width: '100%', height: '100%', position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, zIndex: 100}}/>
                                   : null

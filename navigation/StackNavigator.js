@@ -88,97 +88,27 @@ const screenOptionStyle = {
 
 
 const ChatScreen_Stack = () => {
-  if (darkModeOn === true) {
-    var styling = darkModeStyling;
-  } else {
-    var styling = lightModeStyling;
-  }
   const { colors } = useTheme();
   return (
-    <Stack.Navigator screenOptions={screenOptionStyle}>
-      <Stack.Screen name="ChatScreenNavigator" component={ChatScreenNavigator}
-        options={{
-          headerStyle: {
-            backgroundColor: 'transparent',
-          },
-          headerTintColor: colors.tertiary,
-          headerTransparent: true,
-          title: '',
-          headerLeftContainerStyle: {
-              paddingLeft: 20,
-          },
-        }}
-      />
-      <Stack.Screen name="Chat" component={ChatScreen}
-        options={{
-          headerStyle: {
-            backgroundColor: 'transparent',
-          },
-          headerTintColor: colors.tertiary,
-          headerTransparent: true,
-          title: '',
-          headerLeftContainerStyle: {
-              paddingLeft: 20,
-          },
-          headerLeft: null
-        }}
-      />
-      <Stack.Screen name="ChatInformationScreen" component={ChatInformationScreen}
-        options={{
-          headerStyle: {
-            backgroundColor: 'transparent',
-          },
-          headerTintColor: colors.tertiary,
-          headerTransparent: true,
-          title: '',
-          headerLeftContainerStyle: {
-              paddingLeft: 20,
-          },
-          headerLeft: null
-        }}
-      />
-      <Stack.Screen name="CreateChatScreen" component={CreateChatScreen}
-        options={{
-          headerStyle: {
-            backgroundColor: 'transparent',
-          },
-          headerTintColor: colors.tertiary,
-          headerTransparent: true,
-          title: '',
-          headerLeftContainerStyle: {
-              paddingLeft: 20,
-          },
-          headerLeft: null
-        }}
-      />
-      <Stack.Screen name="Welcome" component={ProfileScreen}
-        options={{
-          headerStyle: {
-            backgroundColor: 'transparent',
-          },
-          headerTintColor: colors.tertiary,
-          headerTransparent: true,
-          title: '',
-          headerLeftContainerStyle: {
-              paddingLeft: 20,
-          },
-          headerLeft: null
-        }}
-      />
-      <Stack.Screen name="VisitingProfileScreen" component={VisitingProfileScreen}
-        options={{
-          headerStyle: {
-            backgroundColor: 'transparent',
-          },
-          headerTintColor: colors.tertiary,
-          headerTransparent: true,
-          title: '',
-          headerLeftContainerStyle: {
-              paddingLeft: 20,
-          },
-          headerLeft: null
-        }}
-      />
+    <Stack.Navigator screenOptions={{
+        headerStyle: {
+          backgroundColor: 'transparent',
+        },
+        headerTintColor: colors.tertiary,
+        headerTransparent: true,
+        title: '',
+        headerLeftContainerStyle: {
+            paddingLeft: 20,
+        },
+        headerLeft: null
+      }}
+    >
+      <Stack.Screen name="ChatScreenNavigator" component={ChatScreenNavigator}/>
+      <Stack.Screen name="Chat" component={ChatScreen}/>
+      <Stack.Screen name="ChatInformationScreen" component={ChatInformationScreen}/>
+      <Stack.Screen name="CreateChatScreen" component={CreateChatScreen}/>
+      <Stack.Screen name="Welcome" component={ProfileScreen}/>
+      <Stack.Screen name="VisitingProfileScreen" component={VisitingProfileScreen}/>
     </Stack.Navigator>
   );
 };
@@ -199,304 +129,55 @@ const RootStack = () => {
             },
         }}
     >
-                <Stack.Screen name="Welcome" component={ProfileScreen}/>
-                <Stack.Screen name="SettingsScreen" component={SettingsScreen}/>
-                <Stack.Screen name="BadgesScreen" component={BadgesScreen}/>
-                <Stack.Screen name="AccountBadges" component={AccountBadges}/>
-                <Stack.Screen name="AccountSettings" component={AccountSettings}/>
-                <Stack.Screen name="ChangeDisplayNamePage" component={ChangeDisplayNamePage}/>
-                <Stack.Screen name="ChangeUsernamePage" component={ChangeUsernamePage}/>
-                <Stack.Screen name="ChangeEmailPage" component={ChangeEmailPage}/>
-                <Stack.Screen name="ReportBugScreen" component={ReportBugScreen}/>
-                <Stack.Screen name="CategoryViewPage" component={CategoryViewPage}/>
-                <Stack.Screen name="CommentViewPage" component={CommentViewPage}/>
-                <Stack.Screen name="ThreadViewPage" component={ThreadViewPage}/>
-                <Stack.Screen name="ViewImagePostPage" component={ViewImagePostPage}/>
-                <Stack.Screen name="ViewPollPostPage" component={ViewPollPostPage}/>
-                <Stack.Screen name="CategoryHome" component={CategoryHome}/>
-                <Stack.Screen name="CategoryCreationPage" component={CategoryCreationPage}/>
-                <Stack.Screen 
-                  name="AppStyling" 
-                  component={AppStyling}
-                  options={{
-                    headerStyle: {
-                        backgroundColor: 'transparent',
-                    },
-                    headerTintColor: colors.tertiary,
-                    headerTransparent: true,
-                    title: '',
-                    headerLeftContainerStyle: {
-                        paddingLeft: 20,
-                    },
-                    headerLeft: null
-                }}
-                />
-                <Stack.Screen 
-                  name="TakeImage_Camera" 
-                  component={TakeImage_Camera}
-                  options={{
-                    headerStyle: {
-                        backgroundColor: 'transparent',
-                    },
-                    headerTintColor: 'white',
-                    headerTransparent: true,
-                    title: '',
-                    headerLeftContainerStyle: {
-                        paddingLeft: 20,
-                    },
-                }}
-                />
-                <Stack.Screen 
-                  name="GDPRCompliance" 
-                  component={GDPRCompliance}
-                  options={{
-                    headerStyle: {
-                        backgroundColor: 'transparent',
-                    },
-                    headerTintColor: colors.tertiary,
-                    headerTransparent: true,
-                    title: '',
-                    headerLeftContainerStyle: {
-                        paddingLeft: 20,
-                    },
-                    headerLeft: null
-                }}
-                />
-                <Stack.Screen 
-                  name="SecuritySettingsScreen" 
-                  component={SecuritySettingsScreen}
-                  options={{
-                    headerStyle: {
-                        backgroundColor: 'transparent',
-                    },
-                    headerTintColor: colors.tertiary,
-                    headerTransparent: true,
-                    title: '',
-                    headerLeftContainerStyle: {
-                        paddingLeft: 20,
-                    },
-                    headerLeft: null
-                }}
-                />
-                <Stack.Screen 
-                  name="LoginActivity" 
-                  component={LoginActivity}
-                  options={{
-                    headerStyle: {
-                        backgroundColor: 'transparent',
-                    },
-                    headerTintColor: colors.tertiary,
-                    headerTransparent: true,
-                    title: '',
-                    headerLeftContainerStyle: {
-                        paddingLeft: 20,
-                    },
-                    headerLeft: null
-                }}
-                />
-                <Stack.Screen 
-                  name="2FA" 
-                  component={TwoFA}
-                  options={{
-                    headerStyle: {
-                        backgroundColor: 'transparent',
-                    },
-                    headerTintColor: colors.tertiary,
-                    headerTransparent: true,
-                    title: '',
-                    headerLeftContainerStyle: {
-                        paddingLeft: 20,
-                    },
-                    headerLeft: null
-                }}
-                />
-                <Stack.Screen 
-                  name="WhatIsStoredOnOurServers" 
-                  component={WhatIsStoredOnOurServers}
-                  options={{
-                    headerStyle: {
-                        backgroundColor: 'transparent',
-                    },
-                    headerTintColor: colors.tertiary,
-                    headerTransparent: true,
-                    title: '',
-                    headerLeftContainerStyle: {
-                        paddingLeft: 20,
-                    },
-                    headerLeft: null
-                }}
-                />
-                <Stack.Screen 
-                  name="NotificationsSettingsScreen" 
-                  component={NotificationsSettingsScreen}
-                  options={{
-                    headerStyle: {
-                        backgroundColor: 'transparent',
-                    },
-                    headerTintColor: colors.tertiary,
-                    headerTransparent: true,
-                    title: '',
-                    headerLeftContainerStyle: {
-                        paddingLeft: 20,
-                    },
-                    headerLeft: null
-                }}
-                />
-                <Stack.Screen name="ProfileStats" component={ProfileStats}
-                options={{
-                  headerStyle: {
-                    backgroundColor: 'transparent',
-                  },
-                  headerTintColor: colors.tertiary,
-                  headerTransparent: true,
-                  title: '',
-                  headerLeftContainerStyle: {
-                      paddingLeft: 20,
-                  },
-                  headerLeft: null
-                }}
-              />
-              <Stack.Screen name="SimpleStylingMenu" component={SimpleStylingMenu}
-                options={{
-                  headerStyle: {
-                    backgroundColor: 'transparent',
-                  },
-                  headerTintColor: colors.tertiary,
-                  headerTransparent: true,
-                  title: '',
-                  headerLeftContainerStyle: {
-                      paddingLeft: 20,
-                  },
-                  headerLeft: null
-                }}
-              />
-              <Stack.Screen name="EditSimpleStyle" component={EditSimpleStyle}
-                options={{
-                  headerStyle: {
-                    backgroundColor: 'transparent',
-                  },
-                  headerTintColor: colors.tertiary,
-                  headerTransparent: true,
-                  title: '',
-                  headerLeftContainerStyle: {
-                      paddingLeft: 20,
-                  },
-                  headerLeft: null,
-                  gestureEnabled: false
-                }}
-              />
-              <Stack.Screen name="Simple_ColorPickerScreen" component={Simple_ColorPickerScreen}
-                options={{
-                  headerStyle: {
-                    backgroundColor: 'transparent',
-                  },
-                  headerTintColor: colors.tertiary,
-                  headerTransparent: true,
-                  title: '',
-                  headerLeftContainerStyle: {
-                      paddingLeft: 20,
-                  },
-                  headerLeft: null
-                }}
-              />
-              <Stack.Screen name="BuiltInStylingMenu" component={BuiltInStylingMenu}
-                options={{
-                  headerStyle: {
-                    backgroundColor: 'transparent',
-                  },
-                  headerTintColor: colors.tertiary,
-                  headerTransparent: true,
-                  title: '',
-                  headerLeftContainerStyle: {
-                      paddingLeft: 20,
-                  },
-                  headerLeft: null
-                }}
-              />
-              <Stack.Screen name="PerScreenEdit" component={PerScreenEdit}
-                options={{
-                  headerStyle: {
-                    backgroundColor: 'transparent',
-                  },
-                  headerTintColor: colors.tertiary,
-                  headerTransparent: true,
-                  title: '',
-                  headerLeftContainerStyle: {
-                      paddingLeft: 20,
-                  },
-                  headerLeft: null
-                }}
-              />
-              <Stack.Screen name="EditPostGroupScreens" component={EditPostGroupScreens}
-                options={{
-                  headerStyle: {
-                    backgroundColor: 'transparent',
-                  },
-                  headerTintColor: colors.tertiary,
-                  headerTransparent: true,
-                  title: '',
-                  headerLeftContainerStyle: {
-                      paddingLeft: 20,
-                  },
-                  headerLeft: null
-                }}
-              />
-               <Stack.Screen name="EditPostScreenStyle" component={EditPostScreenStyle}
-                options={{
-                  headerStyle: {
-                    backgroundColor: 'transparent',
-                  },
-                  headerTintColor: colors.tertiary,
-                  headerTransparent: true,
-                  title: '',
-                  headerLeftContainerStyle: {
-                      paddingLeft: 20,
-                  },
-                  headerLeft: null
-                }}
-              />
-              <Stack.Screen name="EditPostScreenBackgroundColor" component={EditPostScreenBackgroundColor}
-                options={{
-                  headerStyle: {
-                    backgroundColor: 'transparent',
-                  },
-                  headerTintColor: colors.tertiary,
-                  headerTransparent: true,
-                  title: '',
-                  headerLeftContainerStyle: {
-                      paddingLeft: 20,
-                  },
-                  headerLeft: null
-                }}
-              />
-              <Stack.Screen name="EditPostScreenIconColors" component={EditPostScreenIconColors}
-                options={{
-                  headerStyle: {
-                    backgroundColor: 'transparent',
-                  },
-                  headerTintColor: colors.tertiary,
-                  headerTransparent: true,
-                  title: '',
-                  headerLeftContainerStyle: {
-                      paddingLeft: 20,
-                  },
-                  headerLeft: null
-                }}
-              />
-               <Stack.Screen name="EditPostScreenContinueButtonStyle" component={EditPostScreenContinueButtonStyle}
-                options={{
-                  headerStyle: {
-                    backgroundColor: 'transparent',
-                  },
-                  headerTintColor: colors.tertiary,
-                  headerTransparent: true,
-                  title: '',
-                  headerLeftContainerStyle: {
-                      paddingLeft: 20,
-                  },
-                  headerLeft: null
-                }}
-              />
+      <Stack.Screen name="Welcome" component={ProfileScreen}/>
+      <Stack.Screen name="SettingsScreen" component={SettingsScreen}/>
+      <Stack.Screen name="BadgesScreen" component={BadgesScreen}/>
+      <Stack.Screen name="AccountBadges" component={AccountBadges}/>
+      <Stack.Screen name="AccountSettings" component={AccountSettings}/>
+      <Stack.Screen name="ChangeDisplayNamePage" component={ChangeDisplayNamePage}/>
+      <Stack.Screen name="ChangeUsernamePage" component={ChangeUsernamePage}/>
+      <Stack.Screen name="ChangeEmailPage" component={ChangeEmailPage}/>
+      <Stack.Screen name="ReportBugScreen" component={ReportBugScreen}/>
+      <Stack.Screen name="CategoryViewPage" component={CategoryViewPage}/>
+      <Stack.Screen name="CommentViewPage" component={CommentViewPage}/>
+      <Stack.Screen name="ThreadViewPage" component={ThreadViewPage}/>
+      <Stack.Screen name="ViewImagePostPage" component={ViewImagePostPage}/>
+      <Stack.Screen name="ViewPollPostPage" component={ViewPollPostPage}/>
+      <Stack.Screen name="CategoryHome" component={CategoryHome}/>
+      <Stack.Screen name="CategoryCreationPage" component={CategoryCreationPage}/>
+      <Stack.Screen name="TakeImage_Camera" component={TakeImage_Camera}/>
+      <Stack.Group screenOptions={{
+          headerStyle: {
+            backgroundColor: 'transparent',
+          },
+          headerTintColor: colors.tertiary,
+          headerTransparent: true,
+          title: '',
+          headerLeftContainerStyle: {
+              paddingLeft: 20,
+          },
+          headerLeft: null
+        }}
+      >
+        <Stack.Screen name="AppStyling" component={AppStyling}/>
+        <Stack.Screen name="GDPRCompliance" component={GDPRCompliance}/>
+        <Stack.Screen name="SecuritySettingsScreen" component={SecuritySettingsScreen}/>
+        <Stack.Screen name="LoginActivity" component={LoginActivity}/>
+        <Stack.Screen name="2FA" component={TwoFA}/>
+        <Stack.Screen name="WhatIsStoredOnOurServers" component={WhatIsStoredOnOurServers}/>
+        <Stack.Screen name="NotificationsSettingsScreen" component={NotificationsSettingsScreen}/>
+        <Stack.Screen name="ProfileStats" component={ProfileStats}/>
+        <Stack.Screen name="SimpleStylingMenu" component={SimpleStylingMenu}/>
+        <Stack.Screen name="EditSimpleStyle" component={EditSimpleStyle}options={{gestureEnabled: false}}/>
+        <Stack.Screen name="Simple_ColorPickerScreen" component={Simple_ColorPickerScreen}/>
+        <Stack.Screen name="BuiltInStylingMenu" component={BuiltInStylingMenu}/>
+        <Stack.Screen name="PerScreenEdit" component={PerScreenEdit}/>
+        <Stack.Screen name="EditPostGroupScreens" component={EditPostGroupScreens}/>
+        <Stack.Screen name="EditPostScreenStyle" component={EditPostScreenStyle}/>
+        <Stack.Screen name="EditPostScreenBackgroundColor" component={EditPostScreenBackgroundColor}/>
+        <Stack.Screen name="EditPostScreenIconColors" component={EditPostScreenIconColors}/>
+        <Stack.Screen name="EditPostScreenContinueButtonStyle" component={EditPostScreenContinueButtonStyle}/>
+      </Stack.Group>
     </Stack.Navigator>
   );
 };
@@ -509,155 +190,30 @@ const FindScreen_Stack = () => {
   }
   const { colors } = useTheme();
   return (
-    <Stack.Navigator screenOptions={screenOptionStyle}>
-      <Stack.Screen name="FindScreen" component={FindScreen}
-        options={{
-          headerStyle: {
-            backgroundColor: 'transparent',
-          },
-          headerTintColor: colors.tertiary,
-          headerTransparent: true,
-          title: '',
-          headerLeftContainerStyle: {
-              paddingLeft: 20,
-          },
-          headerLeft: null
-        }}
-      />
-      <Stack.Screen name="ProfilePages" component={ProfilePages}
-        options={{
-          headerStyle: {
-            backgroundColor: 'transparent',
-          },
-          headerTintColor: colors.tertiary,
-          headerTransparent: true,
-          title: '',
-          headerLeftContainerStyle: {
-              paddingLeft: 20,
-          },
-          headerLeft: null
-        }}
-      />
-      <Stack.Screen name="Post_FullScreen" component={Post_FullScreen}
-        options={{
-          headerStyle: {
-            backgroundColor: 'transparent',
-          },
-          headerTintColor: colors.tertiary,
-          headerTransparent: true,
-          title: '',
-          headerLeftContainerStyle: {
-              paddingLeft: 20,
-          },
-          headerLeft: null
-        }}
-      />
-      <Stack.Screen name="ProfileScreen_FromFindScreenPost" component={ProfileScreen}
-        options={{
-          headerStyle: {
-            backgroundColor: 'transparent',
-          },
-          headerTintColor: colors.tertiary,
-          headerTransparent: true,
-          title: '',
-          headerLeftContainerStyle: {
-              paddingLeft: 20,
-          },
-          headerLeft: null
-        }}
-      />
-      <Stack.Screen name="CategoryViewPage" component={CategoryViewPage}
-        options={{
-          headerStyle: {
-            backgroundColor: 'transparent',
-          },
-          headerTintColor: colors.tertiary,
-          headerTransparent: true,
-          title: '',
-          headerLeftContainerStyle: {
-              paddingLeft: 20,
-          },
-        }}
-      />
-      <Stack.Screen name="CommentviewPage" component={CommentViewPage}
-        options={{
-          headerStyle: {
-            backgroundColor: 'transparent',
-          },
-          headerTintColor: colors.tertiary,
-          headerTransparent: true,
-          title: '',
-          headerLeftContainerStyle: {
-              paddingLeft: 20,
-          },
-        }}
-      />
-      <Stack.Screen name="ThreadViewPage" component={ThreadViewPage}
-        options={{
-          headerStyle: {
-            backgroundColor: 'transparent',
-          },
-          headerTintColor: colors.tertiary,
-          headerTransparent: true,
-          title: '',
-          headerLeftContainerStyle: {
-              paddingLeft: 20,
-          },
-        }}
-      />
-      <Stack.Screen name="ViewImagePostPage" component={ViewImagePostPage}
-        options={{
-          headerStyle: {
-            backgroundColor: 'transparent',
-          },
-          headerTintColor: colors.tertiary,
-          headerTransparent: true,
-          title: '',
-          headerLeftContainerStyle: {
-              paddingLeft: 20,
-          },
-        }}
-      />
-      <Stack.Screen name="ViewPollPostPage" component={ViewPollPostPage}
-        options={{
-          headerStyle: {
-            backgroundColor: 'transparent',
-          },
-          headerTintColor: colors.tertiary,
-          headerTransparent: true,
-          title: '',
-          headerLeftContainerStyle: {
-              paddingLeft: 20,
-          },
-        }}
-      />
-      <Stack.Screen name="ThreadUploadPage" component={ThreadUploadPage}
-        options={{
-          headerStyle: {
-            backgroundColor: 'transparent',
-          },
-          headerTintColor: colors.tertiary,
-          headerTransparent: true,
-          title: '',
-          headerLeftContainerStyle: {
-              paddingLeft: 20,
-          },
-        }}
-      />
-      <Stack.Screen name="ProfileStats" component={ProfileStats}
-        options={{
-          headerStyle: {
-            backgroundColor: 'transparent',
-          },
-          headerTintColor: colors.tertiary,
-          headerTransparent: true,
-          title: '',
-          headerLeftContainerStyle: {
-              paddingLeft: 20,
-          },
-          headerLeft: null
-        }}
-      />
+    <Stack.Navigator screenOptions={{
+      headerStyle: {
+        backgroundColor: 'transparent',
+      },
+      headerTintColor: colors.tertiary,
+      headerTransparent: true,
+      title: '',
+      headerLeftContainerStyle: {
+          paddingLeft: 20,
+      },
+    }}>
+      <Stack.Group screenOptions={{headerLeft: null}}>
+        <Stack.Screen name="FindScreen" component={FindScreen}/>
+        <Stack.Screen name="ProfilePages" component={ProfilePages}/>
+        <Stack.Screen name="Post_FullScreen" component={Post_FullScreen}/>
+      </Stack.Group>
+      <Stack.Screen name="ProfileStats" component={ProfileStats}/>
+      <Stack.Screen name="ProfileScreen_FromFindScreenPost" component={ProfileScreen}/>
+      <Stack.Screen name="CategoryViewPage" component={CategoryViewPage}/>
+      <Stack.Screen name="CommentviewPage" component={CommentViewPage}/>
+      <Stack.Screen name="ThreadViewPage" component={ThreadViewPage}/>
+      <Stack.Screen name="ViewImagePostPage" component={ViewImagePostPage}/>
+      <Stack.Screen name="ViewPollPostPage" component={ViewPollPostPage}/>
+      <Stack.Screen name="ThreadUploadPage" component={ThreadUploadPage}/>
     </Stack.Navigator>
   );
 };
@@ -687,133 +243,29 @@ const home_screen_post_to_profile_screen = () => {
 const post_screen_navigator = () => {
   const { colors } = useTheme();
   return(
-    <Stack.Navigator>
-      <Stack.Screen name="PostScreen" component={PostScreen}
-      options={{
-        headerStyle: {
-            backgroundColor: 'transparent',
-        },
-        headerTintColor: colors.tertiary,
-        headerTransparent: true,
-        title: '',
-        headerLeftContainerStyle: {
-            paddingLeft: 20,
-        },
-    }}/>
-      <Stack.Screen name="MultiMediaUploadPage" component={MultiMediaUploadPage}
-      options={{
-        headerStyle: {
-            backgroundColor: 'transparent',
-        },
-        headerTintColor: colors.tertiary,
-        headerTransparent: true,
-        title: '',
-        headerLeftContainerStyle: {
-            paddingLeft: 20,
-        },
-    }}/>
-      <Stack.Screen name="ThreadUploadPage" component={ThreadUploadPage}
-      options={{
-        headerStyle: {
-            backgroundColor: 'transparent',
-        },
-        headerTintColor: colors.tertiary,
-        headerTransparent: true,
-        title: '',
-        headerLeftContainerStyle: {
-            paddingLeft: 20,
-        },
-    }}/>
-      <Stack.Screen name="PollUploadPage" component={PollUploadPage}
-      options={{
-        headerStyle: {
-            backgroundColor: 'transparent',
-        },
-        headerTintColor: colors.tertiary,
-        headerTransparent: true,
-        title: '',
-        headerLeftContainerStyle: {
-            paddingLeft: 20,
-        },
-    }}/>
-      <Stack.Screen name="AudioUploadPage" component={AudioUploadPage}
-      options={{
-        headerStyle: {
-            backgroundColor: 'transparent',
-        },
-        headerTintColor: colors.tertiary,
-        headerTransparent: true,
-        title: '',
-        headerLeftContainerStyle: {
-            paddingLeft: 20,
-        },
-        headerLeft: null,
-        gestureEnabled: false
-    }}/>
-      <Stack.Screen name="RecordAudioPage" component={RecordAudioPage}
-      options={{
-        headerStyle: {
-            backgroundColor: 'transparent',
-        },
-        headerTintColor: colors.tertiary,
-        headerTransparent: true,
-        title: '',
-        headerLeftContainerStyle: {
-            paddingLeft: 20,
-        },
-        headerLeft: null,
-        gestureEnabled: false
-    }}/>
-    <Stack.Screen name="SendAudioPage" component={SendAudioPage}
-      options={{
-        headerStyle: {
-            backgroundColor: 'transparent',
-        },
-        headerTintColor: colors.tertiary,
-        headerTransparent: true,
-        title: '',
-        headerLeftContainerStyle: {
-            paddingLeft: 20,
-        },
-        headerLeft: null,
-        gestureEnabled: false
-    }}/>
-    <Stack.Screen name="MultiMediaUploadPreview" component={MultiMediaUploadPreview}
-      options={{
-        headerStyle: {
-            backgroundColor: 'transparent',
-        },
-        headerTintColor: colors.tertiary,
-        headerTransparent: true,
-        title: '',
-        headerLeftContainerStyle: {
-            paddingLeft: 20,
-        },
-    }}/>
-    <Stack.Screen name="SelectCategorySearchScreen" component={SelectCategorySearchScreen}
-      options={{
-        headerStyle: {
-            backgroundColor: 'transparent',
-        },
-        headerTintColor: colors.tertiary,
-        headerTransparent: true,
-        title: '',
-        headerLeftContainerStyle: {
-            paddingLeft: 20,
-        },
-    }}/>
-    <Stack.Screen name="TakeImage_Camera" component={TakeImage_Camera}
-      options={{
-        headerStyle: {
-            backgroundColor: 'transparent',
-        },
-        headerTintColor: 'white',
-        headerTransparent: true,
-        title: '',
-        headerLeftContainerStyle: {
-            paddingLeft: 20,
-        },
-    }}/>
+    <Stack.Navigator screenOptions={{
+      headerStyle: {
+        backgroundColor: 'transparent',
+      },
+      headerTintColor: colors.tertiary,
+      headerTransparent: true,
+      title: '',
+      headerLeftContainerStyle: {
+        paddingLeft: 20,
+      },
+    }}>
+      <Stack.Screen name="PostScreen" component={PostScreen}/>
+      <Stack.Screen name="MultiMediaUploadPage" component={MultiMediaUploadPage}/>
+      <Stack.Screen name="ThreadUploadPage" component={ThreadUploadPage}/>
+      <Stack.Screen name="PollUploadPage" component={PollUploadPage}/>
+      <Stack.Screen name="AudioUploadPage" component={AudioUploadPage}/>
+      <Stack.Group screenOptions={{headerLeft: null, gestureEnabled: false}}>
+        <Stack.Screen name="RecordAudioPage" component={RecordAudioPage}/>
+      </Stack.Group>
+      <Stack.Screen name="SendAudioPage" component={SendAudioPage}/>
+      <Stack.Screen name="MultiMediaUploadPreview" component={MultiMediaUploadPreview}/>
+      <Stack.Screen name="SelectCategorySearchScreen" component={SelectCategorySearchScreen}/>
+      <Stack.Screen name="TakeImage_Camera" component={TakeImage_Camera}/>
     </Stack.Navigator>
   )
 }

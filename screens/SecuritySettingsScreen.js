@@ -137,7 +137,7 @@ const SecuritySettingsScreen = ({navigation}) => {
                         <View style={{flex: 1, flexDirection: 'row'}}>
                             <View style={{flexDirection: 'column', flex: 1}}>
                                 <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10, textAlign: 'center'}}>Show a placeholder screen when leaving SocialSquare to hide screen contents</Text>
-                                <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10, textAlign: 'center'}}>{Platform.OS == 'ios' ? 'Lock SocialSquare with FaceID, TouchID, or password' : Platform.OS == 'android' ? 'Lock SocialSquare with fingerprint, facial, or iris recognition or password.' : null}</Text>
+                                <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10, textAlign: 'center'}}>{Platform.OS == 'ios' ? 'Lock SocialSquare with FaceID, TouchID, or password' : Platform.OS == 'android' ? 'Lock SocialSquare with fingerprint, facial, or iris recognition or password.' : 'Error: This platform is not supported'}</Text>
                             </View>
                             <View style={{flex: 0.3, flexDirection: 'column', alignItems: 'center'}}>
                                 <SwitchToggle
