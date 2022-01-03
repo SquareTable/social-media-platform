@@ -25,7 +25,10 @@
         "googleMobileAdsAppId": "ca-app-pub-6980968247752885~4685804835"
       },
       "infoPlist": {
-        "NSFaceIDUsageDescription": "SocialSquare will use FaceID (optionally) to unlock the app."
+        "NSFaceIDUsageDescription": "SocialSquare will use FaceID (optionally) to unlock the app.",
+        "NSCameraUsageDescription": "Camera permissions allows you to do things like posting photos taken directly from your camera and sending photos from your camera to friends and family.",
+        "NSMicrophoneUsageDescription": "Microphone permissions allows you to do things like record and post videos taken from your camera with sound, and to send voice snippets to friends and family or post voice snippets.",
+        "NSPhotoLibraryUsageDescription": "Photo Library permissions allows you to do things like post photos and video from your photo library or sending photos to family and friends."
       }
     },
     "android": {

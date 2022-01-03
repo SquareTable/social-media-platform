@@ -700,13 +700,11 @@ export const ProfilePostsSelectionView = styled.View`
 
 export const ProfilePostsSelectionBtns = styled.TouchableOpacity`
     flex: 1;
-    background-color: 'rgba(52, 52, 52, 0.8)';
     justify-content: center;
     align-items: center;
-    border-radius: 30px;
     margin-vertical: 5px;
     margin-horizontal: 5px;
-    height: 80px;
+    height: 60px;
 `;
 
 export const ProfileGridPosts = styled.View`
@@ -1070,6 +1068,9 @@ export const PostHorizontalView = styled.View`
         justify-content: center;
         text-align: center;
     `}
+    ${(props) => props.marginVertical != undefined && `
+        margin-vertical: ${props.marginVertical}px;
+    `}
 `;
 
 export const PostTypeSelector = styled.TouchableOpacity`
@@ -1080,7 +1081,13 @@ export const PostTypeSelector = styled.TouchableOpacity`
     border-radius: 100px;
     ${(props) => props.sideIcons == true && `
         margin-horizontal: 40px;
-    `} 
+    `}
+    ${(props) => props.centerIcon == true && `
+        margin-horizontal: 20px;
+    `}
+    ${(props) => props.noMarginHorizontal == true && `
+        margin-horizontal: 0px;
+    `}
     ${(props) => props.styleForSelected == true && `
         border-color: ${darkestBlue};
     `} 

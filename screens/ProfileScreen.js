@@ -2,6 +2,8 @@ import React, {useCallback, useContext, useState, useRef, useEffect} from 'react
 import { StatusBar } from 'expo-status-bar';
 import * as Haptics from 'expo-haptics';
 import ActionSheet from 'react-native-actionsheet';
+import Icon from 'react-native-vector-icons/Feather';
+import FontAwesomeFive from 'react-native-vector-icons/FontAwesome5';
 
 import {
     InnerContainer,
@@ -86,7 +88,7 @@ import * as ImagePicker from 'expo-image-picker';
 
 //credentials context
 import { CredentialsContext } from '../components/CredentialsContext';
-import { ImageBackground, ScrollView, SectionList, Image, View, ActivityIndicator, Touchable, RefreshControl, SafeAreaView, Text, Animated } from 'react-native';
+import { ImageBackground, ScrollView, SectionList, Image, View, ActivityIndicator, Touchable, RefreshControl, SafeAreaView, Text, Animated, useWindowDimensions, Easing } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import {useTheme, useIsFocused} from "@react-navigation/native"
@@ -228,6 +230,9 @@ const Welcome = ({navigation, route}) => {
     let cancelTokenPostFormatFive = axios.CancelToken.source();
     //delete post stuff
     const [postsWithDeleteMenuOpen, setPostsWithDeleteMenuOpen] = useState()
+    // Grid or Tagged grids showing
+    const GridOrTagLineTranslateX = useRef(new Animated.Value(0)).current;
+    const deviceDimensions = useWindowDimensions();
 
     const openDeletePrompt = (postId, creatorName) => {
         if (name == creatorName) {
@@ -1655,6 +1660,11 @@ const Welcome = ({navigation, route}) => {
         if (gridViewState=="none") {
             setFeaturedViewState("none")
             setGridViewState("flex")
+            Animated.timing(GridOrTagLineTranslateX, {
+                toValue: 0,
+                duration: 150,
+                useNativeDriver: 'true',
+            }).start()
         }
     }
 
@@ -1663,6 +1673,11 @@ const Welcome = ({navigation, route}) => {
             console.log("SussyBaka")
             setGridViewState("none")
             setFeaturedViewState("flex")
+            Animated.timing(GridOrTagLineTranslateX, {
+                toValue: deviceDimensions.width / 2,
+                duration: 150,
+                useNativeDriver: 'true',
+            }).start()
         }
     }
 
@@ -2554,38 +2569,51 @@ const Welcome = ({navigation, route}) => {
                 }}
             />
             <StatusBar style={colors.StatusBarColor}/>
-            <Animated.View style={{paddingTop: StatusBarHeight - 10, backgroundColor: colors.primary, borderColor: colors.borderColor, borderBottomWidth: 1, alignItems: 'center', opacity: TopProfileBarFadeAnim, zIndex: TopProfileBarFadeAnim.interpolate({inputRange: [0, 1], outputRange: [-10, 100]}), position: 'absolute', top: 0, width: '100%'}}>
-                {backButtonHidden == false &&
-                    <View style={{position: 'absolute', top: StatusBarHeight, left: 10}}>
-                        <TouchableOpacity style={{marginRight: '75.5%'}} disabled={PageElementsState} onPress={() => {navigation.goBack()}}>
+            <Animated.View style={{paddingTop: StatusBarHeight - 10, backgroundColor: colors.primary, borderColor: colors.borderColor, borderBottomWidth: 1, alignItems: 'center', opacity: TopProfileBarFadeAnim, zIndex: TopProfileBarFadeAnim.interpolate({inputRange: [0, 1], outputRange: [-10, 100]}), position: 'absolute', top: 0, width: '100%', flexDirection: 'column'}}>
+                <>
+                    {backButtonHidden == false &&
+                        <View style={{position: 'absolute', top: StatusBarHeight, left: 10}}>
+                            <TouchableOpacity style={{marginRight: '75.5%'}} disabled={PageElementsState} onPress={() => {navigation.goBack()}}>
+                                <Image
+                                    source={require('../assets/app_icons/back_arrow.png')}
+                                    style={{ width: 40, height: 40, tintColor: colors.tertiary}}
+                                    resizeMode="contain"
+                                    resizeMethod="resize"
+                                />
+                            </TouchableOpacity>
+                        </View>
+                    }
+                    <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+                        <PageTitle style={{fontSize: 24}} welcome={true}>{displayName || name || "Couldn't get name"}</PageTitle>
+                        <Avatar style={{width: 40, height: 40}} resizeMode="cover" source={{uri: profilePictureUri}}/>
+                    </View>
+                    <View style={{position: 'absolute', right: 10, top: StatusBarHeight}}>
+                        <TouchableOpacity disabled={PageElementsState} onPress={goToSettingsScreen}>
                             <Image
-                                source={require('../assets/app_icons/back_arrow.png')}
+                                source={require('../assets/app_icons/settings.png')}
                                 style={{ width: 40, height: 40, tintColor: colors.tertiary}}
                                 resizeMode="contain"
                                 resizeMethod="resize"
                             />
                         </TouchableOpacity>
                     </View>
-                }
-                <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
-                    <PageTitle style={{fontSize: 24}} welcome={true}>{displayName || name || "Couldn't get name"}</PageTitle>
-                    <Avatar style={{width: 40, height: 40}} resizeMode="cover" source={{uri: profilePictureUri}}/>
-                </View>
-                <View style={{position: 'absolute', right: 10, top: StatusBarHeight}}>
-                    <TouchableOpacity disabled={PageElementsState} onPress={goToSettingsScreen}>
-                        <Image
-                            source={require('../assets/app_icons/settings.png')}
-                            style={{ width: 40, height: 40, tintColor: colors.tertiary}}
-                            resizeMode="contain"
-                            resizeMethod="resize"
-                        />
-                    </TouchableOpacity>
-                </View>
+                </>
+                <ProfilePostsSelectionView style={{height: 50, borderBottomWidth: 0}}>
+                    <ProfilePostsSelectionBtns onPress={changeToGrid}>
+                        <Icon name="grid" color={colors.tertiary} size={30}/>
+                    </ProfilePostsSelectionBtns>
+                    <ProfilePostsSelectionBtns onPress={changeToFeatured}>
+                        <FontAwesomeFive name="user-tag" color={colors.tertiary} size={30}/>
+                    </ProfilePostsSelectionBtns>
+                    <Animated.View style={{backgroundColor: colors.tertiary, height: 3, width: '50%', position: 'absolute', bottom: 0, transform: [{translateX: GridOrTagLineTranslateX}], zIndex: 1002}}/>
+                    <View style={{backgroundColor: colors.borderColor, height: 3, width: '100%', position: 'absolute', bottom: 0}}/>
+                </ProfilePostsSelectionView>
             </Animated.View>
             <ScrollView
                 refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
                 onScroll={handleScroll}
                 scrollEventThrottle={1}
+                nestedScrollEnabled={true}
             >
                 <WelcomeContainer style={{backgroundColor: colors.primary}}>
                     <ProfileHorizontalView topItems={true}>
@@ -2614,7 +2642,7 @@ const Welcome = ({navigation, route}) => {
                     <ProfInfoAreaImage>
                         <Avatar style={{resizeMode: 'cover'}} source={{uri: profilePictureUri}}/>
                         <TouchableOpacity onPress={() => {PfpPickerActionMenu.current.show();}}>
-                            <SubTitle style={{marginBottom: 0, color: darkestBlue}}>Change</SubTitle>
+                            <SubTitle style={{marginBottom: 0, color: colors.darkestBlue}}>Change</SubTitle>
                         </TouchableOpacity>
                         <PageTitle welcome={true}>{displayName || name || "Couldn't get name"}</PageTitle>
                         <SubTitle style={{color: colors.tertiary}}>{"@"+name}</SubTitle>
@@ -2648,13 +2676,14 @@ const Welcome = ({navigation, route}) => {
                             <SubTitle style={{color: colors.tertiary}} welcome={true}> 0 </SubTitle>
                         </ProfileHorizontalViewItem>
                     </ProfileHorizontalView>
-                    <ProfilePostsSelectionView>
+                    <ProfilePostsSelectionView style={{position: 'relative'}}>
                         <ProfilePostsSelectionBtns onPress={changeToGrid}>
-                            <ProfIcons source={require('./../assets/img/Toga.jpg')}/>
+                            <Icon name="grid" color={colors.tertiary} size={45}/>
                         </ProfilePostsSelectionBtns>
                         <ProfilePostsSelectionBtns onPress={changeToFeatured}>
-                            <ProfIcons source={require('./../assets/img/Toga.jpg')}/>
+                            <FontAwesomeFive name="user-tag" color={colors.tertiary} size={45}/>
                         </ProfilePostsSelectionBtns>
+                        <Animated.View style={{backgroundColor: colors.tertiary, height: 3, width: '50%', position: 'absolute', bottom: 0, transform: [{translateX: GridOrTagLineTranslateX}]}}/>
                     </ProfilePostsSelectionView>
                     <ProfileSelectMediaTypeHorizontalView>
                         <ProfileSelectMediaTypeItem onPress={changeToOne}>
@@ -2775,12 +2804,6 @@ const Welcome = ({navigation, route}) => {
                             Features don't work yet...
                         </SubTitle>
                     </ProfileFeaturedPosts>
-                    <StyledFormArea>
-                        <Line />
-                        <StyledButton onPress={() => navigation.navigate("CategoryHome")}>
-                            <ButtonText> Category Home </ButtonText>
-                        </StyledButton>
-                    </StyledFormArea>
                 </WelcomeContainer>
             </ScrollView>
         </>

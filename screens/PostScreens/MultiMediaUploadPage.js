@@ -55,7 +55,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 //credentials context
 import { CredentialsContext } from '../../components/CredentialsContext';
-import { ImageBackground, ScrollView, Image, View, TouchableOpacity, Text } from 'react-native';
+import { ImageBackground, ScrollView, Image, View, TouchableOpacity, Text, Touchable } from 'react-native';
 
 //Image picker
 import * as ImagePicker from 'expo-image-picker';
@@ -67,6 +67,7 @@ const MultiMediaUploadPage = ({navigation, route}) => {
     const [image, setImage] = useState(null);
     const [clearingImage, setClearingImage] = useState(false);
     const {imageFromRoute} = route.params;
+    const [screenshotsAllowed, setScreenshotsAllowed] = useState(false)
 
 
     useEffect(() => {
@@ -171,7 +172,7 @@ const MultiMediaUploadPage = ({navigation, route}) => {
                             if (values.title == "" || values.description == "" || image == null) {
                                 handleMessage('Please fill all the fields.');
                             } else {
-                                navigation.navigate("MultiMediaUploadPreview", {title: values.title, description: values.description, image: image})
+                                navigation.navigate("MultiMediaUploadPreview", {title: values.title, description: values.description, image: image, screenshotsAllowed: screenshotsAllowed})
                             }
                         }}
                     >
@@ -199,6 +200,13 @@ const MultiMediaUploadPage = ({navigation, route}) => {
                                     multiline={true}
                                     style={{backgroundColor: colors.primary, color: colors.tertiary}}
                                 />
+
+                                <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+                                    <Text style={{color: colors.tertiary, fontSize: 18, marginTop: 10, marginRight: 10}}>Allow screen capture</Text>
+                                    <TouchableOpacity onPress={() => {setScreenshotsAllowed(screenshotsAllowed => !screenshotsAllowed)}} style={{width: 40, height: 40, borderColor: colors.borderColor, borderWidth: 3, justifyContent: 'center', alignItems: 'center'}}>
+                                        <Text style={{color: colors.tertiary, fontSize: 18, textAlign: 'center', textAlignVertical: 'center'}}>{screenshotsAllowed == false ? '✕' : '✓'}</Text>
+                                    </TouchableOpacity>
+                                </View>
 
                                 <MsgBox type={messageType}>{message}</MsgBox>
                                 <StyledButton onPress={handleSubmit}>

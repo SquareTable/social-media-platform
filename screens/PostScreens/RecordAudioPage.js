@@ -342,14 +342,6 @@ const RecordAudioPage = ({navigation}) => {
             navigation.goBack();
         }
     }
-
-    useEffect(() => {
-        alert('Audio posting functionality coming soon')
-    }, [])
-
-    
-
-
     return(
         <>    
             <StatusBar style={colors.StatusBarColor}/>

@@ -55,8 +55,10 @@ const PostScreen = ({navigation}) => {
     const [formatTwoSelected, setFormatTwoSelected] = useState(false);
     const [formatThreeSelected, setFormatThreeSelected] = useState(false);
     const [formatFourSelected, setFormatFourSelected] = useState(false);
+    const [formatFiveSelected, setFormatFiveSelected] = useState(false)
     const [useCustomStyling, setUseCustomStyling] = useState(false)
     const {AppStylingContextState, setAppStylingContextState} = useContext(AppStylingContext)
+    const [formatMessage, setFormatMessage] = useState('Select a format')
 
     const continuePressed = () => {
         if (formatOneSelected == true) {
@@ -71,76 +73,100 @@ const PostScreen = ({navigation}) => {
         } else if (formatFourSelected == true) {
             setMessageVisibility(false)
             navigation.navigate("RecordAudioPage")
+        } else if (formatFiveSelected == true) {
+            setMessageVisibility(false)
+            navigation.navigate("CategoryCreationPage", {imageFromRoute: null})
         } else {
             setMessageVisibility(true)
         }
     }
 
     const formatOnePressed = () => {
-        if (setFormatOneSelected !== true) {
+        if (formatOneSelected !== true) {
             setFormatOneSelected(true)
             setFormatTwoSelected(false)
             setFormatThreeSelected(false)
             setFormatFourSelected(false)
+            setFormatFiveSelected(false)
+            setFormatMessage('Post Multimedia')
         }
     }
 
     const formatTwoPressed = () => {
-        if (setFormatTwoSelected !== true) {
+        if (formatTwoSelected !== true) {
             setFormatOneSelected(false)
             setFormatTwoSelected(true)
             setFormatThreeSelected(false)
             setFormatFourSelected(false)
+            setFormatFiveSelected(false)
+            setFormatMessage('Post Threads')
         }
     }
 
     const formatThreePressed = () => {
-        if (setFormatThreeSelected !== true) {
+        if (formatThreeSelected !== true) {
             setFormatOneSelected(false)
             setFormatTwoSelected(false)
             setFormatThreeSelected(true)
             setFormatFourSelected(false)
+            setFormatFiveSelected(false)
+            setFormatMessage('Post Polls')
         }
     }
 
     const formatFourPressed = () => {
-        if (setFormatFourSelected !== true) {
+        if (formatFourSelected !== true) {
             setFormatOneSelected(false)
             setFormatTwoSelected(false)
             setFormatThreeSelected(false)
             setFormatFourSelected(true)
+            setFormatFiveSelected(false)
+            setFormatMessage('Post Audio (Coming soon)')
+        }
+    }
+
+    const formatFivePressed = () => {
+        if (formatFiveSelected !== true) {
+            setFormatOneSelected(false)
+            setFormatTwoSelected(false)
+            setFormatThreeSelected(false)
+            setFormatFourSelected(false)
+            setFormatFiveSelected(true)
+            setFormatMessage('Create a category')
         }
     }
 
     const {colors, dark} = useTheme();
-    const {post} = colors;
 
 
     return(
         <>    
-            <StatusBar style={post ? colors.post.postScreenColors.statusBarColor : colors.StatusBarColor}/>
-            <WelcomeContainer style={{backgroundColor: post ? colors.post.postScreenColors.backgroundColor : colors.primary}} postScreen={true}>
-                <PageTitle style={{color: post ? colors.post.postScreenColors.titleTextColor : colors.brand}}>Post Screen</PageTitle>
-                <SubTitle style={{color: post ? colors.post.postScreenColors.selectAFormatTextColor : colors.tertiary}}>Select a format</SubTitle>
+            <StatusBar style={colors.StatusBarColor}/>
+            <WelcomeContainer style={{backgroundColor: colors.primary}} postScreen={true}>
+                <PageTitle style={{color: colors.brand}}>Post Screen</PageTitle>
+                <SubTitle style={{color: colors.tertiary}}>{formatMessage}</SubTitle>
                 <PostCollectionView>
-                    <PostTypeSelector style={{borderColor: formatOneSelected ? post ? colors.post.postScreenColors.multimediaImageActivatedBorderColor : colors.darkestBlue : post ? colors.post.postScreenColors.multimediaImageBorderColor : colors.brand}} styleForSelected={formatOneSelected} onPress={formatOnePressed}>
-                        <PostIcons style={{tintColor: post ? colors.post.postScreenColors.multimediaImageTintColor : colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/016-camera.png')}/>
+                    <PostTypeSelector style={{borderColor: formatOneSelected ? colors.darkestBlue : colors.brand}} styleForSelected={formatOneSelected} onPress={formatOnePressed}>
+                        <PostIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/016-camera.png')}/>
                     </PostTypeSelector>
-                    <PostHorizontalView>
-                        <PostTypeSelector style={{borderColor: formatTwoSelected ? post ? colors.post.postScreenColors.threadImageActivatedBorderColor : colors.darkestBlue : post ? colors.post.postScreenColors.threadImageBorderColor : colors.brand}} sideIcons={true} styleForSelected={formatTwoSelected} onPress={formatTwoPressed}>
-                            <PostIcons style={{tintColor: post ? colors.post.postScreenColors.threadImageTintColor : colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/007-pencil2.png')}/>
+                    <PostHorizontalView marginVertical={20}>
+                        <PostTypeSelector style={{borderColor: formatTwoSelected ? colors.darkestBlue : colors.brand}} noMarginHorizontal={true} styleForSelected={formatTwoSelected} onPress={formatTwoPressed}>
+                            <PostIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/007-pencil2.png')}/>
                         </PostTypeSelector>
-                        <PostTypeSelector style={{borderColor: formatThreeSelected ? post ? colors.post.postScreenColors.pollImageActivatedBorderColor : colors.darkestBlue : post ? colors.post.postScreenColors.pollImageBorderColor : colors.brand}} sideIcons={true} styleForSelected={formatThreeSelected} onPress={formatThreePressed}>
-                            <PostIcons style={{tintColor: post ? colors.post.postScreenColors.pollImageTintColor : colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/157-stats-bars.png')}/>
+                        <PostTypeSelector style={{borderColor: formatFiveSelected ? colors.darkestBlue : colors.brand}} centerIcon={true} styleForSelected={formatFiveSelected} onPress={formatFivePressed}>
+                            <PostIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/093-drawer.png')}/>
+                        </PostTypeSelector>
+                        <PostTypeSelector style={{borderColor: formatThreeSelected ? colors.darkestBlue : colors.brand}} noMarginHorizontal={true} styleForSelected={formatThreeSelected} onPress={formatThreePressed}>
+                            <PostIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/157-stats-bars.png')}/>
                         </PostTypeSelector>
                     </PostHorizontalView>
-                    <PostTypeSelector style={{borderColor: formatFourSelected ? post ? colors.post.postScreenColors.audioImageActivatedBorderColor : colors.darkestBlue : post ? colors.post.postScreenColors.audioImageBorderColor : colors.brand}} styleForSelected={formatFourSelected} onPress={formatFourPressed}>
-                        <PostIcons style={{tintColor: post ? colors.post.postScreenColors.audioImageTintColor : colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/018-music.png')}/>
+                    <PostTypeSelector style={{borderColor: formatFourSelected ? colors.darkestBlue : colors.brand}} styleForSelected={formatFourSelected} onPress={formatFourPressed}>
+                        <PostIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/018-music.png')}/>
                     </PostTypeSelector>
-                    <PostMsgBox style={{color: post ? colors.post.postScreenColors.errorMessage : colors.red}} viewHidden={messageVisibility}> Select a format </PostMsgBox>
+                    <PostMsgBox style={{color: colors.red}} viewHidden={messageVisibility}> Select a format </PostMsgBox>
                 </PostCollectionView>
-                <StyledButton /*continueButton={true}*/ style={{backgroundColor: post ? colors.post.postScreenColors.continueButtonBackgroundColor : colors.brand}} onPress={continuePressed}>
-                    <ButtonText style={{color: post ? colors.post.postScreenColors.continueButtonTextColor : 'black'}} /*continueButton={true}*/>
+                <StyledButton /*continueButton={true}*/ style={{backgroundColor: colors.brand}} onPress={continuePressed}>
+                    <ButtonText style={{color: 'black'}} /*continueButton={true}*/>
                         Continue
                     </ButtonText>
                 </StyledButton>

@@ -258,9 +258,9 @@ const CategoryCreationPage = ({navigation, route}) => {
             />
             <KeyboardAvoidingWrapper>
                 <StyledContainer style={{backgroundColor: colors.primary}}>
-                        <StatusBar style="dark"/>
+                        <StatusBar style={colors.StatusBarColor}/>
                         <InnerContainer>
-                            <PageLogo source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/093-drawer.png')} />
+                            <PageLogo style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/093-drawer.png')} />
                             <PageTitle>Create Category</PageTitle>
                             <Formik
                                 initialValues={{categoryTitle: "", categoryDescription: "", categoryTags: "", categoryNSFW: false, categoryNSFL: false}}

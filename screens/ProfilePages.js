@@ -1,5 +1,7 @@
 import React, { useContext, useState, useRef } from 'react';
 import { StatusBar } from 'expo-status-bar';
+import Icon from 'react-native-vector-icons/Feather';
+import FontAwesomeFive from 'react-native-vector-icons/FontAwesome5';
 
 import {
     InnerContainer,
@@ -89,7 +91,7 @@ import axios from 'axios';
 
 //credentials context
 import { CredentialsContext } from '../components/CredentialsContext';
-import { ImageBackground, ScrollView, SectionList, View, Image, TouchableOpacity, ActivityIndicator, Animated, Text } from 'react-native';
+import { ImageBackground, ScrollView, SectionList, View, Image, TouchableOpacity, ActivityIndicator, Animated, Text, useWindowDimensions } from 'react-native';
 
 import {useTheme} from "@react-navigation/native"
 
@@ -218,11 +220,17 @@ const ProfilePages = ({ route, navigation }) => {
     let cancelTokenPostFormatFour = axios.CancelToken.source();
     let cancelTokenPostFormatFive = axios.CancelToken.source();
     //3 dots menus
-    const [profileOptionsViewState, setProfileOptionsViewState] = useState(true);
-    const [ReportProfileOptionsViewState, setReportProfileOptionsViewState] = useState(true)
-    const [ReportProfile_ContentThatShouldNotBePosted_OptionsViewState, setReportProfile_ContentThatShouldNotBePosted_OptionsViewState] = useState(true)
-    const [ReportProfile_PretendingToBeSomeoneElse_OptionsViewState, setReportProfile_PretendingToBeSomeoneElse_OptionsViewState] = useState(true)
-    const [ReportProfile_MayBeUnder13_OptionsViewState, setReportProfile_MayBeUnder13_OptionsViewState] = useState(true)
+    const ProfileOptionsViewOpacity = useRef(new Animated.Value(0)).current;
+    const ReportProfileOptionsOpacity = useRef(new Animated.Value(0)).current;
+    const ReportProfile_ContentThatShouldNotBePosted_Opacity = useRef(new Animated.Value(0)).current;
+    const ReportProfile_PretendingToBeSomeoneElse_Opacity = useRef(new Animated.Value(0)).current;
+    const ReportProfile_MayBeUnder13_Opacity = useRef(new Animated.Value(0)).current;
+    const ProfileOptionsViewOpen = useRef(false);
+    const ReportProfileOptionsViewOpen = useRef(false);
+    const ReportProfileOptionsView_ContentThatShouldNotBePosted_Open = useRef(false);
+    const ReportProfileOptionsView_MayBeUnder13_Open = useRef(false);
+    const ReportProfileOptionsView_PretendingToBeSomeoneElse_Open = useRef(false);
+    const PreventTouchEventsViewZIndex = useRef(new Animated.Value(-10)).current;
     // double tap for ImageItem
     const ScaleUpvoteImageAmount = useRef(new Animated.Value(0.5)).current;
     const OpacityUpvoteImageAmount = useRef(new Animated.Value(0)).current;
@@ -231,6 +239,9 @@ const ProfilePages = ({ route, navigation }) => {
     const ScaleDownvoteImageAmount = useRef(new Animated.Value(0.5)).current;
     const OpacityDownvoteImageAmount = useRef(new Animated.Value(0)).current;
     const [imageKeyToShowImageAnimation, setImageKeyToShowImageAnimation] = useState(null);
+    // Grid or Tagged grids showing
+    const GridOrTagLineTranslateX = useRef(new Animated.Value(0)).current;
+    const deviceDimensions = useWindowDimensions();
 
     const handleMessage = (message, type = 'FAILED', postNum) => {
         setMessage(message);
@@ -1611,6 +1622,11 @@ const ProfilePages = ({ route, navigation }) => {
         if (gridViewState == "none") {
             setFeaturedViewState("none")
             setGridViewState("flex")
+            Animated.timing(GridOrTagLineTranslateX, {
+                toValue: 0,
+                duration: 150,
+                useNativeDriver: 'true',
+            }).start()
         }
     }
 
@@ -1619,6 +1635,11 @@ const ProfilePages = ({ route, navigation }) => {
             console.log("SussyBaka")
             setGridViewState("none")
             setFeaturedViewState("flex")
+            Animated.timing(GridOrTagLineTranslateX, {
+                toValue: deviceDimensions.width / 2,
+                duration: 150,
+                useNativeDriver: 'true',
+            }).start()
         }
     }
 
@@ -2430,7 +2451,7 @@ const ProfilePages = ({ route, navigation }) => {
 
     const handleScroll = (event) => {
         var scrollY = event.nativeEvent.contentOffset.y
-        if (scrollY < 550) {
+        if (scrollY < 560) {
             Animated.timing(TopProfileBarFadeAnim, {
                 toValue: 0,
                 duration: 1,
@@ -2448,15 +2469,36 @@ const ProfilePages = ({ route, navigation }) => {
     const TopProfileBarFadeAnim = useRef(new Animated.Value(0)).current;
 
     const changeProfilesOptionsView = () => {
-        if (profileOptionsViewState == true) {
-            setProfileOptionsViewState(false)
+        if (ProfileOptionsViewOpen.current == true) {
+            Animated.parallel([
+                Animated.timing(ProfileOptionsViewOpacity, {
+                    toValue: 0,
+                    duration: 1,
+                    useNativeDriver: 'true'
+                }),
+                Animated.timing(PreventTouchEventsViewZIndex, {
+                    toValue: -10,
+                    duration: 1,
+                    useNativeDriver: 'true'
+                })
+            ]).start()
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            setPageElementsState(true);
-        }else{
-            console.log("Closed Confirm")
-            setProfileOptionsViewState(true)
+            ProfileOptionsViewOpen.current = false;
+        } else {
+            Animated.parallel([
+                Animated.timing(ProfileOptionsViewOpacity, {
+                    toValue: 1,
+                    duration: 1,
+                    useNativeDriver: 'true'
+                }),
+                Animated.timing(PreventTouchEventsViewZIndex, {
+                    toValue: 2,
+                    duration: 1,
+                    useNativeDriver: 'true'
+                })
+            ]).start()
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            setPageElementsState(false);
+            ProfileOptionsViewOpen.current = true;
         }
     }
 
@@ -2472,52 +2514,97 @@ const ProfilePages = ({ route, navigation }) => {
     }
 
     const changeReportProfilesOptionsView = () => {
-        if (ReportProfileOptionsViewState == true) {
-            setReportProfileOptionsViewState(false)
+        if (ReportProfileOptionsViewOpen.current == true) {
+            changeProfilesOptionsView()
+            Animated.parallel([
+                Animated.timing(ReportProfileOptionsOpacity, {
+                    toValue: 0,
+                    duration: 1,
+                    useNativeDriver: 'true'
+                }),
+                Animated.timing(PreventTouchEventsViewZIndex, {
+                    toValue: 2,
+                    duration: 1,
+                    useNativeDriver: 'true'
+                })
+            ]).start()
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            setPageElementsState(true);
-        }else{
-            console.log("Closed Confirm")
-            setReportProfileOptionsViewState(true)
+            ReportProfileOptionsViewOpen.current = false;
+        } else {
+            Animated.parallel([
+                Animated.timing(ReportProfileOptionsOpacity, {
+                    toValue: 1,
+                    duration: 1,
+                    useNativeDriver: 'true'
+                }),
+                Animated.timing(PreventTouchEventsViewZIndex, {
+                    toValue: 2,
+                    duration: 1,
+                    useNativeDriver: 'true'
+                })
+            ]).start()
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            setPageElementsState(false);
+            ReportProfileOptionsViewOpen.current = true;
         }
     }
 
     const changeReportProfiles_ContentThatShouldNotBePosted_OptionsView = () => {
-        if (ReportProfile_ContentThatShouldNotBePosted_OptionsViewState == true) {
-            setReportProfile_ContentThatShouldNotBePosted_OptionsViewState(false)
-            changeReportProfilesOptionsView();
+        if (ReportProfileOptionsView_ContentThatShouldNotBePosted_Open.current == true) {
+            Animated.timing(ReportProfile_ContentThatShouldNotBePosted_Opacity, {
+                toValue: 0,
+                duration: 1,
+                useNativeDriver: 'true'
+            }).start()
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-        }else{
-            console.log("Closed Confirm")
-            setReportProfile_ContentThatShouldNotBePosted_OptionsViewState(true)
-            changeReportProfilesOptionsView();
+            ReportProfileOptionsView_ContentThatShouldNotBePosted_Open.current = false;
+        } else {
+            Animated.timing(ReportProfile_ContentThatShouldNotBePosted_Opacity, {
+                toValue: 1,
+                duration: 1,
+                useNativeDriver: 'true'
+            }).start()
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            ReportProfileOptionsView_ContentThatShouldNotBePosted_Open.current = true;
         }
     }
 
     const changeReportProfiles_PretendingToBeSomeoneElse_OptionsView = () => {
-        if (ReportProfile_PretendingToBeSomeoneElse_OptionsViewState == true) {
-            setReportProfile_PretendingToBeSomeoneElse_OptionsViewState(false)
+        if (ReportProfileOptionsView_PretendingToBeSomeoneElse_Open.current == true) {
+            Animated.timing(ReportProfile_PretendingToBeSomeoneElse_Opacity, {
+                toValue: 0,
+                duration: 1,
+                useNativeDriver: 'true'
+            }).start()
+            ReportProfileOptionsView_PretendingToBeSomeoneElse_Open.current = false;
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-        }else{
-            console.log("Closed Confirm")
-            setReportProfile_PretendingToBeSomeoneElse_OptionsViewState(true)
+        } else {
+            Animated.timing(ReportProfile_PretendingToBeSomeoneElse_Opacity, {
+                toValue: 1,
+                duration: 1,
+                useNativeDriver: 'true'
+            }).start()
+            ReportProfileOptionsView_PretendingToBeSomeoneElse_Open.current = true;
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
         }
     }
 
     const changeReportProfiles_MayBeUnder13_OptionsView = () => {
-        if (ReportProfile_MayBeUnder13_OptionsViewState == true) {
-            setReportProfile_MayBeUnder13_OptionsViewState(false)
+        if (ReportProfileOptionsView_MayBeUnder13_Open.current == true) {
+            Animated.timing(ReportProfile_MayBeUnder13_Opacity, {
+                toValue: 0,
+                duration: 1,
+                useNativeDriver: 'true'
+            }).start()
+            ReportProfileOptionsView_MayBeUnder13_Open.current = false;
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            changeReportProfilesOptionsView();
-        }else{
-            console.log("Closed Confirm")
-            setReportProfile_MayBeUnder13_OptionsViewState(true)
+        } else {
+            Animated.timing(ReportProfile_MayBeUnder13_Opacity, {
+                toValue: 1,
+                duration: 1,
+                useNativeDriver: 'true'
+            }).start()
+            ReportProfileOptionsView_MayBeUnder13_Open.current = true;
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            changeReportProfilesOptionsView();
         }
     }
 
@@ -2630,144 +2717,167 @@ const ProfilePages = ({ route, navigation }) => {
     return (
         <>
             <StatusBar style={colors.StatusBarColor} />
-            <ProfileOptionsView style={{backgroundColor: colors.primary}} viewHidden={profileOptionsViewState}>
-                <ProfileOptionsViewText style={{color: colors.tertiary}}>{profilesDisplayName || "Couldn't get profile display name"}</ProfileOptionsViewText>
-                <ProfileOptionsViewSubtitleText style={{color: colors.tertiary}}>Options</ProfileOptionsViewSubtitleText>
-                <ProfileOptionsViewButtons greyButton={true} onPress={changeProfilesOptionsView}>
-                    <ProfileOptionsViewButtonsText greyButton={true}>Cancel</ProfileOptionsViewButtonsText>
-                </ProfileOptionsViewButtons> 
-                <ProfileOptionsViewButtons greyButton={true} onPress={ProfileOptionsViewMessageButtonOnPress}>
-                    <ProfileOptionsViewButtonsText greyButton={true}>Message</ProfileOptionsViewButtonsText>
-                </ProfileOptionsViewButtons>
-                <ProfileOptionsViewButtons redButton={true} onPress={ProfileOptionsViewReportButtonOnPress}>
-                    <ProfileOptionsViewButtonsText redButton={true}>Report</ProfileOptionsViewButtonsText>
-                </ProfileOptionsViewButtons> 
-            </ProfileOptionsView>
-            <ReportProfileOptionsView style={{backgroundColor: colors.primary}} viewHidden={ReportProfileOptionsViewState}>
-                <ReportProfileOptionsViewText style={{color: colors.tertiary}}>{"Report", profilesDisplayName || "Report profile"}</ReportProfileOptionsViewText>
-                <ReportProfileOptionsViewSubtitleText style={{color: colors.tertiary}}>Use this page to report this profile. If anyone is in danger immediately call emergency services. Do Not Wait.</ReportProfileOptionsViewSubtitleText>
-                <ReportProfileOptionsViewButtons greyButton={true} onPress={changeReportProfilesOptionsView}>
-                    <ReportProfileOptionsViewButtonsText greyButton={true}>Cancel</ReportProfileOptionsViewButtonsText>
-                </ReportProfileOptionsViewButtons>
-                <ReportProfileOptionsViewButtons redButton={true} onPress={changeReportProfiles_ContentThatShouldNotBePosted_OptionsView}>
-                    <ReportProfileOptionsViewButtonsText redButton={true}>This account is posting content that should not be on SocialSquare</ReportProfileOptionsViewButtonsText>
-                </ReportProfileOptionsViewButtons>
-                <ReportProfileOptionsViewButtons redButton={true} onPress={changeReportProfiles_MayBeUnder13_OptionsView}>
-                    <ReportProfileOptionsViewButtonsText redButton={true}>This account is run by someone under 13</ReportProfileOptionsViewButtonsText>
-                </ReportProfileOptionsViewButtons> 
-                <ReportProfileOptionsViewButtons redButton={true} onPress={changeReportProfiles_PretendingToBeSomeoneElse_OptionsView}>
-                    <ReportProfileOptionsViewButtonsText redButton={true}>This account is pretending to be someone they're not</ReportProfileOptionsViewButtonsText>
-                </ReportProfileOptionsViewButtons>
-            </ReportProfileOptionsView>
-            <ReportProfileOptionsView style={{backgroundColor: colors.primary}} viewHidden={ReportProfile_ContentThatShouldNotBePosted_OptionsViewState}>
-                <ReportProfileOptionsViewText style={{color: colors.tertiary}}>{"Report", profilesDisplayName || "Report profile"}</ReportProfileOptionsViewText>
-                <ReportProfileOptionsViewSubtitleText style={{color: colors.tertiary}}>What content are you trying to report?</ReportProfileOptionsViewSubtitleText>
-                <ReportProfileOptionsViewButtons padding={true} paddingAmount={'100px'}greyButton={true} onPress={changeReportProfiles_ContentThatShouldNotBePosted_OptionsView}>
-                    <ReportProfileOptionsViewButtonsText greyButton={true}>Back</ReportProfileOptionsViewButtonsText>
-                </ReportProfileOptionsViewButtons>
-                <ScrollView style={{width: '100%'}}>
-                    <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
-                        <ReportProfileOptionsViewButtonsText redButton={true}>It's spam</ReportProfileOptionsViewButtonsText>
-                    </ReportProfileOptionsViewButtons>
-                    <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
-                        <ReportProfileOptionsViewButtonsText redButton={true}>Nudity or sexual activity</ReportProfileOptionsViewButtonsText>
-                    </ReportProfileOptionsViewButtons> 
-                    <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
-                        <ReportProfileOptionsViewButtonsText redButton={true}>I just don't like it</ReportProfileOptionsViewButtonsText>
-                    </ReportProfileOptionsViewButtons> 
-                    <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
-                        <ReportProfileOptionsViewButtonsText redButton={true}>Hate speech or symbols</ReportProfileOptionsViewButtonsText>
-                    </ReportProfileOptionsViewButtons> 
-                    <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
-                        <ReportProfileOptionsViewButtonsText redButton={true}>Suicide, self-injury or eating disorders</ReportProfileOptionsViewButtonsText>
-                    </ReportProfileOptionsViewButtons> 
-                    <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
-                        <ReportProfileOptionsViewButtonsText redButton={true}>Sale of illegal or regulated goods</ReportProfileOptionsViewButtonsText>
-                    </ReportProfileOptionsViewButtons> 
-                    <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
-                        <ReportProfileOptionsViewButtonsText redButton={true}>Violence or dangerous organizations</ReportProfileOptionsViewButtonsText>
-                    </ReportProfileOptionsViewButtons> 
-                    <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
-                        <ReportProfileOptionsViewButtonsText redButton={true}>Bullying or harassment</ReportProfileOptionsViewButtonsText>
-                    </ReportProfileOptionsViewButtons> 
-                    <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
-                        <ReportProfileOptionsViewButtonsText redButton={true}>Intellectual property violation</ReportProfileOptionsViewButtonsText>
-                    </ReportProfileOptionsViewButtons> 
-                    <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
-                        <ReportProfileOptionsViewButtonsText redButton={true}>Scam or fraud</ReportProfileOptionsViewButtonsText>
-                    </ReportProfileOptionsViewButtons> 
-                    <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
-                        <ReportProfileOptionsViewButtonsText redButton={true}>False information</ReportProfileOptionsViewButtonsText>
-                    </ReportProfileOptionsViewButtons>
-                </ScrollView>
-            </ReportProfileOptionsView>
-            <ReportProfileOptionsView style={{backgroundColor: colors.primary}} viewHidden={ReportProfile_MayBeUnder13_OptionsViewState}>
-                <ReportProfileOptionsViewText style={{color: colors.tertiary}}>{"Report", profilesDisplayName || "Report profile"}</ReportProfileOptionsViewText>
-                <ReportProfileOptionsViewSubtitleText style={{color: colors.tertiary}}>User May Be Under 13</ReportProfileOptionsViewSubtitleText>
-                <ReportProfileOptionsViewButtons greyButton={true} onPress={changeReportProfiles_MayBeUnder13_OptionsView}>
-                    <ReportProfileOptionsViewButtonsText greyButton={true}>Back</ReportProfileOptionsViewButtonsText>
-                </ReportProfileOptionsViewButtons>
-                <Text style={{color: colors.tertiary, fontSize: 18, textAlign: 'center', marginTop: 25, marginBottom: 10}}>Everyone must be at least 13 to have a SocialSquare account. In some jurisdictions, this age limit may be higher. If you would like to report an account because it belongs to someone under the age of 13, or someone is impresonating your child who's under 13, please press the report button.</Text>
-                <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
-                    <ReportProfileOptionsViewButtonsText redButton={true}>Send report</ReportProfileOptionsViewButtonsText>
-                </ReportProfileOptionsViewButtons>
-            </ReportProfileOptionsView>
-            <ReportProfileOptionsView style={{backgroundColor: colors.primary}} viewHidden={ReportProfile_PretendingToBeSomeoneElse_OptionsViewState}>
-                <ReportProfileOptionsViewText style={{color: colors.tertiary}}>{"Report", profilesDisplayName || "Report profile"}</ReportProfileOptionsViewText>
-                <ReportProfileOptionsViewSubtitleText style={{color: colors.tertiary}}>User Is Pretending To Be Someone Else</ReportProfileOptionsViewSubtitleText>
-                <ReportProfileOptionsViewButtons greyButton={true} onPress={changeReportProfiles_PretendingToBeSomeoneElse_OptionsView}>
-                    <ReportProfileOptionsViewButtonsText greyButton={true}>Back</ReportProfileOptionsViewButtonsText>
-                </ReportProfileOptionsViewButtons>
-                <ScrollView style={{width: '100%'}}>
-                    <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
-                        <ReportProfileOptionsViewButtonsText redButton={true}>This account is pretending to be me</ReportProfileOptionsViewButtonsText>
-                    </ReportProfileOptionsViewButtons> 
-                    <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
-                        <ReportProfileOptionsViewButtonsText redButton={true}>This account is pretending to be someone I know</ReportProfileOptionsViewButtonsText>
-                    </ReportProfileOptionsViewButtons> 
-                    <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
-                        <ReportProfileOptionsViewButtonsText redButton={true}>This account is pretending to be a celebrity or public figure</ReportProfileOptionsViewButtonsText>
-                    </ReportProfileOptionsViewButtons> 
-                    <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
-                        <ReportProfileOptionsViewButtonsText redButton={true}>This account is pretending to be a business or organisation</ReportProfileOptionsViewButtonsText>
-                    </ReportProfileOptionsViewButtons> 
-                </ScrollView>
-            </ReportProfileOptionsView>
-            <Animated.View style={{paddingTop: StatusBarHeight - 10, backgroundColor: colors.primary, borderColor: colors.borderColor, borderBottomWidth: 1, alignItems: 'center', opacity: TopProfileBarFadeAnim, zIndex: 1000}}>
-                <View style={{position: 'absolute', top: StatusBarHeight, left: 10}}>
-                    <TouchableOpacity style={{marginRight: '75.5%'}} disabled={PageElementsState} onPress={() => {navigation.goBack()}}>
-                        <Image
-                            source={require('../assets/app_icons/back_arrow.png')}
-                            style={{ width: 40, height: 40, tintColor: colors.tertiary}}
-                            resizeMode="contain"
-                            resizeMethod="resize"
-                        />
-                    </TouchableOpacity>
-                </View>
-                <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
-                    <PageTitle style={{fontSize: 24}} welcome={true}>{profilesDisplayName || profilesName || "Couldn't get name"}</PageTitle>
-                    <Avatar style={{width: 40, height: 40}} resizeMode="cover" source={{uri: AvatarImg}}/>
-                </View>
-                <View style={{position: 'absolute', right: 10, top: StatusBarHeight}}>
-                    <TouchableOpacity disabled={PageElementsState} onPress={changeProfilesOptionsView}>
-                        <Image
-                            source={require('../assets/app_icons/3dots.png')}
-                            style={{ width: 40, height: 40, tintColor: colors.tertiary}}
-                            resizeMode="contain"
-                            resizeMethod="resize"
-                        />
-                    </TouchableOpacity>
-                </View>
+            <Animated.View style={{opacity: ProfileOptionsViewOpacity, zIndex: ProfileOptionsViewOpacity.interpolate({inputRange: [0, 1], outputRange: [-10, 3]})}}>
+                <ProfileOptionsView style={{backgroundColor: colors.primary}} viewHidden={false}>
+                    <ProfileOptionsViewText style={{color: colors.tertiary}}>{profilesDisplayName || "Couldn't get profile display name"}</ProfileOptionsViewText>
+                    <ProfileOptionsViewSubtitleText style={{color: colors.tertiary}}>Options</ProfileOptionsViewSubtitleText>
+                    <ProfileOptionsViewButtons greyButton={true} onPress={changeProfilesOptionsView}>
+                        <ProfileOptionsViewButtonsText greyButton={true}>Cancel</ProfileOptionsViewButtonsText>
+                    </ProfileOptionsViewButtons> 
+                    <ProfileOptionsViewButtons greyButton={true} onPress={ProfileOptionsViewMessageButtonOnPress}>
+                        <ProfileOptionsViewButtonsText greyButton={true}>Message</ProfileOptionsViewButtonsText>
+                    </ProfileOptionsViewButtons>
+                    <ProfileOptionsViewButtons redButton={true} onPress={ProfileOptionsViewReportButtonOnPress}>
+                        <ProfileOptionsViewButtonsText redButton={true}>Report</ProfileOptionsViewButtonsText>
+                    </ProfileOptionsViewButtons> 
+                </ProfileOptionsView>
             </Animated.View>
+            <Animated.View style={{opacity: ReportProfileOptionsOpacity, zIndex: ReportProfileOptionsOpacity.interpolate({inputRange: [0, 1], outputRange: [-10, 4]})}}>
+                <ReportProfileOptionsView style={{backgroundColor: colors.primary}} viewHidden={false}>
+                    <ReportProfileOptionsViewText style={{color: colors.tertiary}}>{"Report", profilesDisplayName || "Report profile"}</ReportProfileOptionsViewText>
+                    <ReportProfileOptionsViewSubtitleText style={{color: colors.tertiary}}>Use this page to report this profile. If anyone is in danger immediately call emergency services. Do Not Wait.</ReportProfileOptionsViewSubtitleText>
+                    <ReportProfileOptionsViewButtons greyButton={true} onPress={changeReportProfilesOptionsView}>
+                        <ReportProfileOptionsViewButtonsText greyButton={true}>Cancel</ReportProfileOptionsViewButtonsText>
+                    </ReportProfileOptionsViewButtons>
+                    <ReportProfileOptionsViewButtons redButton={true} onPress={changeReportProfiles_ContentThatShouldNotBePosted_OptionsView}>
+                        <ReportProfileOptionsViewButtonsText redButton={true}>This account is posting content that should not be on SocialSquare</ReportProfileOptionsViewButtonsText>
+                    </ReportProfileOptionsViewButtons>
+                    <ReportProfileOptionsViewButtons redButton={true} onPress={changeReportProfiles_MayBeUnder13_OptionsView}>
+                        <ReportProfileOptionsViewButtonsText redButton={true}>This account is run by someone under 13</ReportProfileOptionsViewButtonsText>
+                    </ReportProfileOptionsViewButtons> 
+                    <ReportProfileOptionsViewButtons redButton={true} onPress={changeReportProfiles_PretendingToBeSomeoneElse_OptionsView}>
+                        <ReportProfileOptionsViewButtonsText redButton={true}>This account is pretending to be someone they're not</ReportProfileOptionsViewButtonsText>
+                    </ReportProfileOptionsViewButtons>
+                </ReportProfileOptionsView>
+            </Animated.View>
+            <Animated.View style={{opacity: ReportProfile_ContentThatShouldNotBePosted_Opacity, zIndex: ReportProfile_ContentThatShouldNotBePosted_Opacity.interpolate({inputRange: [0, 1], outputRange: [-10, 5]})}}>
+                <ReportProfileOptionsView style={{backgroundColor: colors.primary}} viewHidden={false}>
+                    <ReportProfileOptionsViewText style={{color: colors.tertiary}}>{"Report", profilesDisplayName || "Report profile"}</ReportProfileOptionsViewText>
+                    <ReportProfileOptionsViewSubtitleText style={{color: colors.tertiary}}>What content are you trying to report?</ReportProfileOptionsViewSubtitleText>
+                    <ReportProfileOptionsViewButtons padding={true} paddingAmount={'100px'}greyButton={true} onPress={changeReportProfiles_ContentThatShouldNotBePosted_OptionsView}>
+                        <ReportProfileOptionsViewButtonsText greyButton={true}>Back</ReportProfileOptionsViewButtonsText>
+                    </ReportProfileOptionsViewButtons>
+                    <ScrollView style={{width: '100%'}}>
+                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                            <ReportProfileOptionsViewButtonsText redButton={true}>It's spam</ReportProfileOptionsViewButtonsText>
+                        </ReportProfileOptionsViewButtons>
+                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                            <ReportProfileOptionsViewButtonsText redButton={true}>Nudity or sexual activity</ReportProfileOptionsViewButtonsText>
+                        </ReportProfileOptionsViewButtons> 
+                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                            <ReportProfileOptionsViewButtonsText redButton={true}>I just don't like it</ReportProfileOptionsViewButtonsText>
+                        </ReportProfileOptionsViewButtons> 
+                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                            <ReportProfileOptionsViewButtonsText redButton={true}>Hate speech or symbols</ReportProfileOptionsViewButtonsText>
+                        </ReportProfileOptionsViewButtons> 
+                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                            <ReportProfileOptionsViewButtonsText redButton={true}>Suicide, self-injury or eating disorders</ReportProfileOptionsViewButtonsText>
+                        </ReportProfileOptionsViewButtons> 
+                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                            <ReportProfileOptionsViewButtonsText redButton={true}>Sale of illegal or regulated goods</ReportProfileOptionsViewButtonsText>
+                        </ReportProfileOptionsViewButtons> 
+                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                            <ReportProfileOptionsViewButtonsText redButton={true}>Violence or dangerous organizations</ReportProfileOptionsViewButtonsText>
+                        </ReportProfileOptionsViewButtons> 
+                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                            <ReportProfileOptionsViewButtonsText redButton={true}>Bullying or harassment</ReportProfileOptionsViewButtonsText>
+                        </ReportProfileOptionsViewButtons> 
+                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                            <ReportProfileOptionsViewButtonsText redButton={true}>Intellectual property violation</ReportProfileOptionsViewButtonsText>
+                        </ReportProfileOptionsViewButtons> 
+                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                            <ReportProfileOptionsViewButtonsText redButton={true}>Scam or fraud</ReportProfileOptionsViewButtonsText>
+                        </ReportProfileOptionsViewButtons> 
+                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                            <ReportProfileOptionsViewButtonsText redButton={true}>False information</ReportProfileOptionsViewButtonsText>
+                        </ReportProfileOptionsViewButtons>
+                    </ScrollView>
+                </ReportProfileOptionsView>
+            </Animated.View>
+            <Animated.View style={{opacity: ReportProfile_MayBeUnder13_Opacity, zIndex: ReportProfile_MayBeUnder13_Opacity.interpolate({inputRange: [0, 1], outputRange: [-10, 5]})}}>
+                <ReportProfileOptionsView style={{backgroundColor: colors.primary}} viewHidden={false}>
+                    <ReportProfileOptionsViewText style={{color: colors.tertiary}}>{"Report", profilesDisplayName || "Report profile"}</ReportProfileOptionsViewText>
+                    <ReportProfileOptionsViewSubtitleText style={{color: colors.tertiary}}>User May Be Under 13</ReportProfileOptionsViewSubtitleText>
+                    <ReportProfileOptionsViewButtons greyButton={true} onPress={changeReportProfiles_MayBeUnder13_OptionsView}>
+                        <ReportProfileOptionsViewButtonsText greyButton={true}>Back</ReportProfileOptionsViewButtonsText>
+                    </ReportProfileOptionsViewButtons>
+                    <Text style={{color: colors.tertiary, fontSize: 18, textAlign: 'center', marginTop: 25, marginBottom: 10}}>Everyone must be at least 13 to have a SocialSquare account. In some jurisdictions, this age limit may be higher. If you would like to report an account because it belongs to someone under the age of 13, or someone is impresonating your child who's under 13, please press the report button.</Text>
+                    <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                        <ReportProfileOptionsViewButtonsText redButton={true}>Send report</ReportProfileOptionsViewButtonsText>
+                    </ReportProfileOptionsViewButtons>
+                </ReportProfileOptionsView>
+            </Animated.View>
+            <Animated.View style={{opacity: ReportProfile_PretendingToBeSomeoneElse_Opacity, zIndex: ReportProfile_PretendingToBeSomeoneElse_Opacity.interpolate({inputRange: [0, 1], outputRange: [-10, 5]})}}>
+                <ReportProfileOptionsView style={{backgroundColor: colors.primary}} viewHidden={false}>
+                    <ReportProfileOptionsViewText style={{color: colors.tertiary}}>{"Report", profilesDisplayName || "Report profile"}</ReportProfileOptionsViewText>
+                    <ReportProfileOptionsViewSubtitleText style={{color: colors.tertiary}}>User Is Pretending To Be Someone Else</ReportProfileOptionsViewSubtitleText>
+                    <ReportProfileOptionsViewButtons greyButton={true} onPress={changeReportProfiles_PretendingToBeSomeoneElse_OptionsView}>
+                        <ReportProfileOptionsViewButtonsText greyButton={true}>Back</ReportProfileOptionsViewButtonsText>
+                    </ReportProfileOptionsViewButtons>
+                    <ScrollView style={{width: '100%'}}>
+                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                            <ReportProfileOptionsViewButtonsText redButton={true}>This account is pretending to be me</ReportProfileOptionsViewButtonsText>
+                        </ReportProfileOptionsViewButtons> 
+                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                            <ReportProfileOptionsViewButtonsText redButton={true}>This account is pretending to be someone I know</ReportProfileOptionsViewButtonsText>
+                        </ReportProfileOptionsViewButtons> 
+                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                            <ReportProfileOptionsViewButtonsText redButton={true}>This account is pretending to be a celebrity or public figure</ReportProfileOptionsViewButtonsText>
+                        </ReportProfileOptionsViewButtons> 
+                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                            <ReportProfileOptionsViewButtonsText redButton={true}>This account is pretending to be a business or organisation</ReportProfileOptionsViewButtonsText>
+                        </ReportProfileOptionsViewButtons> 
+                    </ScrollView>
+                </ReportProfileOptionsView>
+            </Animated.View>
+            <Animated.View style={{paddingTop: StatusBarHeight - 10, backgroundColor: colors.primary, borderColor: colors.borderColor, borderBottomWidth: 0, alignItems: 'center', opacity: TopProfileBarFadeAnim, zIndex: TopProfileBarFadeAnim.interpolate({inputRange: [0, 1], outputRange: [-10, 100]}), position: 'absolute', top: 0, width: '100%', flexDirection: 'column'}}>
+                <>
+                    <View style={{position: 'absolute', top: StatusBarHeight, left: 10}}>
+                        <TouchableOpacity style={{marginRight: '75.5%'}} onPress={() => {navigation.goBack()}}>
+                            <Image
+                                source={require('../assets/app_icons/back_arrow.png')}
+                                style={{ width: 40, height: 40, tintColor: colors.tertiary}}
+                                resizeMode="contain"
+                                resizeMethod="resize"
+                            />
+                        </TouchableOpacity>
+                    </View>
+                    <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+                        <PageTitle style={{fontSize: 24}} welcome={true}>{profilesDisplayName || profilesName || "Couldn't get name"}</PageTitle>
+                        <Avatar style={{width: 40, height: 40}} resizeMode="cover" source={{uri: AvatarImg}}/>
+                    </View>
+                    <View style={{position: 'absolute', right: 10, top: StatusBarHeight}}>
+                        <TouchableOpacity onPress={changeProfilesOptionsView}>
+                            <Image
+                                source={require('../assets/app_icons/3dots.png')}
+                                style={{ width: 40, height: 40, tintColor: colors.tertiary}}
+                                resizeMode="contain"
+                                resizeMethod="resize"
+                            />
+                        </TouchableOpacity>
+                    </View>
+                </>
+                <ProfilePostsSelectionView style={{height: 50, borderBottomWidth: 0}}>
+                    <ProfilePostsSelectionBtns onPress={changeToGrid}>
+                        <Icon name="grid" color={colors.tertiary} size={30}/>
+                    </ProfilePostsSelectionBtns>
+                    <ProfilePostsSelectionBtns onPress={changeToFeatured}>
+                        <FontAwesomeFive name="user-tag" color={colors.tertiary} size={30}/>
+                    </ProfilePostsSelectionBtns>
+                    <Animated.View style={{backgroundColor: colors.tertiary, height: 3, width: '50%', position: 'absolute', bottom: 0, transform: [{translateX: GridOrTagLineTranslateX}], zIndex: 1002}}/>
+                    <View style={{backgroundColor: colors.borderColor, height: 3, width: '100%', position: 'absolute', bottom: 0}}/>
+                </ProfilePostsSelectionView>
+            </Animated.View>
+            <Animated.View style={{opacity: 0, zIndex: PreventTouchEventsViewZIndex, width: '100%', height: '100%', backgroundColor: 'transparent', position: 'absolute', top: 0, right: 0, left: 0, bottom: 0}}/>
             <ScrollView
                 onScroll={handleScroll}
                 scrollEventThrottle={1}
-                style={{marginTop: -StatusBarHeight - 50}}
+                nestedScrollEnabled={true}
             >
                 <WelcomeContainer style={{backgroundColor: colors.primary}}>
                     <ProfileHorizontalView style={{marginBottom: -20, marginTop: 10}} topItems={true}>
                         <ViewHider viewHidden={backButtonHidden}>
-                            <TouchableOpacity style={{marginRight: '75.5%'}} disabled={PageElementsState} onPress={() => {navigation.goBack()}}>
+                            <TouchableOpacity style={{marginRight: '75.5%'}} onPress={() => {navigation.goBack()}}>
                                 <Image
                                     source={require('../assets/app_icons/back_arrow.png')}
                                     style={{ width: 40, height: 40, tintColor: colors.tertiary}}
@@ -2776,7 +2886,7 @@ const ProfilePages = ({ route, navigation }) => {
                                 />
                             </TouchableOpacity>
                         </ViewHider>
-                        <TouchableOpacity disabled={PageElementsState} onPress={changeProfilesOptionsView}>
+                        <TouchableOpacity onPress={changeProfilesOptionsView}>
                             <Image
                                 source={require('../assets/app_icons/3dots.png')}
                                 style={{ width: 40, height: 40, tintColor: colors.tertiary}}
@@ -2819,13 +2929,15 @@ const ProfilePages = ({ route, navigation }) => {
                             <SubTitle style={{color: colors.tertiary}} welcome={true}> {totalLikes} </SubTitle>
                         </ProfileHorizontalViewItem>
                     </ProfileHorizontalView>
-                    <ProfilePostsSelectionView>
+                    <ProfilePostsSelectionView style={{borderBottomWidth: 0}}>
                         <ProfilePostsSelectionBtns onPress={changeToGrid}>
-                            <ProfIcons source={require('./../assets/img/Toga.jpg')} />
+                            <Icon name="grid" color={colors.tertiary} size={45}/>
                         </ProfilePostsSelectionBtns>
                         <ProfilePostsSelectionBtns onPress={changeToFeatured}>
-                            <ProfIcons source={require('./../assets/img/Toga.jpg')} />
+                            <FontAwesomeFive name="user-tag" color={colors.tertiary} size={45}/>
                         </ProfilePostsSelectionBtns>
+                        <Animated.View style={{backgroundColor: colors.tertiary, height: 3, width: '50%', position: 'absolute', bottom: 0, transform: [{translateX: GridOrTagLineTranslateX}], zIndex: 2}}/>
+                        <View style={{backgroundColor: colors.borderColor, height: 3, width: '100%', position: 'absolute', bottom: 0}}/>
                     </ProfilePostsSelectionView>
                     <ProfileSelectMediaTypeHorizontalView>
                         <ProfileSelectMediaTypeItem onPress={changeToOne}>

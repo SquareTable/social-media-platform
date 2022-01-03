@@ -47,7 +47,7 @@ const {brand, primary, tertiary, red, orange, yellow, green, purple} = Colors;
 import axios from 'axios';
 
 //From react native
-import {View, Image, ActivityIndicator, ImageBackground, StyleSheet, ScrollView} from 'react-native';
+import {View, Image, ActivityIndicator, ImageBackground, StyleSheet, ScrollView, Text, TouchableOpacity} from 'react-native';
 
 // keyboard avoiding view
 import KeyboardAvoidingWrapper from '../../components/KeyboardAvoidingWrapper';
@@ -172,6 +172,7 @@ const PollUploadPage = ({navigation}) => {
     const [optionFourVisible, setOptionFourVisible] = useState(false);
     const [optionFiveVisible, setOptionFiveVisible] = useState(false);
     const [optionSixVisible, setOptionSixVisible] = useState(false);
+    const [screenshotsAllowed, setScreenshotsAllowed] = useState(false)
     //context
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
     const {_id} = storedCredentials;
@@ -251,7 +252,7 @@ const PollUploadPage = ({navigation}) => {
                             
                             <PageTitle>Create Poll</PageTitle>
                             <Formik
-                                initialValues={{pollTitle: "", pollSubTitle: "", optionOne: "", optionOnesColor: "Not Specified", optionTwo: "", optionTwosColor: "Not Specified", optionThree: "", optionThreesColor: "Not Specified", optionFour: "", optionFoursColor: "Not Specified", optionFive: "", optionFivesColor: "Not Specified", optionSix: "", optionSixesColor: "Not Specified", totalNumberOfOptions: "Two", pollCreatorId: _id}}
+                                initialValues={{pollTitle: "", pollSubTitle: "", optionOne: "", optionOnesColor: "Not Specified", optionTwo: "", optionTwosColor: "Not Specified", optionThree: "", optionThreesColor: "Not Specified", optionFour: "", optionFoursColor: "Not Specified", optionFive: "", optionFivesColor: "Not Specified", optionSix: "", optionSixesColor: "Not Specified", totalNumberOfOptions: "Two", pollCreatorId: _id, screenshotsAllowed: false}}
                                 onSubmit={(values, {setSubmitting}) => {
                                     if (values.pollTitle == "" || values.pollSubTitle == "" || values.optionOne == "" || values.optionTwo == "") {
                                         handleMessage('Please fill all the fields.');
@@ -832,6 +833,18 @@ const PollUploadPage = ({navigation}) => {
                                                 </TextLink>
                                             }
                                         </PostHorizontalView>
+                                        <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+                                            <Text style={{color: colors.tertiary, fontSize: 18, marginTop: 10, marginRight: 10}}>Allow screen capture</Text>
+                                            <TouchableOpacity 
+                                                onPress={() => {
+                                                    values.screenshotsAllowed == true ? values.screenshotsAllowed = false : values.screenshotsAllowed = true;
+                                                    setScreenshotsAllowed(values.screenshotsAllowed)
+                                                }} 
+                                                style={{width: 40, height: 40, borderColor: colors.borderColor, borderWidth: 3, justifyContent: 'center', alignItems: 'center'}}
+                                            >
+                                                <Text style={{color: colors.tertiary, fontSize: 18, textAlign: 'center', textAlignVertical: 'center'}}>{screenshotsAllowed == false ? '✕' : '✓'}</Text>
+                                            </TouchableOpacity>
+                                        </View>
                                         <MsgBox type={messageType}>{message}</MsgBox>
                                         {!isSubmitting && (<StyledButton onPress={handleSubmit}>
                                             <ButtonText> Submit </ButtonText>

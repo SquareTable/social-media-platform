@@ -37,7 +37,7 @@ import {
 const {brand, primary, tertiary, darkLight, slightlyLighterGrey, midWhite, greyish} = Colors;
 
 //From react native
-import {View, Image, ActivityIndicator, ImageBackground, StyleSheet, ScrollView, TouchableOpacity} from 'react-native';
+import {View, Image, ActivityIndicator, ImageBackground, StyleSheet, ScrollView, TouchableOpacity, Text} from 'react-native';
 
 //Axios
 import axios from 'axios';
@@ -75,6 +75,7 @@ const ThreadUploadPage = ({route, navigation}) => {
     const [selectedThreadNSFW, setSelectedThreadNSFW] = useState(false)
     const [selectedThreadNSFL, setSelectedThreadNSFL] = useState(false)
     const [changeOnce, setChangeOnce] = useState(false)
+    const [screenshotsAllowed, setScreenshotsAllowed] = useState(false)
     //context
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
     const {_id} = storedCredentials;
@@ -185,7 +186,7 @@ const ThreadUploadPage = ({route, navigation}) => {
         if (selectFormat == "Text") {
             console.log("Text Format")
             const url = "https://nameless-dawn-41038.herokuapp.com/user/posttextthread";
-            var toSend = {creatorId: _id, threadTitle: credentials.threadTitle, threadSubtitle: credentials.threadSubtitle, threadTags: credentials.threadTags, threadCategory: selectedCategory, threadBody: credentials.threadBody, threadNSFW: credentials.threadNSFW, threadNSFL: credentials.threadNSFL}
+            var toSend = {creatorId: _id, threadTitle: credentials.threadTitle, threadSubtitle: credentials.threadSubtitle, threadTags: credentials.threadTags, threadCategory: selectedCategory, threadBody: credentials.threadBody, threadNSFW: credentials.threadNSFW, threadNSFL: credentials.threadNSFL, screenshotsAllowed: screenshotsAllowed}
             axios.post(url, toSend).then((response) => {
                 const result = response.data;
                 const {message, status, data} = result;
@@ -217,6 +218,7 @@ const ThreadUploadPage = ({route, navigation}) => {
             formData.append("threadImageDescription", credentials.threadImageDescription)
             formData.append("threadNSFW", credentials.threadNSFW)
             formData.append("threadNSFL", credentials.threadNSFL)
+            formData.append("screenshotsAllowed", screenshotsAllowed)
             console.log("FormData:")
             console.log(formData);
             
@@ -474,6 +476,12 @@ const ThreadUploadPage = ({route, navigation}) => {
                                         <AboveButtonText style={{color: colors.tertiary, borderColor: dark ? 3 : 5}} byCheckBox={true}>Mark as NSFL</AboveButtonText>
                                     </PostHorizontalView>
                                     <MsgBox type={messageType}>{message}</MsgBox>
+                                    <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+                                        <Text style={{color: colors.tertiary, fontSize: 18, marginTop: 10, marginRight: 10}}>Allow screen capture</Text>
+                                        <TouchableOpacity onPress={() => {setScreenshotsAllowed(screenshotsAllowed => !screenshotsAllowed)}} style={{width: 40, height: 40, borderColor: colors.borderColor, borderWidth: 3, justifyContent: 'center', alignItems: 'center'}}>
+                                            <Text style={{color: colors.tertiary, fontSize: 18, textAlign: 'center', textAlignVertical: 'center'}}>{screenshotsAllowed == false ? '✕' : '✓'}</Text>
+                                        </TouchableOpacity>
+                                    </View>
                                     {!isSubmitting && (<StyledButton onPress={handleSubmit}>
                                         <ButtonText> Submit </ButtonText>
                                     </StyledButton>)}

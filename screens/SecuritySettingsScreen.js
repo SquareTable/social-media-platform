@@ -46,6 +46,8 @@ import Constants from "expo-constants";
 import { OpenAppContext } from '../components/OpenAppContext.js';
 import { CredentialsContext } from '../components/CredentialsContext.js';
 import KeyboardAvoidingWrapper from '../components/KeyboardAvoidingWrapper.js';
+import { AppStylingContext } from '../components/AppStylingContext.js';
+import SocialSquareLogo_B64_png from '../assets/SocialSquareLogo_Base64_png.js';
 const {brand} = Colors;
 
 
@@ -64,7 +66,8 @@ const SecuritySettingsScreen = ({navigation}) => {
     const [confirmDestroyLocalDataMenuHidden, setConfirmDestroyLocalDataMenuHidden] = useState(true);
     const [message, handleMessage] = useState('');
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
-    let {email} = storedCredentials;
+    const {AppStylingContextState, setAppStylingContextState} = useContext(AppStylingContext);
+    if (storedCredentials) {var {email} = storedCredentials};
     const [hidePassword, setHidePassword] = useState(true);
 
     useEffect(() => {
@@ -156,6 +159,10 @@ const SecuritySettingsScreen = ({navigation}) => {
 
     const destroyAllData = () => {
         console.warn('Destroying all data')
+        setStoredCredentials(null)
+        setAppStylingContextState('Default')
+        setProfilePictureUri(SocialSquareLogo_B64_png);
+        navigation.replace('DestroyingLocalDataScreen')
     }
 
     const goToLastDestroyDataScreen = () => {

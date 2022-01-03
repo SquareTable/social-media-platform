@@ -59,7 +59,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 //credentials context
 import { CredentialsContext } from '../../components/CredentialsContext';
-import { ImageBackground, ScrollView, Image, View } from 'react-native';
+import { ImageBackground, ScrollView, Image, View, Text } from 'react-native';
 
 //Image picker
 import * as ImagePicker from 'expo-image-picker';
@@ -69,7 +69,7 @@ import { useTheme } from '@react-navigation/native';
 
 const MultiMediaUploadPreview = ({route, navigation}) => {
     const {colors, dark} = useTheme();
-    const { title, description, image} = route.params;
+    const { title, description, image, screenshotsAllowed} = route.params;
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
     const {_id, name, displayName, email, photoUrl} = storedCredentials;
     const [submitting, setSubmitting] = useState(false)
@@ -83,6 +83,7 @@ const MultiMediaUploadPreview = ({route, navigation}) => {
     formData.append("title", title)
     formData.append("description", description)
     formData.append("creatorId", _id)
+    formData.append("screenshotsAllowed", screenshotsAllowed)
     console.log(formData);
     
     const [message, setMessage] = useState();
@@ -139,6 +140,12 @@ const MultiMediaUploadPreview = ({route, navigation}) => {
                 <MultiMediaPostFrame style={{backgroundColor: colors.primary}}>
                     <SubTitle style={{color: colors.tertiary}}>{title}</SubTitle>
                     <SubTitle style={{fontSize: 10, color: colors.tertiary}}>{description}</SubTitle>
+                    <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+                        <Text style={{color: colors.tertiary, fontSize: 18, marginTop: 10, marginRight: 10}}>{screenshotsAllowed == false ? 'Screen capture is not allowed' : 'Screen capture is allowed'}</Text>
+                        <View style={{width: 40, height: 40, borderColor: colors.borderColor, borderWidth: 3, justifyContent: 'center', alignItems: 'center'}}>
+                            <Text style={{color: colors.tertiary, fontSize: 18, textAlign: 'center', textAlignVertical: 'center'}}>{screenshotsAllowed == false ? '✕' : '✓'}</Text>
+                        </View>
+                    </View>
                 </MultiMediaPostFrame>
                 {!submitting && (<StyledButton onPress={postMultiMedia}>
                     <ButtonText> Post </ButtonText>

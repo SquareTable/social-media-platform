@@ -1,13 +1,13 @@
-Date : 2021-12-23 23:56:35
+Date : 2021-12-31 18:27:58
 Directory : /Users/sebastianwebster/GitHub/social-media-platform
-Total : 594 files,  83591 codes, 1298 comments, 2198 blanks, all 87087 lines
+Total : 597 files,  84594 codes, 1328 comments, 2239 blanks, all 88161 lines
 
 Languages
 +------------+------------+------------+------------+------------+------------+
 | language   | files      | code       | comment    | blank      | total      |
 +------------+------------+------------+------------+------------+------------+
-| JSON       |          6 |     47,392 |         26 |          3 |     47,421 |
-| JavaScript |         84 |     24,895 |        760 |      1,673 |     27,328 |
+| JSON       |          6 |     47,189 |         29 |          3 |     47,221 |
+| JavaScript |         87 |     26,101 |        787 |      1,714 |     28,602 |
 | HTML       |          4 |      6,529 |          2 |          1 |      6,532 |
 | XML        |        494 |      2,767 |        491 |        491 |      3,749 |
 | CSS        |          1 |      1,936 |          3 |          7 |      1,946 |
@@ -19,7 +19,7 @@ Directories
 +-------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
 | path                                                                                                                          | files      | code       | comment    | blank      | total      |
 +-------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
-| .                                                                                                                             |        594 |     83,591 |      1,298 |      2,198 |     87,087 |
+| .                                                                                                                             |        597 |     84,594 |      1,328 |      2,239 |     88,161 |
 | .expo-shared                                                                                                                  |          2 |          7 |          0 |          7 |         14 |
 | .idea                                                                                                                         |          3 |         23 |          0 |          0 |         23 |
 | assets                                                                                                                        |        500 |     38,079 |        501 |        514 |     39,094 |
@@ -29,12 +29,12 @@ Directories
 | assets/icomoon-icons/IcoMoon-Free-master/Font                                                                                 |          5 |     26,324 |         10 |         12 |     26,346 |
 | assets/icomoon-icons/IcoMoon-Free-master/Font/demo-files                                                                      |          3 |      2,988 |          8 |         11 |      3,007 |
 | assets/icomoon-icons/IcoMoon-Free-master/SVG                                                                                  |        491 |      2,744 |        491 |        491 |      3,726 |
-| components                                                                                                                    |         13 |        216 |          7 |         33 |        256 |
+| components                                                                                                                    |         16 |        222 |         10 |         36 |        268 |
 | docs                                                                                                                          |          3 |        112 |          0 |          0 |        112 |
-| navigation                                                                                                                    |          4 |      1,135 |         62 |         46 |      1,243 |
+| navigation                                                                                                                    |          4 |        587 |         62 |         46 |        695 |
 | posts                                                                                                                         |          4 |        433 |          2 |         11 |        446 |
 | python_scripts                                                                                                                |          3 |         59 |         16 |         10 |         85 |
-| screens                                                                                                                       |         57 |     21,451 |        674 |      1,536 |     23,661 |
+| screens                                                                                                                       |         57 |     23,049 |        694 |      1,567 |     25,310 |
 | screens/IntroductionScreens                                                                                                   |          1 |        149 |          0 |          2 |        151 |
 | screens/PostScreens                                                                                                           |          7 |      2,199 |         77 |        192 |      2,468 |
 | screens/SecuritySettingsScreens                                                                                               |          4 |        174 |          0 |          8 |        182 |
@@ -51,8 +51,8 @@ Files
 | /Users/sebastianwebster/GitHub/social-media-platform/.idea/modules.xml                                                        | XML        |          8 |          0 |          0 |          8 |
 | /Users/sebastianwebster/GitHub/social-media-platform/.idea/social-media-platform.iml                                          | XML        |          9 |          0 |          0 |          9 |
 | /Users/sebastianwebster/GitHub/social-media-platform/.idea/vcs.xml                                                            | XML        |          6 |          0 |          0 |          6 |
-| /Users/sebastianwebster/GitHub/social-media-platform/App.js                                                                   | JavaScript |        589 |         10 |         37 |        636 |
-| /Users/sebastianwebster/GitHub/social-media-platform/app.json                                                                 | JSON       |         18 |         26 |          0 |         44 |
+| /Users/sebastianwebster/GitHub/social-media-platform/App.js                                                                   | JavaScript |        739 |         14 |         44 |        797 |
+| /Users/sebastianwebster/GitHub/social-media-platform/app.json                                                                 | JSON       |         18 |         29 |          0 |         47 |
 | /Users/sebastianwebster/GitHub/social-media-platform/assets/SocialSquareLogo_Base64_png.js                                    | JavaScript |          2 |          0 |          0 |          2 |
 | /Users/sebastianwebster/GitHub/social-media-platform/assets/badgeimages/imageDir.js                                           | JavaScript |          4 |          0 |          4 |          8 |
 | /Users/sebastianwebster/GitHub/social-media-platform/assets/icomoon-icons/IcoMoon-Free-master/Font/Reference.html             | HTML       |      6,417 |          2 |          1 |      6,420 |
@@ -560,22 +560,25 @@ Files
 | /Users/sebastianwebster/GitHub/social-media-platform/components/CredentialsContext.js                                         | JavaScript |          2 |          1 |          1 |          4 |
 | /Users/sebastianwebster/GitHub/social-media-platform/components/KeyboardAvoidingWrapper.js                                    | JavaScript |         18 |          1 |          4 |         23 |
 | /Users/sebastianwebster/GitHub/social-media-platform/components/KeyboardAvoidingWrapper_NoScrollview.js                       | JavaScript |         14 |          1 |          4 |         19 |
+| /Users/sebastianwebster/GitHub/social-media-platform/components/LockSocialSquareContext.js                                    | JavaScript |          2 |          1 |          1 |          4 |
 | /Users/sebastianwebster/GitHub/social-media-platform/components/MemberRow_ChatInformationScreen.js                            | JavaScript |         40 |          0 |          3 |         43 |
 | /Users/sebastianwebster/GitHub/social-media-platform/components/OfflineNotice.js                                              | JavaScript |         62 |          0 |          9 |         71 |
+| /Users/sebastianwebster/GitHub/social-media-platform/components/OpenAppContext.js                                             | JavaScript |          2 |          1 |          1 |          4 |
 | /Users/sebastianwebster/GitHub/social-media-platform/components/ProfilePictureURIContext.js                                   | JavaScript |          2 |          1 |          1 |          4 |
 | /Users/sebastianwebster/GitHub/social-media-platform/components/RefreshAppStylingContext.js                                   | JavaScript |          2 |          1 |          1 |          4 |
 | /Users/sebastianwebster/GitHub/social-media-platform/components/ScalableProgressiveImage.js                                   | JavaScript |         25 |          0 |          4 |         29 |
+| /Users/sebastianwebster/GitHub/social-media-platform/components/ShowPlaceholderScreenContext.js                               | JavaScript |          2 |          1 |          1 |          4 |
 | /Users/sebastianwebster/GitHub/social-media-platform/components/StylingVersionsFile.js                                        | JavaScript |          1 |          0 |          0 |          1 |
 | /Users/sebastianwebster/GitHub/social-media-platform/components/devModeOn.js                                                  | JavaScript |          2 |          0 |          1 |          3 |
 | /Users/sebastianwebster/GitHub/social-media-platform/docs/PrivacyPolicy.html                                                  | HTML       |         41 |          0 |          0 |         41 |
 | /Users/sebastianwebster/GitHub/social-media-platform/docs/TermsAndConditions.html                                             | HTML       |         41 |          0 |          0 |         41 |
 | /Users/sebastianwebster/GitHub/social-media-platform/docs/index.html                                                          | HTML       |         30 |          0 |          0 |         30 |
-| /Users/sebastianwebster/GitHub/social-media-platform/navigation/StackNavigator.js                                             | JavaScript |        807 |         59 |         25 |        891 |
+| /Users/sebastianwebster/GitHub/social-media-platform/navigation/StackNavigator.js                                             | JavaScript |        259 |         59 |         25 |        343 |
 | /Users/sebastianwebster/GitHub/social-media-platform/navigation/Start_Stack.js                                                | JavaScript |        100 |          0 |         12 |        112 |
 | /Users/sebastianwebster/GitHub/social-media-platform/navigation/navigationImages.js                                           | JavaScript |          7 |          0 |          1 |          8 |
 | /Users/sebastianwebster/GitHub/social-media-platform/navigation/tabs.js                                                       | JavaScript |        221 |          3 |          8 |        232 |
-| /Users/sebastianwebster/GitHub/social-media-platform/package-lock.json                                                        | JSON       |     21,355 |          0 |          1 |     21,356 |
-| /Users/sebastianwebster/GitHub/social-media-platform/package.json                                                             | JSON       |        101 |          0 |          1 |        102 |
+| /Users/sebastianwebster/GitHub/social-media-platform/package-lock.json                                                        | JSON       |     21,147 |          0 |          1 |     21,148 |
+| /Users/sebastianwebster/GitHub/social-media-platform/package.json                                                             | JSON       |        106 |          0 |          1 |        107 |
 | /Users/sebastianwebster/GitHub/social-media-platform/posts/ProgressiveImage.js                                                | JavaScript |         24 |          0 |          4 |         28 |
 | /Users/sebastianwebster/GitHub/social-media-platform/posts/images.js                                                          | JavaScript |         22 |          2 |          1 |         25 |
 | /Users/sebastianwebster/GitHub/social-media-platform/posts/post.js                                                            | JavaScript |        101 |          0 |          3 |        104 |
@@ -599,11 +602,11 @@ Files
 | /Users/sebastianwebster/GitHub/social-media-platform/screens/ChatScreenNavigator.js                                           | JavaScript |        136 |          4 |         10 |        150 |
 | /Users/sebastianwebster/GitHub/social-media-platform/screens/CommentViewPage.js                                               | JavaScript |        950 |         47 |         45 |      1,042 |
 | /Users/sebastianwebster/GitHub/social-media-platform/screens/CreateChatScreen.js                                              | JavaScript |         69 |          0 |          4 |         73 |
-| /Users/sebastianwebster/GitHub/social-media-platform/screens/FindScreen.js                                                    | JavaScript |        502 |         11 |         29 |        542 |
-| /Users/sebastianwebster/GitHub/social-media-platform/screens/HomeScreen.js                                                    | JavaScript |        869 |          9 |         34 |        912 |
+| /Users/sebastianwebster/GitHub/social-media-platform/screens/FindScreen.js                                                    | JavaScript |        588 |         19 |         31 |        638 |
+| /Users/sebastianwebster/GitHub/social-media-platform/screens/HomeScreen.js                                                    | JavaScript |        865 |         17 |         38 |        920 |
 | /Users/sebastianwebster/GitHub/social-media-platform/screens/IntroductionScreens/IntroScreen.js                               | JavaScript |        149 |          0 |          2 |        151 |
-| /Users/sebastianwebster/GitHub/social-media-platform/screens/LoginScreen.js                                                   | JavaScript |        160 |          9 |         32 |        201 |
-| /Users/sebastianwebster/GitHub/social-media-platform/screens/NotificationsSettingsScreen.js                                   | JavaScript |         56 |          0 |          5 |         61 |
+| /Users/sebastianwebster/GitHub/social-media-platform/screens/LoginScreen.js                                                   | JavaScript |        162 |          9 |         32 |        203 |
+| /Users/sebastianwebster/GitHub/social-media-platform/screens/NotificationsSettingsScreen.js                                   | JavaScript |      1,209 |          3 |         11 |      1,223 |
 | /Users/sebastianwebster/GitHub/social-media-platform/screens/PostScreen.js                                                    | JavaScript |        135 |          3 |         15 |        153 |
 | /Users/sebastianwebster/GitHub/social-media-platform/screens/PostScreens/AudioUploadPage.js                                   | JavaScript |        109 |          2 |          8 |        119 |
 | /Users/sebastianwebster/GitHub/social-media-platform/screens/PostScreens/MultiMediaUploadPage.js                              | JavaScript |        186 |          7 |         29 |        222 |
@@ -612,11 +615,11 @@ Files
 | /Users/sebastianwebster/GitHub/social-media-platform/screens/PostScreens/RecordAudioPage.js                                   | JavaScript |        369 |          8 |         34 |        411 |
 | /Users/sebastianwebster/GitHub/social-media-platform/screens/PostScreens/SendAudioPage.js                                     | JavaScript |        135 |         29 |         25 |        189 |
 | /Users/sebastianwebster/GitHub/social-media-platform/screens/PostScreens/ThreadUploadPage.js                                  | JavaScript |        458 |         11 |         36 |        505 |
-| /Users/sebastianwebster/GitHub/social-media-platform/screens/ProfilePages.js                                                  | JavaScript |      2,624 |         90 |        117 |      2,831 |
-| /Users/sebastianwebster/GitHub/social-media-platform/screens/ProfileScreen.js                                                 | JavaScript |      2,582 |         92 |        118 |      2,792 |
+| /Users/sebastianwebster/GitHub/social-media-platform/screens/ProfilePages.js                                                  | JavaScript |      2,741 |         92 |        123 |      2,956 |
+| /Users/sebastianwebster/GitHub/social-media-platform/screens/ProfileScreen.js                                                 | JavaScript |      2,581 |         92 |        118 |      2,791 |
 | /Users/sebastianwebster/GitHub/social-media-platform/screens/ProfileStats.js                                                  | JavaScript |         57 |          0 |          2 |         59 |
 | /Users/sebastianwebster/GitHub/social-media-platform/screens/ReportBugScreen.js                                               | JavaScript |        254 |         32 |         33 |        319 |
-| /Users/sebastianwebster/GitHub/social-media-platform/screens/SecuritySettingsScreen.js                                        | JavaScript |         73 |          3 |          8 |         84 |
+| /Users/sebastianwebster/GitHub/social-media-platform/screens/SecuritySettingsScreen.js                                        | JavaScript |        318 |          2 |         21 |        341 |
 | /Users/sebastianwebster/GitHub/social-media-platform/screens/SecuritySettingsScreens/2FA.js                                   | JavaScript |         34 |          0 |          2 |         36 |
 | /Users/sebastianwebster/GitHub/social-media-platform/screens/SecuritySettingsScreens/GDPRCompliance.js                        | JavaScript |         46 |          0 |          2 |         48 |
 | /Users/sebastianwebster/GitHub/social-media-platform/screens/SecuritySettingsScreens/LoginActivity.js                         | JavaScript |         34 |          0 |          2 |         36 |
@@ -640,5 +643,5 @@ Files
 | /Users/sebastianwebster/GitHub/social-media-platform/screens/VisitingProfileScreen.js                                         | JavaScript |        343 |          3 |         26 |        372 |
 | /Users/sebastianwebster/GitHub/social-media-platform/screens/customizeStylingScreen.js                                        | JavaScript |         46 |          1 |          2 |         49 |
 | /Users/sebastianwebster/GitHub/social-media-platform/screens/screenStylings/styling.js                                        | JavaScript |      1,930 |          7 |        183 |      2,120 |
-| Total                                                                                                                         |            |     83,591 |      1,298 |      2,198 |     87,087 |
+| Total                                                                                                                         |            |     84,594 |      1,328 |      2,239 |     88,161 |
 +-------------------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+

@@ -401,7 +401,7 @@ const App = () => {
         <Animated.View style={{backgroundColor: 'rgba(0, 0, 0, 0.8)', height: 60, width: '90%', position: 'absolute', zIndex: 1000, top: 40, marginHorizontal: '5%', flexDirection: 'row', borderColor: 'black', borderRadius: 15, borderWidth: 1, transform: [{translateY: GoDownByY.interpolate({inputRange: [0, 10], outputRange: [0, 10]})}]}}>
           <TouchableOpacity onPress={NotificationPressed} style={{flexDirection: 'row'}}>
             <View style={{width: '20%', minWidth: '20%', maxWidth: '20%', justifyContent: 'center', alignItems: 'center'}}>
-              <Avatar style={{width: 40, height: 40}} resizeMode="cover" source={{uri: notification != false ? notification.request.content.data.profilePicture : SocialSquareLogo_B64_png}}/>
+              <Avatar style={{width: 40, height: 40}} resizeMode="cover" source={{uri: notification != false ? notification.request.content.data.profilePicture ? notification.request.content.data.profilePicture : SocialSquareLogo_B64_png : SocialSquareLogo_B64_png}}/>
             </View>
             <View style={{width: '80%', minWidth: '80%', maxWidth: '80%'}}>
               <Text numberOfLines={1} style={{color: 'white', fontSize: 16, fontWeight: 'bold', marginRight: 15}}>{notification != false ? notification.request.content.title : 'No Notification Data'}</Text>
@@ -699,8 +699,8 @@ const App = () => {
       }
 
       if (ShowPlaceholderScreenValue == null) {
-        setShowPlaceholderScreen(true)
-        AsyncStorage.setItem('ShowPlaceholderScreen', 'true')
+        setShowPlaceholderScreen(false)
+        AsyncStorage.setItem('ShowPlaceholderScreen', 'false')
       } else if (ShowPlaceholderScreenValue == 'true') {
         setShowPlaceholderScreen(true)
       } else if (ShowPlaceholderScreenValue == 'false') {

@@ -32,7 +32,7 @@ import {
     Navigator_BackButton,
     TestText
 } from '../screenStylings/styling.js';
-import {View, ActivityIndicator, ImageBackground, StyleSheet, Text, Image, SafeAreaView, ScrollView} from 'react-native';
+import {View, ActivityIndicator, ImageBackground, StyleSheet, Text, Image, SafeAreaView, ScrollView, TouchableOpacity} from 'react-native';
 
 // Colors
 const {brand, primary, tertiary} = Colors;
@@ -57,6 +57,7 @@ const SendAudioPage = ({navigation}) => {
     const [hidePassword, setHidePassword] = useState(true);
     const [message, setMessage] = useState();
     const [messageType, setMessageType] = useState();
+    const [screenshotsAllowed, setScreenshotsAllowed] = useState(false);
 
     const UserTextInput = ({label, icon, isPassword, hidePassword, setHidePassword, ...props}) => {
         return(
@@ -164,6 +165,13 @@ const SendAudioPage = ({navigation}) => {
                                         style={{backgroundColor: colors.primary, color: colors.tertiary, height: 200}}
                                         multiline
                                     />
+
+                                    <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+                                        <Text style={{color: colors.tertiary, fontSize: 18, marginTop: 10, marginRight: 10}}>Allow screen capture</Text>
+                                        <TouchableOpacity onPress={() => {setScreenshotsAllowed(screenshotsAllowed => !screenshotsAllowed)}} style={{width: 40, height: 40, borderColor: colors.borderColor, borderWidth: 3, justifyContent: 'center', alignItems: 'center'}}>
+                                            <Text style={{color: colors.tertiary, fontSize: 18, textAlign: 'center', textAlignVertical: 'center'}}>{screenshotsAllowed == false ? '✕' : '✓'}</Text>
+                                        </TouchableOpacity>
+                                    </View>
 
                                     <MsgBox type={messageType}>{message}</MsgBox>
                                     {!isSubmitting && (<StyledButton onPress={handleSubmit}>

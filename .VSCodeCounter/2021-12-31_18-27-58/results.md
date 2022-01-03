@@ -1,18 +1,18 @@
 # Summary
 
-Date : 2021-12-23 23:56:35
+Date : 2021-12-31 18:27:58
 
 Directory /Users/sebastianwebster/GitHub/social-media-platform
 
-Total : 594 files,  83591 codes, 1298 comments, 2198 blanks, all 87087 lines
+Total : 597 files,  84594 codes, 1328 comments, 2239 blanks, all 88161 lines
 
 [details](details.md)
 
 ## Languages
 | language | files | code | comment | blank | total |
 | :--- | ---: | ---: | ---: | ---: | ---: |
-| JSON | 6 | 47,392 | 26 | 3 | 47,421 |
-| JavaScript | 84 | 24,895 | 760 | 1,673 | 27,328 |
+| JSON | 6 | 47,189 | 29 | 3 | 47,221 |
+| JavaScript | 87 | 26,101 | 787 | 1,714 | 28,602 |
 | HTML | 4 | 6,529 | 2 | 1 | 6,532 |
 | XML | 494 | 2,767 | 491 | 491 | 3,749 |
 | CSS | 1 | 1,936 | 3 | 7 | 1,946 |
@@ -22,7 +22,7 @@ Total : 594 files,  83591 codes, 1298 comments, 2198 blanks, all 87087 lines
 ## Directories
 | path | files | code | comment | blank | total |
 | :--- | ---: | ---: | ---: | ---: | ---: |
-| . | 594 | 83,591 | 1,298 | 2,198 | 87,087 |
+| . | 597 | 84,594 | 1,328 | 2,239 | 88,161 |
 | .expo-shared | 2 | 7 | 0 | 7 | 14 |
 | .idea | 3 | 23 | 0 | 0 | 23 |
 | assets | 500 | 38,079 | 501 | 514 | 39,094 |
@@ -32,12 +32,12 @@ Total : 594 files,  83591 codes, 1298 comments, 2198 blanks, all 87087 lines
 | assets/icomoon-icons/IcoMoon-Free-master/Font | 5 | 26,324 | 10 | 12 | 26,346 |
 | assets/icomoon-icons/IcoMoon-Free-master/Font/demo-files | 3 | 2,988 | 8 | 11 | 3,007 |
 | assets/icomoon-icons/IcoMoon-Free-master/SVG | 491 | 2,744 | 491 | 491 | 3,726 |
-| components | 13 | 216 | 7 | 33 | 256 |
+| components | 16 | 222 | 10 | 36 | 268 |
 | docs | 3 | 112 | 0 | 0 | 112 |
-| navigation | 4 | 1,135 | 62 | 46 | 1,243 |
+| navigation | 4 | 587 | 62 | 46 | 695 |
 | posts | 4 | 433 | 2 | 11 | 446 |
 | python_scripts | 3 | 59 | 16 | 10 | 85 |
-| screens | 57 | 21,451 | 674 | 1,536 | 23,661 |
+| screens | 57 | 23,049 | 694 | 1,567 | 25,310 |
 | screens/IntroductionScreens | 1 | 149 | 0 | 2 | 151 |
 | screens/PostScreens | 7 | 2,199 | 77 | 192 | 2,468 |
 | screens/SecuritySettingsScreens | 4 | 174 | 0 | 8 | 182 |

@@ -25,6 +25,7 @@ import Tabs from "./tabs.js";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import IntroScreen from "../screens/IntroductionScreens/IntroScreen.js";
+import DestroyingLocalDataScreen from "../screens/DestroyingLocalDataScreen.js";
 
 const Stack = createStackNavigator();
 
@@ -91,6 +92,7 @@ const Start_Stack = () => {
                                 }}
                             />
                             <Stack.Screen name="Tabs" component={Tabs}/>
+                            <Stack.Screen name="DestroyingLocalDataScreen" component={DestroyingLocalDataScreen}/>
                         </>
                     ) : (
                         <>
@@ -98,6 +100,7 @@ const Start_Stack = () => {
                             <Stack.Screen name="Login_Screen" component={LoginScreen}/>
                             <Stack.Screen name="Signup" component={Signup}/>
                             <Stack.Screen name="Tabs" component={Tabs}/>
+                            <Stack.Screen name="DestroyingLocalDataScreen" component={DestroyingLocalDataScreen}/>
                         </>
                     )}
                 </Stack.Navigator>

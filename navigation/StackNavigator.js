@@ -66,13 +66,6 @@ import SimpleStylingMenu from "../screens/SimpleStylingScreens/SimpleStylingMenu
 import EditSimpleStyle from "../screens/SimpleStylingScreens/EditSimpleStyle.js";
 import Simple_ColorPickerScreen from "../screens/SimpleStylingScreens/ColorPicker.js";
 import BuiltInStylingMenu from "../screens/BuiltInStylingMenu.js";
-import PerScreenEdit from "../screens/SimpleStylingScreens/PerScreenEdit.js";
-import EditPostGroupScreens from "../screens/SimpleStylingScreens/EditPostGroupScreens.js";
-import EditPostScreenStyle from "../screens/SimpleStylingScreens/EditPostScreenStyle.js";
-import EditPostScreenBackgroundColor from "../screens/SimpleStylingScreens/EditPostScreenBackgroundColor.js";
-import EditPostScreenIconColors from "../screens/SimpleStylingScreens/EditPostScreenIconColors.js";
-import EditPostScreenContinueButtonStyle from "../screens/SimpleStylingScreens/EditPostScreenContinueButtonStyle.js";
-import IntroScreen from "../screens/IntroductionScreens/IntroScreen.js";
 
 
 const Stack = createStackNavigator();
@@ -171,12 +164,6 @@ const RootStack = () => {
         <Stack.Screen name="EditSimpleStyle" component={EditSimpleStyle}options={{gestureEnabled: false}}/>
         <Stack.Screen name="Simple_ColorPickerScreen" component={Simple_ColorPickerScreen}/>
         <Stack.Screen name="BuiltInStylingMenu" component={BuiltInStylingMenu}/>
-        <Stack.Screen name="PerScreenEdit" component={PerScreenEdit}/>
-        <Stack.Screen name="EditPostGroupScreens" component={EditPostGroupScreens}/>
-        <Stack.Screen name="EditPostScreenStyle" component={EditPostScreenStyle}/>
-        <Stack.Screen name="EditPostScreenBackgroundColor" component={EditPostScreenBackgroundColor}/>
-        <Stack.Screen name="EditPostScreenIconColors" component={EditPostScreenIconColors}/>
-        <Stack.Screen name="EditPostScreenContinueButtonStyle" component={EditPostScreenContinueButtonStyle}/>
       </Stack.Group>
     </Stack.Navigator>
   );
@@ -205,8 +192,8 @@ const FindScreen_Stack = () => {
         <Stack.Screen name="FindScreen" component={FindScreen}/>
         <Stack.Screen name="ProfilePages" component={ProfilePages}/>
         <Stack.Screen name="Post_FullScreen" component={Post_FullScreen}/>
+        <Stack.Screen name="ProfileStats" component={ProfileStats}/>
       </Stack.Group>
-      <Stack.Screen name="ProfileStats" component={ProfileStats}/>
       <Stack.Screen name="ProfileScreen_FromFindScreenPost" component={ProfileScreen}/>
       <Stack.Screen name="CategoryViewPage" component={CategoryViewPage}/>
       <Stack.Screen name="CommentviewPage" component={CommentViewPage}/>
@@ -262,10 +249,13 @@ const post_screen_navigator = () => {
       <Stack.Group screenOptions={{headerLeft: null, gestureEnabled: false}}>
         <Stack.Screen name="RecordAudioPage" component={RecordAudioPage}/>
       </Stack.Group>
-      <Stack.Screen name="SendAudioPage" component={SendAudioPage}/>
+      <Stack.Group screenOptions={{headerLeft: null}}>
+        <Stack.Screen name="SendAudioPage" component={SendAudioPage}/>
+      </Stack.Group>
       <Stack.Screen name="MultiMediaUploadPreview" component={MultiMediaUploadPreview}/>
       <Stack.Screen name="SelectCategorySearchScreen" component={SelectCategorySearchScreen}/>
       <Stack.Screen name="TakeImage_Camera" component={TakeImage_Camera}/>
+      <Stack.Screen name="CategoryCreationPage" component={CategoryCreationPage}/>
     </Stack.Navigator>
   )
 }
