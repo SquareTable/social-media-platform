@@ -144,6 +144,8 @@ const Welcome = ({navigation, route}) => {
     //ImageStuff
     const [getPfp, setGetPfp] = useState(false)
     const [getImagesOnLoad, setGetImagesOnLoad] = useState(false)
+    const [changingPfp, setChangingPfp] = useState(false)
+    const [loadingPfp, setLoadingPfp] = useState(false)
     var allImages = []
     var initialAllImages = []
     //Up and Down Vote Image Stuff
@@ -2461,6 +2463,95 @@ const Welcome = ({navigation, route}) => {
         }
     }
 
+    const getProfilePicture = () => {
+        const url = `https://nameless-dawn-41038.herokuapp.com/user/getProfilePic/${storedCredentials.name}`;
+
+        axios.get(url).then((response) => {
+            const result = response.data;
+            const {message, status, data} = result;
+
+            if (status !== 'SUCCESS') {
+                console.log('GETTING PROFILE PICTURE FOR TABS.JS WAS NOT A SUCCESS')
+                console.log(status)
+                console.log(message)
+            } else {
+                console.log(status)
+                console.log(message)
+                axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${data}`)
+                .then((response) => {
+                    const result = response.data;
+                    const {message, status, data} = result;
+                    console.log(status)
+                    console.log(message)
+                    console.log(data)
+                    //set image
+                    if (message == 'No profile image.' && status == 'FAILED') {
+                        console.log('Setting logo to SocialSquare logo')
+                        setProfilePictureUri(SocialSquareLogo_B64_png)
+                        setChangingPfp(false)
+                    } else if (data) {
+                        //convert back to image
+                        console.log('Setting logo in tab bar to profile logo')
+                        var base64Icon = `data:image/jpg;base64,${data}`
+                        setProfilePictureUri(base64Icon)
+                        const SetUserPfpToAsyncStorage = async () => {await AsyncStorage.setItem('UserProfilePicture', base64Icon)}
+                        SetUserPfpToAsyncStorage()
+                        setChangingPfp(false)
+                    } else {
+                        console.log('Setting logo to SocialSquare logo')
+                        setProfilePictureUri(SocialSquareLogo_B64_png)
+                        setChangingPfp(false)
+                    }
+                })
+                .catch(function (error) {
+                    console.log("Image not recieved")
+                    console.log(error);
+                });
+            }
+            //setSubmitting(false);
+
+        }).catch(error => {
+            console.log(error);
+        })
+    }
+
+    const uploadPFP = (image) => {
+        const formData = new FormData();
+        formData.append("image", {
+            name: image.uri.substr(image.uri.lastIndexOf('/') + 1),
+            uri: image.uri,
+            type: 'image/jpg'
+        })
+        formData.append("userId", _id)
+
+        const url = "https://nameless-dawn-41038.herokuapp.com/user/postProfileImage";
+        setChangingPfp(true)
+        axios.post(url, formData, {
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'multipart/form-data'
+            }}).then((response) => {
+            const result = response.data;
+            const {message, status, data} = result;
+
+            if (status !== 'SUCCESS') {
+                handleMessage(message, status);
+                setChangingPfp(false)
+                console.log(message)
+            } else {
+                console.log(data)
+                handleMessage('')
+                getProfilePicture()
+                //persistLogin({...data[0]}, message, status);
+            }
+
+        }).catch(error => {
+            console.log(error);
+            setChangingPfp(false);
+            handleMessage("An error occured. Try checking your network connection and retry.");
+        })
+    }
+
     const pickImage = async () => {
         let result = await ImagePicker.launchImageLibraryAsync({
           mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -2471,7 +2562,7 @@ const Welcome = ({navigation, route}) => {
         
         if (!result.cancelled) {
             console.log(result)
-            postMultiMedia(result)
+            uploadPFP(result)
         }
     };
 
@@ -2534,14 +2625,10 @@ const Welcome = ({navigation, route}) => {
         if (imageFromRoute != null) {
             console.log('Image received from imageFromRoute')
             console.log(imageFromRoute)
-            postMultiMedia(imageFromRoute)
+            uploadPFP(imageFromRoute)
             navigation.setParams({imageFromRoute: null})
         }
     })
-
-    const postMultiMedia = (image) => {
-        console.log(image)
-    }
     return(
         <>    
             <ActionSheet
@@ -2640,10 +2727,26 @@ const Welcome = ({navigation, route}) => {
                         </TouchableOpacity>
                     </ProfileHorizontalView>
                     <ProfInfoAreaImage>
-                        <Avatar style={{resizeMode: 'cover'}} source={{uri: profilePictureUri}}/>
-                        <TouchableOpacity onPress={() => {PfpPickerActionMenu.current.show();}}>
-                            <SubTitle style={{marginBottom: 0, color: colors.darkestBlue}}>Change</SubTitle>
-                        </TouchableOpacity>
+                        {message != '' && <SubTitle style={{color: colors.tertiary, textAlign: 'center', fontSize: 10}}>{message}</SubTitle>}
+                        {loadingPfp == false && (
+                            <View style={{alignSelf: 'center', alignContent: 'center'}}>
+                                <Avatar resizeMode="cover" source={{uri: profilePictureUri}}/>
+                                {changingPfp == false && (
+                                    <TouchableOpacity onPress={() => {PfpPickerActionMenu.current.show();}}>
+                                        <SubTitle style={{marginBottom: 0, color: darkestBlue, textAlign: 'center'}}>Change</SubTitle>
+                                    </TouchableOpacity>
+                                )}
+                                {changingPfp == true && (
+                                    <ActivityIndicator size="large" color={brand} style={{marginBottom: 20}} />  
+                                )}
+                            </View>
+                        )}
+                        {loadingPfp == true && (
+                            <View style={{alignSelf: 'center', alignContent: 'center'}}>
+                                <ActivityIndicator size={10} color={brand} style={{marginBottom: 20, padding: 40, borderColor: darkestBlue, borderWidth: 3, borderRadius: 150}} />  
+                                <SubTitle style={{marginBottom: 0, color: darkestBlue, textAlign: 'center'}}></SubTitle>
+                            </View>
+                        )}
                         <PageTitle welcome={true}>{displayName || name || "Couldn't get name"}</PageTitle>
                         <SubTitle style={{color: colors.tertiary}}>{"@"+name}</SubTitle>
                         <ProfileBadgesView onPress={() => navigation.navigate("AccountBadges")}>

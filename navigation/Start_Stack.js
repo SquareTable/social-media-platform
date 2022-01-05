@@ -6,21 +6,12 @@ import {darkModeStyling, darkModeOn, lightModeStyling} from '../screens/screenSt
 import {Colors} from '../screens/screenStylings/styling.js'
 const {primary, tertiary} = Colors;
 
-import ProfileScreen from "../screens/ProfileScreen";
-import SettingsScreen from "../screens/SettingsScreen";
-import HomeScreen from "../screens/HomeScreen";
-import BadgesScreen from "../screens/BadgesScreen";
 import LoginScreen from "../screens/LoginScreen";
-import AccountSettings from "../screens/AccountSettings";
-import ChatScreen from "../screens/ChatScreen";
 import Signup from "../screens/Signup.js";
 
 import { NavigationImages } from '../navigation/navigationImages.js';
 
 import { CredentialsContext } from "../components/CredentialsContext.js";
-import { NavigationContainer } from '@react-navigation/native';
-import FindScreen from "../screens/FindScreen.js";
-import Post_FullScreen from "../posts/post_fullscreen.js";
 import Tabs from "./tabs.js";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";

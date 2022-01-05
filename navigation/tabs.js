@@ -1,19 +1,9 @@
 import React, { useContext, useState } from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createStackNavigator } from '@react-navigation/stack';
 import { useTheme } from '@react-navigation/native';
 
-import HomeScreen from '../screens/HomeScreen';
-import FindScreen from '../screens/FindScreen';
-import ChatScreen from '../screens/ChatScreen';
-import PostScreen from '../screens/PostScreen';
-import SettingsScreen from '../screens/SettingsScreen';
-import BadgesScreen from '../screens/BadgesScreen';
-import LoginScreen from '../screens/LoginScreen';
-import ProfileScreen from '../screens/ProfileScreen';
 import {ChatScreen_Stack, ProfileScreenToSettings_StackNavigation, RootStack, SettingsToBadges_StackNavigation, FindScreen_Stack, post_screen_navigator, home_screen_post_to_profile_screen} from '../navigation/StackNavigator.js'
-import {darkModeStyling, darkModeOn, lightModeStyling, darkModeStyling_navFocusedColor, lightModeStyling_navFocusedColor, darkModeStyling_navNonFocusedColor, lightModeStyling_navNonFocusedColor, Avatar, ProfileOptionsView} from '../screens/screenStylings/styling.js';
 import * as Haptics from 'expo-haptics';
 import { ProfilePictureURIContext } from '../components/ProfilePictureURIContext';
 

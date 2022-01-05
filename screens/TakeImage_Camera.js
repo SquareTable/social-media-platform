@@ -45,7 +45,7 @@ const TakeImage_Camera = ({navigation, route}) => {
     const chooseImage = () => {
         console.log('Choosing image')
         if (image) {
-            navigation.navigate(locationToGoTo, {imageFromRoute: image})
+            navigation.navigate(locationToGoTo, {imageFromRoute: image, backButtonHidden: true})
         } else {
             alert('An error occured')
         }

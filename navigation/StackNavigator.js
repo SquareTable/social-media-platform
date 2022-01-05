@@ -13,7 +13,6 @@ import { HomeScreen } from "../screens/HomeScreen";
 import BadgesScreen from "../screens/BadgesScreen";
 import LoginScreen from "../screens/LoginScreen";
 import AccountSettings from "../screens/AccountSettings";
-import ChatScreen from "../screens/ChatScreen";
 import Signup from "../screens/Signup.js";
 
 import { NavigationImages } from '../navigation/navigationImages.js';
@@ -40,8 +39,6 @@ import ChangeEmailPage from "../screens/ChangeEmailPage";
 
 import ReportBugScreen from "../screens/ReportBugScreen.js";
 import ChatScreenNavigator from "../screens/ChatScreenNavigator.js";
-import ChatInformationScreen from "../screens/ChatInformationScreen.js";
-import CreateChatScreen from "../screens/CreateChatScreen.js";
 import RecordAudioPage from "../screens/PostScreens/RecordAudioPage.js";
 import SendAudioPage from "../screens/PostScreens/SendAudioPage.js";
 
@@ -97,9 +94,6 @@ const ChatScreen_Stack = () => {
       }}
     >
       <Stack.Screen name="ChatScreenNavigator" component={ChatScreenNavigator}/>
-      <Stack.Screen name="Chat" component={ChatScreen}/>
-      <Stack.Screen name="ChatInformationScreen" component={ChatInformationScreen}/>
-      <Stack.Screen name="CreateChatScreen" component={CreateChatScreen}/>
       <Stack.Screen name="Welcome" component={ProfileScreen}/>
       <Stack.Screen name="VisitingProfileScreen" component={VisitingProfileScreen}/>
     </Stack.Navigator>
