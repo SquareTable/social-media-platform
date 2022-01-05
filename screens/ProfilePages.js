@@ -2996,62 +2996,31 @@ const ProfilePages = ({ route, navigation }) => {
                             sections={changeSectionsOne}
                             keyExtractor={(item, index) => item + index}
                             renderItem={({ item }) => <ImageItem imageKey={item.imageKey} imageB64={item.imageB64} imageTitle={item.imageTitle} imageDescription={item.imageDescription} imageUpVotes={item.imageUpVotes} imageComments={item.imageComments} creatorName={item.creatorName} creatorDisplayName={item.creatorDisplayName} creatorPfpB64={item.creatorPfpB64} datePosted={item.datePosted} postNum={item.postNum} />}
+                            ListFooterComponent={<PostLoadingSpinners selectedPostFormat={selectedPostFormat} loadingPostsImage={loadingPostsImage} loadingPostsVideo={loadingPostsVideo} loadingPostsPoll={loadingPostsPoll} loadingPostsThread={loadingPostsThread} loadingPostsCategory={loadingPostsCategory}/>}
                         />)}
                         {selectedPostFormat == "Two" && (<SectionList
                             sections={changeSectionsTwo}
                             keyExtractor={(item, index) => item + index}
                             renderItem={({ item }) => <PollItem pollTitle={item.pollTitle} pollSubTitle={item.pollSubTitle} optionOne={item.optionOne} optionOnesColor={item.optionOnesColor} optionOnesVotes={item.optionOnesVotes} optionOnesBarLength={item.optionOnesBarLength} optionTwo={item.optionTwo} optionTwosColor={item.optionTwosColor} optionTwosVotes={item.optionTwosVotes} optionTwosBarLength={item.optionTwosBarLength} optionThree={item.optionThree} optionThreesColor={item.optionThreesColor} optionThreesVotes={item.optionThreesVotes} optionThreesBarLength={item.optionThreesBarLength} optionFour={item.optionFour} optionFoursColor={item.optionFoursColor} optionFoursVotes={item.optionFoursVotes} optionFoursBarLength={item.optionFoursBarLength} optionFive={item.optionFive} optionFivesColor={item.optionFivesColor} optionFivesVotes={item.optionFivesVotes} optionFivesBarLength={item.optionFivesBarLength} optionSix={item.optionSix} optionSixesColor={item.optionSixesColor} optionSixesVotes={item.optionSixesVotes} optionSixesBarLength={item.optionSixesBarLength} totalNumberOfOptions={item.totalNumberOfOptions} pollUpOrDownVotes={item.pollUpOrDownVotes} pollId={item.pollId} votedFor={item.votedFor} pollLiked={item.pollLiked} pfpB64={item.pfpB64} creatorName={item.creatorName} creatorDisplayName={item.creatorDisplayName} />}
+                            ListFooterComponent={<PostLoadingSpinners selectedPostFormat={selectedPostFormat} loadingPostsImage={loadingPostsImage} loadingPostsVideo={loadingPostsVideo} loadingPostsPoll={loadingPostsPoll} loadingPostsThread={loadingPostsThread} loadingPostsCategory={loadingPostsCategory}/>}
                         />)}
                         {selectedPostFormat == "Three" && (<SectionList
                             sections={changeSectionsThree}
                             keyExtractor={(item, index) => item + index}
                             renderItem={({ item }) => <PollItem pollTitle={item.pollTitle} pollSubTitle={item.pollSubTitle} optionOne={item.optionOne} optionOnesColor={item.optionOnesColor} optionOnesVotes={item.optionOnesVotes} optionOnesBarLength={item.optionOnesBarLength} optionTwo={item.optionTwo} optionTwosColor={item.optionTwosColor} optionTwosVotes={item.optionTwosVotes} optionTwosBarLength={item.optionTwosBarLength} optionThree={item.optionThree} optionThreesColor={item.optionThreesColor} optionThreesVotes={item.optionThreesVotes} optionThreesBarLength={item.optionThreesBarLength} optionFour={item.optionFour} optionFoursColor={item.optionFoursColor} optionFoursVotes={item.optionFoursVotes} optionFoursBarLength={item.optionFoursBarLength} optionFive={item.optionFive} optionFivesColor={item.optionFivesColor} optionFivesVotes={item.optionFivesVotes} optionFivesBarLength={item.optionFivesBarLength} optionSix={item.optionSix} optionSixesColor={item.optionSixesColor} optionSixesVotes={item.optionSixesVotes} optionSixesBarLength={item.optionSixesBarLength} totalNumberOfOptions={item.totalNumberOfOptions} pollUpOrDownVotes={item.pollUpOrDownVotes} pollId={item.pollId} votedFor={item.votedFor} pfpB64={item.pfpB64} creatorName={item.creatorName} creatorDisplayName={item.creatorDisplayName} postNum={item.postNum} datePosted={item.datePosted} pollComments={item.pollComments} />}
+                            ListFooterComponent={<PostLoadingSpinners selectedPostFormat={selectedPostFormat} loadingPostsImage={loadingPostsImage} loadingPostsVideo={loadingPostsVideo} loadingPostsPoll={loadingPostsPoll} loadingPostsThread={loadingPostsThread} loadingPostsCategory={loadingPostsCategory}/>}
                         />)}
                         {selectedPostFormat == "Four" && (<SectionList
                             sections={changeSectionsFour}
                             keyExtractor={(item, index) => item + index}
                             renderItem={({ item }) => <ThreadItems postNum={item.postNum} threadId={item.threadId} threadComments={item.threadComments} threadType={item.threadType} threadUpVotes={item.threadUpVotes} threadTitle={item.threadTitle} threadSubtitle={item.threadSubtitle} threadTags={item.threadTags} threadCategory={item.threadCategory} threadBody={item.threadBody} threadImageKey={item.threadImageKey} threadImageDescription={item.threadImageDescription} threadNSFW={item.threadNSFW} threadNSFL={item.threadNSFL} datePosted={item.datePosted} threadUpVoted={item.threadUpVoted} threadDownVoted={item.threadDownVoted} creatorDisplayName={item.creatorDisplayName} creatorName={item.creatorName} creatorImageB64={item.creatorImageB64} imageInThreadB64={item.imageInThreadB64} />}
+                            ListFooterComponent={<PostLoadingSpinners selectedPostFormat={selectedPostFormat} loadingPostsImage={loadingPostsImage} loadingPostsVideo={loadingPostsVideo} loadingPostsPoll={loadingPostsPoll} loadingPostsThread={loadingPostsThread} loadingPostsCategory={loadingPostsCategory}/>}
                         />)}
                         {selectedPostFormat == "Five" && (<SectionList
                             sections={changeSectionsFive}
                             keyExtractor={(item, index) => item + index}
                             renderItem={({ item }) => <CategoryItem categoryTitle={item.categoryTitle} categoryDescription={item.categoryDescription} members={item.members} categoryTags={item.categoryTags} image={item.image} NSFW={item.NSFW} NSFL={item.NSFL} datePosted={item.datePosted} />}
                         />)}
-                        {selectedPostFormat == "One" && (
-                            <View>
-                                {loadingPostsImage == true && (
-                                    <ActivityIndicator size="large" color={brand} style={{ marginBottom: 20 }} />
-                                )}
-                            </View>
-                        )}
-                        {selectedPostFormat == "Two" && (
-                            <View>
-                                {loadingPostsVideo == true && (
-                                    <ActivityIndicator size="large" color={brand} style={{ marginBottom: 20 }} />
-                                )}
-                            </View>
-                        )}
-                        {selectedPostFormat == "Three" && (
-                            <View>
-                                {loadingPostsPoll == true && (
-                                    <ActivityIndicator size="large" color={brand} style={{ marginBottom: 20 }} />
-                                )}
-                            </View>
-                        )}
-                        {selectedPostFormat == "Four" && (
-                            <View>
-                                {loadingPostsThread == true && (
-                                    <ActivityIndicator size="large" color={brand} style={{ marginBottom: 20 }} />
-                                )}
-                            </View>
-                        )}
-                        {selectedPostFormat == "Five" && (
-                            <View>
-                                {loadingPostsCategory == true && (
-                                    <ActivityIndicator size="large" color={brand} style={{ marginBottom: 20 }} />
-                                )}
-                            </View>
-                        )}
                     </ProfileGridPosts>
                     <ProfileFeaturedPosts display={featuredViewState}>
                         <SubTitle style={{color: colors.tertiary}} profNoPosts={true}>
@@ -3065,3 +3034,45 @@ const ProfilePages = ({ route, navigation }) => {
 }
 
 export default ProfilePages;
+
+const PostLoadingSpinners = ({selectedPostFormat, loadingPostsImage, loadingPostsVideo, loadingPostsPoll, loadingPostsThread, loadingPostsCategory}) => {
+    return(
+        <>
+            {selectedPostFormat == "One" && (
+                <View>
+                    {loadingPostsImage == true && (
+                        <ActivityIndicator size="large" color={brand} style={{ marginBottom: 20 }} />
+                    )}
+                </View>
+            )}
+            {selectedPostFormat == "Two" && (
+                <View>
+                    {loadingPostsVideo == true && (
+                        <ActivityIndicator size="large" color={brand} style={{ marginBottom: 20 }} />
+                    )}
+                </View>
+            )}
+            {selectedPostFormat == "Three" && (
+                <View>
+                    {loadingPostsPoll == true && (
+                        <ActivityIndicator size="large" color={brand} style={{ marginBottom: 20 }} />
+                    )}
+                </View>
+            )}
+            {selectedPostFormat == "Four" && (
+                <View>
+                    {loadingPostsThread == true && (
+                        <ActivityIndicator size="large" color={brand} style={{ marginBottom: 20 }} />
+                    )}
+                </View>
+            )}
+            {selectedPostFormat == "Five" && (
+                <View>
+                    {loadingPostsCategory == true && (
+                        <ActivityIndicator size="large" color={brand} style={{ marginBottom: 20 }} />
+                    )}
+                </View>
+            )}
+        </>
+    )
+}
