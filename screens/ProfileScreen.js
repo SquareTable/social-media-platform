@@ -2538,9 +2538,10 @@ const Welcome = ({navigation, route}) => {
                 handleMessage(message, status);
                 setChangingPfp(false)
                 console.log(message)
+                alert("An error occured while changing your profile picture.")
             } else {
                 console.log(data)
-                handleMessage('')
+                handleMessage(message, status)
                 getProfilePicture()
                 //persistLogin({...data[0]}, message, status);
             }
@@ -2727,7 +2728,6 @@ const Welcome = ({navigation, route}) => {
                         </TouchableOpacity>
                     </ProfileHorizontalView>
                     <ProfInfoAreaImage>
-                        {message != '' && <SubTitle style={{color: colors.tertiary, textAlign: 'center', fontSize: 10}}>{message}</SubTitle>}
                         {loadingPfp == false && (
                             <View style={{alignSelf: 'center', alignContent: 'center'}}>
                                 <Avatar resizeMode="cover" source={{uri: profilePictureUri}}/>
@@ -2779,14 +2779,15 @@ const Welcome = ({navigation, route}) => {
                             <SubTitle style={{color: colors.tertiary}} welcome={true}> 0 </SubTitle>
                         </ProfileHorizontalViewItem>
                     </ProfileHorizontalView>
-                    <ProfilePostsSelectionView style={{position: 'relative'}}>
+                    <ProfilePostsSelectionView style={{position: 'relative', borderBottomWidth: 0}}>
                         <ProfilePostsSelectionBtns onPress={changeToGrid}>
                             <Icon name="grid" color={colors.tertiary} size={45}/>
                         </ProfilePostsSelectionBtns>
                         <ProfilePostsSelectionBtns onPress={changeToFeatured}>
                             <FontAwesomeFive name="user-tag" color={colors.tertiary} size={45}/>
                         </ProfilePostsSelectionBtns>
-                        <Animated.View style={{backgroundColor: colors.tertiary, height: 3, width: '50%', position: 'absolute', bottom: 0, transform: [{translateX: GridOrTagLineTranslateX}]}}/>
+                        <Animated.View style={{backgroundColor: colors.tertiary, height: 3, width: '50%', position: 'absolute', bottom: 0, transform: [{translateX: GridOrTagLineTranslateX}], zIndex: 2}}/>
+                        <View style={{backgroundColor: colors.borderColor, height: 3, width: '100%', position: 'absolute', bottom: 0}}/>
                     </ProfilePostsSelectionView>
                     <ProfileSelectMediaTypeHorizontalView>
                         <ProfileSelectMediaTypeItem onPress={changeToOne}>
