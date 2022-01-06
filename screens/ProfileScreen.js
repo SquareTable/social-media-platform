@@ -89,7 +89,7 @@ import * as ImagePicker from 'expo-image-picker';
 //credentials context
 import { CredentialsContext } from '../components/CredentialsContext';
 import { ImageBackground, ScrollView, SectionList, Image, View, ActivityIndicator, Touchable, RefreshControl, SafeAreaView, Text, Animated, useWindowDimensions, Easing } from 'react-native';
-import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import {useTheme, useIsFocused} from "@react-navigation/native"
 
@@ -1147,7 +1147,7 @@ const Welcome = ({navigation, route}) => {
     }
 
     const ImageItem = ({imageKey, imageB64, imageTitle, imageDescription, imageUpVotes, imageComments, creatorName, creatorDisplayName, creatorPfpB64, datePosted, postNum})  => (
-        <View style={{backgroundColor: dark ? colors.slightlyLighterPrimary : colors.borderColor, borderRadius: 15, marginBottom: 10, height: 'auto'}}>
+        <View style={{backgroundColor: dark ? colors.slightlyLighterPrimary : colors.borderColor, borderRadius: 15, marginBottom: 10}}>
             {postsWithDeleteMenuOpen == imageKey && (
                 <View style={{position: 'absolute', zIndex: 100, alignSelf: 'center', alignItems: 'center', width: '100%', height: '100%', justifyContent: 'center'}}>
                     <View style={{borderRadius: 30, width: '80%', minHeight: '35%', alignSelf: 'center', alignItems: 'center', justifyContent: 'center', backgroundColor: colors.primary, borderColor: colors.darkest, borderWidth: 6}}>
@@ -1439,7 +1439,7 @@ const Welcome = ({navigation, route}) => {
             {pollComments && (
                 <SubTitle style={{flex: 1, alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{pollComments.length} comments</SubTitle>
             )}
-        </PollPostFrame>
+            </PollPostFrame>
     );
 
     const CategoryItem = ({categoryTitle, categoryDescription, members, categoryTags, image, NSFW, NSFL, datePosted}) => (
@@ -1494,160 +1494,159 @@ const Welcome = ({navigation, route}) => {
     );
 
     const ThreadItems = ({postNum, threadId, threadComments, threadType, threadUpVotes, threadTitle, threadSubtitle, threadTags, threadCategory, threadBody, threadImageKey, threadImageDescription, threadNSFW, threadNSFL, datePosted, threadUpVoted, threadDownVoted, creatorDisplayName, creatorName, creatorImageB64, imageInThreadB64})  => (
-        <>
-            <View style={{backgroundColor: dark ? slightlyLighterPrimary : colors.borderColor, borderRadius: 15, marginBottom: 10, height: 'auto', zIndex: 2}} onPress={() => navigation.navigate("ThreadViewPage", {threadId: threadId})}>
-                    {postsWithDeleteMenuOpen == threadId && (
-                        <View style={{position: 'absolute', zIndex: 100, alignSelf: 'center', alignItems: 'center', width: '100%', height: '100%', justifyContent: 'center'}}>
-                            <View style={{borderRadius: 30, width: '80%', minHeight: '35%', alignSelf: 'center', alignItems: 'center', justifyContent: 'center', backgroundColor: colors.primary, borderColor: darkest, borderWidth: 6}}>
-                                <SubTitle style={{marginBottom: 0, color: colors.tertiary}}>Delete Post?</SubTitle>
-                                <ConfirmLogoutButtons cancelButton={true} onPress={()=>{setPostsWithDeleteMenuOpen(null)}}>
-                                    <ConfirmLogoutButtonText cancelButton={true}>Cancel</ConfirmLogoutButtonText>
-                                </ConfirmLogoutButtons> 
-                                <ConfirmLogoutButtons confirmButton={true} onPress={()=>{confirmDeletePrompt(threadId, postNum)}}>
-                                    <ConfirmLogoutButtonText confirmButton>Confirm</ConfirmLogoutButtonText>
-                                </ConfirmLogoutButtons> 
-                            </View>
+        <View style={{backgroundColor: dark ? slightlyLighterPrimary : colors.borderColor, borderRadius: 15, marginBottom: 10}} onPress={() => navigation.navigate("ThreadViewPage", {threadId: threadId})}>
+                {postsWithDeleteMenuOpen == threadId && (
+                    <View style={{position: 'absolute', zIndex: 100, alignSelf: 'center', alignItems: 'center', width: '100%', height: '100%', justifyContent: 'center'}}>
+                        <View style={{borderRadius: 30, width: '80%', minHeight: '35%', alignSelf: 'center', alignItems: 'center', justifyContent: 'center', backgroundColor: colors.primary, borderColor: darkest, borderWidth: 6}}>
+                            <SubTitle style={{marginBottom: 0, color: colors.tertiary}}>Delete Post?</SubTitle>
+                            <ConfirmLogoutButtons cancelButton={true} onPress={()=>{setPostsWithDeleteMenuOpen(null)}}>
+                                <ConfirmLogoutButtonText cancelButton={true}>Cancel</ConfirmLogoutButtonText>
+                            </ConfirmLogoutButtons> 
+                            <ConfirmLogoutButtons confirmButton={true} onPress={()=>{confirmDeletePrompt(threadId, postNum)}}>
+                                <ConfirmLogoutButtonText confirmButton>Confirm</ConfirmLogoutButtonText>
+                            </ConfirmLogoutButtons> 
                         </View>
-                    )}
-                    {threadNSFW === true && (
-                        <SubTitle style={{fontSize: 10, color: red, marginBottom: 0}}>(NSFW)</SubTitle>
-                    )}
-                    {threadNSFL === true && (
-                        <SubTitle style={{fontSize: 10, color: red, marginBottom: 0}}>(NSFL)</SubTitle>
-                    )}
-                    <View style={{paddingHorizontal: '50%'}}></View>
-                    <PostsHorizontalView style={{marginLeft: '5%', borderColor: darkLight, width: '90%', paddingBottom: 5, marginRight: '5%'}}>
-                        <TouchableOpacity style={{width: '100%', height: 60}}>
-                            <PostsHorizontalView>
-                                {creatorImageB64 !== null && (
-                                    <PostsVerticalView>
-                                        {creatorImageB64 !== null && (
-                                            <PostCreatorIcon source={{uri: `data:image/jpg;base64,${creatorImageB64}`}}/>
-                                        )}
-                                    </PostsVerticalView>
-                                )}
-                                {creatorImageB64 == null && (
-                                    <PostsVerticalView>
-                                        <PostCreatorIcon source={{uri: SocialSquareLogo_B64_png}}/>
-                                    </PostsVerticalView>
-                                )}
-                                <PostsVerticalView style={{marginTop: 9}}>
-                                    <SubTitle style={{fontSize: 20, marginBottom: 0, color: colors.tertiary}}>{creatorDisplayName}</SubTitle>
-                                    <SubTitle style={{fontSize: 12, color: brand, marginBottom: 0}}>@{creatorName}</SubTitle>
+                    </View>
+                )}
+                {threadNSFW === true && (
+                    <SubTitle style={{fontSize: 10, color: red, marginBottom: 0}}>(NSFW)</SubTitle>
+                )}
+                {threadNSFL === true && (
+                    <SubTitle style={{fontSize: 10, color: red, marginBottom: 0}}>(NSFL)</SubTitle>
+                )}
+                <View style={{paddingHorizontal: '50%'}}>
+                </View>
+                <PostsHorizontalView style={{marginLeft: '5%', borderColor: darkLight, width: '90%', paddingBottom: 5, marginRight: '5%'}}>
+                    <TouchableOpacity style={{width: '100%', height: 60}}>
+                        <PostsHorizontalView>
+                            {creatorImageB64 !== null && (
+                                <PostsVerticalView>
+                                    {creatorImageB64 !== null && (
+                                        <PostCreatorIcon source={{uri: `data:image/jpg;base64,${creatorImageB64}`}}/>
+                                    )}
                                 </PostsVerticalView>
-                            </PostsHorizontalView>
+                            )}
+                            {creatorImageB64 == null && (
+                                <PostsVerticalView>
+                                    <PostCreatorIcon source={{uri: SocialSquareLogo_B64_png}}/>
+                                </PostsVerticalView>
+                            )}
+                            <PostsVerticalView style={{marginTop: 9}}>
+                                <SubTitle style={{fontSize: 20, marginBottom: 0, color: colors.tertiary}}>{creatorDisplayName}</SubTitle>
+                                <SubTitle style={{fontSize: 12, color: brand, marginBottom: 0}}>@{creatorName}</SubTitle>
+                            </PostsVerticalView>
+                        </PostsHorizontalView>
+                    </TouchableOpacity>
+                </PostsHorizontalView>
+                <TouchableOpacity onPress={() => navigation.navigate("ThreadViewPage", {threadId: threadId})}>
+                    <ImagePostTextFrame style={{textAlign: 'left', alignItems: 'baseline'}}>
+                        <TouchableOpacity>
+                            <SubTitle style={{fontSize: 10, color: brand, marginBottom: 0}}>Category: {threadCategory}</SubTitle>
                         </TouchableOpacity>
-                    </PostsHorizontalView>
-                    <TouchableOpacity onPress={() => navigation.navigate("ThreadViewPage", {threadId: threadId})}>
-                        <ImagePostTextFrame style={{textAlign: 'left', alignItems: 'baseline'}}>
+                        <SubTitle style={{fontSize: 20, marginBottom: 0, color: colors.tertiary}}>{threadTitle}</SubTitle>
+                        {threadSubtitle !== "" && (
+                            <SubTitle style={{fontSize: 18, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{threadSubtitle}</SubTitle>
+                        )}
+                        {threadTags !== "" && (
                             <TouchableOpacity>
-                                <SubTitle style={{fontSize: 10, color: brand, marginBottom: 0}}>Category: {threadCategory}</SubTitle>
+                                <SubTitle style={{fontSize: 10, color: brand, marginBottom: 10}}>{threadTags}</SubTitle>
                             </TouchableOpacity>
-                            <SubTitle style={{fontSize: 20, marginBottom: 0, color: colors.tertiary}}>{threadTitle}</SubTitle>
-                            {threadSubtitle !== "" && (
-                                <SubTitle style={{fontSize: 18, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{threadSubtitle}</SubTitle>
-                            )}
-                            {threadTags !== "" && (
-                                <TouchableOpacity>
-                                    <SubTitle style={{fontSize: 10, color: brand, marginBottom: 10}}>{threadTags}</SubTitle>
-                                </TouchableOpacity>
-                            )}
-                            {threadType == "Text" && (
-                                <SubTitle style={{fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{threadBody}</SubTitle>
-                            )}
-                            <View style={{textAlign: 'left', alignItems: 'baseline', marginLeft: '5%', marginRight: '5%', width: '90%'}}>
-                                {threadType == "Images" && (
-                                    <View>
-                                        <View style={{height: 200, width: 200}}>
-                                            <Image style={{height: '100%', width: 'auto', resizeMode: 'contain'}} source={{uri: `data:image/jpg;base64,${imageInThreadB64}`}}/>
-                                        </View>
-                                        <SubTitle style={{fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{threadImageDescription}</SubTitle>
+                        )}
+                        {threadType == "Text" && (
+                            <SubTitle style={{fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{threadBody}</SubTitle>
+                        )}
+                        <View style={{textAlign: 'left', alignItems: 'baseline', marginLeft: '5%', marginRight: '5%', width: '90%'}}>
+                            {threadType == "Images" && (
+                                <View>
+                                    <View style={{height: 200, width: 200}}>
+                                        <Image style={{height: '100%', width: 'auto', resizeMode: 'contain'}} source={{uri: `data:image/jpg;base64,${imageInThreadB64}`}}/>
                                     </View>
-                                )}
-                            </View>
-                        </ImagePostTextFrame>
-                    </TouchableOpacity>
+                                    <SubTitle style={{fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{threadImageDescription}</SubTitle>
+                                </View>
+                            )}
+                        </View>
+                    </ImagePostTextFrame>
+                </TouchableOpacity>
+                
+                <PostHorizontalView style={{marginLeft: '5%', width: '90%', paddingVertical: 10, flex: 1, flexDirection: 'row'}}>
                     
-                    <PostHorizontalView style={{marginLeft: '5%', width: '90%', paddingVertical: 10, flex: 1, flexDirection: 'row'}}>
-                        
-                        {upVotesThreads.includes(threadId) && (<PostsIconFrame onPress={() => {UpVoteThread(threadId, postNum)}}>
-                            <PostsIcons style={{flex: 1}} tintColor={brand} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
-                        </PostsIconFrame>)}
-                        {neitherVotesThreads.includes(threadId) && (<PostsIconFrame onPress={() => {UpVoteThread(threadId, postNum)}}>
-                            <PostsIcons style={{flex: 1}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
-                        </PostsIconFrame>)}
-                        {downVotesThreads.includes(threadId) && (<PostsIconFrame onPress={() => {UpVoteThread(threadId, postNum)}}>
-                            <PostsIcons style={{flex: 1}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
-                        </PostsIconFrame>)}
-                        {changingVotedThreads.includes(threadId) && (<PostsIconFrame></PostsIconFrame>)}
-                        
+                    {upVotesThreads.includes(threadId) && (<PostsIconFrame onPress={() => {UpVoteThread(threadId, postNum)}}>
+                        <PostsIcons style={{flex: 1}} tintColor={brand} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
+                    </PostsIconFrame>)}
+                    {neitherVotesThreads.includes(threadId) && (<PostsIconFrame onPress={() => {UpVoteThread(threadId, postNum)}}>
+                        <PostsIcons style={{flex: 1}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
+                    </PostsIconFrame>)}
+                    {downVotesThreads.includes(threadId) && (<PostsIconFrame onPress={() => {UpVoteThread(threadId, postNum)}}>
+                        <PostsIcons style={{flex: 1}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
+                    </PostsIconFrame>)}
+                    {changingVotedThreads.includes(threadId) && (<PostsIconFrame></PostsIconFrame>)}
+                    
 
-                        {upVotesThreads.includes(threadId) && (<PostsIconFrame>
-                            {initialUpVotesThreads.includes(threadId) && (
-                                <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{threadUpVotes}</SubTitle>
-                            )}
-                            {initialNeitherVotesThreads.includes(threadId) && (
-                                <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{threadUpVotes+1}</SubTitle>
-                            )}
-                            {initialDownVotesThreads.includes(threadId) && (
-                                <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{threadUpVotes+2}</SubTitle>
-                            )}
-                        </PostsIconFrame>)}
-                        {neitherVotesThreads.includes(threadId) && (<PostsIconFrame>
-                            {initialNeitherVotesThreads.includes(threadId) && (
-                                <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{threadUpVotes}</SubTitle>
-                            )}
-                            {initialUpVotesThreads.includes(threadId) && (
-                                <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{threadUpVotes-1}</SubTitle>
-                            )}
-                            {initialDownVotesThreads.includes(threadId) && (
-                                <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{threadUpVotes+1}</SubTitle>
-                            )}
-                        </PostsIconFrame>)}
-                        {downVotesThreads.includes(threadId) && (<PostsIconFrame>
-                            {initialDownVotesThreads.includes(threadId) && (
-                                <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{threadUpVotes}</SubTitle>
-                            )}
-                            {initialNeitherVotesThreads.includes(threadId) && (
-                                <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{threadUpVotes-1}</SubTitle>
-                            )}
-                            {initialUpVotesThreads.includes(threadId)&& (
-                                <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{threadUpVotes-2}</SubTitle>
-                            )}
-                        </PostsIconFrame>)}
-                        {changingVotedThreads.includes(threadId) && (<PostsIconFrame>
-                            <ActivityIndicator size="small" color={brand} />                
-                        </PostsIconFrame>)}
+                    {upVotesThreads.includes(threadId) && (<PostsIconFrame>
+                        {initialUpVotesThreads.includes(threadId) && (
+                            <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{threadUpVotes}</SubTitle>
+                        )}
+                        {initialNeitherVotesThreads.includes(threadId) && (
+                            <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{threadUpVotes+1}</SubTitle>
+                        )}
+                        {initialDownVotesThreads.includes(threadId) && (
+                            <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{threadUpVotes+2}</SubTitle>
+                        )}
+                    </PostsIconFrame>)}
+                    {neitherVotesThreads.includes(threadId) && (<PostsIconFrame>
+                        {initialNeitherVotesThreads.includes(threadId) && (
+                            <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{threadUpVotes}</SubTitle>
+                        )}
+                        {initialUpVotesThreads.includes(threadId) && (
+                            <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{threadUpVotes-1}</SubTitle>
+                        )}
+                        {initialDownVotesThreads.includes(threadId) && (
+                            <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{threadUpVotes+1}</SubTitle>
+                        )}
+                    </PostsIconFrame>)}
+                    {downVotesThreads.includes(threadId) && (<PostsIconFrame>
+                        {initialDownVotesThreads.includes(threadId) && (
+                            <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{threadUpVotes}</SubTitle>
+                        )}
+                        {initialNeitherVotesThreads.includes(threadId) && (
+                            <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{threadUpVotes-1}</SubTitle>
+                        )}
+                        {initialUpVotesThreads.includes(threadId)&& (
+                            <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{threadUpVotes-2}</SubTitle>
+                        )}
+                    </PostsIconFrame>)}
+                    {changingVotedThreads.includes(threadId) && (<PostsIconFrame>
+                        <ActivityIndicator size="small" color={brand} />                
+                    </PostsIconFrame>)}
 
-                        {downVotesThreads.includes(threadId) && (<PostsIconFrame onPress={() => {DownVoteThread(threadId, postNum)}}>
-                            <PostsIcons style={{flex: 1}} tintColor={brand} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
-                        </PostsIconFrame>)}
-                        {neitherVotesThreads.includes(threadId) && (<PostsIconFrame onPress={() => {DownVoteThread(threadId, postNum)}}>
-                            <PostsIcons style={{flex: 1}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
-                        </PostsIconFrame>)}
-                        {upVotesThreads.includes(threadId) && (<PostsIconFrame onPress={() => {DownVoteThread(threadId, postNum)}}>
-                            <PostsIcons style={{flex: 1}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
-                        </PostsIconFrame>)}
-                        {changingVotedThreads.includes(threadId) && (<PostsIconFrame></PostsIconFrame>)}
-                        <PostsIconFrame>
-                        </PostsIconFrame>
-                        <PostsIconFrame onPress={() => navigation.navigate("ThreadViewPage", {threadId: threadId})}>
-                            <PostsIcons style={{flex: 1}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/113-bubbles4.png')}/>
-                        </PostsIconFrame>
-                        <PostsIconFrame>
-                            <PostsIcons style={{flex: 1, height: 30, width: 30}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/387-share2.png')}/>
-                        </PostsIconFrame>
-                        <PostsIconFrame onPress={()=>{openDeletePrompt(threadId, creatorName)}}>
-                            <PostsIcons style={{flex: 1}} source={require('./../assets/img/ThreeDots.png')}/>
-                        </PostsIconFrame>
-                    </PostHorizontalView>
-                    {postNumForMsg == postNum && (<MsgBox type={messageType}>{message}</MsgBox>)}
-                    <SubTitle style={{flex: 1, alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{datePosted}</SubTitle>
-                    <TouchableOpacity onPress={() => navigation.navigate("ThreadViewPage", {threadId: threadId})}>
-                        <SubTitle style={{flex: 1, alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{threadComments} comments</SubTitle>
-                    </TouchableOpacity>
-            </View>
-        </>
+                    {downVotesThreads.includes(threadId) && (<PostsIconFrame onPress={() => {DownVoteThread(threadId, postNum)}}>
+                        <PostsIcons style={{flex: 1}} tintColor={brand} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
+                    </PostsIconFrame>)}
+                    {neitherVotesThreads.includes(threadId) && (<PostsIconFrame onPress={() => {DownVoteThread(threadId, postNum)}}>
+                        <PostsIcons style={{flex: 1}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
+                    </PostsIconFrame>)}
+                    {upVotesThreads.includes(threadId) && (<PostsIconFrame onPress={() => {DownVoteThread(threadId, postNum)}}>
+                        <PostsIcons style={{flex: 1}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
+                    </PostsIconFrame>)}
+                    {changingVotedThreads.includes(threadId) && (<PostsIconFrame></PostsIconFrame>)}
+                    <PostsIconFrame>
+                    </PostsIconFrame>
+                    <PostsIconFrame onPress={() => navigation.navigate("ThreadViewPage", {threadId: threadId})}>
+                        <PostsIcons style={{flex: 1}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/113-bubbles4.png')}/>
+                    </PostsIconFrame>
+                    <PostsIconFrame>
+                        <PostsIcons style={{flex: 1, height: 30, width: 30}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/387-share2.png')}/>
+                    </PostsIconFrame>
+                    <PostsIconFrame onPress={()=>{openDeletePrompt(threadId, creatorName)}}>
+                        <PostsIcons style={{flex: 1}} source={require('./../assets/img/ThreeDots.png')}/>
+                    </PostsIconFrame>
+                </PostHorizontalView>
+                {postNumForMsg == postNum && (<MsgBox type={messageType}>{message}</MsgBox>)}
+                <SubTitle style={{flex: 1, alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{datePosted}</SubTitle>
+                <TouchableOpacity onPress={() => navigation.navigate("ThreadViewPage", {threadId: threadId})}>
+                    <SubTitle style={{flex: 1, alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{threadComments} comments</SubTitle>
+                </TouchableOpacity>
+        </View>
     );
 
     //main
@@ -2613,6 +2612,7 @@ const Welcome = ({navigation, route}) => {
     const ActionMenuOptions = [
         'Camera',
         'Photo Library',
+        'Reset Icon',
         'Cancel'
     ]
 
@@ -2639,9 +2639,9 @@ const Welcome = ({navigation, route}) => {
                 // Define cancel button index in the option array
                 // This will take the cancel option in bottom
                 // and will highlight it
-                cancelButtonIndex={2}
+                cancelButtonIndex={3}
                 // Highlight any specific option
-                //destructiveButtonIndex={2}
+                destructiveButtonIndex={2}
                 onPress={(index) => {
                     if (index == 0) {
                         console.log('Opening camera...')
@@ -2650,6 +2650,8 @@ const Welcome = ({navigation, route}) => {
                         console.log('Opening image library')
                         OpenImgLibrary()
                     } else if (index == 2) {
+                        console.log('Resetting icon')
+                    } else if (index == 3) {
                         console.log('Cancelling picker menu')
                     }
                 }}
@@ -2695,59 +2697,169 @@ const Welcome = ({navigation, route}) => {
                     <View style={{backgroundColor: colors.borderColor, height: 3, width: '100%', position: 'absolute', bottom: 0}}/>
                 </ProfilePostsSelectionView>
             </Animated.View>
-            <FlatList
+            <ScrollView
+                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
                 onScroll={handleScroll}
                 scrollEventThrottle={1}
                 nestedScrollEnabled={true}
-                data={[{key: 1}]}
-                ListHeaderComponent={<ScreenHeader backButtonHidden={backButtonHidden} navigation={navigation} PageElementsState={PageElementsState} goToSettingsScreen={goToSettingsScreen} loadingPfp={loadingPfp} profilePictureUri={profilePictureUri} changingPfp={changingPfp} PfpPickerActionMenu={PfpPickerActionMenu} displayName={displayName} name={name} followers={followers} following={following} GridOrTagLineTranslateX={GridOrTagLineTranslateX} changeToOne={changeToOne} changeToTwo={changeToTwo} changeToThree={changeToThree} changeToFour={changeToFour} changeToFive={changeToFive} changeToGrid={changeToGrid} changeToFeatured={changeToFeatured}/>}
-                renderItem={(item) =>
-                    <>
-                        <ProfileGridPosts display={gridViewState}>
-                            {selectedPostFormat == "One" && (<SectionList
-                                sections={changeSectionsOne}
-                                keyExtractor={(item, index) => item + index}
-                                renderItem={({ item }) => <ImageItem imageKey={item.imageKey} imageB64={item.imageB64} imageTitle={item.imageTitle} imageDescription={item.imageDescription} imageUpVotes={item.imageUpVotes} imageComments={item.imageComments} creatorName={item.creatorName} creatorDisplayName={item.creatorDisplayName} creatorPfpB64={item.creatorPfpB64} datePosted={item.datePosted} postNum={item.postNum}/>}
-                                ListFooterComponent={<PostLoadingSpinners selectedPostFormat={selectedPostFormat} loadingPostsImage={loadingPostsImage} loadingPostsVideo={loadingPostsVideo} loadingPostsPoll={loadingPostsPoll} loadingPostsThread={loadingPostsThread} loadingPostsCategory={loadingPostsCategory}/>}
-                                ListHeaderComponent={<PostMessages selectedPostFormat={selectedPostFormat} formatOneText={formatOneText} formatTwoText={formatTwoText} formatThreeText={formatThreeText} formatFourText={formatFourText} formatFiveText={formatFiveText} colors={colors}/>}
-                            />)}
-                            {selectedPostFormat == "Two" && (<SectionList
-                                sections={changeSectionsTwo}
-                                keyExtractor={(item, index) => item + index}
-                                renderItem={({ item }) => <PollItem pollTitle={item.pollTitle} pollSubTitle={item.pollSubTitle} optionOne={item.optionOne} optionOnesColor={item.optionOnesColor} optionOnesVotes={item.optionOnesVotes} optionOnesBarLength={item.optionOnesBarLength} optionTwo={item.optionTwo} optionTwosColor={item.optionTwosColor} optionTwosVotes={item.optionTwosVotes} optionTwosBarLength={item.optionTwosBarLength} optionThree={item.optionThree} optionThreesColor={item.optionThreesColor} optionThreesVotes={item.optionThreesVotes} optionThreesBarLength={item.optionThreesBarLength} optionFour={item.optionFour} optionFoursColor={item.optionFoursColor} optionFoursVotes={item.optionFoursVotes} optionFoursBarLength={item.optionFoursBarLength} optionFive={item.optionFive} optionFivesColor={item.optionFivesColor} optionFivesVotes={item.optionFivesVotes} optionFivesBarLength={item.optionFivesBarLength} optionSix={item.optionSix} optionSixesColor={item.optionSixesColor} optionSixesVotes={item.optionSixesVotes} optionSixesBarLength={item.optionSixesBarLength} totalNumberOfOptions={item.totalNumberOfOptions} pollUpOrDownVotes={item.pollUpOrDownVotes} pollId={item.pollId} votedFor={item.votedFor} pollLiked={item.pollLiked} pfpB64={item.pfpB64} creatorName={item.creatorName} creatorDisplayName={item.creatorDisplayName}/>}
-                                ListFooterComponent={<PostLoadingSpinners selectedPostFormat={selectedPostFormat} loadingPostsImage={loadingPostsImage} loadingPostsVideo={loadingPostsVideo} loadingPostsPoll={loadingPostsPoll} loadingPostsThread={loadingPostsThread} loadingPostsCategory={loadingPostsCategory}/>}
-                                ListHeaderComponent={<PostMessages selectedPostFormat={selectedPostFormat} formatOneText={formatOneText} formatTwoText={formatTwoText} formatThreeText={formatThreeText} formatFourText={formatFourText} formatFiveText={formatFiveText} colors={colors}/>}
-                            />)}
-                            {selectedPostFormat == "Three" && (<SectionList
-                                sections={changeSectionsThree}
-                                keyExtractor={(item, index) => item + index}
-                                renderItem={({ item }) => <PollItem pollTitle={item.pollTitle} pollSubTitle={item.pollSubTitle} optionOne={item.optionOne} optionOnesColor={item.optionOnesColor} optionOnesVotes={item.optionOnesVotes} optionOnesBarLength={item.optionOnesBarLength} optionTwo={item.optionTwo} optionTwosColor={item.optionTwosColor} optionTwosVotes={item.optionTwosVotes} optionTwosBarLength={item.optionTwosBarLength} optionThree={item.optionThree} optionThreesColor={item.optionThreesColor} optionThreesVotes={item.optionThreesVotes} optionThreesBarLength={item.optionThreesBarLength} optionFour={item.optionFour} optionFoursColor={item.optionFoursColor} optionFoursVotes={item.optionFoursVotes} optionFoursBarLength={item.optionFoursBarLength} optionFive={item.optionFive} optionFivesColor={item.optionFivesColor} optionFivesVotes={item.optionFivesVotes} optionFivesBarLength={item.optionFivesBarLength} optionSix={item.optionSix} optionSixesColor={item.optionSixesColor} optionSixesVotes={item.optionSixesVotes} optionSixesBarLength={item.optionSixesBarLength} totalNumberOfOptions={item.totalNumberOfOptions} pollUpOrDownVotes={item.pollUpOrDownVotes} pollId={item.pollId} votedFor={item.votedFor} pfpB64={item.pfpB64} creatorName={item.creatorName} creatorDisplayName={item.creatorDisplayName} postNum={item.postNum} datePosted={item.datePosted} pollComments={item.pollComments}/>}
-                                ListFooterComponent={<PostLoadingSpinners selectedPostFormat={selectedPostFormat} loadingPostsImage={loadingPostsImage} loadingPostsVideo={loadingPostsVideo} loadingPostsPoll={loadingPostsPoll} loadingPostsThread={loadingPostsThread} loadingPostsCategory={loadingPostsCategory}/>}
-                                ListHeaderComponent={<PostMessages selectedPostFormat={selectedPostFormat} formatOneText={formatOneText} formatTwoText={formatTwoText} formatThreeText={formatThreeText} formatFourText={formatFourText} formatFiveText={formatFiveText} colors={colors}/>}
-                            />)}
-                            {selectedPostFormat == "Four" && (<SectionList
-                                sections={changeSectionsFour}
-                                keyExtractor={(item, index) => item + index}
-                                renderItem={({ item }) => <ThreadItems postNum={item.postNum} threadId={item.threadId} threadComments={item.threadComments} threadType={item.threadType} threadUpVotes={item.threadUpVotes} threadTitle={item.threadTitle} threadSubtitle={item.threadSubtitle} threadTags={item.threadTags} threadCategory={item.threadCategory} threadBody={item.threadBody} threadImageKey={item.threadImageKey} threadImageDescription={item.threadImageDescription} threadNSFW={item.threadNSFW} threadNSFL={item.threadNSFL} datePosted={item.datePosted} threadUpVoted={item.threadUpVoted} threadDownVoted={item.threadDownVoted} creatorDisplayName={item.creatorDisplayName} creatorName={item.creatorName} creatorImageB64={item.creatorImageB64} imageInThreadB64={item.imageInThreadB64}/>}
-                                ListFooterComponent={<PostLoadingSpinners selectedPostFormat={selectedPostFormat} loadingPostsImage={loadingPostsImage} loadingPostsVideo={loadingPostsVideo} loadingPostsPoll={loadingPostsPoll} loadingPostsThread={loadingPostsThread} loadingPostsCategory={loadingPostsCategory}/>}
-                                ListHeaderComponent={<PostMessages selectedPostFormat={selectedPostFormat} formatOneText={formatOneText} formatTwoText={formatTwoText} formatThreeText={formatThreeText} formatFourText={formatFourText} formatFiveText={formatFiveText} colors={colors}/>}
-                            />)}
-                            {selectedPostFormat == "Five" && (<SectionList
-                                sections={changeSectionsFive}
-                                keyExtractor={(item, index) => item + index}
-                                renderItem={({ item }) => <CategoryItem categoryTitle={item.categoryTitle} categoryDescription={item.categoryDescription} members={item.members} categoryTags={item.categoryTags} image={item.image} NSFW={item.NSFW} NSFL={item.NSFL} datePosted={item.datePosted}/>}
-                                ListFooterComponent={<PostLoadingSpinners selectedPostFormat={selectedPostFormat} loadingPostsImage={loadingPostsImage} loadingPostsVideo={loadingPostsVideo} loadingPostsPoll={loadingPostsPoll} loadingPostsThread={loadingPostsThread} loadingPostsCategory={loadingPostsCategory}/>}
-                                ListHeaderComponent={<PostMessages selectedPostFormat={selectedPostFormat} formatOneText={formatOneText} formatTwoText={formatTwoText} formatThreeText={formatThreeText} formatFourText={formatFourText} formatFiveText={formatFiveText} colors={colors}/>}
-                            />)}
-                        </ProfileGridPosts>
-                        <ProfileFeaturedPosts display={featuredViewState}>
-                            <SubTitle style={{color: colors.tertiary}} profNoPosts={true}>
-                                Features don't work yet...
-                            </SubTitle>
-                        </ProfileFeaturedPosts>
-                    </>
-                }
-            />
+            >
+                <WelcomeContainer style={{backgroundColor: colors.primary}}>
+                    <ProfileHorizontalView topItems={true}>
+                        <ViewHider viewHidden={backButtonHidden}>
+                            <TouchableOpacity style={{marginRight: '65%'}} disabled={PageElementsState} onPress={() => {navigation.goBack()}}>
+                                <Image
+                                    source={require('../assets/app_icons/back_arrow.png')}
+                                    style={{ width: 40, height: 40, tintColor: colors.tertiary}}
+                                    resizeMode="contain"
+                                    resizeMethod="resize"
+                                />
+                            </TouchableOpacity>
+                        </ViewHider>
+                        <ViewHider viewHidden={!backButtonHidden}>
+                            <View style={{minWidth: 40, marginRight: '65%'}}/>
+                        </ViewHider>
+                        <TouchableOpacity disabled={PageElementsState} onPress={goToSettingsScreen}>
+                            <Image
+                                source={require('../assets/app_icons/settings.png')}
+                                style={{ width: 40, height: 40, tintColor: colors.tertiary}}
+                                resizeMode="contain"
+                                resizeMethod="resize"
+                            />
+                        </TouchableOpacity>
+                    </ProfileHorizontalView>
+                    <ProfInfoAreaImage>
+                        {loadingPfp == false && (
+                            <View style={{alignSelf: 'center', alignContent: 'center'}}>
+                                <Avatar resizeMode="cover" source={{uri: profilePictureUri}}/>
+                                {changingPfp == false && (
+                                    <TouchableOpacity onPress={() => {PfpPickerActionMenu.current.show();}}>
+                                        <SubTitle style={{marginBottom: 0, color: darkestBlue, textAlign: 'center'}}>Change</SubTitle>
+                                    </TouchableOpacity>
+                                )}
+                                {changingPfp == true && (
+                                    <ActivityIndicator size="large" color={brand} style={{marginBottom: 20}} />  
+                                )}
+                            </View>
+                        )}
+                        {loadingPfp == true && (
+                            <View style={{alignSelf: 'center', alignContent: 'center'}}>
+                                <ActivityIndicator size={10} color={brand} style={{marginBottom: 20, padding: 40, borderColor: darkestBlue, borderWidth: 3, borderRadius: 150}} />  
+                                <SubTitle style={{marginBottom: 0, color: darkestBlue, textAlign: 'center'}}></SubTitle>
+                            </View>
+                        )}
+                        <PageTitle welcome={true}>{displayName || name || "Couldn't get name"}</PageTitle>
+                        <SubTitle style={{color: colors.tertiary}}>{"@"+name}</SubTitle>
+                        <ProfileBadgesView onPress={() => navigation.navigate("AccountBadges")}>
+                            <ProfileBadgeIcons source={require('./../assets/img/TempProfIcons.jpg')}/>
+                            <ProfileBadgeIcons source={require('./../assets/img/BgImage1.png')}/>
+                            <ProfileBadgeIcons source={require('./../assets/img/TempProfIcons.jpg')}/>
+                            <ProfileBadgeIcons source={require('./../assets/img/Toga.jpg')}/>
+                            <ProfileBadgeIcons source={require('./../assets/img/TempProfIcons.jpg')}/>
+                        </ProfileBadgesView>
+                        <SubTitle style={{color: colors.tertiary}} bioText={true} > Bio </SubTitle>
+                    </ProfInfoAreaImage>
+                    <ProfileHorizontalView>
+                        <ProfileHorizontalViewItem profLeftIcon={true}>
+                            <TouchableOpacity onPress={() => {navigation.navigate('ProfileStats', {name: name, followers: followers, type: 'Followers'})}} style={{alignItems: 'center'}}>
+                                <SubTitle style={{color: colors.tertiary}} welcome={true}> Followers </SubTitle>
+                                <ProfIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/114-user.png')}/>
+                                <SubTitle style={{color: colors.tertiary}} welcome={true}> 0 </SubTitle>
+                            </TouchableOpacity>
+                        </ProfileHorizontalViewItem>
+                        <ProfileHorizontalViewItem profCenterIcon={true}>
+                            <TouchableOpacity onPress={() => {navigation.navigate('ProfileStats', {name: name, followers: following, type: 'Following'})}} style={{alignItems: 'center'}}>
+                                <SubTitle style={{color: colors.tertiary}} welcome={true}> Following </SubTitle>
+                                <ProfIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/115-users.png')}/>
+                                <SubTitle style={{color: colors.tertiary}} welcome={true}> 0 </SubTitle>
+                            </TouchableOpacity>
+                        </ProfileHorizontalViewItem>
+                        <ProfileHorizontalViewItem profRightIcon={true}>
+                            <SubTitle style={{color: colors.tertiary}} welcome={true}> Likes </SubTitle>
+                            <ProfIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/219-heart.png')}/>
+                            <SubTitle style={{color: colors.tertiary}} welcome={true}> 0 </SubTitle>
+                        </ProfileHorizontalViewItem>
+                    </ProfileHorizontalView>
+                    <ProfilePostsSelectionView style={{position: 'relative', borderBottomWidth: 0}}>
+                        <ProfilePostsSelectionBtns onPress={changeToGrid}>
+                            <Icon name="grid" color={colors.tertiary} size={45}/>
+                        </ProfilePostsSelectionBtns>
+                        <ProfilePostsSelectionBtns onPress={changeToFeatured}>
+                            <FontAwesomeFive name="user-tag" color={colors.tertiary} size={45}/>
+                        </ProfilePostsSelectionBtns>
+                        <Animated.View style={{backgroundColor: colors.tertiary, height: 3, width: '50%', position: 'absolute', bottom: 0, transform: [{translateX: GridOrTagLineTranslateX}], zIndex: 2}}/>
+                        <View style={{backgroundColor: colors.borderColor, height: 3, width: '100%', position: 'absolute', bottom: 0}}/>
+                    </ProfilePostsSelectionView>
+                    <ProfileSelectMediaTypeHorizontalView>
+                        <ProfileSelectMediaTypeItem onPress={changeToOne}>
+                            <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor, borderColor: colors.borderColor}}>
+                                <ProfileSelectMediaTypeIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/015-images.png')}/>
+                            </ProfileSelectMediaTypeIconsBorder>
+                        </ProfileSelectMediaTypeItem>
+                        <ProfileSelectMediaTypeItem onPress={changeToTwo}>
+                            <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor, borderColor: colors.borderColor}}>
+                                <ProfileSelectMediaTypeIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/020-film.png')}/>
+                            </ProfileSelectMediaTypeIconsBorder>                        
+                        </ProfileSelectMediaTypeItem>
+                        <ProfileSelectMediaTypeItem onPress={changeToThree}>
+                            <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor, borderColor: colors.borderColor}}>     
+                                <ProfileSelectMediaTypeIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/157-stats-bars.png')}/>
+                            </ProfileSelectMediaTypeIconsBorder>     
+                        </ProfileSelectMediaTypeItem>
+                        <ProfileSelectMediaTypeItem onPress={changeToFour}>
+                            <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor, borderColor: colors.borderColor}}>     
+                                <ProfileSelectMediaTypeIcons style={{height: '80%', width: '80%', tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/007-pencil2.png')}/>
+                            </ProfileSelectMediaTypeIconsBorder>     
+                        </ProfileSelectMediaTypeItem>
+                        <ProfileSelectMediaTypeItem onPress={changeToFive}>
+                            <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor, borderColor: colors.borderColor}}>     
+                                <ProfileSelectMediaTypeIcons style={{height: '80%', width: '80%', tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/093-drawer.png')}/>
+                            </ProfileSelectMediaTypeIconsBorder>     
+                        </ProfileSelectMediaTypeItem>
+                    </ProfileSelectMediaTypeHorizontalView>
+                    <ProfileGridPosts display={gridViewState}>
+                        {selectedPostFormat == "One" && (<SectionList
+                            sections={changeSectionsOne}
+                            keyExtractor={(item, index) => item + index}
+                            renderItem={({ item }) => <ImageItem imageKey={item.imageKey} imageB64={item.imageB64} imageTitle={item.imageTitle} imageDescription={item.imageDescription} imageUpVotes={item.imageUpVotes} imageComments={item.imageComments} creatorName={item.creatorName} creatorDisplayName={item.creatorDisplayName} creatorPfpB64={item.creatorPfpB64} datePosted={item.datePosted} postNum={item.postNum}/>}
+                            ListFooterComponent={<PostLoadingSpinners selectedPostFormat={selectedPostFormat} loadingPostsImage={loadingPostsImage} loadingPostsVideo={loadingPostsVideo} loadingPostsPoll={loadingPostsPoll} loadingPostsThread={loadingPostsThread} loadingPostsCategory={loadingPostsCategory}/>}
+                            ListHeaderComponent={<PostMessages selectedPostFormat={selectedPostFormat} formatOneText={formatOneText} formatTwoText={formatTwoText} formatThreeText={formatThreeText} formatFourText={formatFourText} formatFiveText={formatFiveText} colors={colors}/>}
+                        />)}
+                        {selectedPostFormat == "Two" && (<SectionList
+                            sections={changeSectionsTwo}
+                            keyExtractor={(item, index) => item + index}
+                            renderItem={({ item }) => <PollItem pollTitle={item.pollTitle} pollSubTitle={item.pollSubTitle} optionOne={item.optionOne} optionOnesColor={item.optionOnesColor} optionOnesVotes={item.optionOnesVotes} optionOnesBarLength={item.optionOnesBarLength} optionTwo={item.optionTwo} optionTwosColor={item.optionTwosColor} optionTwosVotes={item.optionTwosVotes} optionTwosBarLength={item.optionTwosBarLength} optionThree={item.optionThree} optionThreesColor={item.optionThreesColor} optionThreesVotes={item.optionThreesVotes} optionThreesBarLength={item.optionThreesBarLength} optionFour={item.optionFour} optionFoursColor={item.optionFoursColor} optionFoursVotes={item.optionFoursVotes} optionFoursBarLength={item.optionFoursBarLength} optionFive={item.optionFive} optionFivesColor={item.optionFivesColor} optionFivesVotes={item.optionFivesVotes} optionFivesBarLength={item.optionFivesBarLength} optionSix={item.optionSix} optionSixesColor={item.optionSixesColor} optionSixesVotes={item.optionSixesVotes} optionSixesBarLength={item.optionSixesBarLength} totalNumberOfOptions={item.totalNumberOfOptions} pollUpOrDownVotes={item.pollUpOrDownVotes} pollId={item.pollId} votedFor={item.votedFor} pollLiked={item.pollLiked} pfpB64={item.pfpB64} creatorName={item.creatorName} creatorDisplayName={item.creatorDisplayName}/>}
+                            ListFooterComponent={<PostLoadingSpinners selectedPostFormat={selectedPostFormat} loadingPostsImage={loadingPostsImage} loadingPostsVideo={loadingPostsVideo} loadingPostsPoll={loadingPostsPoll} loadingPostsThread={loadingPostsThread} loadingPostsCategory={loadingPostsCategory}/>}
+                            ListHeaderComponent={<PostMessages selectedPostFormat={selectedPostFormat} formatOneText={formatOneText} formatTwoText={formatTwoText} formatThreeText={formatThreeText} formatFourText={formatFourText} formatFiveText={formatFiveText} colors={colors}/>}
+                        />)}
+                        {selectedPostFormat == "Three" && (<SectionList
+                            sections={changeSectionsThree}
+                            keyExtractor={(item, index) => item + index}
+                            renderItem={({ item }) => <PollItem pollTitle={item.pollTitle} pollSubTitle={item.pollSubTitle} optionOne={item.optionOne} optionOnesColor={item.optionOnesColor} optionOnesVotes={item.optionOnesVotes} optionOnesBarLength={item.optionOnesBarLength} optionTwo={item.optionTwo} optionTwosColor={item.optionTwosColor} optionTwosVotes={item.optionTwosVotes} optionTwosBarLength={item.optionTwosBarLength} optionThree={item.optionThree} optionThreesColor={item.optionThreesColor} optionThreesVotes={item.optionThreesVotes} optionThreesBarLength={item.optionThreesBarLength} optionFour={item.optionFour} optionFoursColor={item.optionFoursColor} optionFoursVotes={item.optionFoursVotes} optionFoursBarLength={item.optionFoursBarLength} optionFive={item.optionFive} optionFivesColor={item.optionFivesColor} optionFivesVotes={item.optionFivesVotes} optionFivesBarLength={item.optionFivesBarLength} optionSix={item.optionSix} optionSixesColor={item.optionSixesColor} optionSixesVotes={item.optionSixesVotes} optionSixesBarLength={item.optionSixesBarLength} totalNumberOfOptions={item.totalNumberOfOptions} pollUpOrDownVotes={item.pollUpOrDownVotes} pollId={item.pollId} votedFor={item.votedFor} pfpB64={item.pfpB64} creatorName={item.creatorName} creatorDisplayName={item.creatorDisplayName} postNum={item.postNum} datePosted={item.datePosted} pollComments={item.pollComments}/>}
+                            ListFooterComponent={<PostLoadingSpinners selectedPostFormat={selectedPostFormat} loadingPostsImage={loadingPostsImage} loadingPostsVideo={loadingPostsVideo} loadingPostsPoll={loadingPostsPoll} loadingPostsThread={loadingPostsThread} loadingPostsCategory={loadingPostsCategory}/>}
+                            ListHeaderComponent={<PostMessages selectedPostFormat={selectedPostFormat} formatOneText={formatOneText} formatTwoText={formatTwoText} formatThreeText={formatThreeText} formatFourText={formatFourText} formatFiveText={formatFiveText} colors={colors}/>}
+                        />)}
+                        {selectedPostFormat == "Four" && (<SectionList
+                            sections={changeSectionsFour}
+                            keyExtractor={(item, index) => item + index}
+                            renderItem={({ item }) => <ThreadItems postNum={item.postNum} threadId={item.threadId} threadComments={item.threadComments} threadType={item.threadType} threadUpVotes={item.threadUpVotes} threadTitle={item.threadTitle} threadSubtitle={item.threadSubtitle} threadTags={item.threadTags} threadCategory={item.threadCategory} threadBody={item.threadBody} threadImageKey={item.threadImageKey} threadImageDescription={item.threadImageDescription} threadNSFW={item.threadNSFW} threadNSFL={item.threadNSFL} datePosted={item.datePosted} threadUpVoted={item.threadUpVoted} threadDownVoted={item.threadDownVoted} creatorDisplayName={item.creatorDisplayName} creatorName={item.creatorName} creatorImageB64={item.creatorImageB64} imageInThreadB64={item.imageInThreadB64}/>}
+                            ListFooterComponent={<PostLoadingSpinners selectedPostFormat={selectedPostFormat} loadingPostsImage={loadingPostsImage} loadingPostsVideo={loadingPostsVideo} loadingPostsPoll={loadingPostsPoll} loadingPostsThread={loadingPostsThread} loadingPostsCategory={loadingPostsCategory}/>}
+                            ListHeaderComponent={<PostMessages selectedPostFormat={selectedPostFormat} formatOneText={formatOneText} formatTwoText={formatTwoText} formatThreeText={formatThreeText} formatFourText={formatFourText} formatFiveText={formatFiveText} colors={colors}/>}
+                        />)}
+                        {selectedPostFormat == "Five" && (<SectionList
+                            sections={changeSectionsFive}
+                            keyExtractor={(item, index) => item + index}
+                            renderItem={({ item }) => <CategoryItem categoryTitle={item.categoryTitle} categoryDescription={item.categoryDescription} members={item.members} categoryTags={item.categoryTags} image={item.image} NSFW={item.NSFW} NSFL={item.NSFL} datePosted={item.datePosted}/>}
+                            ListFooterComponent={<PostLoadingSpinners selectedPostFormat={selectedPostFormat} loadingPostsImage={loadingPostsImage} loadingPostsVideo={loadingPostsVideo} loadingPostsPoll={loadingPostsPoll} loadingPostsThread={loadingPostsThread} loadingPostsCategory={loadingPostsCategory}/>}
+                            ListHeaderComponent={<PostMessages selectedPostFormat={selectedPostFormat} formatOneText={formatOneText} formatTwoText={formatTwoText} formatThreeText={formatThreeText} formatFourText={formatFourText} formatFiveText={formatFiveText} colors={colors}/>}
+                        />)}
+                    </ProfileGridPosts>
+                    <ProfileFeaturedPosts display={featuredViewState}>
+                        <SubTitle style={{color: colors.tertiary}} profNoPosts={true}>
+                            Features don't work yet...
+                        </SubTitle>
+                    </ProfileFeaturedPosts>
+                </WelcomeContainer>
+            </ScrollView>
         </>
     );
 }
@@ -2824,126 +2936,6 @@ const PostMessages = ({selectedPostFormat, formatOneText, formatTwoText, formatT
                     {formatFiveText}
                 </SubTitle>
             )}
-        </>
-    );
-}
-
-const ScreenHeader = ({backButtonHidden, navigation, PageElementsState, goToSettingsScreen, loadingPfp, profilePictureUri, changingPfp, PfpPickerActionMenu, displayName, name, followers, following, GridOrTagLineTranslateX, changeToOne, changeToTwo, changeToThree, changeToFour, changeToFive, changeToGrid, changeToFeatured}) => {
-    const {colors} = useTheme()
-    return (
-        <>
-            <ProfileHorizontalView topItems={true} style={{marginTop: 60}}>
-                <ViewHider viewHidden={backButtonHidden}>
-                    <TouchableOpacity style={{marginRight: '75%'}} disabled={PageElementsState} onPress={() => {navigation.goBack()}}>
-                        <Image
-                            source={require('../assets/app_icons/back_arrow.png')}
-                            style={{ width: 40, height: 40, tintColor: colors.tertiary}}
-                            resizeMode="contain"
-                            resizeMethod="resize"
-                        />
-                    </TouchableOpacity>
-                </ViewHider>
-                <ViewHider viewHidden={!backButtonHidden}>
-                    <View style={{minWidth: 40, marginRight: '75%'}}/>
-                </ViewHider>
-                <TouchableOpacity disabled={PageElementsState} onPress={goToSettingsScreen}>
-                    <Image
-                        source={require('../assets/app_icons/settings.png')}
-                        style={{ width: 40, height: 40, tintColor: colors.tertiary}}
-                        resizeMode="contain"
-                        resizeMethod="resize"
-                    />
-                </TouchableOpacity>
-            </ProfileHorizontalView>
-            <ProfInfoAreaImage>
-                {loadingPfp == false && (
-                    <View style={{alignSelf: 'center', alignContent: 'center'}}>
-                        <Avatar resizeMode="cover" source={{uri: profilePictureUri}}/>
-                        {changingPfp == false && (
-                            <TouchableOpacity onPress={() => {PfpPickerActionMenu.current.show();}}>
-                                <SubTitle style={{marginBottom: 0, color: darkestBlue, textAlign: 'center'}}>Change</SubTitle>
-                            </TouchableOpacity>
-                        )}
-                        {changingPfp == true && (
-                            <ActivityIndicator size="large" color={brand} style={{marginBottom: 20}} />  
-                        )}
-                    </View>
-                )}
-                {loadingPfp == true && (
-                    <View style={{alignSelf: 'center', alignContent: 'center'}}>
-                        <ActivityIndicator size={10} color={brand} style={{marginBottom: 20, padding: 40, borderColor: darkestBlue, borderWidth: 3, borderRadius: 150}} />  
-                        <SubTitle style={{marginBottom: 0, color: darkestBlue, textAlign: 'center'}}></SubTitle>
-                    </View>
-                )}
-                <PageTitle welcome={true}>{displayName || name || "Couldn't get name"}</PageTitle>
-                <SubTitle style={{color: colors.tertiary}}>{"@"+name}</SubTitle>
-                <ProfileBadgesView onPress={() => navigation.navigate("AccountBadges")}>
-                    <ProfileBadgeIcons source={require('./../assets/img/TempProfIcons.jpg')}/>
-                    <ProfileBadgeIcons source={require('./../assets/img/BgImage1.png')}/>
-                    <ProfileBadgeIcons source={require('./../assets/img/TempProfIcons.jpg')}/>
-                    <ProfileBadgeIcons source={require('./../assets/img/Toga.jpg')}/>
-                    <ProfileBadgeIcons source={require('./../assets/img/TempProfIcons.jpg')}/>
-                </ProfileBadgesView>
-                <SubTitle style={{color: colors.tertiary}} bioText={true} > Bio </SubTitle>
-            </ProfInfoAreaImage>
-            <ProfileHorizontalView>
-                <ProfileHorizontalViewItem profLeftIcon={true}>
-                    <TouchableOpacity onPress={() => {navigation.navigate('ProfileStats', {name: name, followers: followers, type: 'Followers'})}} style={{alignItems: 'center'}}>
-                        <SubTitle style={{color: colors.tertiary}} welcome={true}> Followers </SubTitle>
-                        <ProfIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/114-user.png')}/>
-                        <SubTitle style={{color: colors.tertiary}} welcome={true}> 0 </SubTitle>
-                    </TouchableOpacity>
-                </ProfileHorizontalViewItem>
-                <ProfileHorizontalViewItem profCenterIcon={true}>
-                    <TouchableOpacity onPress={() => {navigation.navigate('ProfileStats', {name: name, followers: following, type: 'Following'})}} style={{alignItems: 'center'}}>
-                        <SubTitle style={{color: colors.tertiary}} welcome={true}> Following </SubTitle>
-                        <ProfIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/115-users.png')}/>
-                        <SubTitle style={{color: colors.tertiary}} welcome={true}> 0 </SubTitle>
-                    </TouchableOpacity>
-                </ProfileHorizontalViewItem>
-                <ProfileHorizontalViewItem profRightIcon={true}>
-                    <SubTitle style={{color: colors.tertiary}} welcome={true}> Likes </SubTitle>
-                    <ProfIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/219-heart.png')}/>
-                    <SubTitle style={{color: colors.tertiary}} welcome={true}> 0 </SubTitle>
-                </ProfileHorizontalViewItem>
-            </ProfileHorizontalView>
-            <ProfilePostsSelectionView style={{position: 'relative', borderBottomWidth: 0}}>
-                <ProfilePostsSelectionBtns onPress={changeToGrid}>
-                    <Icon name="grid" color={colors.tertiary} size={45}/>
-                </ProfilePostsSelectionBtns>
-                <ProfilePostsSelectionBtns onPress={changeToFeatured}>
-                    <FontAwesomeFive name="user-tag" color={colors.tertiary} size={45}/>
-                </ProfilePostsSelectionBtns>
-                <Animated.View style={{backgroundColor: colors.tertiary, height: 3, width: '50%', position: 'absolute', bottom: 0, transform: [{translateX: GridOrTagLineTranslateX}], zIndex: 2}}/>
-                <View style={{backgroundColor: colors.borderColor, height: 3, width: '100%', position: 'absolute', bottom: 0}}/>
-            </ProfilePostsSelectionView>
-            <ProfileSelectMediaTypeHorizontalView style={{alignSelf: 'center'}}>
-                <ProfileSelectMediaTypeItem onPress={changeToOne}>
-                    <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor, borderColor: colors.borderColor}}>
-                        <ProfileSelectMediaTypeIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/015-images.png')}/>
-                    </ProfileSelectMediaTypeIconsBorder>
-                </ProfileSelectMediaTypeItem>
-                <ProfileSelectMediaTypeItem onPress={changeToTwo}>
-                    <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor, borderColor: colors.borderColor}}>
-                        <ProfileSelectMediaTypeIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/020-film.png')}/>
-                    </ProfileSelectMediaTypeIconsBorder>                        
-                </ProfileSelectMediaTypeItem>
-                <ProfileSelectMediaTypeItem onPress={changeToThree}>
-                    <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor, borderColor: colors.borderColor}}>     
-                        <ProfileSelectMediaTypeIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/157-stats-bars.png')}/>
-                    </ProfileSelectMediaTypeIconsBorder>     
-                </ProfileSelectMediaTypeItem>
-                <ProfileSelectMediaTypeItem onPress={changeToFour}>
-                    <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor, borderColor: colors.borderColor}}>     
-                        <ProfileSelectMediaTypeIcons style={{height: '80%', width: '80%', tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/007-pencil2.png')}/>
-                    </ProfileSelectMediaTypeIconsBorder>     
-                </ProfileSelectMediaTypeItem>
-                <ProfileSelectMediaTypeItem onPress={changeToFive}>
-                    <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor, borderColor: colors.borderColor}}>     
-                        <ProfileSelectMediaTypeIcons style={{height: '80%', width: '80%', tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/093-drawer.png')}/>
-                    </ProfileSelectMediaTypeIconsBorder>     
-                </ProfileSelectMediaTypeItem>
-            </ProfileSelectMediaTypeHorizontalView>
         </>
     );
 }
