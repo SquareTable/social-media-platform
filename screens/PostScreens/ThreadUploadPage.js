@@ -64,7 +64,7 @@ const ThreadUploadPage = ({route, navigation}) => {
     const [postIsNSFW, setPostIsNSFW] = useState(false);
     const [postIsNSFL, setPostIsNSFL] = useState(false);
     const [selectFormat, setSelectFormat] = useState("Text");
-    const {threadFormat, threadTitle, threadSubtitle, threadTags, categoryTitle, threadBody, imageFromRoute, threadImageDescription, threadNSFW, threadNSFL} = route.params;
+    const {threadFormat, threadTitle, threadSubtitle, threadTags, categoryTitle, threadBody, imageFromRoute, threadImageDescription, threadNSFW, threadNSFL, goBackAfterPost} = route.params;
     const [selectedTitle, setSelectedTitle] = useState("")
     const [selectedSubTitle, setSelectedSubTitle] = useState("")
     const [selectedTags, setSelectedTags] = useState("")
@@ -181,6 +181,7 @@ const ThreadUploadPage = ({route, navigation}) => {
         }
     }
 
+
     const handlePostThread = (credentials) => {
         handleMessage(null);
         if (selectFormat == "Text") {
@@ -195,6 +196,9 @@ const ThreadUploadPage = ({route, navigation}) => {
                     handleMessage(message,status);
                 } else {
                     handleMessage(message, status)
+                    if (goBackAfterPost == true) {
+                        navigation.goBack()
+                    }
                 }
 
             }).catch(error => {
@@ -236,6 +240,9 @@ const ThreadUploadPage = ({route, navigation}) => {
                     handleMessage(message,status);
                 } else {
                     handleMessage(message,status);
+                    if (goBackAfterPost == true) {
+                        navigation.goBack()
+                    }
                 }
 
             }).catch(error => {

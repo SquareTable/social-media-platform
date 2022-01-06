@@ -133,6 +133,7 @@ const RootStack = () => {
       <Stack.Screen name="CategoryHome" component={CategoryHome}/>
       <Stack.Screen name="CategoryCreationPage" component={CategoryCreationPage}/>
       <Stack.Screen name="TakeImage_Camera" component={TakeImage_Camera}/>
+      <Stack.Screen name="ThreadUploadPage" component={ThreadUploadPage}/>
       <Stack.Group screenOptions={{
           headerStyle: {
             backgroundColor: 'transparent',

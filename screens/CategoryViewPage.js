@@ -543,7 +543,7 @@ const CategoryViewPage = ({route, navigation}) => {
     }
 
     const ThreadItems = ({postNum, threadId, threadComments, threadType, threadUpVotes, threadTitle, threadSubtitle, threadTags, threadCategory, threadBody, threadImageKey, threadImageDescription, threadNSFW, threadNSFL, datePosted, threadUpVoted, threadDownVoted, creatorDisplayName, creatorName, creatorImageB64, imageInThreadB64})  => (
-        <View style={{backgroundColor: slightlyLighterPrimary, borderRadius: 15, marginBottom: 10}} onPress={() => navigation.navigate("ThreadViewPage", {threadId: threadId})}>
+        <TouchableOpacity style={{backgroundColor: slightlyLighterPrimary, borderRadius: 15, marginBottom: 10}} onPress={() => navigation.navigate("ThreadViewPage", {threadId: threadId})}>
                 {threadNSFW === true && (
                     <SubTitle style={{fontSize: 10, color: red, marginBottom: 0}}>(NSFW)</SubTitle>
                 )}
@@ -682,7 +682,7 @@ const CategoryViewPage = ({route, navigation}) => {
                 <TouchableOpacity onPress={() => navigation.navigate("ThreadViewPage", {threadId: threadId})}>
                     <SubTitle style={{flex: 1, alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{threadComments} comments</SubTitle>
                 </TouchableOpacity>
-        </View>
+        </TouchableOpacity>
     );
 
     //main
@@ -1011,7 +1011,7 @@ const CategoryViewPage = ({route, navigation}) => {
                             <SubTitle welcome={true} style={{width: '80%', textAlign: 'center', color: colors.tertiary}}> {datePosted} </SubTitle>
                         </ProfileHorizontalViewItem>
                     </ProfileHorizontalView>
-                    <StyledButton style={{backgroundColor: colors.primary}} postCategory={true} onPress={() => {navigation.navigate("ThreadUploadPage", {threadFormat: null, threadTitle: null, threadSubtitle: null, threadTags: null, categoryTitle: categoryTitle, threadBody: null, threadImage: null, threadImageDescription: null, threadNSFW: null, threadNSFL: null})}}>
+                    <StyledButton style={{backgroundColor: colors.primary}} postCategory={true} onPress={() => {navigation.navigate("ThreadUploadPage", {threadFormat: null, threadTitle: null, threadSubtitle: null, threadTags: null, categoryTitle: categoryTitle, threadBody: null, threadImage: null, threadImageDescription: null, threadNSFW: null, threadNSFL: null, goBackAfterPost: true})}}>
                         <ButtonText style={{color: colors.tertiary}} postCategory={true}>Post Thread</ButtonText>
                     </StyledButton>
                     <ProfileSelectMediaTypeHorizontalView>
