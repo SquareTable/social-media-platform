@@ -94,37 +94,6 @@ const MultiMediaUploadPreview = ({route, navigation}) => {
         setMessageType(type);
     }
 
-    /*const postMultiMedia = () => {
-        console.log("Post pressed")
-        handleMessage(null);
-        setSubmitting(true);
-        const url = "https://nameless-dawn-41038.herokuapp.com/user/postImage";
-
-        axios.post(url, formData, {
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'multipart/form-data'
-            }}).then((response) => {
-            const result = response.data;
-            const {message, status, data} = result;
-
-            if (status !== 'SUCCESS') {
-                handleMessage(message, status);
-                console.log(result)
-            } else {
-                console.log(data)
-                handleMessage(message, status)
-                //persistLogin({...data[0]}, message, status);
-            }
-            setSubmitting(false);
-
-        }).catch(error => {
-            console.log(error);
-            setSubmitting(false);
-            handleMessage("An error occured. Try checking your network connection and retry.");
-        })
-    }*/
-
     return(
         <>    
             <StatusBar style={dark ? 'light' : 'dark'}/>

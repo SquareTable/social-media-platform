@@ -78,69 +78,6 @@ const CategoryCreationPage = ({navigation, route}) => {
         setImage(imageFromRoute)
     })
 
-    /*const handleCreateCategory = (credentials) => {
-        handleMessage(null);
-        if (image !== null) {
-            const formData = new FormData();
-            formData.append("image", {
-                name: image.uri.substr(image.uri.lastIndexOf('/') + 1),
-                uri: image.uri,
-                type: 'image/jpg'
-            })
-            formData.append("categoryTitle", credentials.categoryTitle)
-            formData.append("categoryDescription", credentials.categoryDescription)
-            formData.append("creatorId", _id)
-            formData.append("categoryTags", credentials.categoryTags)
-            formData.append("categoryNSFW", credentials.categoryNSFW)
-            formData.append("categoryNSFL", credentials.categoryNSFL)
-            console.log(formData);
-
-            const url = "https://nameless-dawn-41038.herokuapp.com/user/postcategorywithimage";
-            
-            axios.post(url, formData, {
-                headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'multipart/form-data'
-                }}).then((response) => {
-                const result = response.data;
-                const {message, status, data} = result;
-                
-                if (status !== 'SUCCESS') {
-                    handleMessage(message,status);
-                    setSubmitting(false);
-                } else {
-                    handleMessage(message,status);
-                    setSubmitting(false);
-                }
-
-            }).catch(error => {
-                console.log(error);
-                setSubmitting(false);
-                handleMessage("An error occured. Try checking your network connection and retry.");
-            })
-        } else {
-            const url = "https://nameless-dawn-41038.herokuapp.com/user/postcategorywithoutimage";
-            const toSend = {creatorId: _id, categoryTitle: credentials.categoryTitle, categoryDescription: credentials.categoryDescription, categoryTags: credentials.categoryTags, categoryNSFW: credentials.categoryNSFW, categoryNSFL: credentials.categoryNSFL}
-            axios.post(url, toSend).then((response) => {
-                const result = response.data;
-                const {message, status, data} = result;
-
-                if (status !== 'SUCCESS') {
-                    handleMessage(message,status);
-                    setSubmitting(false);
-                } else {
-                    handleMessage(message,status);
-                    setSubmitting(false);
-                }
-
-            }).catch(error => {
-                console.log(error);
-                setSubmitting(false);
-                handleMessage("An error occured. Try checking your network connection and retry.");
-            })
-        }
-    }*/
-
     const UserTextInput = ({label, icon, body, ...props}) => {
         if (body == true) {
             return(

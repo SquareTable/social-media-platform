@@ -205,29 +205,6 @@ const PollUploadPage = ({navigation}) => {
     const [termsValidation, setTermsValidation] = useState(false);
 
     const [endLoop, setEndLoop] = useState(false);
-    
-
-    /*const handleCreatePost = (pollValues, setSubmitting) => {
-        handleMessage(null);
-        const url = "https://nameless-dawn-41038.herokuapp.com/user/createpollpost";
-
-        axios.post(url, pollValues).then((response) => {
-            const result = response.data;
-            const {message, status, data} = result;
-
-            if (status !== 'SUCCESS') {
-                handleMessage(message,status);
-            } else {
-                handleMessage(message,status);
-            }
-            setSubmitting(false);
-
-        }).catch(error => {
-            console.log(error);
-            setSubmitting(false);
-            handleMessage("An error occured. Try checking your network connection and retry.");
-        })
-    }*/
 
     const handleMessage = (message, type = 'FAILED') => {
         setMessage(message);
@@ -258,7 +235,6 @@ const PollUploadPage = ({navigation}) => {
                                         handleMessage('Please fill all the fields.');
                                         setSubmitting(false);
                                     } else {
-                                        //handleCreatePost(values, setSubmitting);
                                         navigation.reset({
                                             index: 0,
                                             routes: [{name: 'PostScreen', params: {postData: values, postType: 'poll', navigateToHomeScreen: true}}]
