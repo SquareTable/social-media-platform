@@ -79,10 +79,7 @@ const Tabs = ({navigation}) => {
         }
     }
     const onProfileScreenNavigate = () => {
-        navigation.navigate('Profile', {
-            screen: 'Welcome',
-            params: { backButtonHidden: true, imageFromRoute: null, goToStylingMenu: false },
-        });
+        navigation.navigate('Profile');
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
         setCurrentTab('Profile')
     }

@@ -135,6 +135,12 @@ const HomeScreen = ({navigation, route}) => {
     async function unloadAudioFunction() {
         playRecording.unloadAsync;
     }
+    const [optionOnesBarLength, setOptionOnesBarLength] = useState(0);
+    const [optionTwosBarLength, setOptionTwosBarLength] = useState(0);
+    const [optionThreesBarLength, setOptionThreesBarLength] = useState(0);
+    const [optionFoursBarLength, setOptionFoursBarLength] = useState(0);
+    const [optionFivesBarLength, setOptionFivesBarLength] = useState(0);
+    const [optionSixesBarLength, setOptionSixesBarLength] = useState(0);
     if (storedCredentials) {var {name, displayName, email, photoUrl, _id} = storedCredentials}
 
     // Uploading posts code
@@ -359,43 +365,37 @@ const HomeScreen = ({navigation, route}) => {
     }
 
     if (route.params) {var {postData, postType} = route.params;}
-    var optionOnesBarLength = 0;
-    var optionTwosBarLength = 0;
-    var optionThreesBarLength = 0;
-    var optionFoursBarLength = 0;
-    var optionFivesBarLength = 0;
-    var optionSixesBarLength = 0;
     useEffect(() => {
         if (postData != postSent) {
             setPostSent(postData)
             if (postType == 'multimedia') {
                 postMultiMedia(postData);
             } else if (postType == 'poll') {
-                if (postData.totalNumberOfOptions == 2) {
-                    optionOnesBarLength = 100 / 2;
-                    optionTwosBarLength = 100 / 2;
-                } else if (postData.totalNumberOfOptions == 3) {
-                    optionOnesBarLength = 100 / 3;
-                    optionTwosBarLength = 100 / 3;
-                    optionThreesBarLength = 100 / 3;
-                } else if (postData.totalNumberOfOptions == 4) {
-                    optionOnesBarLength = 100 / 4;
-                    optionTwosBarLength = 100 / 4;
-                    optionThreesBarLength = 100 / 4;
-                    optionFoursBarLength = 100 / 4;
-                } else if (postData.totalNumberOfOptions == 5) {
-                    optionOnesBarLength = 100 / 5;
-                    optionTwosBarLength = 100 / 5;
-                    optionThreesBarLength = 100 / 5;
-                    optionFoursBarLength = 100 / 5;
-                    optionFivesBarLength = 100 / 5;
-                } else if (postData.totalNumberOfOptions == 6) {
-                    optionOnesBarLength = 100 / 6;
-                    optionTwosBarLength = 100 / 6;
-                    optionThreesBarLength = 100 / 6;
-                    optionFoursBarLength = 100 / 6;
-                    optionFivesBarLength = 100 / 6;
-                    optionSixesBarLength = 100 / 6;
+                if (postData.totalNumberOfOptions == 'Two') {
+                    setOptionOnesBarLength(100 / 2)
+                    setOptionTwosBarLength(100 / 2)
+                } else if (postData.totalNumberOfOptions == 'Three') {
+                    setOptionOnesBarLength(100 / 3)
+                    setOptionTwosBarLength(100 / 3)
+                    setOptionThreesBarLength(100 / 3)
+                } else if (postData.totalNumberOfOptions == 'Four') {
+                    setOptionOnesBarLength(100 / 4)
+                    setOptionTwosBarLength(100 / 4)
+                    setOptionThreesBarLength(100 / 4)
+                    setOptionFoursBarLength(100 / 4)
+                } else if (postData.totalNumberOfOptions == 'Five') {
+                    setOptionOnesBarLength(100 / 5)
+                    setOptionTwosBarLength(100 / 5)
+                    setOptionThreesBarLength(100 / 5)
+                    setOptionFoursBarLength(100 / 5)
+                    setOptionFivesBarLength(100 / 5)
+                } else if (postData.totalNumberOfOptions == 'Six') {
+                    setOptionOnesBarLength(100 / 6)
+                    setOptionTwosBarLength(100 / 6)
+                    setOptionThreesBarLength(100 / 6)
+                    setOptionFoursBarLength(100 / 6)
+                    setOptionFivesBarLength(100 / 6)
+                    setOptionSixesBarLength(100 / 6)
                 }
                 handleCreatePollPost(postData);
             } else if (postType == 'thread_text') {
