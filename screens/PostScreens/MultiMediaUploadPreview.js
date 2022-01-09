@@ -74,7 +74,7 @@ const MultiMediaUploadPreview = ({route, navigation}) => {
     const {_id, name, displayName, email, photoUrl} = storedCredentials;
     const [submitting, setSubmitting] = useState(false)
     
-    const formData = new FormData();
+    /*const formData = new FormData();
     formData.append("image", {
         name: image.uri.substr(image.uri.lastIndexOf('/') + 1),
         uri: image.uri,
@@ -84,7 +84,7 @@ const MultiMediaUploadPreview = ({route, navigation}) => {
     formData.append("description", description)
     formData.append("creatorId", _id)
     formData.append("screenshotsAllowed", screenshotsAllowed)
-    console.log(formData);
+    console.log(formData);*/
     
     const [message, setMessage] = useState();
     const [messageType, setMessageType] = useState();
@@ -94,7 +94,7 @@ const MultiMediaUploadPreview = ({route, navigation}) => {
         setMessageType(type);
     }
 
-    const postMultiMedia = () => {
+    /*const postMultiMedia = () => {
         console.log("Post pressed")
         handleMessage(null);
         setSubmitting(true);
@@ -123,7 +123,7 @@ const MultiMediaUploadPreview = ({route, navigation}) => {
             setSubmitting(false);
             handleMessage("An error occured. Try checking your network connection and retry.");
         })
-    }
+    }*/
 
     return(
         <>    
@@ -147,7 +147,12 @@ const MultiMediaUploadPreview = ({route, navigation}) => {
                         </View>
                     </View>
                 </MultiMediaPostFrame>
-                {!submitting && (<StyledButton onPress={postMultiMedia}>
+                {!submitting && (<StyledButton onPress={() => {
+                    navigation.reset({
+                        index: 0,
+                        routes: [{name: 'PostScreen', params: {postData: {title: title, description: description, image: image, screenshotsAllowed: screenshotsAllowed}, postType: 'multimedia', navigateToHomeScreen: true}}]
+                    })
+                }}>
                     <ButtonText> Post </ButtonText>
                 </StyledButton>)}
                 {submitting && (<StyledButton disabled={true}>

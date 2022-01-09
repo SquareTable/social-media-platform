@@ -207,7 +207,7 @@ const PollUploadPage = ({navigation}) => {
     const [endLoop, setEndLoop] = useState(false);
     
 
-    const handleCreatePost = (pollValues, setSubmitting) => {
+    /*const handleCreatePost = (pollValues, setSubmitting) => {
         handleMessage(null);
         const url = "https://nameless-dawn-41038.herokuapp.com/user/createpollpost";
 
@@ -227,7 +227,7 @@ const PollUploadPage = ({navigation}) => {
             setSubmitting(false);
             handleMessage("An error occured. Try checking your network connection and retry.");
         })
-    }
+    }*/
 
     const handleMessage = (message, type = 'FAILED') => {
         setMessage(message);
@@ -258,7 +258,11 @@ const PollUploadPage = ({navigation}) => {
                                         handleMessage('Please fill all the fields.');
                                         setSubmitting(false);
                                     } else {
-                                        handleCreatePost(values, setSubmitting);
+                                        //handleCreatePost(values, setSubmitting);
+                                        navigation.reset({
+                                            index: 0,
+                                            routes: [{name: 'PostScreen', params: {postData: values, postType: 'poll', navigateToHomeScreen: true}}]
+                                        })
                                     }
                                 }}
                             >

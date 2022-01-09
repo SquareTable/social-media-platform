@@ -606,7 +606,10 @@ const App = () => {
         require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/035-file-text.png'),
         require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/093-drawer.png'),
         require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/015-images.png'),
-        require('./assets/Splash_Screen.png')
+        require('./assets/Splash_Screen.png'),
+        require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/348-filter.png'),
+        require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/015-images.png'),
+        require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/115-users.png'),
       ];
 
       const getProfilePicture = () => {

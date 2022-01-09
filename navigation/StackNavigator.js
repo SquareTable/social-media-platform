@@ -9,7 +9,7 @@ const {primary, tertiary} = Colors;
 import ProfileScreen from "../screens/ProfileScreen";
 import VisitingProfileScreen from "../screens/VisitingProfileScreen.js";
 import SettingsScreen from "../screens/SettingsScreen";
-import { HomeScreen } from "../screens/HomeScreen";
+import HomeScreen from "../screens/HomeScreen";
 import BadgesScreen from "../screens/BadgesScreen";
 import LoginScreen from "../screens/LoginScreen";
 import AccountSettings from "../screens/AccountSettings";

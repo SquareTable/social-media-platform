@@ -43,7 +43,7 @@ import OfflineNotice from '../components/OfflineNotice.js';
 import { AppStylingContext } from '../components/AppStylingContext.js';
 
 
-const PostScreen = ({navigation}) => {
+const PostScreen = ({navigation, route}) => {
      //context
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
     if (storedCredentials) {var {name, displayName, email, photoUrl} = storedCredentials;}
@@ -59,6 +59,11 @@ const PostScreen = ({navigation}) => {
     const [useCustomStyling, setUseCustomStyling] = useState(false)
     const {AppStylingContextState, setAppStylingContextState} = useContext(AppStylingContext)
     const [formatMessage, setFormatMessage] = useState('Select a format')
+    if (route.params) {var {postData, postType, navigateToHomeScreen} = route.params}
+    if (navigateToHomeScreen == true) {
+        navigation.setParams({navigateToHomeScreen: false})
+        navigation.navigate('HomeScreen', {postData: postData, postType: postType})
+    }
 
     const continuePressed = () => {
         if (formatOneSelected == true) {

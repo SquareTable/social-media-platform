@@ -63,15 +63,9 @@ const Tabs = ({navigation}) => {
         }
     }
     const onPostScreenNavigate = () => {
-        if (currentTab == 'Post') {
-            navigation.navigate("Post");
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            console.log('Post screen is already focused')
-        } else {
-            navigation.navigate("Post");
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            setCurrentTab('Post')
-        }
+        navigation.navigate("Post", {postData: null, postType: null, navigateToHomeScreen: false});
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        setCurrentTab('Post')
     }
     const onChatScreenNavigate = () => {
         if (currentTab == 'Chat') {
@@ -145,7 +139,7 @@ const Tabs = ({navigation}) => {
                     </TouchableOpacity>
                 ),
             }} />
-            <Tab.Screen name="Post" component={post_screen_navigator} 
+            <Tab.Screen name="Post" component={post_screen_navigator} initialParams={{postData: null, postType: null, navigateToHomeScreen: false}}
             options={{
                 tabBarIcon: ({focused}) => (
                     <TouchableOpacity onPressIn={() => {onPostScreenNavigate()}}>

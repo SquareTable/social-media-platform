@@ -81,7 +81,9 @@ const ThreadUploadPage = ({route, navigation}) => {
     const {_id} = storedCredentials;
 
     useEffect(() => {
-        setImage(imageFromRoute)
+        if (imageFromRoute) {
+            setImage(imageFromRoute);
+        }
     })
     
     console.log("Format:", threadFormat, "Title:", threadTitle, "Subtitle:", threadSubtitle, "Tags:", threadTags, "CategoryTitle:", categoryTitle, "Body:", threadBody, "ImageFromRoute:", imageFromRoute, "ThreadImageDescription:", threadImageDescription, "ThreadNSFW:", threadNSFW, "ThreadNSFL:", threadNSFL)
@@ -182,7 +184,7 @@ const ThreadUploadPage = ({route, navigation}) => {
     }
 
 
-    const handlePostThread = (credentials) => {
+    /*const handlePostThread = (credentials) => {
         handleMessage(null);
         if (selectFormat == "Text") {
             console.log("Text Format")
@@ -250,7 +252,7 @@ const ThreadUploadPage = ({route, navigation}) => {
                 handleMessage("An error occured. Try checking your network connection and retry.");
             })
         }
-    }
+    }*/
 
     const handleMessage = (message, type = 'FAILED') => {
         setMessage(message);
@@ -326,13 +328,30 @@ const ThreadUploadPage = ({route, navigation}) => {
                                     if (values.threadTitle == "" || selectedCategory == null || values.threadBody == "") {
                                         handleMessage('Please fill all the fields.');
                                     } else {
-                                        handlePostThread(values);
+                                        let tempValues = values;
+                                        tempValues.selectedCategory = selectedCategory;
+                                        tempValues.screenshotsAllowed = screenshotsAllowed;
+                                        tempValues.threadNSFL = postIsNSFL;
+                                        tempValues.threadNSFW = postIsNSFW;
+                                        navigation.reset({
+                                            index: 0,
+                                            routes: [{name: 'PostScreen', params: {postData: tempValues, postType: 'thread_text', navigateToHomeScreen: true}}]
+                                        })
                                     }
                                 } else if (values.threadFormat == "Images") {
                                     if (values.threadTitle == "" || selectedCategory == null || image == null) {
                                         handleMessage('Please fill all the fields.');
                                     } else {
-                                        handlePostThread(values);
+                                        let tempValues = values;
+                                        tempValues.selectedCategory = selectedCategory;
+                                        tempValues.screenshotsAllowed = screenshotsAllowed;
+                                        tempValues.image = image;
+                                        tempValues.threadNSFL = postIsNSFL;
+                                        tempValues.threadNSFW = postIsNSFW;
+                                        navigation.reset({
+                                            index: 0,
+                                            routes: [{name: 'PostScreen', params: {postData: tempValues, postType: 'thread_image', navigateToHomeScreen: true}}]
+                                        })
                                     }
                                 }
                             }}

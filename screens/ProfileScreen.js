@@ -2817,7 +2817,7 @@ const Welcome = ({navigation, route}) => {
                         </ProfileSelectMediaTypeItem>
                     </ProfileSelectMediaTypeHorizontalView>
                 </WelcomeContainer>
-                <ProfileGridPosts display={gridViewState}>
+                <ProfileGridPosts display={gridViewState} style={{marginBottom: 20}}>
                     {selectedPostFormat == "One" && (<SectionList
                         sections={changeSectionsOne}
                         keyExtractor={(item, index) => item + index}

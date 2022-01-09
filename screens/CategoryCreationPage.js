@@ -78,7 +78,7 @@ const CategoryCreationPage = ({navigation, route}) => {
         setImage(imageFromRoute)
     })
 
-    const handleCreateCategory = (credentials) => {
+    /*const handleCreateCategory = (credentials) => {
         handleMessage(null);
         if (image !== null) {
             const formData = new FormData();
@@ -139,7 +139,7 @@ const CategoryCreationPage = ({navigation, route}) => {
                 handleMessage("An error occured. Try checking your network connection and retry.");
             })
         }
-    }
+    }*/
 
     const UserTextInput = ({label, icon, body, ...props}) => {
         if (body == true) {
@@ -270,7 +270,12 @@ const CategoryCreationPage = ({navigation, route}) => {
                                         handleMessage('Please fill all the fields.');
                                         setSubmitting(false);
                                     } else {
-                                        handleCreateCategory(values);
+                                        let tempValues = values;
+                                        tempValues.image = imageFromRoute;
+                                        navigation.reset({
+                                            index: 0,
+                                            routes: [{name: 'PostScreen', params: {postData: tempValues, postType: 'category', navigateToHomeScreen: true}}]
+                                        })
                                     }
                                 }}
                             >

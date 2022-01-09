@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext, useEffect, useState, memo} from 'react';
 import { StatusBar } from 'expo-status-bar';
 
 import {
