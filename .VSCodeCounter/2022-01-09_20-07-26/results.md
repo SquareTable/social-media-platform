@@ -1,18 +1,18 @@
 # Summary
 
-Date : 2021-12-26 04:29:24
+Date : 2022-01-09 20:07:26
 
 Directory /Users/sebastianwebster/GitHub/social-media-platform
 
-Total : 594 files,  84947 codes, 1311 comments, 2212 blanks, all 88470 lines
+Total : 590 files,  84184 codes, 1310 comments, 2176 blanks, all 87670 lines
 
 [details](details.md)
 
 ## Languages
 | language | files | code | comment | blank | total |
 | :--- | ---: | ---: | ---: | ---: | ---: |
-| JSON | 6 | 47,392 | 26 | 3 | 47,421 |
-| JavaScript | 84 | 26,251 | 773 | 1,687 | 28,711 |
+| JSON | 6 | 47,189 | 32 | 3 | 47,224 |
+| JavaScript | 80 | 25,691 | 766 | 1,651 | 28,108 |
 | HTML | 4 | 6,529 | 2 | 1 | 6,532 |
 | XML | 494 | 2,767 | 491 | 491 | 3,749 |
 | CSS | 1 | 1,936 | 3 | 7 | 1,946 |
@@ -22,7 +22,7 @@ Total : 594 files,  84947 codes, 1311 comments, 2212 blanks, all 88470 lines
 ## Directories
 | path | files | code | comment | blank | total |
 | :--- | ---: | ---: | ---: | ---: | ---: |
-| . | 594 | 84,947 | 1,311 | 2,212 | 88,470 |
+| . | 590 | 84,184 | 1,310 | 2,176 | 87,670 |
 | .expo-shared | 2 | 7 | 0 | 7 | 14 |
 | .idea | 3 | 23 | 0 | 0 | 23 |
 | assets | 500 | 38,079 | 501 | 514 | 39,094 |
@@ -32,16 +32,16 @@ Total : 594 files,  84947 codes, 1311 comments, 2212 blanks, all 88470 lines
 | assets/icomoon-icons/IcoMoon-Free-master/Font | 5 | 26,324 | 10 | 12 | 26,346 |
 | assets/icomoon-icons/IcoMoon-Free-master/Font/demo-files | 3 | 2,988 | 8 | 11 | 3,007 |
 | assets/icomoon-icons/IcoMoon-Free-master/SVG | 491 | 2,744 | 491 | 491 | 3,726 |
-| components | 13 | 216 | 7 | 33 | 256 |
+| components | 17 | 236 | 11 | 40 | 287 |
 | docs | 3 | 112 | 0 | 0 | 112 |
-| navigation | 4 | 1,135 | 62 | 46 | 1,243 |
+| navigation | 4 | 547 | 62 | 46 | 655 |
 | posts | 4 | 433 | 2 | 11 | 446 |
 | python_scripts | 3 | 59 | 16 | 10 | 85 |
-| screens | 57 | 22,807 | 687 | 1,550 | 25,044 |
+| screens | 49 | 22,662 | 672 | 1,500 | 24,834 |
 | screens/IntroductionScreens | 1 | 149 | 0 | 2 | 151 |
-| screens/PostScreens | 7 | 2,199 | 77 | 192 | 2,468 |
+| screens/PostScreens | 7 | 2,154 | 85 | 174 | 2,413 |
 | screens/SecuritySettingsScreens | 4 | 174 | 0 | 8 | 182 |
-| screens/SimpleStylingScreens | 9 | 1,634 | 6 | 110 | 1,750 |
-| screens/screenStylings | 1 | 1,930 | 7 | 183 | 2,120 |
+| screens/SimpleStylingScreens | 3 | 967 | 0 | 57 | 1,024 |
+| screens/screenStylings | 1 | 1,937 | 7 | 183 | 2,127 |
 
 [details](details.md)

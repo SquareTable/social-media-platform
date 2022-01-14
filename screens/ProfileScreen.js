@@ -1,4 +1,4 @@
-import React, {useCallback, useContext, useState, useRef, useEffect} from 'react';
+import React, {useCallback, useContext, useState, useRef, useEffect, memo} from 'react';
 import { StatusBar } from 'expo-status-bar';
 import * as Haptics from 'expo-haptics';
 import ActionSheet from 'react-native-actionsheet';
@@ -1148,7 +1148,7 @@ const Welcome = ({navigation, route}) => {
         }
     }
 
-    const ImageItem = ({imageKey, imageB64, imageTitle, imageDescription, imageUpVotes, imageComments, creatorName, creatorDisplayName, creatorPfpB64, datePosted, postNum})  => (
+    const ImageItem = ({imageKey, imageB64, imageTitle, imageDescription, imageUpVotes, imageComments, creatorName, creatorDisplayName, datePosted, postNum})  => (
         <View style={{backgroundColor: dark ? colors.slightlyLighterPrimary : colors.borderColor, borderRadius: 15, marginBottom: 10}}>
             {postsWithDeleteMenuOpen == imageKey && (
                 <View style={{position: 'absolute', zIndex: 100, alignSelf: 'center', alignItems: 'center', width: '100%', height: '100%', justifyContent: 'center'}}>
@@ -1165,7 +1165,7 @@ const Welcome = ({navigation, route}) => {
             )}
             <PostsHorizontalView style={{marginLeft: '5%', borderBottomWidth: 3, borderColor: colors.darkLight, width: '90%', paddingBottom: 5, marginRight: '5%'}}>
                 <PostsVerticalView>
-                    <PostCreatorIcon source={creatorPfpB64? {uri: `data:image/jpg;base64,${creatorPfpB64}`} : require('../assets/icon.png')}/>
+                    <PostCreatorIcon source={{uri: profilePictureUri}}/>
                 </PostsVerticalView>
                 <PostsVerticalView style={{marginTop: 9}}>
                     <SubTitle style={{fontSize: 20, color: colors.brand, marginBottom: 0}}>{creatorDisplayName}</SubTitle>
@@ -1262,7 +1262,7 @@ const Welcome = ({navigation, route}) => {
         </View>
     );
 
-    const PollItem = ({ pollTitle, pollSubTitle, optionOne, optionOnesColor, optionOnesVotes, optionOnesBarLength, optionTwo, optionTwosColor, optionTwosVotes, optionTwosBarLength, optionThree, optionThreesColor, optionThreesVotes, optionThreesBarLength, optionFour, optionFoursColor, optionFoursVotes, optionFoursBarLength, optionFive, optionFivesColor, optionFivesVotes, optionFivesBarLength, optionSix, optionSixesColor, optionSixesVotes, optionSixesBarLength, totalNumberOfOptions, pollUpOrDownVotes, pollId, votedFor, postNum, pollComments, pfpB64, creatorName, creatorDisplayName, datePosted}) => (
+    const PollItem = ({ pollTitle, pollSubTitle, optionOne, optionOnesColor, optionOnesVotes, optionOnesBarLength, optionTwo, optionTwosColor, optionTwosVotes, optionTwosBarLength, optionThree, optionThreesColor, optionThreesVotes, optionThreesBarLength, optionFour, optionFoursColor, optionFoursVotes, optionFoursBarLength, optionFive, optionFivesColor, optionFivesVotes, optionFivesBarLength, optionSix, optionSixesColor, optionSixesVotes, optionSixesBarLength, totalNumberOfOptions, pollUpOrDownVotes, pollId, votedFor, postNum, pollComments, creatorName, creatorDisplayName, datePosted}) => (
         <PollPostFrame onPress={() => navigation.navigate("ViewPollPostPage", {pollTitle, pollSubTitle, optionOne, optionOnesColor, optionOnesVotes, optionOnesBarLength, optionTwo, optionTwosColor, optionTwosVotes, optionTwosBarLength, optionThree, optionThreesColor, optionThreesVotes, optionThreesBarLength, optionFour, optionFoursColor, optionFoursVotes, optionFoursBarLength, optionFive, optionFivesColor, optionFivesVotes, optionFivesBarLength, optionSix, optionSixesColor, optionSixesVotes, optionSixesBarLength, totalNumberOfOptions, pollId, creatorPfpB64: pfpB64, creatorName, creatorDisplayName, datePosted})}>
             {postsWithDeleteMenuOpen == pollId && (
                 <View style={{position: 'absolute', zIndex: 100, alignSelf: 'center', alignItems: 'center', width: '100%', height: '100%', justifyContent: 'center'}}>
@@ -1279,7 +1279,7 @@ const Welcome = ({navigation, route}) => {
             )}
             <PostsHorizontalView style={{marginLeft: '5%', borderBottomWidth: 3, borderColor: darkLight, width: '90%', paddingBottom: 5, marginRight: '5%'}}>
                 <PostsVerticalView>
-                    <PostCreatorIcon source={{uri: pfpB64 ? `data:image/jpg;base64,${pfpB64}` : SocialSquareLogo_B64_png}}/>
+                    <PostCreatorIcon source={{uri: profilePictureUri}}/>
                 </PostsVerticalView>
                 <PostsVerticalView style={{marginTop: 9}}>
                     <SubTitle style={{fontSize: 20, color: brand, marginBottom: 0}}>{creatorDisplayName}</SubTitle>
@@ -1516,23 +1516,13 @@ const Welcome = ({navigation, route}) => {
                 {threadNSFL === true && (
                     <SubTitle style={{fontSize: 10, color: red, marginBottom: 0}}>(NSFL)</SubTitle>
                 )}
-                <View style={{paddingHorizontal: '50%'}}>
-                </View>
+                <View style={{paddingHorizontal: '50%'}}/>
                 <PostsHorizontalView style={{marginLeft: '5%', borderColor: darkLight, width: '90%', paddingBottom: 5, marginRight: '5%'}}>
                     <TouchableOpacity style={{width: '100%', height: 60}}>
                         <PostsHorizontalView>
-                            {creatorImageB64 !== null && (
-                                <PostsVerticalView>
-                                    {creatorImageB64 !== null && (
-                                        <PostCreatorIcon source={{uri: `data:image/jpg;base64,${creatorImageB64}`}}/>
-                                    )}
-                                </PostsVerticalView>
-                            )}
-                            {creatorImageB64 == null && (
-                                <PostsVerticalView>
-                                    <PostCreatorIcon source={{uri: SocialSquareLogo_B64_png}}/>
-                                </PostsVerticalView>
-                            )}
+                            <PostsVerticalView>
+                                <PostCreatorIcon source={{uri: profilePictureUri}}/>
+                            </PostsVerticalView>
                             <PostsVerticalView style={{marginTop: 9}}>
                                 <SubTitle style={{fontSize: 20, marginBottom: 0, color: colors.tertiary}}>{creatorDisplayName}</SubTitle>
                                 <SubTitle style={{fontSize: 12, color: brand, marginBottom: 0}}>@{creatorName}</SubTitle>
@@ -1799,59 +1789,14 @@ const Welcome = ({navigation, route}) => {
                     //image in post
                     async function findImages() {
                         //
-                        if (imageData[index].creatorPfpKey) {
-                            async function asyncFunctionForImages() {
-                                const imageInPost = await getImageWithKeyOne(imageData[index].imageKey)
-                                const imageInPfp = await getImageWithKeyOne(imageData[index].creatorPfpKey)
-                                console.log("Image In Post Recieved")
-                                //Add
-                                const addAndPush = async () => {
-                                    var imageB64 = imageInPost.data
-                                    var pfpB64 = imageInPfp.data
-                                    console.log("TestHere")
-                                    var tempSectionsTemp = {data: [{imageKey: imageData[index].imageKey, imageB64: imageB64, imageTitle: imageData[index].imageTitle, imageDescription: imageData[index].imageDescription, imageUpVotes: imageData[index].imageUpVotes, imageComments: imageData[index].imageComments, creatorName: imageData[index].creatorName, creatorDisplayName: imageData[index].creatorDisplayName, creatorPfpB64: pfpB64, datePosted: imageData[index].datePosted, postNum: index}]}
-                                    if (imageData[index].imageUpVoted) {
-                                        console.log("UpVoted")
-                                        upVotedImages.push(imageData[index].imageKey)
-                                        setUpVotesImages(upVotedImages)
-                                        initialUpVotedImages.push(imageData[index].imageKey)
-                                        setInitialUpVotesImages(initialUpVotedImages)
-                                    } else if (imageData[index].imageDownVoted) {
-                                        console.log("DownVoted")
-                                        downVotedImages.push(imageData[index].imageKey)
-                                        setDownVotesImages(downVotedImages)
-                                        initialDownVotedImages.push(imageData[index].imageKey)
-                                        setInitialDownVotesImages(initialDownVotedImages)
-                                    } else {
-                                        console.log("Neither")
-                                        neitherVotedImages.push(imageData[index].imageKey)
-                                        setNeitherVotesImages(neitherVotedImages)
-                                        initialNeitherVotedImages.push(imageData[index].imageKey)
-                                        setInitialNeitherVotesImages(initialNeitherVotedImages)
-                                    }
-                                    tempSections.push(tempSectionsTemp)
-                                }
-                                await addAndPush()
-                                itemsProcessed++;
-                                if(itemsProcessed === imageData.length) {
-                                    setChangeSectionsOne(tempSections)  
-                                    setLoadingPostsImage(false)  
-                                    console.log(upVotesImages)
-                                    console.log(downVotesImages)
-                                    console.log(neitherVotesImages)
-                                }
-                            }
-                            asyncFunctionForImages()
-                        } else {
-                            console.log("No pfp")
+                        async function asyncFunctionForImages() {
                             const imageInPost = await getImageWithKeyOne(imageData[index].imageKey)
-                            var imageInPfp = null
+                            console.log("Image In Post Recieved")
                             //Add
                             const addAndPush = async () => {
                                 var imageB64 = imageInPost.data
-                                var pfpB64 = imageInPfp
                                 console.log("TestHere")
-                                var tempSectionsTemp = {data: [{imageKey: imageData[index].imageKey, imageB64: imageB64, imageTitle: imageData[index].imageTitle, imageDescription: imageData[index].imageDescription, imageUpVotes: imageData[index].imageUpVotes, imageComments: imageData[index].imageComments, creatorName: imageData[index].creatorName, creatorDisplayName: imageData[index].creatorDisplayName, creatorPfpB64: pfpB64, datePosted: imageData[index].datePosted, postNum: index}]}
+                                var tempSectionsTemp = {data: [{imageKey: imageData[index].imageKey, imageB64: imageB64, imageTitle: imageData[index].imageTitle, imageDescription: imageData[index].imageDescription, imageUpVotes: imageData[index].imageUpVotes, imageComments: imageData[index].imageComments, creatorName: imageData[index].creatorName, creatorDisplayName: imageData[index].creatorDisplayName, datePosted: imageData[index].datePosted, postNum: index}]}
                                 if (imageData[index].imageUpVoted) {
                                     console.log("UpVoted")
                                     upVotedImages.push(imageData[index].imageKey)
@@ -1883,6 +1828,7 @@ const Welcome = ({navigation, route}) => {
                                 console.log(neitherVotesImages)
                             }
                         }
+                        asyncFunctionForImages()
                     }
                     findImages()
                 });
@@ -2057,47 +2003,10 @@ const Welcome = ({navigation, route}) => {
                     }
                     console.log("poll data")
                     console.log(pollData[index])
-                    if (pollData[index].creatorPfpKey) {
-                        async function getPfpImageForPollWithAsync() {
-                            var imageData = pollData
-                            const imageInPfp = await getImageWithKeyThree(imageData[index].creatorPfpKey)
-                            var pfpB64 = imageInPfp.data
-                            
-                            var tempSectionsTemp = {data: [{pollTitle: pollData[index].pollTitle, pollSubTitle: pollData[index].pollSubTitle, optionOne: pollData[index].optionOne, optionOnesColor: pollData[index].optionOnesColor, optionOnesVotes: pollData[index].optionOnesVotes, optionOnesBarLength: optionOnesBarLength, optionTwo: pollData[index].optionTwo, optionTwosColor: pollData[index].optionTwosColor, optionTwosVotes: pollData[index].optionTwosVotes, optionTwosBarLength: optionTwosBarLength, optionThree: pollData[index].optionThree, optionThreesColor: pollData[index].optionThreesColor, optionThreesVotes: pollData[index].optionThreesVotes, optionThreesBarLength: optionThreesBarLength, optionFour: pollData[index].optionFour, optionFoursColor: pollData[index].optionFoursColor, optionFoursVotes: pollData[index].optionFoursVotes, optionFoursBarLength: optionFoursBarLength, optionFive: pollData[index].optionFive, optionFivesColor: pollData[index].optionFivesColor, optionFivesVotes: pollData[index].optionFivesVotes, optionFivesBarLength:optionFivesBarLength, optionSix: pollData[index].optionSix, optionSixesColor: pollData[index].optionSixesColor, optionSixesVotes: pollData[index].optionSixesVotes, optionSixesBarLength: optionSixesBarLength, totalNumberOfOptions: pollData[index].totalNumberOfOptions, pollUpOrDownVotes: pollData[index].pollUpOrDownVotes, pollId: pollData[index]._id, votedFor: pollData[index].votedFor, postNum: index, pollComments: pollData[index].pollComments, pfpB64: pfpB64, creatorName: pollData[index].creatorName, creatorDisplayName: pollData[index].creatorDisplayName, datePosted: pollData[index].datePosted}]}
-                            if (pollData[index].pollUpOrDownVoted == "UpVoted") {
-                                console.log("UpVoted")
-                                upVotedPolls.push(pollData[index]._id)
-                                setUpVotesPolls(upVotedPolls)
-                                initialUpVotedPolls.push(pollData[index]._id)
-                                setInitialUpVotesPolls(initialUpVotedPolls)
-                            } else if (pollData[index].pollUpOrDownVoted == "DownVoted") {
-                                console.log("DownVoted")
-                                downVotedPolls.push(pollData[index]._id)
-                                setDownVotesPolls(downVotedPolls)
-                                initialDownVotedPolls.push(pollData[index]._id)
-                                setInitialDownVotesPolls(initialDownVotedPolls)
-                            } else {
-                                console.log("Neither")
-                                neitherVotedPolls.push(pollData[index]._id)
-                                setNeitherVotesPolls(neitherVotedPolls)
-                                initialNeitherVotedPolls.push(pollData[index]._id)
-                                setInitialNeitherVotesPolls(initialNeitherVotedPolls)
-                            }
-                            tempSections.push(tempSectionsTemp)
-                            itemsProcessed++;
-                            if(itemsProcessed === pollData.length) {
-                                //console.log(tempSections) removed since floods output
-                                setChangeSectionsThree(tempSections)
-                                setLoadingPostsPoll(false)
-                                console.log(upVotesPolls)
-                                console.log(downVotesPolls)
-                                console.log(neitherVotesPolls)
-                            }
-                        }
-                        getPfpImageForPollWithAsync()
-                    } else {
-                        var pfpB64 = null
-                        var tempSectionsTemp = {data: [{pollTitle: pollData[index].pollTitle, pollSubTitle: pollData[index].pollSubTitle, optionOne: pollData[index].optionOne, optionOnesColor: pollData[index].optionOnesColor, optionOnesVotes: pollData[index].optionOnesVotes, optionOnesBarLength: optionOnesBarLength, optionTwo: pollData[index].optionTwo, optionTwosColor: pollData[index].optionTwosColor, optionTwosVotes: pollData[index].optionTwosVotes, optionTwosBarLength: optionTwosBarLength, optionThree: pollData[index].optionThree, optionThreesColor: pollData[index].optionThreesColor, optionThreesVotes: pollData[index].optionThreesVotes, optionThreesBarLength: optionThreesBarLength, optionFour: pollData[index].optionFour, optionFoursColor: pollData[index].optionFoursColor, optionFoursVotes: pollData[index].optionFoursVotes, optionFoursBarLength: optionFoursBarLength, optionFive: pollData[index].optionFive, optionFivesColor: pollData[index].optionFivesColor, optionFivesVotes: pollData[index].optionFivesVotes, optionFivesBarLength:optionFivesBarLength, optionSix: pollData[index].optionSix, optionSixesColor: pollData[index].optionSixesColor, optionSixesVotes: pollData[index].optionSixesVotes, optionSixesBarLength: optionSixesBarLength, totalNumberOfOptions: pollData[index].totalNumberOfOptions, pollUpOrDownVotes: pollData[index].pollUpOrDownVotes, pollId: pollData[index]._id, votedFor: pollData[index].votedFor, postNum: index, pollComments: pollData[index].pollComments, pfpB64: pfpB64, creatorName: pollData[index].creatorName, creatorDisplayName: pollData[index].creatorDisplayName, datePosted: pollData[index].datePosted}]}
+                    async function getPfpImageForPollWithAsync() {
+                        var imageData = pollData
+                        
+                        var tempSectionsTemp = {data: [{pollTitle: pollData[index].pollTitle, pollSubTitle: pollData[index].pollSubTitle, optionOne: pollData[index].optionOne, optionOnesColor: pollData[index].optionOnesColor, optionOnesVotes: pollData[index].optionOnesVotes, optionOnesBarLength: optionOnesBarLength, optionTwo: pollData[index].optionTwo, optionTwosColor: pollData[index].optionTwosColor, optionTwosVotes: pollData[index].optionTwosVotes, optionTwosBarLength: optionTwosBarLength, optionThree: pollData[index].optionThree, optionThreesColor: pollData[index].optionThreesColor, optionThreesVotes: pollData[index].optionThreesVotes, optionThreesBarLength: optionThreesBarLength, optionFour: pollData[index].optionFour, optionFoursColor: pollData[index].optionFoursColor, optionFoursVotes: pollData[index].optionFoursVotes, optionFoursBarLength: optionFoursBarLength, optionFive: pollData[index].optionFive, optionFivesColor: pollData[index].optionFivesColor, optionFivesVotes: pollData[index].optionFivesVotes, optionFivesBarLength:optionFivesBarLength, optionSix: pollData[index].optionSix, optionSixesColor: pollData[index].optionSixesColor, optionSixesVotes: pollData[index].optionSixesVotes, optionSixesBarLength: optionSixesBarLength, totalNumberOfOptions: pollData[index].totalNumberOfOptions, pollUpOrDownVotes: pollData[index].pollUpOrDownVotes, pollId: pollData[index]._id, votedFor: pollData[index].votedFor, postNum: index, pollComments: pollData[index].pollComments, creatorName: pollData[index].creatorName, creatorDisplayName: pollData[index].creatorDisplayName, datePosted: pollData[index].datePosted}]}
                         if (pollData[index].pollUpOrDownVoted == "UpVoted") {
                             console.log("UpVoted")
                             upVotedPolls.push(pollData[index]._id)
@@ -2128,6 +2037,7 @@ const Welcome = ({navigation, route}) => {
                             console.log(neitherVotesPolls)
                         }
                     }
+                    getPfpImageForPollWithAsync()
                 });
             }
 
@@ -2200,161 +2110,78 @@ const Welcome = ({navigation, route}) => {
                     //image in post
                     async function findImages() {
                         //
-                        if (threadData[index].creatorImageKey) {
-                            async function asyncFunctionForImages() {
-                                if (threadData[index].threadType == "Text") {
-                                    const imageInPfp = await getImageWithKeyFour(threadData[index].creatorImageKey)
-                                    const addAndPush = async () => {
-                                        var pfpB64 = imageInPfp.data
-                                        var tempSectionsTemp = {data: [{postNum: index, threadId: threadData[index].threadId, threadComments: threadData[index].threadComments, threadType: threadData[index].threadType, threadUpVotes: threadData[index].threadUpVotes, threadTitle: threadData[index].threadTitle, threadSubtitle: threadData[index].threadSubtitle, threadTags: threadData[index].threadTags, threadCategory: threadData[index].threadCategory, threadBody: threadData[index].threadBody, threadImageKey: threadData[index].threadImageKey, threadImageDescription: threadData[index].threadImageDescription, threadNSFW: threadData[index].threadNSFW, threadNSFL: threadData[index].threadNSFL, datePosted: threadData[index].datePosted, threadUpVoted: threadData[index].threadUpVoted, threadDownVoted: threadData[index].threadDownVoted, creatorDisplayName: threadData[index].creatorDisplayName, creatorName: threadData[index].creatorName, creatorImageB64: pfpB64, imageInThreadB64: null}]}
-                                        if (threadData[index].threadUpVoted == true) {
-                                            console.log("UpVoted")
-                                            upVotedThreads.push(threadData[index].threadId)
-                                            setUpVotesThreads(upVotedThreads)
-                                            initialUpVotedThreads.push(threadData[index].threadId)
-                                            setInitialUpVotesThreads(initialUpVotedThreads)
-                                        } else if (threadData[index].threadDownVoted == true) {
-                                            console.log("DownVoted")
-                                            downVotedThreads.push(threadData[index].threadId)
-                                            setDownVotesThreads(downVotedThreads)
-                                            initialDownVotedThreads.push(threadData[index].threadId)
-                                            setInitialDownVotesThreads(initialDownVotedThreads)
-                                        } else {
-                                            console.log("Neither")
-                                            neitherVotedThreads.push(threadData[index].threadId)
-                                            setNeitherVotesThreads(neitherVotedThreads)
-                                            initialNeitherVotedThreads.push(threadData[index].threadId)
-                                            setInitialNeitherVotesThreads(initialNeitherVotedThreads)
-                                        }
-                                        tempSections.push(tempSectionsTemp)
-                                        itemsProcessed++;
-                                        if(itemsProcessed === threadData.length) {
-                                            setChangeSectionsFour(tempSections)  
-                                            setLoadingPostsThread(false)  
-                                            console.log(upVotesThreads)
-                                            console.log(downVotesThreads)
-                                            console.log(neitherVotesThreads)
-                                        }
+                        async function asyncFunctionForImages() {
+                            if (threadData[index].threadType == "Text") {
+                                const addAndPush = async () => {
+                                    var tempSectionsTemp = {data: [{postNum: index, threadId: threadData[index].threadId, threadComments: threadData[index].threadComments, threadType: threadData[index].threadType, threadUpVotes: threadData[index].threadUpVotes, threadTitle: threadData[index].threadTitle, threadSubtitle: threadData[index].threadSubtitle, threadTags: threadData[index].threadTags, threadCategory: threadData[index].threadCategory, threadBody: threadData[index].threadBody, threadImageKey: threadData[index].threadImageKey, threadImageDescription: threadData[index].threadImageDescription, threadNSFW: threadData[index].threadNSFW, threadNSFL: threadData[index].threadNSFL, datePosted: threadData[index].datePosted, threadUpVoted: threadData[index].threadUpVoted, threadDownVoted: threadData[index].threadDownVoted, creatorDisplayName: threadData[index].creatorDisplayName, creatorName: threadData[index].creatorName, imageInThreadB64: null}]}
+                                    if (threadData[index].threadUpVoted == true) {
+                                        console.log("UpVoted")
+                                        upVotedThreads.push(threadData[index].threadId)
+                                        setUpVotesThreads(upVotedThreads)
+                                        initialUpVotedThreads.push(threadData[index].threadId)
+                                        setInitialUpVotesThreads(initialUpVotedThreads)
+                                    } else if (threadData[index].threadDownVoted == true) {
+                                        console.log("DownVoted")
+                                        downVotedThreads.push(threadData[index].threadId)
+                                        setDownVotesThreads(downVotedThreads)
+                                        initialDownVotedThreads.push(threadData[index].threadId)
+                                        setInitialDownVotesThreads(initialDownVotedThreads)
+                                    } else {
+                                        console.log("Neither")
+                                        neitherVotedThreads.push(threadData[index].threadId)
+                                        setNeitherVotesThreads(neitherVotedThreads)
+                                        initialNeitherVotedThreads.push(threadData[index].threadId)
+                                        setInitialNeitherVotesThreads(initialNeitherVotedThreads)
                                     }
-                                    await addAndPush()
-                                } else if (threadData[index].threadType == "Images") {
-                                    const imageInPfp = await getImageWithKeyFour(threadData[index].creatorImageKey)
-                                    const imageInThread = await getImageWithKeyFour(threadData[index].threadImageKey)
-                                    const addAndPush = async () => {
-                                        var pfpB64 = imageInPfp.data
-                                        var imageInThreadB64 = imageInThread.data
-                                        var tempSectionsTemp = {data: [{postNum: index, threadId: threadData[index].threadId, threadComments: threadData[index].threadComments, threadType: threadData[index].threadType, threadUpVotes: threadData[index].threadUpVotes, threadTitle: threadData[index].threadTitle, threadSubtitle: threadData[index].threadSubtitle, threadTags: threadData[index].threadTags, threadCategory: threadData[index].threadCategory, threadBody: threadData[index].threadBody, threadImageKey: threadData[index].threadImageKey, threadImageDescription: threadData[index].threadImageDescription, threadNSFW: threadData[index].threadNSFW, threadNSFL: threadData[index].threadNSFL, datePosted: threadData[index].datePosted, threadUpVoted: threadData[index].threadUpVoted, threadDownVoted: threadData[index].threadDownVoted, creatorDisplayName: threadData[index].creatorDisplayName, creatorName: threadData[index].creatorName, creatorImageB64: pfpB64, imageInThreadB64: imageInThreadB64}]}
-                                        if (threadData[index].threadUpVoted == true) {
-                                            console.log("UpVoted")
-                                            upVotedThreads.push(threadData[index].threadId)
-                                            setUpVotesThreads(upVotedThreads)
-                                            initialUpVotedThreads.push(threadData[index].threadId)
-                                            setInitialUpVotesThreads(initialUpVotedThreads)
-                                        } else if (threadData[index].threadDownVoted == true) {
-                                            console.log("DownVoted")
-                                            downVotedThreads.push(threadData[index].threadId)
-                                            setDownVotesThreads(downVotedThreads)
-                                            initialDownVotedThreads.push(threadData[index].threadId)
-                                            setInitialDownVotesThreads(initialDownVotedThreads)
-                                        } else {
-                                            console.log("Neither")
-                                            neitherVotedThreads.push(threadData[index].threadId)
-                                            setNeitherVotesThreads(neitherVotedThreads)
-                                            initialNeitherVotedThreads.push(threadData[index].threadId)
-                                            setInitialNeitherVotesThreads(initialNeitherVotedThreads)
-                                        }
-                                        tempSections.push(tempSectionsTemp)
-                                        itemsProcessed++;
-                                        if(itemsProcessed === threadData.length) {
-                                            setChangeSectionsFour(tempSections)  
-                                            setLoadingPostsThread(false)  
-                                            console.log(upVotesThreads)
-                                            console.log(downVotesThreads)
-                                            console.log(neitherVotesThreads)
-                                        }
+                                    tempSections.push(tempSectionsTemp)
+                                    itemsProcessed++;
+                                    if(itemsProcessed === threadData.length) {
+                                        setChangeSectionsFour(tempSections)  
+                                        setLoadingPostsThread(false)  
+                                        console.log(upVotesThreads)
+                                        console.log(downVotesThreads)
+                                        console.log(neitherVotesThreads)
                                     }
-                                    await addAndPush()
                                 }
-                            }
-                            asyncFunctionForImages()
-                        } else {
-                            async function asyncFunctionForImages() {
-                                if (threadData[index].threadType == "Text") {
-                                    const imageInPfp = await getImageWithKeyFour(threadData[index].creatorImageKey)
-                                    const addAndPush = async () => {
-                                        var pfpB64 = imageInPfp.data
-                                        var tempSectionsTemp = {data: [{postNum: index, threadId: threadData[index].threadId, threadComments: threadData[index].threadComments, threadType: threadData[index].threadType, threadUpVotes: threadData[index].threadUpVotes, threadTitle: threadData[index].threadTitle, threadSubtitle: threadData[index].threadSubtitle, threadTags: threadData[index].threadTags, threadCategory: threadData[index].threadCategory, threadBody: threadData[index].threadBody, threadImageKey: threadData[index].threadImageKey, threadImageDescription: threadData[index].threadImageDescription, threadNSFW: threadData[index].threadNSFW, threadNSFL: threadData[index].threadNSFL, datePosted: threadData[index].datePosted, threadUpVoted: threadData[index].threadUpVoted, threadDownVoted: threadData[index].threadDownVoted, creatorDisplayName: threadData[index].creatorDisplayName, creatorName: threadData[index].creatorName, creatorImageB64: pfpB64, imageInThreadB64: null}]}
-                                        if (threadData[index].threadUpVoted == true) {
-                                            console.log("UpVoted")
-                                            upVotedThreads.push(threadData[index].threadId)
-                                            setUpVotesThreads(upVotedThreads)
-                                            initialUpVotedThreads.push(threadData[index].threadId)
-                                            setInitialUpVotesThreads(initialUpVotedThreads)
-                                        } else if (threadData[index].threadDownVoted == true) {
-                                            console.log("DownVoted")
-                                            downVotedThreads.push(threadData[index].threadId)
-                                            setDownVotesThreads(downVotedThreads)
-                                            initialDownVotedThreads.push(threadData[index].threadId)
-                                            setInitialDownVotesThreads(initialDownVotedThreads)
-                                        } else {
-                                            console.log("Neither")
-                                            neitherVotedThreads.push(threadData[index].threadId)
-                                            setNeitherVotesThreads(neitherVotedThreads)
-                                            initialNeitherVotedThreads.push(threadData[index].threadId)
-                                            setInitialNeitherVotesThreads(initialNeitherVotedThreads)
-                                        }
-                                        tempSections.push(tempSectionsTemp)
-                                        itemsProcessed++;
-                                        if(itemsProcessed === threadData.length) {
-                                            setChangeSectionsFour(tempSections)  
-                                            setLoadingPostsThread(false)  
-                                            console.log(upVotesThreads)
-                                            console.log(downVotesThreads)
-                                            console.log(neitherVotesThreads)
-                                        }
+                                await addAndPush()
+                            } else if (threadData[index].threadType == "Images") {
+                                const imageInThread = await getImageWithKeyFour(threadData[index].threadImageKey)
+                                const addAndPush = async () => {
+                                    var imageInThreadB64 = imageInThread.data
+                                    var tempSectionsTemp = {data: [{postNum: index, threadId: threadData[index].threadId, threadComments: threadData[index].threadComments, threadType: threadData[index].threadType, threadUpVotes: threadData[index].threadUpVotes, threadTitle: threadData[index].threadTitle, threadSubtitle: threadData[index].threadSubtitle, threadTags: threadData[index].threadTags, threadCategory: threadData[index].threadCategory, threadBody: threadData[index].threadBody, threadImageKey: threadData[index].threadImageKey, threadImageDescription: threadData[index].threadImageDescription, threadNSFW: threadData[index].threadNSFW, threadNSFL: threadData[index].threadNSFL, datePosted: threadData[index].datePosted, threadUpVoted: threadData[index].threadUpVoted, threadDownVoted: threadData[index].threadDownVoted, creatorDisplayName: threadData[index].creatorDisplayName, creatorName: threadData[index].creatorName, imageInThreadB64: imageInThreadB64}]}
+                                    if (threadData[index].threadUpVoted == true) {
+                                        console.log("UpVoted")
+                                        upVotedThreads.push(threadData[index].threadId)
+                                        setUpVotesThreads(upVotedThreads)
+                                        initialUpVotedThreads.push(threadData[index].threadId)
+                                        setInitialUpVotesThreads(initialUpVotedThreads)
+                                    } else if (threadData[index].threadDownVoted == true) {
+                                        console.log("DownVoted")
+                                        downVotedThreads.push(threadData[index].threadId)
+                                        setDownVotesThreads(downVotedThreads)
+                                        initialDownVotedThreads.push(threadData[index].threadId)
+                                        setInitialDownVotesThreads(initialDownVotedThreads)
+                                    } else {
+                                        console.log("Neither")
+                                        neitherVotedThreads.push(threadData[index].threadId)
+                                        setNeitherVotesThreads(neitherVotedThreads)
+                                        initialNeitherVotedThreads.push(threadData[index].threadId)
+                                        setInitialNeitherVotesThreads(initialNeitherVotedThreads)
                                     }
-                                    await addAndPush()
-                                } else if (threadData[index].threadType == "Images") {
-                                    const imageInPfp = await getImageWithKeyFour(threadData[index].creatorImageKey)
-                                    const imageInThread = await getImageWithKeyFour(threadData[index].threadImageKey)
-                                    const addAndPush = async () => {
-                                        var pfpB64 = imageInPfp.data
-                                        var imageInThreadB64 = imageInThread.data
-                                        var tempSectionsTemp = {data: [{postNum: index, threadId: threadData[index].threadId, threadComments: threadData[index].threadComments, threadType: threadData[index].threadType, threadUpVotes: threadData[index].threadUpVotes, threadTitle: threadData[index].threadTitle, threadSubtitle: threadData[index].threadSubtitle, threadTags: threadData[index].threadTags, threadCategory: threadData[index].threadCategory, threadBody: threadData[index].threadBody, threadImageKey: threadData[index].threadImageKey, threadImageDescription: threadData[index].threadImageDescription, threadNSFW: threadData[index].threadNSFW, threadNSFL: threadData[index].threadNSFL, datePosted: threadData[index].datePosted, threadUpVoted: threadData[index].threadUpVoted, threadDownVoted: threadData[index].threadDownVoted, creatorDisplayName: threadData[index].creatorDisplayName, creatorName: threadData[index].creatorName, creatorImageB64: pfpB64, imageInThreadB64: imageInThreadB64}]}
-                                        if (threadData[index].threadUpVoted == true) {
-                                            console.log("UpVoted")
-                                            upVotedThreads.push(threadData[index].threadId)
-                                            setUpVotesThreads(upVotedThreads)
-                                            initialUpVotedThreads.push(threadData[index].threadId)
-                                            setInitialUpVotesThreads(initialUpVotedThreads)
-                                        } else if (threadData[index].threadDownVoted == true) {
-                                            console.log("DownVoted")
-                                            downVotedThreads.push(threadData[index].threadId)
-                                            setDownVotesThreads(downVotedThreads)
-                                            initialDownVotedThreads.push(threadData[index].threadId)
-                                            setInitialDownVotesThreads(initialDownVotedThreads)
-                                        } else {
-                                            console.log("Neither")
-                                            neitherVotedThreads.push(threadData[index].threadId)
-                                            setNeitherVotesThreads(neitherVotedThreads)
-                                            initialNeitherVotedThreads.push(threadData[index].threadId)
-                                            setInitialNeitherVotesThreads(initialNeitherVotedThreads)
-                                        }
-                                        tempSections.push(tempSectionsTemp)
-                                        itemsProcessed++;
-                                        if(itemsProcessed === threadData.length) {
-                                            setChangeSectionsFour(tempSections)  
-                                            setLoadingPostsThread(false)  
-                                            console.log(upVotesThreads)
-                                            console.log(downVotesThreads)
-                                            console.log(neitherVotesThreads)
-                                        }
+                                    tempSections.push(tempSectionsTemp)
+                                    itemsProcessed++;
+                                    if(itemsProcessed === threadData.length) {
+                                        setChangeSectionsFour(tempSections)  
+                                        setLoadingPostsThread(false)  
+                                        console.log(upVotesThreads)
+                                        console.log(downVotesThreads)
+                                        console.log(neitherVotesThreads)
                                     }
-                                    await addAndPush()
                                 }
+                                await addAndPush()
                             }
-                            asyncFunctionForImages()
                         }
+                        asyncFunctionForImages()
                     }
                     findImages()
                 });
@@ -2424,7 +2251,7 @@ const Welcome = ({navigation, route}) => {
                             asyncFunctionForImages()
                         }
                     } else {
-                        if (index+1 <= userLoadMax) {      
+                        if (index+1 <= userLoadMax) {
                             var tempSectionsTemp = {data: [{categoryTitle: allData[index].categoryTitle, categoryDescription: allData[index].categoryDescription, members: allData[index].members, categoryTags: allData[index].categoryTags, image: null, NSFW: allData[index].NSFW, NSFL: allData[index].NSFL, datePosted: allData[index].datePosted}]}
                             tempSections.push(tempSectionsTemp)
                             itemsProcessed++;
@@ -2614,7 +2441,6 @@ const Welcome = ({navigation, route}) => {
     const ActionMenuOptions = [
         'Camera',
         'Photo Library',
-        'Reset Icon',
         'Cancel'
     ]
 
@@ -2632,6 +2458,7 @@ const Welcome = ({navigation, route}) => {
             navigation.setParams({imageFromRoute: null})
         }
     })
+
     return(
         <>    
             <ActionSheet
@@ -2641,9 +2468,9 @@ const Welcome = ({navigation, route}) => {
                 // Define cancel button index in the option array
                 // This will take the cancel option in bottom
                 // and will highlight it
-                cancelButtonIndex={3}
+                cancelButtonIndex={2}
                 // Highlight any specific option
-                destructiveButtonIndex={2}
+                //destructiveButtonIndex={2}
                 onPress={(index) => {
                     if (index == 0) {
                         console.log('Opening camera...')
@@ -2652,8 +2479,6 @@ const Welcome = ({navigation, route}) => {
                         console.log('Opening image library')
                         OpenImgLibrary()
                     } else if (index == 2) {
-                        console.log('Resetting icon')
-                    } else if (index == 3) {
                         console.log('Cancelling picker menu')
                     }
                 }}
@@ -2749,7 +2574,9 @@ const Welcome = ({navigation, route}) => {
                                 <SubTitle style={{marginBottom: 0, color: darkestBlue, textAlign: 'center'}}></SubTitle>
                             </View>
                         )}
-                        <PageTitle welcome={true}>{displayName || name || "Couldn't get name"}</PageTitle>
+                        <TouchableOpacity onPress={() => {alert('Account Switcher coming soon!')}}>
+                            <PageTitle welcome={true}>{displayName || name || "Couldn't get name"}</PageTitle>
+                        </TouchableOpacity>
                         <SubTitle style={{color: colors.tertiary}}>{"@"+name}</SubTitle>
                         <ProfileBadgesView onPress={() => navigation.navigate("AccountBadges")}>
                             <ProfileBadgeIcons source={require('./../assets/img/TempProfIcons.jpg')}/>

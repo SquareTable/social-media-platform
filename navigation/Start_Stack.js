@@ -65,6 +65,9 @@ const Start_Stack = () => {
                                 }}
                             />
                             <Stack.Screen name="IntroScreen" component={IntroScreen}/>
+                            <Stack.Group screenOptions={{presentation: 'modal'}}>
+                                <Stack.Screen name="ModalLoginScreen" component={LoginScreen}/>
+                            </Stack.Group>
                         </>
                     ) : ( 
                         <>

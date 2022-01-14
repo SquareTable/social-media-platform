@@ -52,6 +52,7 @@ import axios from 'axios';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import { useTheme } from '@react-navigation/native';
+import SocialSquareLogo_B64_png from '../assets/SocialSquareLogo_Base64_png.js';
 
 const FindScreen = ({navigation}) => {
     const {colors, dark} = useTheme();
@@ -94,7 +95,7 @@ const FindScreen = ({navigation}) => {
 
     const UserItem = ({name, displayName, following, followers, totalLikes, profileKey, index}) => (
         searchScreenStyle == 'Regular' ?
-            <SearchFrame onPress={() => navigation.navigate("ProfilePages", {profilesName: name, profilesDisplayName: displayName, following: following, followers: followers, totalLikes: totalLikes, profileKey})}>
+            <SearchFrame onPress={() => navigation.navigate("ProfilePages", {profilesName: name, profilesDisplayName: displayName, following: following, followers: followers, totalLikes: totalLikes, profileKey: profileKey != null ? `data:image/jpg;base64,${profileKey}` : SocialSquareLogo_B64_png})}>
                 {profileKey !== null && (
                     <Avatar resizeMode="cover" searchPage={true} source={{uri: `data:image/jpg;base64,${profileKey}`}} />
                 )}
@@ -124,7 +125,7 @@ const FindScreen = ({navigation}) => {
                 </SearchHorizontalView>
             </SearchFrame>
         :
-            <TouchableOpacity onPress={() => navigation.navigate("ProfilePages", {profilesName: name, profilesDisplayName: displayName, following: following, followers: followers, totalLikes: totalLikes, profileKey})} style={{borderBottomWidth: 2, borderColor: colors.darkLight, flexDirection: 'row', width: '100%', padding: 5}}>
+            <TouchableOpacity onPress={() => navigation.navigate("ProfilePages", {profilesName: name, profilesDisplayName: displayName, following: following, followers: followers, totalLikes: totalLikes, profileKey: profileKey != null ? `data:image/jpg;base64,${profileKey}` : SocialSquareLogo_B64_png})} style={{borderBottomWidth: 2, borderColor: colors.darkLight, flexDirection: 'row', width: '100%', padding: 5}}>
                 <View style={{alignItems: 'flex-start', justifyContent: 'center', flexDirection: 'row'}}>
                     {profileKey !== null && (
                         <Avatar style={{width: 60, height: 60, marginBottom: 5, marginTop: 5}} resizeMode="cover" searchPage={true} source={{uri: `data:image/jpg;base64,${profileKey}`}} />

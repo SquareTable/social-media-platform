@@ -46,9 +46,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 //credentials context
 import { CredentialsContext } from './../components/CredentialsContext';
+import { AllCredentialsStoredContext } from '../components/AllCredentialsStoredContext.js';
+
+import FeatherIcons from 'react-native-vector-icons/Feather';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 
-const LoginScreen = ({navigation}) => {
+const LoginScreen = ({navigation, route}) => {
     const { colors, dark} = useTheme();
     const [hidePassword, setHidePassword] = useState(true);
     const [message, setMessage] = useState();
@@ -56,6 +60,9 @@ const LoginScreen = ({navigation}) => {
 
     //context
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
+    const {allCredentialsStoredList, setAllCredentialsStoredList} = useContext(AllCredentialsStoredContext);
+
+    if (route.params) {var {modal} = route.params}
 
     const handleLogin = (credentials, setSubmitting) => {
         handleMessage(null);
@@ -69,7 +76,6 @@ const LoginScreen = ({navigation}) => {
                 handleMessage(message,status);
             } else {
                 persistLogin({...data[0]}, message, status);
-                navigation.replace("Tabs");
             }
             setSubmitting(false);
 
@@ -87,11 +93,32 @@ const LoginScreen = ({navigation}) => {
 
 
     const persistLogin = (credentials, message, status) => {
+        let sameAccount = false;
+        for (let i = 0; i < allCredentialsStoredList.length; i++) {
+            if (allCredentialsStoredList[i].name === credentials.name) {
+                sameAccount = true;
+            }
+        }
+        alert(sameAccount)
         AsyncStorage.setItem('socialSquareCredentials', JSON.stringify(credentials))
         .then(() => {
-            handleMessage(message, status);
             setStoredCredentials(credentials);
-        })
+            let temp = allCredentialsStoredList;
+            temp.push(credentials);
+            AsyncStorage.setItem('socialSquare_AllCredentialsList', JSON.stringify(temp))
+            .then(() => {
+                handleMessage(message, status);
+                if (sameAccount === false) {
+                    setAllCredentialsStoredList(temp);
+                }
+                navigation.replace("Tabs");
+                handleMessage(message, status);
+            })
+            .catch((error) => {
+                console.log(error);
+                handleMessage('Persisting login failed');
+            })
+            })
         .catch((error) => {
             console.log(error);
             handleMessage('Persisting login failed');
@@ -101,11 +128,10 @@ const LoginScreen = ({navigation}) => {
     useEffect(() => {
         AsyncStorage.setItem('HasOpenedSocialSquare', 'true');
     })
-
     return(
-        <KeyboardAvoidingWrapper>
-            <StyledContainer style={{backgroundColor: colors.primary}}>
-                
+        <KeyboardAvoidingWrapper style={{position: 'relative'}}>
+            <>
+                <StyledContainer style={{backgroundColor: colors.primary}}>
                     <StatusBar style={colors.StatusBarColor}/>
                     <InnerContainer style={{backgroundColor: colors.primary}}>
                         <PageLogo source={require('./../assets/img/Logo.png')} />
@@ -162,13 +188,19 @@ const LoginScreen = ({navigation}) => {
                                     </StyledButton>)}
                                     
                                     <StyledButton style={{backgroundColor: colors.primary, color: colors.tertiary}} signUpButton={true} onPress={() => navigation.navigate("Signup")}>
-                                            <ButtonText signUpButton={true} style={{color: colors.tertiary}}> Signup </ButtonText>
+                                            <ButtonText signUpButton={true} style={{color: colors.tertiary, top: -9.5}}> Signup </ButtonText>
                                     </StyledButton>
+
+                                    {modal == true ?
+                                        <StyledButton style={{backgroundColor: colors.primary, color: colors.tertiary}} signUpButton={true} onPress={() => navigation.goBack()}>
+                                            <ButtonText signUpButton={true} style={{color: colors.tertiary, top: -9.5}}> Close </ButtonText>
+                                        </StyledButton> 
+                                    : null}
                                 </StyledFormArea>)}
                         </Formik>
                     </InnerContainer>
-
-            </StyledContainer>
+                </StyledContainer>
+            </>
         </KeyboardAvoidingWrapper>
     );
 }
@@ -183,13 +215,13 @@ const styles = StyleSheet.create({
 const UserTextInput = ({label, icon, isPassword, hidePassword, setHidePassword, octiconColor, ...props}) => {
     return(
         <View>
-            <LeftIcon>
+            <LeftIcon style={{top: 34}}>
                 <Octicons name={icon} size={30} color={octiconColor} />
             </LeftIcon>
             <StyledInputLabel>{label}</StyledInputLabel>
             <StyledTextInput {...props} />
             {isPassword && (
-                <RightIcon onPress={() => setHidePassword(!hidePassword)}>
+                <RightIcon style={{top: 31}} onPress={() => setHidePassword(!hidePassword)}>
                     <Ionicons name={hidePassword ? 'md-eye-off' : 'md-eye'} size={30} color={brand}/>
                 </RightIcon>
             )}

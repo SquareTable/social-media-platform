@@ -209,9 +209,9 @@ const Signup = ({navigation}) => {
                                     <ActivityIndicator size="large" color={primary} />
                                 </StyledButton>)}
                                 <ExtraView>
-                                    <ExtraText style={{color: colors.tertiary}}>Already have an account? </ExtraText>
+                                    <ExtraText style={{color: colors.tertiary, fontSize: 20}}>Already have an account? </ExtraText>
                                     <TextLink onPress={goBackToLoginScreen}>
-                                        <TextLinkContent style={{color: colors.brand}}>Login</TextLinkContent>
+                                        <TextLinkContent style={{color: colors.brand, fontSize: 20, top: 5}}>Login</TextLinkContent>
                                     </TextLink>
                                 </ExtraView>
                                 <Text style={{textAlign: 'center', color: colors.tertiary, marginTop: 20}}>By signing up, you agree to our </Text>
@@ -233,13 +233,13 @@ const Signup = ({navigation}) => {
 const UserTextInput = ({label, icon, isPassword, hidePassword, setHidePassword, ...props}) => {
     return(
         <View>
-            <LeftIcon>
+            <LeftIcon style={{top: 34.5}}>
                 <Octicons name={icon} size={30} color={brand} />
             </LeftIcon>
             <StyledInputLabel>{label}</StyledInputLabel>
             <StyledTextInput {...props}/>
             {isPassword && (
-                <RightIcon onPress={() => setHidePassword(!hidePassword)}>
+                <RightIcon style={{top: 32.5}} onPress={() => setHidePassword(!hidePassword)}>
                     <Ionicons name={hidePassword ? 'md-eye-off' : 'md-eye'} size={30} color={brand}/>
                 </RightIcon>
             )}

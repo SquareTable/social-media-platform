@@ -214,7 +214,7 @@ const MultiMediaUploadPage = ({navigation, route}) => {
                                 </StyledButton>
                                 
                                 <StyledButton style={{backgroundColor: colors.primary}} signUpButton={true} onPress={() => navigation.navigate("PostScreen")}>
-                                        <ButtonText signUpButton={true}> Cancel </ButtonText>
+                                        <ButtonText style={{top: -9}} signUpButton={true}> Cancel </ButtonText>
                                 </StyledButton>
                             </StyledFormArea>)}
                     </Formik>

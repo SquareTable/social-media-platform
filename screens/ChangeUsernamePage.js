@@ -161,7 +161,7 @@ const ChangeUsernamePage = ({navigation}) => {
                                     </StyledButton>)}
                                     
                                     <StyledButton style={{backgroundColor: colors.primary}} signUpButton={true} onPress={() => navigation.navigate("AccountSettings")}>
-                                            <ButtonText style={{color: colors.tertiary}} signUpButton={true}> Back </ButtonText>
+                                            <ButtonText style={{color: colors.tertiary, top: -9.5}} signUpButton={true}> Back </ButtonText>
                                     </StyledButton>
                                     <SubTitle disclaimerText={true}>You may have to re-login to view your changes</SubTitle>
                                 </StyledFormArea>)}
@@ -189,7 +189,7 @@ const UserTextInput = ({label, icon, isPassword, hidePassword, setHidePassword, 
             <StyledInputLabel>{label}</StyledInputLabel>
             <StyledTextInput {...props}/>
             {isPassword && (
-                <RightIcon onPress={() => setHidePassword(!hidePassword)}>
+                <RightIcon style={{top: 32}} onPress={() => setHidePassword(!hidePassword)}>
                     <Ionicons name={hidePassword ? 'md-eye-off' : 'md-eye'} size={30} color={brand}/>
                 </RightIcon>
             )}

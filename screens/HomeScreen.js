@@ -96,7 +96,6 @@ import VisitingProfileScreen from '../screens/VisitingProfileScreen.js';
 import ScalableProgressiveImage from '../components/ScalableProgressiveImage.js';
 import { Viewport } from '@skele/components';
 import { Audio } from 'expo-av';
-import OfflineNotice from '../components/OfflineNotice.js';
 import SwitchToggle from "react-native-switch-toggle";
 import { SimpleStylingVersion } from '../components/StylingVersionsFile.js';
 import { AppStylingContext } from '../components/AppStylingContext.js';
@@ -908,7 +907,6 @@ const HomeScreen = ({navigation, route}) => {
                     <Image source={require('../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/348-filter.png')} style={{width: 32, height: 32, tintColor: colors.tertiary}}/>
                 </TouchableOpacity>
             </View>
-            <OfflineNotice bottom={true}/>
             <ProfileOptionsView style={{backgroundColor: colors.primary}} viewHidden={updateSimpleStylesWarningHidden}>
                 <ScrollView style={{marginHorizontal: 10}}>
                     <Text style={{color: colors.errorColor ? colors.errorColor : 'red', fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>SocialSquare has recently been updated and the custom styles that you currently have are now out of date.</Text>

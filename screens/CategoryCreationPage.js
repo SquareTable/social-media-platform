@@ -92,7 +92,7 @@ const CategoryCreationPage = ({navigation, route}) => {
         } else {
             return(
                 <View>
-                    <LeftIcon searchIcon={true}>
+                    <LeftIcon style={{top: 27}} searchIcon={true}>
                         <Octicons name={icon} size={30} color={brand} />
                     </LeftIcon>
                     <StyledInputLabel style={{color: colors.tertiary}}>{label}</StyledInputLabel>
@@ -257,7 +257,7 @@ const CategoryCreationPage = ({navigation, route}) => {
                                             <Avatar resizeMode="cover" source={require("./../assets/img/Logo.png")}/>
                                         )}
                                         <StyledButton style={{backgroundColor: colors.primary}} signUpButton={true} onPress={() => {CategoryIconPickerActionMenu.current.show();}}>
-                                            <ButtonText signUpButton={true}>Change</ButtonText>
+                                            <ButtonText signUpButton={true} style={{top: -9.5}}>Change</ButtonText>
                                         </StyledButton>
                                         <PostHorizontalView centerAlign={true}>
                                             <CheckBoxForPosts style={{borderWidth: dark ? 3 : 5}} selectedState={postIsNSFW} onPress={() => {
@@ -304,7 +304,7 @@ const CategoryCreationPage = ({navigation, route}) => {
                                         </StyledButton>)}
                                         
                                         <StyledButton style={{backgroundColor: colors.primary}} signUpButton={true} onPress={() => navigation.navigate("AccountSettings")}>
-                                                <ButtonText signUpButton={true}> Back </ButtonText>
+                                                <ButtonText signUpButton={true} style={{top: -9.5}}> Back </ButtonText>
                                         </StyledButton>
                                     </StyledFormArea>)}
                             </Formik>

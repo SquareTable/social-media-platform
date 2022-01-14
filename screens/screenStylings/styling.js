@@ -401,17 +401,17 @@ export const StyledInputLabel = styled.Text`
 
 export const LeftIcon = styled.View`
     left: 15px;
-    top: 38px;
+    top: 34px;
     position: absolute;
     z-index: 1;
     ${(props) => props.searchIcon == true && `
-        top: 36px;
+        top: 30px;
     `}
 `;
 
 export const RightIcon = styled.TouchableOpacity`
     right: 15px;
-    top: 38px;
+    top: 31px;
     position: absolute;
     z-index: 1;
 `;

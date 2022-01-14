@@ -263,6 +263,10 @@ const SecuritySettingsScreen = ({navigation}) => {
                             <SettingsItemImage style={{tintColor: colors.tertiary}} source={require('./../assets/app_icons/settings.png')}/>
                             <SettingsItemText style={{color: colors.tertiary}}>Two Factor Authentication</SettingsItemText>
                         </SettingsPageItemTouchableOpacity>
+                        <SettingsPageItemTouchableOpacity disabled={!destroyLocalDataMenuHidden} style={{borderColor: colors.borderColor}} onPress={() => navigation.navigate("LoginAttempts")}>
+                            <SettingsItemImage style={{tintColor: colors.tertiary}} source={require('./../assets/app_icons/settings.png')}/>
+                            <SettingsItemText style={{color: colors.tertiary}}>Login Attempts</SettingsItemText>
+                        </SettingsPageItemTouchableOpacity>
                         <View style={{flex: 1, flexDirection: 'row'}}>
                             <View style={{flexDirection: 'column', flex: 1}}>
                                 <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10, textAlign: 'center'}}>Show a placeholder screen when leaving SocialSquare to hide screen contents</Text>

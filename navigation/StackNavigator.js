@@ -63,6 +63,7 @@ import SimpleStylingMenu from "../screens/SimpleStylingScreens/SimpleStylingMenu
 import EditSimpleStyle from "../screens/SimpleStylingScreens/EditSimpleStyle.js";
 import Simple_ColorPickerScreen from "../screens/SimpleStylingScreens/ColorPicker.js";
 import BuiltInStylingMenu from "../screens/BuiltInStylingMenu.js";
+import LoginAttempts from "../screens/SecuritySettingsScreens/LoginAttempts.js";
 
 
 const Stack = createStackNavigator();
@@ -159,6 +160,7 @@ const RootStack = () => {
         <Stack.Screen name="EditSimpleStyle" component={EditSimpleStyle}options={{gestureEnabled: false}}/>
         <Stack.Screen name="Simple_ColorPickerScreen" component={Simple_ColorPickerScreen}/>
         <Stack.Screen name="BuiltInStylingMenu" component={BuiltInStylingMenu}/>
+        <Stack.Screen name="LoginAttempts" component={LoginAttempts}/>
       </Stack.Group>
     </Stack.Navigator>
   );
@@ -265,64 +267,3 @@ export {
   home_screen_post_to_profile_screen, 
   post_screen_navigator,
 };
-
-/* OLD ROOTSTACK
-
-const RootStack = () => {
-  return(
-      <CredentialsContext.Consumer>
-          {({storedCredentials}) => (
-                <Stack.Navigator
-                    screenOptions={{
-                        headerStyle: {
-                            backgroundColor: 'transparent',
-                        },
-                        headerTintColor: tertiary,
-                        headerTransparent: true,
-                        title: '',
-                        headerLeftContainerStyle: {
-                            paddingLeft: 20,
-                        },
-                    }}
-                    initialRouteName="LoginScreen"
-                >
-                    {storedCredentials ? (
-                        <>
-                            <Stack.Screen name="Welcome" component={ProfileScreen}/>
-                            <Stack.Screen name="SettingsScreen" component={SettingsScreen}/>
-                            <Stack.Screen name="BadgesScreen" component={BadgesScreen}/>
-                        </>
-                    ) : ( 
-                        <>
-                            <Stack.Screen name="LoginScreen" component={LoginScreen}/>
-                            <Stack.Screen name="Signup" component={Signup}/>
-                        </>
-                    )}
-                </Stack.Navigator>
-          )}
-      </CredentialsContext.Consumer>
-  )
-}
-
-*/
-
-/* old chat navigator settings
-
-headerStyle: {
-            borderBottomWidth: 3,
-            ...styling.navBackgroundColor,
-            ...styling.borderColor
-          },
-          titleStyle: {
-            fontWeight: 'bold',
-            fontSize: 20,
-            textAlign: 'center',
-            ...styling.textColor
-          },
-          headerBackTitleStyle: {
-            ...styling.textColor,
-          },
-          title: 'Chat (Not working yet)',
-        }}
-
-*/

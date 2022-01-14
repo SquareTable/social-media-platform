@@ -192,7 +192,7 @@ const ThreadUploadPage = ({route, navigation}) => {
         if (body == true) {
             return(
                 <View>
-                    <LeftIcon searchIcon={true}>
+                    <LeftIcon style={{top: 28}} searchIcon={true}>
                         <Octicons name={icon} size={30} color={brand} />
                     </LeftIcon>
                     <StyledInputLabel style={{color: colors.tertiary}}>{label}</StyledInputLabel>
@@ -202,7 +202,7 @@ const ThreadUploadPage = ({route, navigation}) => {
         } else {
             return(
                 <View>
-                    <LeftIcon searchIcon={true}>
+                    <LeftIcon style={{top: 26.5}} searchIcon={true}>
                         <Octicons name={icon} size={30} color={brand} />
                     </LeftIcon>
                     <StyledInputLabel style={{color: colors.tertiary}}>{label}</StyledInputLabel>
@@ -420,7 +420,7 @@ const ThreadUploadPage = ({route, navigation}) => {
                                     )}
                                     <AboveButtonText style={{color: colors.tertiary}}>Select Category</AboveButtonText>
                                     <StyledButton style={{backgroundColor: colors.primary}} signUpButton={true} onPress={() => navigation.navigate("SelectCategorySearchScreen", {threadFormat: selectFormat, threadTitle: values.threadTitle, threadSubtitle: values.threadSubtitle, threadTags: values.threadTags, threadCategory: selectedCategory, threadBody: values.threadBody, threadImage: image, threadImageDescription: values.threadImageDescription, threadNSFW: values.threadNSFW, threadNSFL: values.threadNSFL})}>
-                                        <ButtonText signUpButton={true}>{selectedCategory || "None"}</ButtonText>
+                                        <ButtonText style={{top: -9}} signUpButton={true}>{selectedCategory || "None"}</ButtonText>
                                     </StyledButton>
                                     <PostHorizontalView centerAlign={true}>
                                         <CheckBoxForPosts selectedState={postIsNSFW} onPress={checkboxNSFWPressed}/>
@@ -445,8 +445,8 @@ const ThreadUploadPage = ({route, navigation}) => {
                                         <ActivityIndicator size="large" color={primary} />
                                     </StyledButton>)}
                                     
-                                    <StyledButton style={{backgroundColor: colors.primary}} signUpButton={true} onPress={() => navigation.navigate("PostScreen")}>
-                                            <ButtonText signUpButton={true}> Back </ButtonText>
+                                    <StyledButton style={{backgroundColor: colors.primary}} signUpButton={true} onPress={() => navigation.goBack()}>
+                                            <ButtonText style={{top: -9}} signUpButton={true}> Back </ButtonText>
                                     </StyledButton>
                                 </StyledFormArea>)}
                         </Formik>

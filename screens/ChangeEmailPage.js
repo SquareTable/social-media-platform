@@ -1,6 +1,6 @@
 import React, {useState, useContext} from 'react';
 import { StatusBar } from 'expo-status-bar';
-import {useTheme} from '@react-navigation/native';
+import { useTheme } from '@react-navigation/native';
 
 // formik
 import {Formik} from 'formik';
@@ -113,7 +113,7 @@ const ChangeEmailPage = ({navigation}) => {
                     <InnerContainer style={{backgroundColor: colors.primary}}>
                         <PageLogo source={require('./../assets/img/Logo.png')} />
                         <PageTitle>SocialSquare</PageTitle>
-                        <SubTitle style={{color: colors.teritary}}>Change Email</SubTitle>
+                        <SubTitle style={{color: colors.tertiary}}>Change Email</SubTitle>
 
                         <Formik
                             initialValues={{password: '', userEmail: email, desiredEmail: ''}}
@@ -161,7 +161,7 @@ const ChangeEmailPage = ({navigation}) => {
                                     </StyledButton>)}
                                     
                                     <StyledButton style={{backgroundColor: colors.primary}} signUpButton={true} onPress={() => navigation.navigate("AccountSettings")}>
-                                            <ButtonText style={{color: colors.tertiary}} signUpButton={true}> Back </ButtonText>
+                                            <ButtonText style={{color: colors.tertiary, top: -9.5}} signUpButton={true}> Back </ButtonText>
                                     </StyledButton>
                                     <SubTitle disclaimerText={true}>You may have to re-login to view your changes</SubTitle>
                                 </StyledFormArea>)}
@@ -189,7 +189,7 @@ const UserTextInput = ({label, icon, isPassword, hidePassword, setHidePassword, 
             <StyledInputLabel>{label}</StyledInputLabel>
             <StyledTextInput {...props}/>
             {isPassword && (
-                <RightIcon onPress={() => setHidePassword(!hidePassword)}>
+                <RightIcon style={{top: 32}} onPress={() => setHidePassword(!hidePassword)}>
                     <Ionicons name={hidePassword ? 'md-eye-off' : 'md-eye'} size={30} color={brand}/>
                 </RightIcon>
             )}

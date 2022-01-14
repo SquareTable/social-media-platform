@@ -106,7 +106,7 @@ const PollUploadPage = ({navigation}) => {
         ...props}) => {
         return(
             <View>
-                <LeftIcon>
+                <LeftIcon style={{top: icon == "note" ? 35 : 33}}>
                     <Octicons name={icon} size={30} color={
                         isOptionOne ? optionOneColor !== '' ? eval(optionOneColor.toLowerCase()) : brand :
                         isOptionTwo ? optionTwoColor !== '' ? eval(optionTwoColor.toLowerCase()) : brand :
@@ -119,32 +119,32 @@ const PollUploadPage = ({navigation}) => {
                 <StyledInputLabel style={{color: colors.tertiary}}>{label}</StyledInputLabel>
                 <StyledTextInput {...props}/>
                 {isOptionOne && (
-                    <RightIcon onPress={() => setOptionOneColorChangeViewVisible(false)}>
+                    <RightIcon style={{top: 33}} onPress={() => setOptionOneColorChangeViewVisible(false)}>
                         <Ionicons name={'color-palette-outline'} size={30} color={optionOneColor !== '' ? eval(optionOneColor.toLowerCase()) : brand}/>
                     </RightIcon>
                 )}
                 {isOptionTwo && (
-                    <RightIcon onPress={() => setOptionTwoColorChangeViewVisible(false)}>
+                    <RightIcon style={{top: 33}} onPress={() => setOptionTwoColorChangeViewVisible(false)}>
                         <Ionicons name={'color-palette-outline'} size={30} color={optionTwoColor !== '' ? eval(optionTwoColor.toLowerCase()) : brand}/>
                     </RightIcon>
                 )}
                 {isOptionThree && (
-                    <RightIcon onPress={() => setOptionThreeColorChangeViewVisible(false)}>
+                    <RightIcon style={{top: 33}} onPress={() => setOptionThreeColorChangeViewVisible(false)}>
                         <Ionicons name={'color-palette-outline'} size={30} color={optionThreeColor !== '' ? eval(optionThreeColor.toLowerCase()) : brand}/>
                     </RightIcon>
                 )}
                 {isOptionFour && (
-                    <RightIcon onPress={() => setOptionFourColorChangeViewVisible(false)}>
+                    <RightIcon style={{top: 33}} onPress={() => setOptionFourColorChangeViewVisible(false)}>
                         <Ionicons name={'color-palette-outline'} size={30} color={optionFourColor !== '' ? eval(optionFourColor.toLowerCase()) : brand}/>
                     </RightIcon>
                 )}
                 {isOptionFive && (
-                    <RightIcon onPress={() => setOptionFiveColorChangeViewVisible(false)}>
+                    <RightIcon style={{top: 33}} onPress={() => setOptionFiveColorChangeViewVisible(false)}>
                         <Ionicons name={'color-palette-outline'} size={30} color={optionFiveColor !== '' ? eval(optionFiveColor.toLowerCase()) : brand}/>
                     </RightIcon>
                 )}
                 {isOptionSix && (
-                    <RightIcon onPress={() => setOptionSixColorChangeViewVisible(false)}>
+                    <RightIcon style={{top: 33}} onPress={() => setOptionSixColorChangeViewVisible(false)}>
                         <Ionicons name={'color-palette-outline'} size={30} color={optionSixColor !== '' ? eval(optionSixColor.toLowerCase()) : brand}/>
                     </RightIcon>
                 )}
@@ -835,7 +835,7 @@ const PollUploadPage = ({navigation}) => {
                                         </StyledButton>)}
                                         
                                         <StyledButton style={{backgroundColor: colors.primary}} signUpButton={true} onPress={() => navigation.navigate("PostScreen")}>
-                                                <ButtonText signUpButton={true}> Back </ButtonText>
+                                                <ButtonText signUpButton={true} style={{top: -9.5}}> Back </ButtonText>
                                         </StyledButton>
                                     </StyledFormArea>)}
                             </Formik>
