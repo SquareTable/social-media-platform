@@ -33,6 +33,7 @@ import * as Linking from 'expo-linking';
 import SocialSquareLogo_B64_png from '../assets/SocialSquareLogo_Base64_png.js';
 import * as WebBrowser from 'expo-web-browser';
 import { ProfilePictureURIContext } from '../components/ProfilePictureURIContext.js';
+import { AllCredentialsStoredContext } from '../components/AllCredentialsStoredContext.js';
 
 
 const SettingsPage = ({navigation}) => {
@@ -42,23 +43,53 @@ const SettingsPage = ({navigation}) => {
     const [logoutViewState, setLogoutViewState] = useState(true)
     const [webBrowserResult, setWebBrowserResult] = useState(null)
     const {profilePictureUri, setProfilePictureUri} = useContext(ProfilePictureURIContext);
+    const {allCredentialsStoredList, setAllCredentialsStoredList} = useContext(AllCredentialsStoredContext);
 
     const clearLogin = () => {
-        AsyncStorage.removeItem('socialSquareCredentials').then(() => {
-            setStoredCredentials(null);
-        })
-        .catch(error => console.log(error));
         AsyncStorage.removeItem('SocialSquareDMsList');
         AsyncStorage.removeItem('PlayAudioInSilentMode_AppBehaviour_AsyncStorage');
         AsyncStorage.removeItem('UserProfilePicture');
-        setProfilePictureUri(SocialSquareLogo_B64_png);
-        try {
+        if (storedCredentials && allCredentialsStoredList) {
+            if (allCredentialsStoredList.length == 1 || allCredentialsStoredList.length == 0 || allCredentialsStoredList == undefined || allCredentialsStoredList == null) {
+                console.log('Running logout code for when allCredentialsStoredLists length is 1 or 0');
+                setProfilePictureUri(SocialSquareLogo_B64_png);
+                AsyncStorage.removeItem('socialSquareCredentials').then(() => {
+                    setStoredCredentials(null)
+                })
+                AsyncStorage.removeItem('socialSquare_AllCredentialsList').then(() => {
+                    setAllCredentialsStoredList(null)
+                })
+                navigation.reset({
+                    index: 0,
+                    routes: [{ name: 'LoginScreen' }],
+                });
+            } else {
+                console.log('Running logout code for when allCredentialsStoredLists length is not 1 or 0')
+                allCredentialsStoredList.splice(storedCredentials.indexLength, 1);
+                AsyncStorage.setItem('socialSquare_AllCredentialsList', JSON.stringify(allCredentialsStoredList)).then(() => {
+                    setAllCredentialsStoredList(allCredentialsStoredList)
+                });
+                AsyncStorage.setItem('socialSquareCredentials', JSON.stringify(allCredentialsStoredList[0])).then(() => {
+                    setProfilePictureUri(allCredentialsStoredList[0].profilePictureUri)
+                    setStoredCredentials(allCredentialsStoredList[0])
+                });
+                navigation.reset({
+                    index: 0,
+                    routes: [{ name: 'Tabs' }],
+                })
+            }
+        } else {
+            setProfilePictureUri(SocialSquareLogo_B64_png);
+            AsyncStorage.removeItem('socialSquareCredentials').then(() => {
+                setStoredCredentials(null)
+            })
+            AsyncStorage.removeItem('socialSquare_AllCredentialsList').then(() => {
+                setAllCredentialsStoredList(null)
+            })
             navigation.reset({
                 index: 0,
                 routes: [{ name: 'LoginScreen' }],
             });
-        } catch (e) {
-            console.error(e + "Error with resetting navigation after logout from SettingsScreen.js");
         }
     }
 

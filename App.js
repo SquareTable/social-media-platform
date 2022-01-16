@@ -1,9 +1,9 @@
 import 'react-native-gesture-handler';
 import Constants from 'expo-constants';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, useTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { StatusBar } from 'expo-status-bar';
-import React, { useEffect, useState, useRef, useCallback } from 'react';
+import React, { useEffect, useState, useRef, useCallback, useContext } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Alert, SafeAreaView, Platform, Image, Animated, Vibration, AppState, Dimensions, FlatList} from 'react-native';
 import styled from "styled-components";
 import LoginScreen from './screens/LoginScreen.js';
@@ -397,6 +397,7 @@ const App = () => {
   let GoDownByY = useRef(new Animated.Value(StatusBarHeight - 200)).current;
   let DisconnectedFromInternetBoxY = useRef(new Animated.Value(0)).current;
   let AccountSwitcherY = useRef(new Animated.Value(500)).current;
+  let AccountSwitchedBoxY = useRef(new Animated.Value(0)).current;
 
   const NotificationBox = () => {
     const onPanGestureEvent = Animated.event(
@@ -540,7 +541,22 @@ const App = () => {
       }).start();
     }
     const AddNewAccount = () => {
-      AppNavigation.navigate('ModalLoginScreen', {modal: true})
+      AppNavigation.navigate('ModalLoginScreen', {modal: true});
+      Animated.timing(AccountSwitcherY, {
+        toValue: 250,
+        duration: 200,
+        useNativeDriver: true
+      }).start();
+    }
+    const goToAccount = (account) => {
+      setProfilePictureUri(account.profilePictureUri);
+      setStoredCredentials(account);
+      Animated.timing(AccountSwitcherY, {
+        toValue: 250,
+        duration: 200,
+        useNativeDriver: true
+      }).start();
+      AppNavigation.reset('Tabs', 0);
     }
     return(
       <PanGestureHandler onGestureEvent={onPanGestureEvent} onHandlerStateChange={onHandlerStateChange}>
@@ -549,22 +565,27 @@ const App = () => {
             <>
               <View style={{flexDirection: 'row', justifyContent: 'flex-start', height: 60, alignItems: 'flex-start'}}>
                 <Avatar style={{width: 40, height: 40, marginLeft: 15}} resizeMode="cover" source={{uri: profilePictureUri}}/>
-                <Text style={{color: 'white', fontSize: 20, fontWeight: 'bold', marginLeft: 15, marginTop: 16}}>{storedCredentials.name}</Text>
+                <Text style={{color: 'white', fontSize: 20, fontWeight: 'bold', marginTop: 16, position: 'absolute', left: 71}}>{storedCredentials.name}</Text>
               </View>
               <View style={{width: '100%', backgroundColor: 'white', height: 3, borderColor: 'white', borderWidth: 1, borderRadius: 20, width: '96%', alignSelf: 'center'}}/>
               <FlatList
                 data={allCredentialsStoredList}
+                inverted={true}
                 renderItem={({item}) => (
-                  <TouchableOpacity onPress={() => {}} style={{flexDirection: 'row', justifyContent: 'flex-start', height: 60, alignItems: 'flex-start'}}>
-                    <Avatar style={{width: 40, height: 40, marginLeft: 15}} resizeMode="cover" source={{uri: profilePictureUri}}/>
-                    <Text style={{color: 'white', fontSize: 20, fontWeight: 'bold', marginLeft: 15, marginTop: 16}}>{item.name}</Text>
-                  </TouchableOpacity>
+                  <>
+                    {item.secondId != storedCredentials.secondId ?
+                      <TouchableOpacity onPress={() => {goToAccount(item)}} style={{flexDirection: 'row', justifyContent: 'flex-start', height: 60, alignItems: 'flex-start'}}>
+                        <Avatar style={{width: 40, height: 40, marginLeft: 15}} resizeMode="cover" source={{uri: item.profilePictureUri}}/>
+                        <Text style={{color: 'white', fontSize: 20, fontWeight: 'bold', marginTop: 16, position: 'absolute', left: 71}}>{item.name}</Text>
+                      </TouchableOpacity>
+                    : null}
+                  </>
                 )}
                 keyExtractor={(item, index) => 'key'+index}
               />
               <TouchableOpacity onPress={AddNewAccount} style={{flexDirection: 'row', justifyContent: 'flex-start', height: 60}}>
-                <EvilIcons name="plus" size={60} color="white" style={{marginLeft: 15, marginTop: 4}}/>
-                <Text style={{color: 'white', fontSize: 20, fontWeight: 'bold', marginLeft: 15, marginTop: 16}}>Add New Account</Text>
+                <EvilIcons name="plus" size={60} color="white" style={{marginLeft: 6, marginTop: 4}}/>
+                <Text style={{color: 'white', fontSize: 20, fontWeight: 'bold', marginLeft: 5, marginTop: 16}}>Add New Account</Text>
               </TouchableOpacity>
             </>
           : null}
@@ -573,82 +594,89 @@ const App = () => {
     )
   }
 
-  useEffect(() => {
-    async function refreshProfilePictureContext() {
-      const getProfilePicture = () => {
-        const url = `https://nameless-dawn-41038.herokuapp.com/user/getProfilePic/${storedCredentials.name}`;
-
-        axios.get(url).then((response) => {
-            const result = response.data;
-            const {message, status, data} = result;
-
-            if (status !== 'SUCCESS') {
-                console.log('GETTING PROFILE PICTURE FOR ProfilePictureUriContext WAS NOT A SUCCESS')
-                console.log(status)
-                console.log(message)
-            } else {
-                console.log(status)
-                console.log(message)
-                axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${data}`)
-                .then((response) => {
-                    const result = response.data;
-                    const {message, status, data} = result;
-                    console.log(status)
-                    console.log(message)
-                    console.log(data)
-                    //set image
-                    if (message == 'No profile image.' && status == 'FAILED') {
-                        console.log('Setting logo to SocialSquare logo')
-                        setProfilePictureUri(SocialSquareLogo_B64_png)
-                    } else if (data) {
-                        //convert back to image
-                        console.log('Setting logo in tab bar to profile logo')
-                        var base64Icon = `data:image/jpg;base64,${data}`
-                        setProfilePictureUri(base64Icon)
-                        const SetUserPfpToAsyncStorage = async () => {await AsyncStorage.setItem('UserProfilePicture', base64Icon)}
-                        SetUserPfpToAsyncStorage()
-                    } else {
-                        console.log('Setting logo to SocialSquare logo')
-                        setProfilePictureUri(SocialSquareLogo_B64_png)
-                    }
-                })
-                .catch(function (error) {
-                    console.log("Image not recieved")
-                    console.log(error);
-                });
-            }
-            //setSubmitting(false);
-
-        }).catch(error => {
-            console.log(error);
-            //setSubmitting(false);
-            handleMessage("An error occured. Try checking your network connection and retry.");
-        })
-      }
-      if (await AsyncStorage.getItem('UserProfilePicture') != null) {
-        console.log('Setting ProfilePictureUri context to profile picture in Async Storage')
-        setProfilePictureUri(await AsyncStorage.getItem('UserProfilePicture'))
-      } else {
-        NetInfo.fetch().then(state => {
-          console.log("Connection type", state.type);
-          console.log("Is connected?", state.isConnected);
-          if (state.isConnected == true) {
-            if (storedCredentials) {
-              console.log('There is no profile picture in AsyncStorage. Loading profile picture for ProfilePictureUri Context using internet connection')
-              getProfilePicture()
-            } else {
-              console.log('There is no stored credentials and no profile picture in Async Storage. Setting ProfilePictureUri to SocialSquareB64Logo')
-              setProfilePictureUri(SocialSquareLogo_B64_png)
-            }
-          } else {
-            console.log('There is no internet connection and no saved profile picture in Async Storage. Setting ProfilePictureUri to SocialSquareB64Logo')
-            setProfilePictureUri(SocialSquareLogo_B64_png)
-          }
-        });
+  const AccountSwitchedBox = () => {
+    const {colors} = useTheme()
+    const onPanGestureEvent = Animated.event(
+      [
+        {
+          nativeEvent: {
+            translationY: AccountSwitchedBoxY,
+          },
+        },
+      ],
+      { useNativeDriver: true }
+    );
+    const onHandlerStateChange = event => {
+      if (event.nativeEvent.oldState === State.ACTIVE) {
+        if (event.nativeEvent.absoluteY > appHeight - 140) {
+          Animated.timing(AccountSwitchedBoxY, {
+            toValue: 250,
+            duration: 200,
+            useNativeDriver: true
+          }).start();
+        } else {
+          Animated.timing(AccountSwitchedBoxY, {
+            toValue: 0,
+            duration: 100,
+            useNativeDriver: true
+          }).start();
+        }
       }
     }
-    console.log('Getting profile picture for ProfilePictureUriContext')
-    refreshProfilePictureContext()
+    const onBoxPress = () => {
+      Animated.timing(AccountSwitchedBoxY, {
+        toValue: 250,
+        duration: 200,
+        useNativeDriver: true
+      }).start();
+    }
+    return(
+      <>
+        {storedCredentials ?
+          <PanGestureHandler onGestureEvent={onPanGestureEvent} onHandlerStateChange={onHandlerStateChange}>
+            <Animated.View style={{backgroundColor: (colors.primary + 'CC'), height: 60, width: '90%', position: 'absolute', zIndex: 999, top: appHeight - 140, marginHorizontal: '5%', flexDirection: 'row', borderColor: 'black', borderRadius: 15, borderWidth: 1, transform: [{translateY: AccountSwitchedBoxY}], justifyContent: 'center', alignItems: 'center'}}>
+              <TouchableOpacity onPress={onBoxPress} style={{flexDirection: 'row', justifyContent: 'flex-start'}}>
+                <Avatar style={{width: 40, height: 40, marginLeft: 15}} source={{uri: profilePictureUri}}/>
+                <Text style={{color: colors.tertiary, fontSize: 16, marginTop: 20, marginLeft: 15, fontWeight: 'bold'}}>{'Switched to ' + storedCredentials.name}</Text>
+              </TouchableOpacity>
+            </Animated.View>
+          </PanGestureHandler>
+        : null}
+      </>
+    )
+  }
+
+  useEffect(() => {
+    try {
+      if (allCredentialsStoredList) {
+        if (allCredentialsStoredList.length == 0 || allCredentialsStoredList.length == 1) {
+          Animated.timing(AccountSwitchedBoxY, {
+            toValue: 250,
+            duration: 1,
+            useNativeDriver: true
+          }).start();
+        }
+      }
+      if (storedCredentials && allCredentialsStoredList) {
+        if (allCredentialsStoredList.length > 1) {
+          Animated.sequence([
+            Animated.timing(AccountSwitchedBoxY, {
+              toValue: 0,
+              duration: 100,
+              useNativeDriver: true
+            }),
+            Animated.delay(3000),
+            Animated.timing(AccountSwitchedBoxY, {
+              toValue: 250,
+              duration: 100,
+              useNativeDriver: true
+            })
+          ]).start();
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
   }, [storedCredentials])
 
   const handleAppAuth = () => {  
@@ -671,6 +699,7 @@ const App = () => {
     }
     authenticate()
   }
+
   //If app goes into the background and then comes back into the foreground, if SocialSquare automatic locking is enabled, this will start biometric authentication
   useEffect(() => {
     if ((previousAppStateVisible == 'background' || previousAppStateVisible == 'inactive' || previousAppStateVisible == 'justStarted') && openApp == false && lockSocialSquare == true && LocalAuthentication.SecurityLevel != 0 && AppOwnershipValue != 'expo' && appStateVisible == 'active' && showSocialSquareLockedWarning == false) {
@@ -702,6 +731,82 @@ const App = () => {
         } else {
           setStoredCredentials(null);
         }
+        async function refreshProfilePictureContext(credentials) {
+          const getProfilePicture = () => {
+            const url = `https://nameless-dawn-41038.herokuapp.com/user/getProfilePic/${credentials.name}`;
+    
+            axios.get(url).then((response) => {
+                const result = response.data;
+                const {message, status, data} = result;
+    
+                if (status !== 'SUCCESS') {
+                    console.log('GETTING PROFILE PICTURE FOR ProfilePictureUriContext WAS NOT A SUCCESS')
+                    console.log(status)
+                    console.log(message)
+                } else {
+                    console.log(status)
+                    console.log(message)
+                    axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${data}`)
+                    .then((response) => {
+                        const result = response.data;
+                        const {message, status, data} = result;
+                        console.log(status)
+                        console.log(message)
+                        console.log(data)
+                        //set image
+                        if (message == 'No profile image.' && status == 'FAILED') {
+                            console.log('Setting logo to SocialSquare logo')
+                            setProfilePictureUri(SocialSquareLogo_B64_png)
+                        } else if (data) {
+                              //convert back to image
+                              console.log('Setting logo in tab bar to profile logo')
+                              var base64Icon = `data:image/jpg;base64,${data}`
+                              setProfilePictureUri(base64Icon)
+                        } else {
+                            console.log('Setting logo to SocialSquare logo')
+                            setProfilePictureUri(SocialSquareLogo_B64_png)
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log("Image not recieved")
+                        console.log(error);
+                    });
+                }
+                //setSubmitting(false);
+    
+            }).catch(error => {
+                console.log(error);
+                //setSubmitting(false);
+                handleMessage("An error occured. Try checking your network connection and retry.");
+            })
+          }
+          let credentialsListObject = await AsyncStorage.getItem('socialSquare_AllCredentialsList');
+          let parsedCredentialsListObject = JSON.parse(credentialsListObject);
+          setAllCredentialsStoredList(parsedCredentialsListObject);
+          if (credentials && parsedCredentialsListObject[credentials.indexLength].profilePictureUri != null && parsedCredentialsListObject[credentials.indexLength].profilePictureUri != undefined) {
+            console.log('Setting ProfilePictureUri context to profile picture in Async Storage')
+            setProfilePictureUri(parsedCredentialsListObject[credentials.indexLength].profilePictureUri)
+          } else {
+            NetInfo.fetch().then(state => {
+              console.log("Connection type", state.type);
+              console.log("Is connected?", state.isConnected);
+              if (state.isConnected == true) {
+                if (credentials) {
+                  console.log('There is no profile picture in AsyncStorage. Loading profile picture for ProfilePictureUri Context using internet connection')
+                  getProfilePicture()
+                } else {
+                  console.log('There is no stored credentials and no profile picture in Async Storage. Setting ProfilePictureUri to SocialSquareB64Logo')
+                  setProfilePictureUri(SocialSquareLogo_B64_png)
+                }
+              } else {
+                console.log('There is no internet connection and no saved profile picture in Async Storage. Setting ProfilePictureUri to SocialSquareB64Logo')
+                setProfilePictureUri(SocialSquareLogo_B64_png)
+              }
+            });
+          }
+        }
+        console.log('Getting profile picture for ProfilePictureUriContext')
+        refreshProfilePictureContext(JSON.parse(result))
       }).catch((error) => console.log(error));
       await AsyncStorage.getItem('AppStylingContextState').then((result) => {
         if (result == null) {
@@ -771,77 +876,6 @@ const App = () => {
         require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/015-images.png'),
         require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/115-users.png'),
       ];
-
-      const getProfilePicture = () => {
-        const url = `https://nameless-dawn-41038.herokuapp.com/user/getProfilePic/${storedCredentials.name}`;
-
-        axios.get(url).then((response) => {
-            const result = response.data;
-            const {message, status, data} = result;
-
-            if (status !== 'SUCCESS') {
-                console.log('GETTING PROFILE PICTURE FOR TABS.JS WAS NOT A SUCCESS')
-                console.log(status)
-                console.log(message)
-            } else {
-                console.log(status)
-                console.log(message)
-                axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${data}`)
-                .then((response) => {
-                    const result = response.data;
-                    const {message, status, data} = result;
-                    console.log(status)
-                    console.log(message)
-                    console.log(data)
-                    //set image
-                    if (message == 'No profile image.' && status == 'FAILED') {
-                        console.log('Setting logo to SocialSquare logo')
-                        setProfilePictureUri(SocialSquareLogo_B64_png)
-                    } else if (data) {
-                        //convert back to image
-                        console.log('Setting logo in tab bar to profile logo')
-                        var base64Icon = `data:image/jpg;base64,${data}`
-                        setProfilePictureUri(base64Icon)
-                        const SetUserPfpToAsyncStorage = async () => {await AsyncStorage.setItem('UserProfilePicture', base64Icon)}
-                        SetUserPfpToAsyncStorage()
-                    } else {
-                        console.log('Setting logo to SocialSquare logo')
-                        setProfilePictureUri(SocialSquareLogo_B64_png)
-                    }
-                })
-                .catch(function (error) {
-                    console.log("Image not recieved")
-                    console.log(error);
-                });
-            }
-            //setSubmitting(false);
-
-        }).catch(error => {
-            console.log(error);
-        })
-      }
-
-      if (await AsyncStorage.getItem('UserProfilePicture') != null) {
-        console.log('Setting ProfilePictureUri context to profile picture in Async Storage')
-        setProfilePictureUri(await AsyncStorage.getItem('UserProfilePicture'))
-      } else {
-        NetInfo.fetch().then(state => {
-          console.log("Connection type", state.type);
-          console.log("Is connected?", state.isConnected);
-          if (state.isConnected == true) {
-            if (storedCredentials) {
-              console.log('There is no profile picture in AsyncStorage. Loading profile picture for ProfilePictureUri Context using internet connection')
-              getProfilePicture()
-            } else {
-              console.log('There is no stored credentials and no profile picture in Async Storage. Setting ProfilePictureUri to SocialSquareB64Logo')
-              setProfilePictureUri(SocialSquareLogo_B64_png)
-            }
-          } else {
-            console.log('There is no internet connection and no saved profile picture in Async Storage. Setting ProfilePictureUri to SocialSquareB64Logo')
-            setProfilePictureUri(SocialSquareLogo_B64_png)
-          }
-        });
-      }
 
       const LockSocialSquareValue = await AsyncStorage.getItem('LockSocialSquare')
       const ShowPlaceholderScreenValue = await AsyncStorage.getItem('ShowPlaceholderScreen')
@@ -943,6 +977,7 @@ const App = () => {
                               <NotificationBox/>
                               <DisconnectedFromInternetBox/>
                               <AccountSwitcher/>
+                              <AccountSwitchedBox/>
                               <Start_Stack/>
                             </NavigationContainer>
                           </AppearanceProvider>

@@ -60,10 +60,6 @@ const PostScreen = ({navigation, route}) => {
     const {AppStylingContextState, setAppStylingContextState} = useContext(AppStylingContext)
     const [formatMessage, setFormatMessage] = useState('Select a format')
     if (route.params) {var {postData, postType, navigateToHomeScreen} = route.params}
-    if (navigateToHomeScreen == true) {
-        navigation.setParams({navigateToHomeScreen: false})
-        navigation.navigate('HomeScreen', {postData: postData, postType: postType})
-    }
 
     const continuePressed = () => {
         if (formatOneSelected == true) {
@@ -142,6 +138,11 @@ const PostScreen = ({navigation, route}) => {
     }
 
     const {colors, dark} = useTheme();
+
+    if (navigateToHomeScreen == true) {
+        navigation.setParams({navigateToHomeScreen: false})
+        navigation.navigate('HomeScreen', {postData: postData, postType: postType})
+    }
 
 
     return(

@@ -49,20 +49,27 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 //credentials context
 import { CredentialsContext } from './../components/CredentialsContext';
+import { AllCredentialsStoredContext } from '../components/AllCredentialsStoredContext.js';
+import SocialSquareLogo_B64_png from '../assets/SocialSquareLogo_Base64_png.js';
+import { ProfilePictureURIContext } from '../components/ProfilePictureURIContext.js';
 
 
-const Signup = ({navigation}) => {
+const Signup = ({navigation, route}) => {
     if (darkModeOn === true) {
         var styling = darkModeStyling;
     } else {
         var styling = lightModeStyling;
     }
     const [webBrowserResult, setWebBrowserResult] = useState(null);
+    const {allCredentialsStoredList, setAllCredentialsStoredList} = useContext(AllCredentialsStoredContext);
+    const {profilePictureUri, setProfilePictureUri} = useContext(ProfilePictureURIContext);
 
     const goToLink = async (linkToGoTo) => {
         let result = await WebBrowser.openBrowserAsync(linkToGoTo);
         setWebBrowserResult(result);
     };
+
+    if (route.params) {var {modal} = route.params;}
 
     const {colors} = useTheme();
 
@@ -86,15 +93,11 @@ const Signup = ({navigation}) => {
                 handleMessage(message,status);
             } else {
                 persistLogin({...data}, message, status);
-                navigation.reset({
-                    index: 0,
-                    routes: [{ name: 'Tabs' }],
-                });
             }
             setSubmitting(false);
 
         }).catch(error => {
-            console.log(error.JSON());
+            console.log(error);
             setSubmitting(false);
             handleMessage("An error occured. Try checking your network connection and retry.");
         })
@@ -106,10 +109,28 @@ const Signup = ({navigation}) => {
     }
 
     const persistLogin = (credentials, message, status) => {
-        AsyncStorage.setItem('socialSquareCredentials', JSON.stringify(credentials))
+        let credentialsToUse = credentials;
+        var temp = allCredentialsStoredList;
+        credentialsToUse.profilePictureUri = SocialSquareLogo_B64_png
+        if (temp == null || temp == undefined) {
+            temp = [];
+            credentialsToUse.indexLength = 0;
+        } else {
+            credentialsToUse.indexLength = temp.length;
+        }
+        setProfilePictureUri(SocialSquareLogo_B64_png);
+        AsyncStorage.setItem('socialSquareCredentials', JSON.stringify(credentialsToUse))
         .then(() => {
             handleMessage(message, status);
-            setStoredCredentials(credentials);
+            setStoredCredentials(credentialsToUse);
+            temp.push(credentialsToUse);
+            AsyncStorage.setItem('socialSquare_AllCredentialsList', JSON.stringify(temp)).then(() => {
+                setAllCredentialsStoredList(temp);
+                navigation.reset({
+                    index: 0,
+                    routes: [{ name: 'Tabs' }],
+                });
+            })
         })
         .catch((error) => {
             console.log(error);
@@ -118,10 +139,14 @@ const Signup = ({navigation}) => {
     }
 
     const goBackToLoginScreen = () => {
-        navigation.reset({
-            index: 0,
-            routes: [{ name: 'LoginScreen' }],
-        });
+        if (modal == true) {
+            navigation.goBack();
+        } else {
+            navigation.reset({
+                index: 0,
+                routes: [{ name: 'LoginScreen' }],
+            });
+        }
     }
 
     return(
@@ -157,6 +182,7 @@ const Signup = ({navigation}) => {
                                     onBlur={handleBlur('name')}
                                     value={values.name}
                                     style={{backgroundColor: colors.primary, color: colors.tertiary}}
+                                    autoCapitalize="none"
                                 />
 
                                 <UserTextInput
@@ -169,6 +195,7 @@ const Signup = ({navigation}) => {
                                     value={values.email}
                                     keyboardType="email-address"
                                     style={{backgroundColor: colors.primary, color: colors.tertiary}}
+                                    autoCapitalize="none"
                                 />
 
                                 <UserTextInput
@@ -203,6 +230,10 @@ const Signup = ({navigation}) => {
                                 <MsgBox type={messageType}>{message}</MsgBox>
                                 {!isSubmitting && (<StyledButton onPress={handleSubmit}>
                                     <ButtonText> Signup </ButtonText>
+                                </StyledButton>)}
+
+                                {!isSubmitting && modal == true && (<StyledButton onPress={() => {navigation.pop(2)}}>
+                                    <ButtonText> Close </ButtonText>
                                 </StyledButton>)}
 
                                 {isSubmitting && (<StyledButton disabled={true}>

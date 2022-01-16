@@ -96,6 +96,8 @@ import {useTheme, useIsFocused} from "@react-navigation/native"
 import Constants from "expo-constants";
 import SocialSquareLogo_B64_png from '../assets/SocialSquareLogo_Base64_png.js';
 import { ProfilePictureURIContext } from '../components/ProfilePictureURIContext.js';
+import { ShowAccountSwitcherContext } from '../components/ShowAccountSwitcherContext.js';
+import { AllCredentialsStoredContext } from '../components/AllCredentialsStoredContext.js';
 
 const Welcome = ({navigation, route}) => {
     const StatusBarHeight = Constants.statusBarHeight;
@@ -237,6 +239,9 @@ const Welcome = ({navigation, route}) => {
     // Grid or Tagged grids showing
     const GridOrTagLineTranslateX = useRef(new Animated.Value(0)).current;
     const deviceDimensions = useWindowDimensions();
+    // Account switcher
+    const {showAccountSwitcher, setShowAccountSwitcher} = useContext(ShowAccountSwitcherContext)
+    const {allCredentialsStoredList, setAllCredentialsStoredList} = useContext(AllCredentialsStoredContext);
 
     const openDeletePrompt = (postId, creatorName) => {
         if (name == creatorName) {
@@ -2300,7 +2305,7 @@ const Welcome = ({navigation, route}) => {
             const {message, status, data} = result;
 
             if (status !== 'SUCCESS') {
-                console.log('GETTING PROFILE PICTURE FOR TABS.JS WAS NOT A SUCCESS')
+                console.log('GETTING PROFILE PICTURE FOR PROFILESCREEN.JS WAS NOT A SUCCESS')
                 console.log(status)
                 console.log(message)
             } else {
@@ -2318,18 +2323,28 @@ const Welcome = ({navigation, route}) => {
                         console.log('Setting logo to SocialSquare logo')
                         setProfilePictureUri(SocialSquareLogo_B64_png)
                         setChangingPfp(false)
+                        const temp = allCredentialsStoredList;
+                        temp[storedCredentials.indexLength].profilePictureUri = SocialSquareLogo_B64_png;
+                        setAllCredentialsStoredList(temp)
+                        AsyncStorage.setItem('socialSquare_AllCredentialsList', JSON.stringify(temp));
                     } else if (data) {
                         //convert back to image
                         console.log('Setting logo in tab bar to profile logo')
                         var base64Icon = `data:image/jpg;base64,${data}`
                         setProfilePictureUri(base64Icon)
-                        const SetUserPfpToAsyncStorage = async () => {await AsyncStorage.setItem('UserProfilePicture', base64Icon)}
-                        SetUserPfpToAsyncStorage()
                         setChangingPfp(false)
+                        const temp = allCredentialsStoredList;
+                        temp[storedCredentials.indexLength].profilePictureUri = base64Icon;
+                        setAllCredentialsStoredList(temp)
+                        AsyncStorage.setItem('socialSquare_AllCredentialsList', JSON.stringify(temp));
                     } else {
                         console.log('Setting logo to SocialSquare logo')
                         setProfilePictureUri(SocialSquareLogo_B64_png)
                         setChangingPfp(false)
+                        const temp = allCredentialsStoredList;
+                        temp[storedCredentials.indexLength].profilePictureUri = SocialSquareLogo_B64_png;
+                        setAllCredentialsStoredList(temp)
+                        AsyncStorage.setItem('socialSquare_AllCredentialsList', JSON.stringify(temp));
                     }
                 })
                 .catch(function (error) {
@@ -2459,6 +2474,11 @@ const Welcome = ({navigation, route}) => {
         }
     })
 
+    useEffect(() => {
+        if (storedCredentials) {
+            changeToOne()
+        }
+    }, [storedCredentials])
     return(
         <>    
             <ActionSheet
@@ -2574,7 +2594,7 @@ const Welcome = ({navigation, route}) => {
                                 <SubTitle style={{marginBottom: 0, color: darkestBlue, textAlign: 'center'}}></SubTitle>
                             </View>
                         )}
-                        <TouchableOpacity onPress={() => {alert('Account Switcher coming soon!')}}>
+                        <TouchableOpacity onPress={() => {setShowAccountSwitcher(true)}}>
                             <PageTitle welcome={true}>{displayName || name || "Couldn't get name"}</PageTitle>
                         </TouchableOpacity>
                         <SubTitle style={{color: colors.tertiary}}>{"@"+name}</SubTitle>
