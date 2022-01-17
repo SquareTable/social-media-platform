@@ -781,28 +781,33 @@ const App = () => {
             })
           }
           let credentialsListObject = await AsyncStorage.getItem('socialSquare_AllCredentialsList');
-          let parsedCredentialsListObject = JSON.parse(credentialsListObject);
-          setAllCredentialsStoredList(parsedCredentialsListObject);
-          if (credentials && parsedCredentialsListObject[credentials.indexLength].profilePictureUri != null && parsedCredentialsListObject[credentials.indexLength].profilePictureUri != undefined) {
-            console.log('Setting ProfilePictureUri context to profile picture in Async Storage')
-            setProfilePictureUri(parsedCredentialsListObject[credentials.indexLength].profilePictureUri)
+          if (credentialsListObject == null && credentials) {
+            setStoredCredentials(null);
+            setAllCredentialsStoredList(null);
           } else {
-            NetInfo.fetch().then(state => {
-              console.log("Connection type", state.type);
-              console.log("Is connected?", state.isConnected);
-              if (state.isConnected == true) {
-                if (credentials) {
-                  console.log('There is no profile picture in AsyncStorage. Loading profile picture for ProfilePictureUri Context using internet connection')
-                  getProfilePicture()
+            let parsedCredentialsListObject = JSON.parse(credentialsListObject);
+            setAllCredentialsStoredList(parsedCredentialsListObject);
+            if (credentials && parsedCredentialsListObject[credentials.indexLength].profilePictureUri != null && parsedCredentialsListObject[credentials.indexLength].profilePictureUri != undefined) {
+              console.log('Setting ProfilePictureUri context to profile picture in Async Storage')
+              setProfilePictureUri(parsedCredentialsListObject[credentials.indexLength].profilePictureUri)
+            } else {
+              NetInfo.fetch().then(state => {
+                console.log("Connection type", state.type);
+                console.log("Is connected?", state.isConnected);
+                if (state.isConnected == true) {
+                  if (credentials) {
+                    console.log('There is no profile picture in AsyncStorage. Loading profile picture for ProfilePictureUri Context using internet connection')
+                    getProfilePicture()
+                  } else {
+                    console.log('There is no stored credentials and no profile picture in Async Storage. Setting ProfilePictureUri to SocialSquareB64Logo')
+                    setProfilePictureUri(SocialSquareLogo_B64_png)
+                  }
                 } else {
-                  console.log('There is no stored credentials and no profile picture in Async Storage. Setting ProfilePictureUri to SocialSquareB64Logo')
+                  console.log('There is no internet connection and no saved profile picture in Async Storage. Setting ProfilePictureUri to SocialSquareB64Logo')
                   setProfilePictureUri(SocialSquareLogo_B64_png)
                 }
-              } else {
-                console.log('There is no internet connection and no saved profile picture in Async Storage. Setting ProfilePictureUri to SocialSquareB64Logo')
-                setProfilePictureUri(SocialSquareLogo_B64_png)
-              }
-            });
+              });
+            }
           }
         }
         console.log('Getting profile picture for ProfilePictureUriContext')
