@@ -99,6 +99,7 @@ import { CredentialsContext } from './../components/CredentialsContext';
 
 import { View, ImageBackground, ScrollView, SectionList, ActivityIndicator, StyleSheet, TouchableOpacity } from 'react-native';
 import { useTheme } from '@react-navigation/native';
+import { ProfilePictureURIContext } from '../components/ProfilePictureURIContext';
 
 
 const ViewPollPostPage = ({route, navigation}) => {
@@ -147,56 +148,7 @@ const ViewPollPostPage = ({route, navigation}) => {
     const [pollVoteOption, setPollVoteOption] = useState("Finding")
     const [pollinitialVoteOption, setPollinitialVoteOption] = useState("Finding")
     //PFP
-    const [pfpB64, setpfpB64] = useState('./../assets/img/Logo.png')
-    const [getPfp, setGetPfp] = useState(false)
-    //Get PFP
-    const getProfilePicture = () => {
-        const url = `https://nameless-dawn-41038.herokuapp.com/user/getProfilePic/${name}`;
-
-        axios.get(url).then((response) => {
-            const result = response.data;
-            const {message, status, data} = result;
-
-            if (status !== 'SUCCESS') {
-                handleMessage(message, status);
-                console.log(status)
-                console.log(message)
-            } else {
-                console.log(status)
-                console.log(message)
-                axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${data}`)
-                .then((response) => {
-                    const result = response.data;
-                    const {message, status, data} = result;
-                    console.log(status)
-                    console.log(message)
-                    //set image
-                    if (data) {
-                        //convert back to image
-                        var base64Icon = `data:image/jpg;base64,${data}`
-                        setpfpB64(base64Icon)
-                    } else {
-                        setpfpB64("./../assets/img/Logo.png")
-                    }
-                })
-                .catch(function (error) {
-                    console.log("Image not recieved")
-                    console.log(error);
-                });
-            }
-            //setSubmitting(false);
-
-        }).catch(error => {
-            console.log(error);
-            //setSubmitting(false);
-            handleMessage("An error occured. Try checking your network connection and retry.");
-        })
-    }
-
-    if (getPfp !== true) {
-        getProfilePicture()
-        setGetPfp(true)
-    }
+    const {profilePictureUri, setProfilePictureUri} = useContext(ProfilePictureURIContext)
 
     //get image of post
     async function getImageInPost(imageData, index) {
@@ -1017,7 +969,7 @@ const ViewPollPostPage = ({route, navigation}) => {
                         <ViewScreenPollPostFrame style={{width: '100%'}}>
                             <PostsHorizontalView style={{borderBottomWidth: 3, borderColor: darkLight, width: '100%', paddingBottom: 5}}>
                                 <PostsVerticalView>
-                                    <PostCreatorIcon source={{uri: `data:image/jpg;base64,${creatorPfpB64}`}}/>
+                                    <PostCreatorIcon source={{uri: creatorPfpB64}}/>
                                 </PostsVerticalView>
                                 <PostsVerticalView style={{marginTop: 9}}>
                                     <SubTitle style={{fontSize: 20, color: brand, marginBottom: 0}}>{creatorDisplayName}</SubTitle>
@@ -1365,7 +1317,7 @@ const ViewPollPostPage = ({route, navigation}) => {
                                             </CommentsHorizontalView>
                                             <CommentsHorizontalView writeCommentArea={true}>
                                                 <CommentsVerticalView alongLeft={true}>
-                                                    <CommenterIcon source={{uri: pfpB64}}/>
+                                                    <CommenterIcon source={{uri: profilePictureUri}}/>
                                                 </CommentsVerticalView>
                                                 <CommentsVerticalView>
                                                     <UserTextInput

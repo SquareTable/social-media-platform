@@ -72,29 +72,9 @@ const FindScreen = ({navigation}) => {
     var userLoadMax = 10;
     let cancelTokenPostFormatOne = axios.CancelToken.source();
     let cancelTokenPostFormatTwo = axios.CancelToken.source();
-    const [searchScreenStyle, setSearchScreenStyle] = useState('Regular')
-
-    useEffect(() => {
-        async function getSearchScreenStyle() {
-            const SearchScreenStyle = await AsyncStorage.getItem('SearchScreenStyle')
-            if (SearchScreenStyle == null) {
-                setSearchScreenStyle('Regular')
-                AsyncStorage.setItem('SearchScreenStyle', 'Regular')
-            } else if (SearchScreenStyle == 'Regular') {
-                setSearchScreenStyle('Regular')
-                AsyncStorage.setItem('SearchScreenStyle', 'Regular')
-            } else if (SearchScreenStyle == 'Compact') {
-                setSearchScreenStyle('Compact')
-                AsyncStorage.setItem('SearchScreenStyle', 'Compact')
-            } else {
-                console.error('Error occured while getting SearchScreenStyle value in setUp function in FindScreen.js')
-            }
-        }
-        getSearchScreenStyle()
-    }, [])
 
     const UserItem = ({name, displayName, following, followers, totalLikes, profileKey, index}) => (
-        searchScreenStyle == 'Regular' ?
+        colors.searchScreenType == 'Regular' ?
             <SearchFrame onPress={() => navigation.navigate("ProfilePages", {profilesName: name, profilesDisplayName: displayName, following: following, followers: followers, totalLikes: totalLikes, profileKey: profileKey != null ? `data:image/jpg;base64,${profileKey}` : SocialSquareLogo_B64_png})}>
                 {profileKey !== null && (
                     <Avatar resizeMode="cover" searchPage={true} source={{uri: `data:image/jpg;base64,${profileKey}`}} />
@@ -369,18 +349,6 @@ const FindScreen = ({navigation}) => {
         }
     }
 
-    const setContextAndAsyncStorage = (type) => {
-        if (type == 'SearchScreenStyle') {
-            if (searchScreenStyle == 'Compact') {
-                setSearchScreenStyle('Regular')
-                AsyncStorage.setItem('SearchScreenStyle', 'Regular')
-            } else {
-                setSearchScreenStyle('Compact')
-                AsyncStorage.setItem('SearchScreenStyle', 'Compact')
-            }
-        }
-    }
-
     return(
         <>    
             <StatusBar style={dark ? 'light' : 'dark'}/>
@@ -389,7 +357,7 @@ const FindScreen = ({navigation}) => {
                     <>
                         <SectionList
                             sections={changeSectionsOne}
-                            ListHeaderComponent={<SearchScreenHeader colors={colors} message={message} filterFormatSearch={filterFormatSearch} setFilterFormatSearch={setFilterFormatSearch} dark={dark} searchScreenStyle={searchScreenStyle} cancelTokenPostFormatOne={cancelTokenPostFormatOne} cancelTokenPostFormatTwo={cancelTokenPostFormatTwo} setChangeSectionsOne={setChangeSectionsOne} setChangeSectionsTwo={setChangeSectionsTwo} handleChange={handleChange} setContextAndAsyncStorage={setContextAndAsyncStorage}/>}
+                            ListHeaderComponent={<SearchScreenHeader colors={colors} message={message} filterFormatSearch={filterFormatSearch} setFilterFormatSearch={setFilterFormatSearch} dark={dark} cancelTokenPostFormatOne={cancelTokenPostFormatOne} cancelTokenPostFormatTwo={cancelTokenPostFormatTwo} setChangeSectionsOne={setChangeSectionsOne} setChangeSectionsTwo={setChangeSectionsTwo} handleChange={handleChange}/>}
                             keyExtractor={(item, index) => item + index}
                             renderItem={({ item, index }) => <UserItem name={item.name} displayName={item.displayName} followers={item.followers}  following={item.following} totalLikes={item.totalLikes} profileKey={item.profileKey} index={index}/>}
                             ListFooterComponent={
@@ -410,7 +378,7 @@ const FindScreen = ({navigation}) => {
                     <>
                         <SectionList
                             sections={changeSectionsTwo}
-                            ListHeaderComponent={<SearchScreenHeader colors={colors} message={message} filterFormatSearch={filterFormatSearch} setFilterFormatSearch={setFilterFormatSearch} dark={dark} searchScreenStyle={searchScreenStyle} cancelTokenPostFormatOne={cancelTokenPostFormatOne} cancelTokenPostFormatTwo={cancelTokenPostFormatTwo} setChangeSectionsOne={setChangeSectionsOne} setChangeSectionsTwo={setChangeSectionsTwo} handleChange={handleChange} setContextAndAsyncStorage={setContextAndAsyncStorage}/>}
+                            ListHeaderComponent={<SearchScreenHeader colors={colors} message={message} filterFormatSearch={filterFormatSearch} setFilterFormatSearch={setFilterFormatSearch} dark={dark} cancelTokenPostFormatOne={cancelTokenPostFormatOne} cancelTokenPostFormatTwo={cancelTokenPostFormatTwo} setChangeSectionsOne={setChangeSectionsOne} setChangeSectionsTwo={setChangeSectionsTwo} handleChange={handleChange}/>}
                             keyExtractor={(item, index) => item + index}
                             renderItem={({ item }) => <CategoryItem categoryTitle={item.categoryTitle} categoryDescription={item.categoryDescription} members={item.members} categoryTags={item.categoryTags} image={item.image} NSFW={item.NSFW} NSFL={item.NSFL} datePosted={item.datePosted}/>}
                             ListFooterComponent={
@@ -447,7 +415,7 @@ const UserTextInput = ({label, icon, isPassword, colors, ...props}) => {
     )
 }
 
-const SearchScreenHeader = ({colors, message, filterFormatSearch, setFilterFormatSearch, dark, searchScreenStyle, cancelTokenPostFormatOne, cancelTokenPostFormatTwo, setChangeSectionsOne, setChangeSectionsTwo, handleChange, setContextAndAsyncStorage}) => {
+const SearchScreenHeader = ({colors, message, filterFormatSearch, setFilterFormatSearch, dark, cancelTokenPostFormatOne, cancelTokenPostFormatTwo, setChangeSectionsOne, setChangeSectionsTwo, handleChange}) => {
     return (
         <>
             <WelcomeContainer style={{backgroundColor: colors.primary}} postScreen={true}>
@@ -518,30 +486,6 @@ const SearchScreenHeader = ({colors, message, filterFormatSearch, setFilterForma
                     )}
                 </View>
             </View> 
-            <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
-                <Text style={{fontSize: 18, fontWeight: 'bold', textAlign: 'center', color: colors.tertiary, marginRight: 10}}>Compact</Text>
-                <SwitchToggle
-                    switchOn={searchScreenStyle == 'Regular' ? true : false}
-                    onPress={() => {setContextAndAsyncStorage('SearchScreenStyle')}}
-                    circleColorOff={colors.tertiary}
-                    circleColorOn={dark? colors.teritary : colors.primary}
-                    backgroundColorOn={colors.borderColor}
-                    backgroundColorOff={colors.borderColor}
-                    containerStyle={{
-                        width: 50,
-                        height: 28,
-                        borderRadius: 25,
-                        padding: 5,
-                        marginVertical: 6.7
-                    }}
-                    circleStyle={{
-                        width: 20,
-                        height: 20,
-                        borderRadius: 20,
-                    }}
-                />
-                <Text style={{fontSize: 18, fontWeight: 'bold', textAlign: 'center', color: colors.tertiary, marginLeft: 10}}>Regular</Text>
-            </View>
         </>
     );
 }

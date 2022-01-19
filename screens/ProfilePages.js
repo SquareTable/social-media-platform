@@ -1174,7 +1174,7 @@ const ProfilePages = ({ route, navigation }) => {
                 {changingVotedImages.includes(imageKey) && (<PostsIconFrame></PostsIconFrame>)}
                 <PostsIconFrame>
                 </PostsIconFrame>
-                <PostsIconFrame onPress={() => navigation.navigate("ViewImagePostPage", { imageKey, imageB64, imageTitle, imageDescription, creatorName, creatorDisplayName, creatorPfpB64, datePosted })}>
+                <PostsIconFrame onPress={() => navigation.navigate("ViewImagePostPage", { imageKey, imageB64, imageTitle, imageDescription, creatorName, creatorDisplayName, creatorPfpB64: profileKey, datePosted })}>
                     <PostsIcons style={{ flex: 1 }} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/113-bubbles4.png')} />
                 </PostsIconFrame>
                 <PostsIconFrame>
@@ -1186,14 +1186,14 @@ const ProfilePages = ({ route, navigation }) => {
             </PostHorizontalView>
             {postNumForMsg == postNum && (<MsgBox type={messageType}>{message}</MsgBox>)}
             <SubTitle style={{ flex: 1, alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal' }}>{datePosted}</SubTitle>
-            <TouchableOpacity onPress={() => navigation.navigate("ViewImagePostPage", { imageKey, imageB64, imageTitle, imageDescription, creatorName, creatorDisplayName, creatorPfpB64, datePosted })}>
+            <TouchableOpacity onPress={() => navigation.navigate("ViewImagePostPage", { imageKey, imageB64, imageTitle, imageDescription, creatorName, creatorDisplayName, creatorPfpB64: profileKey, datePosted })}>
                 <SubTitle style={{ flex: 1, alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal' }}>{imageComments.length} comments</SubTitle>
             </TouchableOpacity>
         </View>
     );
 
     const PollItem = ({ pollTitle, pollSubTitle, optionOne, optionOnesColor, optionOnesVotes, optionOnesBarLength, optionTwo, optionTwosColor, optionTwosVotes, optionTwosBarLength, optionThree, optionThreesColor, optionThreesVotes, optionThreesBarLength, optionFour, optionFoursColor, optionFoursVotes, optionFoursBarLength, optionFive, optionFivesColor, optionFivesVotes, optionFivesBarLength, optionSix, optionSixesColor, optionSixesVotes, optionSixesBarLength, totalNumberOfOptions, pollUpOrDownVotes, pollId, votedFor, postNum, pollComments, creatorName, creatorDisplayName, datePosted }) => (
-        <PollPostFrame onPress={() => navigation.navigate("ViewPollPostPage", { pollTitle, pollSubTitle, optionOne, optionOnesColor, optionOnesVotes, optionOnesBarLength, optionTwo, optionTwosColor, optionTwosVotes, optionTwosBarLength, optionThree, optionThreesColor, optionThreesVotes, optionThreesBarLength, optionFour, optionFoursColor, optionFoursVotes, optionFoursBarLength, optionFive, optionFivesColor, optionFivesVotes, optionFivesBarLength, optionSix, optionSixesColor, optionSixesVotes, optionSixesBarLength, totalNumberOfOptions, pollId, creatorPfpB64: pfpB64, creatorName, creatorDisplayName, datePosted })}>
+        <PollPostFrame onPress={() => navigation.navigate("ViewPollPostPage", { pollTitle, pollSubTitle, optionOne, optionOnesColor, optionOnesVotes, optionOnesBarLength, optionTwo, optionTwosColor, optionTwosVotes, optionTwosBarLength, optionThree, optionThreesColor, optionThreesVotes, optionThreesBarLength, optionFour, optionFoursColor, optionFoursVotes, optionFoursBarLength, optionFive, optionFivesColor, optionFivesVotes, optionFivesBarLength, optionSix, optionSixesColor, optionSixesVotes, optionSixesBarLength, totalNumberOfOptions, pollId, creatorPfpB64: profileKey, creatorName, creatorDisplayName, datePosted })}>
             <PostsHorizontalView style={{ marginLeft: '5%', borderBottomWidth: 3, borderColor: darkLight, width: '90%', paddingBottom: 5, marginRight: '5%' }}>
                 <PostsVerticalView>
                     <PostCreatorIcon source={{ uri: profileKey}} />
@@ -1238,13 +1238,13 @@ const ProfilePages = ({ route, navigation }) => {
                 <PollBarItem borderChange={optionSixesBarLength} style={{ width: optionSixesBarLength+'%', backgroundColor: optionSixesColor == 'Not Specified' ? brand : eval(optionSixesColor.toLowerCase()) }}></PollBarItem>
             </PollBarOutline>
             <PollPostHorizontalView>
-                <PollKeyViewOne pollOptions={totalNumberOfOptions} onPress={() => navigation.navigate("ViewPollPostPage", { pollTitle, pollSubTitle, optionOne, optionOnesColor, optionOnesVotes, optionOnesBarLength, optionTwo, optionTwosColor, optionTwosVotes, optionTwosBarLength, optionThree, optionThreesColor, optionThreesVotes, optionThreesBarLength, optionFour, optionFoursColor, optionFoursVotes, optionFoursBarLength, optionFive, optionFivesColor, optionFivesVotes, optionFivesBarLength, optionSix, optionSixesColor, optionSixesVotes, optionSixesBarLength, totalNumberOfOptions, pollId, creatorPfpB64: pfpB64, creatorName, creatorDisplayName, datePosted })}>
+                <PollKeyViewOne pollOptions={totalNumberOfOptions} onPress={() => navigation.navigate("ViewPollPostPage", { pollTitle, pollSubTitle, optionOne, optionOnesColor, optionOnesVotes, optionOnesBarLength, optionTwo, optionTwosColor, optionTwosVotes, optionTwosBarLength, optionThree, optionThreesColor, optionThreesVotes, optionThreesBarLength, optionFour, optionFoursColor, optionFoursVotes, optionFoursBarLength, optionFive, optionFivesColor, optionFivesVotes, optionFivesBarLength, optionSix, optionSixesColor, optionSixesVotes, optionSixesBarLength, totalNumberOfOptions, pollId, creatorPfpB64: profileKey, creatorName, creatorDisplayName, datePosted })}>
                     <PollPostSubTitle style={{color: colors.tertiary}}>
                         1. {optionOne}
                     </PollPostSubTitle>
                     <PollKeysCircle circleColor={optionOnesColor}></PollKeysCircle>
                 </PollKeyViewOne>
-                <PollKeyViewTwo pollOptions={totalNumberOfOptions} onPress={() => navigation.navigate("ViewPollPostPage", { pollTitle, pollSubTitle, optionOne, optionOnesColor, optionOnesVotes, optionOnesBarLength, optionTwo, optionTwosColor, optionTwosVotes, optionTwosBarLength, optionThree, optionThreesColor, optionThreesVotes, optionThreesBarLength, optionFour, optionFoursColor, optionFoursVotes, optionFoursBarLength, optionFive, optionFivesColor, optionFivesVotes, optionFivesBarLength, optionSix, optionSixesColor, optionSixesVotes, optionSixesBarLength, totalNumberOfOptions, pollId, creatorPfpB64: pfpB64, creatorName, creatorDisplayName, datePosted })}>
+                <PollKeyViewTwo pollOptions={totalNumberOfOptions} onPress={() => navigation.navigate("ViewPollPostPage", { pollTitle, pollSubTitle, optionOne, optionOnesColor, optionOnesVotes, optionOnesBarLength, optionTwo, optionTwosColor, optionTwosVotes, optionTwosBarLength, optionThree, optionThreesColor, optionThreesVotes, optionThreesBarLength, optionFour, optionFoursColor, optionFoursVotes, optionFoursBarLength, optionFive, optionFivesColor, optionFivesVotes, optionFivesBarLength, optionSix, optionSixesColor, optionSixesVotes, optionSixesBarLength, totalNumberOfOptions, pollId, creatorPfpB64: profileKey, creatorName, creatorDisplayName, datePosted })}>
                     <PollKeysCircle circleColor={optionTwosColor}></PollKeysCircle>
                     <PollPostSubTitle style={{color: colors.tertiary}}>
                         2. {optionTwo}
@@ -1253,13 +1253,13 @@ const ProfilePages = ({ route, navigation }) => {
             </PollPostHorizontalView>
 
             <PollPostHorizontalView>
-                <PollKeyViewThree pollOptions={totalNumberOfOptions} onPress={() => navigation.navigate("ViewPollPostPage", { pollTitle, pollSubTitle, optionOne, optionOnesColor, optionOnesVotes, optionOnesBarLength, optionTwo, optionTwosColor, optionTwosVotes, optionTwosBarLength, optionThree, optionThreesColor, optionThreesVotes, optionThreesBarLength, optionFour, optionFoursColor, optionFoursVotes, optionFoursBarLength, optionFive, optionFivesColor, optionFivesVotes, optionFivesBarLength, optionSix, optionSixesColor, optionSixesVotes, optionSixesBarLength, totalNumberOfOptions, pollId, creatorPfpB64: pfpB64, creatorName, creatorDisplayName, datePosted })}>
+                <PollKeyViewThree pollOptions={totalNumberOfOptions} onPress={() => navigation.navigate("ViewPollPostPage", { pollTitle, pollSubTitle, optionOne, optionOnesColor, optionOnesVotes, optionOnesBarLength, optionTwo, optionTwosColor, optionTwosVotes, optionTwosBarLength, optionThree, optionThreesColor, optionThreesVotes, optionThreesBarLength, optionFour, optionFoursColor, optionFoursVotes, optionFoursBarLength, optionFive, optionFivesColor, optionFivesVotes, optionFivesBarLength, optionSix, optionSixesColor, optionSixesVotes, optionSixesBarLength, totalNumberOfOptions, pollId, creatorPfpB64: profileKey, creatorName, creatorDisplayName, datePosted })}>
                     <PollPostSubTitle style={{color: colors.tertiary}}>
                         3. {optionThree}
                     </PollPostSubTitle>
                     <PollKeysCircle circleColor={optionThreesColor}></PollKeysCircle>
                 </PollKeyViewThree>
-                <PollKeyViewFour pollOptions={totalNumberOfOptions} onPress={() => navigation.navigate("ViewPollPostPage", { pollTitle, pollSubTitle, optionOne, optionOnesColor, optionOnesVotes, optionOnesBarLength, optionTwo, optionTwosColor, optionTwosVotes, optionTwosBarLength, optionThree, optionThreesColor, optionThreesVotes, optionThreesBarLength, optionFour, optionFoursColor, optionFoursVotes, optionFoursBarLength, optionFive, optionFivesColor, optionFivesVotes, optionFivesBarLength, optionSix, optionSixesColor, optionSixesVotes, optionSixesBarLength, totalNumberOfOptions, pollId, creatorPfpB64: pfpB64, creatorName, creatorDisplayName, datePosted })}>
+                <PollKeyViewFour pollOptions={totalNumberOfOptions} onPress={() => navigation.navigate("ViewPollPostPage", { pollTitle, pollSubTitle, optionOne, optionOnesColor, optionOnesVotes, optionOnesBarLength, optionTwo, optionTwosColor, optionTwosVotes, optionTwosBarLength, optionThree, optionThreesColor, optionThreesVotes, optionThreesBarLength, optionFour, optionFoursColor, optionFoursVotes, optionFoursBarLength, optionFive, optionFivesColor, optionFivesVotes, optionFivesBarLength, optionSix, optionSixesColor, optionSixesVotes, optionSixesBarLength, totalNumberOfOptions, pollId, creatorPfpB64: profileKey, creatorName, creatorDisplayName, datePosted })}>
                     <PollKeysCircle circleColor={optionFoursColor}></PollKeysCircle>
                     <PollPostSubTitle style={{color: colors.tertiary}}>
                         4. {optionFour}
@@ -1268,13 +1268,13 @@ const ProfilePages = ({ route, navigation }) => {
             </PollPostHorizontalView>
 
             <PollPostHorizontalView>
-                <PollKeyViewFive pollOptions={totalNumberOfOptions} onPress={() => navigation.navigate("ViewPollPostPage", { pollTitle, pollSubTitle, optionOne, optionOnesColor, optionOnesVotes, optionOnesBarLength, optionTwo, optionTwosColor, optionTwosVotes, optionTwosBarLength, optionThree, optionThreesColor, optionThreesVotes, optionThreesBarLength, optionFour, optionFoursColor, optionFoursVotes, optionFoursBarLength, optionFive, optionFivesColor, optionFivesVotes, optionFivesBarLength, optionSix, optionSixesColor, optionSixesVotes, optionSixesBarLength, totalNumberOfOptions, pollId, creatorPfpB64: pfpB64, creatorName, creatorDisplayName, datePosted })}>
+                <PollKeyViewFive pollOptions={totalNumberOfOptions} onPress={() => navigation.navigate("ViewPollPostPage", { pollTitle, pollSubTitle, optionOne, optionOnesColor, optionOnesVotes, optionOnesBarLength, optionTwo, optionTwosColor, optionTwosVotes, optionTwosBarLength, optionThree, optionThreesColor, optionThreesVotes, optionThreesBarLength, optionFour, optionFoursColor, optionFoursVotes, optionFoursBarLength, optionFive, optionFivesColor, optionFivesVotes, optionFivesBarLength, optionSix, optionSixesColor, optionSixesVotes, optionSixesBarLength, totalNumberOfOptions, pollId, creatorPfpB64: profileKey, creatorName, creatorDisplayName, datePosted })}>
                     <PollPostSubTitle style={{color: colors.tertiary}}>
                         5. {optionFive}
                     </PollPostSubTitle>
                     <PollKeysCircle circleColor={optionFivesColor}></PollKeysCircle>
                 </PollKeyViewFive>
-                <PollKeyViewSix pollOptions={totalNumberOfOptions} onPress={() => navigation.navigate("ViewPollPostPage", { pollTitle, pollSubTitle, optionOne, optionOnesColor, optionOnesVotes, optionOnesBarLength, optionTwo, optionTwosColor, optionTwosVotes, optionTwosBarLength, optionThree, optionThreesColor, optionThreesVotes, optionThreesBarLength, optionFour, optionFoursColor, optionFoursVotes, optionFoursBarLength, optionFive, optionFivesColor, optionFivesVotes, optionFivesBarLength, optionSix, optionSixesColor, optionSixesVotes, optionSixesBarLength, totalNumberOfOptions, pollId, creatorPfpB64: pfpB64, creatorName, creatorDisplayName, datePosted })}>
+                <PollKeyViewSix pollOptions={totalNumberOfOptions} onPress={() => navigation.navigate("ViewPollPostPage", { pollTitle, pollSubTitle, optionOne, optionOnesColor, optionOnesVotes, optionOnesBarLength, optionTwo, optionTwosColor, optionTwosVotes, optionTwosBarLength, optionThree, optionThreesColor, optionThreesVotes, optionThreesBarLength, optionFour, optionFoursColor, optionFoursVotes, optionFoursBarLength, optionFive, optionFivesColor, optionFivesVotes, optionFivesBarLength, optionSix, optionSixesColor, optionSixesVotes, optionSixesBarLength, totalNumberOfOptions, pollId, creatorPfpB64: profileKey, creatorName, creatorDisplayName, datePosted })}>
                     <PollKeysCircle circleColor={optionSixesColor}></PollKeysCircle>
                     <PollPostSubTitle style={{color: colors.tertiary}}>
                         6. {optionSix}
@@ -1343,7 +1343,7 @@ const ProfilePages = ({ route, navigation }) => {
                 {changingVotedPolls.includes(pollId) && (<PostsIconFrame></PostsIconFrame>)}
                 <PostsIconFrame>
                 </PostsIconFrame>
-                <PostsIconFrame onPress={() => navigation.navigate("ViewPollPostPage", { pollTitle, pollSubTitle, optionOne, optionOnesColor, optionOnesVotes, optionOnesBarLength, optionTwo, optionTwosColor, optionTwosVotes, optionTwosBarLength, optionThree, optionThreesColor, optionThreesVotes, optionThreesBarLength, optionFour, optionFoursColor, optionFoursVotes, optionFoursBarLength, optionFive, optionFivesColor, optionFivesVotes, optionFivesBarLength, optionSix, optionSixesColor, optionSixesVotes, optionSixesBarLength, totalNumberOfOptions, pollId, creatorPfpB64: pfpB64, creatorName, creatorDisplayName, datePosted })}>
+                <PostsIconFrame onPress={() => navigation.navigate("ViewPollPostPage", { pollTitle, pollSubTitle, optionOne, optionOnesColor, optionOnesVotes, optionOnesBarLength, optionTwo, optionTwosColor, optionTwosVotes, optionTwosBarLength, optionThree, optionThreesColor, optionThreesVotes, optionThreesBarLength, optionFour, optionFoursColor, optionFoursVotes, optionFoursBarLength, optionFive, optionFivesColor, optionFivesVotes, optionFivesBarLength, optionSix, optionSixesColor, optionSixesVotes, optionSixesBarLength, totalNumberOfOptions, pollId, creatorPfpB64: profileKey, creatorName, creatorDisplayName, datePosted })}>
                     <PostsIcons style={{ flex: 1 }} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/113-bubbles4.png')} />
                 </PostsIconFrame>
                 <PostsIconFrame>
@@ -1412,8 +1412,8 @@ const ProfilePages = ({ route, navigation }) => {
         </SearchFrame>
     );
 
-    const ThreadItems = ({ postNum, threadId, threadComments, threadType, threadUpVotes, threadTitle, threadSubtitle, threadTags, threadCategory, threadBody, threadImageKey, threadImageDescription, threadNSFW, threadNSFL, datePosted, threadUpVoted, threadDownVoted, creatorDisplayName, creatorName, creatorImageB64, imageInThreadB64 }) => (
-        <View style={{ backgroundColor: dark ? slightlyLighterPrimary : colors.borderColor, borderRadius: 15, marginBottom: 10 }} onPress={() => navigation.navigate("ThreadViewPage", { threadId: threadId })}>
+    const ThreadItems = ({ postNum, threadId, threadComments, threadType, threadUpVotes, threadTitle, threadSubtitle, threadTags, threadCategory, threadBody, threadImageKey, threadImageDescription, threadNSFW, threadNSFL, datePosted, threadUpVoted, threadDownVoted, creatorDisplayName, creatorName, imageInThreadB64 }) => (
+        <View style={{ backgroundColor: dark ? slightlyLighterPrimary : colors.borderColor, borderRadius: 15, marginBottom: 10 }} onPress={() => navigation.navigate("ThreadViewPage", { threadId: threadId, creatorPfpB64: profileKey })}>
             {threadNSFW === true && (
                 <SubTitle style={{ fontSize: 10, color: red, marginBottom: 0 }}>(NSFW)</SubTitle>
             )}
@@ -1435,7 +1435,7 @@ const ProfilePages = ({ route, navigation }) => {
                     </PostsHorizontalView>
                 </TouchableOpacity>
             </PostsHorizontalView>
-            <TouchableOpacity onPress={() => navigation.navigate("ThreadViewPage", { threadId: threadId })}>
+            <TouchableOpacity onPress={() => navigation.navigate("ThreadViewPage", { threadId: threadId, creatorPfpB64: profileKey })}>
                 <ImagePostTextFrame style={{ textAlign: 'left', alignItems: 'baseline' }}>
                     <TouchableOpacity>
                         <SubTitle style={{ fontSize: 10, color: brand, marginBottom: 0 }}>Category: {threadCategory}</SubTitle>
@@ -1528,7 +1528,7 @@ const ProfilePages = ({ route, navigation }) => {
                 {changingVotedThreads.includes(threadId) && (<PostsIconFrame></PostsIconFrame>)}
                 <PostsIconFrame>
                 </PostsIconFrame>
-                <PostsIconFrame onPress={() => navigation.navigate("ThreadViewPage", { threadId: threadId })}>
+                <PostsIconFrame onPress={() => navigation.navigate("ThreadViewPage", { threadId: threadId, creatorPfpB64: profileKey })}>
                     <PostsIcons style={{ flex: 1 }} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/113-bubbles4.png')} />
                 </PostsIconFrame>
                 <PostsIconFrame>
@@ -1540,7 +1540,7 @@ const ProfilePages = ({ route, navigation }) => {
             </PostHorizontalView>
             {postNumForMsg == postNum && (<MsgBox type={messageType}>{message}</MsgBox>)}
             <SubTitle style={{ flex: 1, alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal' }}>{datePosted}</SubTitle>
-            <TouchableOpacity onPress={() => navigation.navigate("ThreadViewPage", { threadId: threadId })}>
+            <TouchableOpacity onPress={() => navigation.navigate("ThreadViewPage", { threadId: threadId, creatorPfpB64: profileKey })}>
                 <SubTitle style={{ flex: 1, alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal' }}>{threadComments} comments</SubTitle>
             </TouchableOpacity>
         </View>

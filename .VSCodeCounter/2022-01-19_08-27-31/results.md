@@ -1,29 +1,32 @@
 # Summary
 
-Date : 2021-12-27 19:15:25
+Date : 2022-01-19 08:27:31
 
 Directory /Users/sebastianwebster/GitHub/social-media-platform
 
-Total : 596 files,  85169 codes, 1314 comments, 2225 blanks, all 88708 lines
+Total : 595 files,  84196 codes, 1261 comments, 2188 blanks, all 87645 lines
 
-[details](details.md)
+summary / [details](details.md) / [diff summary](diff.md) / [diff details](diff-details.md)
 
 ## Languages
 | language | files | code | comment | blank | total |
 | :--- | ---: | ---: | ---: | ---: | ---: |
-| JSON | 6 | 47,411 | 26 | 3 | 47,440 |
-| JavaScript | 86 | 26,454 | 776 | 1,700 | 28,930 |
+| JSON | 6 | 47,189 | 32 | 3 | 47,224 |
+| JavaScript | 84 | 25,672 | 688 | 1,652 | 28,012 |
 | HTML | 4 | 6,529 | 2 | 1 | 6,532 |
 | XML | 494 | 2,767 | 491 | 491 | 3,749 |
 | CSS | 1 | 1,936 | 3 | 7 | 1,946 |
 | Python | 3 | 59 | 16 | 10 | 85 |
+| YAML | 1 | 31 | 29 | 11 | 71 |
 | Markdown | 2 | 13 | 0 | 13 | 26 |
 
 ## Directories
 | path | files | code | comment | blank | total |
 | :--- | ---: | ---: | ---: | ---: | ---: |
-| . | 596 | 85,169 | 1,314 | 2,225 | 88,708 |
+| . | 595 | 84,196 | 1,261 | 2,188 | 87,645 |
 | .expo-shared | 2 | 7 | 0 | 7 | 14 |
+| .github | 1 | 31 | 29 | 11 | 71 |
+| .github/workflows | 1 | 31 | 29 | 11 | 71 |
 | .idea | 3 | 23 | 0 | 0 | 23 |
 | assets | 500 | 38,079 | 501 | 514 | 39,094 |
 | assets/badgeimages | 1 | 4 | 0 | 4 | 8 |
@@ -32,16 +35,16 @@ Total : 596 files,  85169 codes, 1314 comments, 2225 blanks, all 88708 lines
 | assets/icomoon-icons/IcoMoon-Free-master/Font | 5 | 26,324 | 10 | 12 | 26,346 |
 | assets/icomoon-icons/IcoMoon-Free-master/Font/demo-files | 3 | 2,988 | 8 | 11 | 3,007 |
 | assets/icomoon-icons/IcoMoon-Free-master/SVG | 491 | 2,744 | 491 | 491 | 3,726 |
-| components | 15 | 220 | 9 | 35 | 264 |
+| components | 20 | 255 | 12 | 46 | 313 |
 | docs | 3 | 112 | 0 | 0 | 112 |
-| navigation | 4 | 1,135 | 62 | 46 | 1,243 |
+| navigation | 4 | 562 | 3 | 45 | 610 |
 | posts | 4 | 433 | 2 | 11 | 446 |
 | python_scripts | 3 | 59 | 16 | 10 | 85 |
-| screens | 57 | 22,901 | 686 | 1,553 | 25,140 |
+| screens | 50 | 22,403 | 655 | 1,493 | 24,551 |
 | screens/IntroductionScreens | 1 | 149 | 0 | 2 | 151 |
-| screens/PostScreens | 7 | 2,199 | 77 | 192 | 2,468 |
-| screens/SecuritySettingsScreens | 4 | 174 | 0 | 8 | 182 |
-| screens/SimpleStylingScreens | 9 | 1,634 | 6 | 110 | 1,750 |
-| screens/screenStylings | 1 | 1,930 | 7 | 183 | 2,120 |
+| screens/PostScreens | 7 | 2,154 | 85 | 174 | 2,413 |
+| screens/SecuritySettingsScreens | 5 | 208 | 0 | 10 | 218 |
+| screens/SimpleStylingScreens | 3 | 967 | 0 | 57 | 1,024 |
+| screens/screenStylings | 1 | 1,937 | 7 | 183 | 2,127 |
 
-[details](details.md)
+summary / [details](details.md) / [diff summary](diff.md) / [diff details](diff-details.md)

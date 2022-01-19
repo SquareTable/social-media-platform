@@ -246,7 +246,8 @@ const App = () => {
       midWhite: '#E5E9F0',
       slightlyLighterPrimary: '#424a5c',
       descTextColor: '#abafb8',
-      errorColor: '#FF0000' //red
+      errorColor: '#FF0000', //red
+      searchScreenType: 'Regular',
     },
   };
   const AppLightTheme = {
@@ -275,7 +276,8 @@ const App = () => {
       midWhite: '#E5E9F0',
       slightlyLighterPrimary: '#424a5c',
       descTextColor: '#abafb8',
-      errorColor: '#FF0000' //red
+      errorColor: '#FF0000', //red
+      searchScreenType: 'Regular',
     }
   };
   const AppPureDarkTheme = {
@@ -304,7 +306,8 @@ const App = () => {
       midWhite: '#E5E9F0',
       slightlyLighterPrimary: '#424a5c',
       descTextColor: '#abafb8',
-      errorColor: '#FF0000' //red
+      errorColor: '#FF0000', //red
+      searchScreenType: 'Regular',
     }
   };
   const AppPureLightTheme = {
@@ -333,7 +336,8 @@ const App = () => {
       midWhite: '#E5E9F0',
       slightlyLighterPrimary: '#424a5c',
       descTextColor: '#abafb8',
-      errorColor: '#FF0000' //red
+      errorColor: '#FF0000', //red
+      searchScreenType: 'Regular',
     }
   };
 

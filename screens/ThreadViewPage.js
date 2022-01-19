@@ -90,13 +90,14 @@ import axios from 'axios';
 import { CredentialsContext } from '../components/CredentialsContext';
 import { ImageBackground, ScrollView, SectionList, View, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useTheme } from '@react-navigation/native';
+import { ProfilePictureURIContext } from '../components/ProfilePictureURIContext';
 
 const ThreadViewPage = ({route, navigation}) => {
     const {colors, dark} = useTheme()
      //context
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
     const {_id, name} = storedCredentials;
-    const {threadId} = route.params;
+    const {threadId, creatorPfpB64} = route.params;
     const [AvatarImg, setAvatarImage] = useState(null)
     const [gridViewState, setGridViewState] = useState("flex")
     const [featuredViewState, setFeaturedViewState] = useState("none")
@@ -162,8 +163,7 @@ const ThreadViewPage = ({route, navigation}) => {
     var findingVotedCommentsArray = []
     const [findingVotedComments, setFindingVotedComments] = useState([])
     //PFP
-    const [pfpB64, setpfpB64] = useState('./../assets/img/Logo.png')
-    const [getPfp, setGetPfp] = useState(false)
+    const {profilePictureUri, setProfilePictureUri} = useContext(ProfilePictureURIContext);
 
     //get image of post
     async function getImageInPost(imageData, index) {
@@ -184,55 +184,6 @@ const ThreadViewPage = ({route, navigation}) => {
     async function getImageWithKey(imageKey) {
         return axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${imageKey}`)
         .then(res => res.data);
-    }
-
-    //Get PFP
-    const getProfilePicture = () => {
-        const url = `https://nameless-dawn-41038.herokuapp.com/user/getProfilePic/${name}`;
-
-        axios.get(url).then((response) => {
-            const result = response.data;
-            const {message, status, data} = result;
-
-            if (status !== 'SUCCESS') {
-                handleMessage(message, status);
-                console.log(status)
-                console.log(message)
-            } else {
-                console.log(status)
-                console.log(message)
-                axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${data}`)
-                .then((response) => {
-                    const result = response.data;
-                    const {message, status, data} = result;
-                    console.log(status)
-                    console.log(message)
-                    //set image
-                    if (data) {
-                        //convert back to image
-                        var base64Icon = `data:image/jpg;base64,${data}`
-                        setpfpB64(base64Icon)
-                    } else {
-                        setpfpB64("./../assets/img/Logo.png")
-                    }
-                })
-                .catch(function (error) {
-                    console.log("Image not recieved")
-                    console.log(error);
-                });
-            }
-            //setSubmitting(false);
-
-        }).catch(error => {
-            console.log(error);
-            //setSubmitting(false);
-            handleMessage("An error occured. Try checking your network connection and retry.");
-        })
-    }
-
-    if (getPfp !== true) {
-        getProfilePicture()
-        setGetPfp(true)
     }
 
     const handleMessage = (message, type = 'FAILED') => {
@@ -971,19 +922,7 @@ const ThreadViewPage = ({route, navigation}) => {
                                 <TouchableOpacity style={{width: '100%'}}>
                                     <PostsHorizontalView>
                                         <PostsVerticalView>
-                                            {creatorImageB64 !== null && (
-                                                <View>
-                                                    {creatorImageB64 !== "Finding" && (
-                                                        <PostCreatorIcon source={{uri: `data:image/jpg;base64,${creatorImageB64}`}}/>
-                                                    )}
-                                                </View>
-                                            )}
-                                            {creatorImageB64 == null && (
-                                                 <PostCreatorIcon source={require('./../assets/img/Logo.png')}/>
-                                            )}
-                                            {creatorImageB64 == "Finding" && (
-                                                <PostCreatorIcon source={require('./../assets/img/Logo.png')}/>
-                                            )}
+                                            <PostCreatorIcon source={{uri: creatorPfpB64}}/>
                                         </PostsVerticalView>
                                         <PostsVerticalView style={{marginTop: 9}}>
                                             <SubTitle style={{fontSize: 20, marginBottom: 0, color: colors.tertiary}}>{creatorDisplayName}</SubTitle>
@@ -1136,7 +1075,7 @@ const ThreadViewPage = ({route, navigation}) => {
                                             </CommentsHorizontalView>
                                             <CommentsHorizontalView writeCommentArea={true}>
                                                 <CommentsVerticalView alongLeft={true}>
-                                                    <CommenterIcon source={{uri: pfpB64}}/>
+                                                    <CommenterIcon source={{uri: profilePictureUri}}/>
                                                 </CommentsVerticalView>
                                                 <CommentsVerticalView>
                                                     <UserTextInput
