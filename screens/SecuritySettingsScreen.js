@@ -321,9 +321,9 @@ const SecuritySettingsScreen = ({navigation}) => {
                             <Icon name="trash-bin" size={60} color={colors.errorColor}/>
                             <Text style={{color: colors.errorColor, fontSize: 24, textAlign: 'center'}}>Destroy all locally stored data</Text>
                         </TouchableOpacity>
-                        <Text style={{color: colors.tertiary, fontSize: 24, textAlign: 'center'}}>© SquareTable 2021</Text>
+                        <Text style={{color: colors.tertiary, fontSize: 24, textAlign: 'center'}}>© SquareTable 2022</Text>
                         <Text style={{color: colors.tertiary, fontSize: 24, textAlign: 'center', marginBottom: 10}}>All Rights Reserved</Text>
-                        <Text style={{color: colors.tertiary, fontSize: 18, textAlign: 'center', marginBottom: 10}}>Made by Sebastian Webster, Kovid Dev, and Jacob Bowden</Text>
+                        <Text style={{color: colors.tertiary, fontSize: 18, textAlign: 'center', marginBottom: 10}}>Made by Sebastian Webster, Kovid Dev, Didula Semasinghe, and Jacob Bowden</Text>
                     </View>
                 </ScrollView>
             </BackgroundDarkColor>

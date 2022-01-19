@@ -895,6 +895,14 @@ const HomeScreen = ({navigation, route}) => {
             <StatusBar color={colors.StatusBarColor}/>
             <View style={{flexDirection:'row'}}>
                 <Text style={{fontSize: 28, fontWeight: 'bold', textAlign: 'center', color: colors.tertiary, marginLeft: 3}}>SocialSquare BETA</Text>
+                <TouchableOpacity style={{position: 'absolute', right: 100}} disabled={!FlatListElementsEnabledState} onPress={() => {alert('Notifications Tab coming soon. This button may be moved to some other place in the app at a later point in time so if this button disappears it has most likely just moved somewhere else. Please consult in SocialSquare dev testing gc if you cannot find this button.')}}>
+                    <Image
+                        source={require('../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/219-heart.png')}
+                        style={{ width: 32, height: 32, tintColor: colors.tertiary}}
+                        resizeMode="contain"
+                        resizeMethod="resize"
+                    />
+                </TouchableOpacity>
                 <TouchableOpacity style={{position: 'absolute', right: 55}} disabled={!FlatListElementsEnabledState} onPress={changeHomeScreenSettingsMenuView}>
                     <Image
                         source={require('../assets/app_icons/settings.png')}

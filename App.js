@@ -884,6 +884,7 @@ const App = () => {
         require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/348-filter.png'),
         require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/015-images.png'),
         require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/115-users.png'),
+        require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/219-heart.png'),
       ];
 
       const LockSocialSquareValue = await AsyncStorage.getItem('LockSocialSquare')
