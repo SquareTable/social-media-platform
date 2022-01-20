@@ -895,15 +895,10 @@ const HomeScreen = ({navigation, route}) => {
             <StatusBar color={colors.StatusBarColor}/>
             <View style={{flexDirection:'row'}}>
                 <Text style={{fontSize: 28, fontWeight: 'bold', textAlign: 'center', color: colors.tertiary, marginLeft: 3}}>SocialSquare BETA</Text>
-                <TouchableOpacity style={{position: 'absolute', right: 100}} disabled={!FlatListElementsEnabledState} onPress={() => {alert('Notifications Tab coming soon. This button may be moved to some other place in the app at a later point in time so if this button disappears it has most likely just moved somewhere else. Please consult in SocialSquare dev testing gc if you cannot find this button.')}}>
-                    <Image
-                        source={require('../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/219-heart.png')}
-                        style={{ width: 32, height: 32, tintColor: colors.tertiary}}
-                        resizeMode="contain"
-                        resizeMethod="resize"
-                    />
+                <TouchableOpacity style={{position: 'absolute', right: 90}} disabled={!FlatListElementsEnabledState} onPress={() => {alert('Notifications Tab coming soon. This button may be moved to some other place in the app at a later point in time so if this button disappears it has most likely just moved somewhere else. Please consult in SocialSquare dev testing gc if you cannot find this button.')}}>
+                    <Icon name="notifications" size={32} color={colors.tertiary}/>
                 </TouchableOpacity>
-                <TouchableOpacity style={{position: 'absolute', right: 55}} disabled={!FlatListElementsEnabledState} onPress={changeHomeScreenSettingsMenuView}>
+                <TouchableOpacity style={{position: 'absolute', right: 49}} disabled={!FlatListElementsEnabledState} onPress={changeHomeScreenSettingsMenuView}>
                     <Image
                         source={require('../assets/app_icons/settings.png')}
                         style={{ width: 32, height: 32, tintColor: colors.tertiary}}
@@ -912,7 +907,7 @@ const HomeScreen = ({navigation, route}) => {
                     />
                 </TouchableOpacity>
                 <TouchableOpacity style={{position: 'absolute', right: 10}} disabled={!FlatListElementsEnabledState} onPress={changeFilterView}>
-                    <Image source={require('../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/348-filter.png')} style={{width: 32, height: 32, tintColor: colors.tertiary}}/>
+                    <Image source={require('../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/348-filter.png')} style={{width: 30, height: 30, tintColor: colors.tertiary}}/>
                 </TouchableOpacity>
             </View>
             <ProfileOptionsView style={{backgroundColor: colors.primary}} viewHidden={updateSimpleStylesWarningHidden}>
