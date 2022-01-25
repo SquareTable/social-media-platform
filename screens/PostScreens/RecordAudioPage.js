@@ -61,11 +61,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 //credentials context
 import { CredentialsContext } from './../../components/CredentialsContext';
-import { ImageBackground, ScrollView, Image, TouchableOpacity, Text, View, SafeAreaView, Alert, Dimensions } from 'react-native';
+import { ImageBackground, ScrollView, Image, TouchableOpacity, Text, View, SafeAreaView, Alert, Dimensions, Platform } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { convertCompilerOptionsFromJson } from 'typescript';
 import Constants from 'expo-constants'
-import * as IntentLauncher from 'expo-intent-launcher'
 import * as Linking from 'expo-linking';
 
 
@@ -148,11 +147,17 @@ const RecordAudioPage = ({navigation}) => {
                             onPress: () => {
                                 if (Platform.OS === 'ios') {
                                     Linking.openURL('app-settings:')
+                                } else if (Platform.OS === 'android') {
+                                    import ('expo-intent-launcher').then(IntentLauncher => {
+                                        IntentLauncher.startActivityAsync(
+                                            IntentLauncher.ACTION_APPLICATION_DETAILS_SETTINGS,
+                                            { data: 'package:' + pkg },
+                                        )
+                                    })
+                                } else if (Platform.OS == 'web') {
+                                    window.open('app-settings:'/*, '_system'*/)
                                 } else {
-                                    IntentLauncher.startActivityAsync(
-                                        IntentLauncher.ACTION_APPLICATION_DETAILS_SETTINGS,
-                                        { data: 'package:' + pkg },
-                                    )
+                                    alert('Platform not supported yet.')
                                 }
                             }
                           },

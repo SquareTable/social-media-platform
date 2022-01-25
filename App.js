@@ -1,10 +1,9 @@
-import 'react-native-gesture-handler';
 import Constants from 'expo-constants';
 import { NavigationContainer, useTheme } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState, useRef, useCallback, useContext } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Alert, SafeAreaView, Platform, Image, Animated, Vibration, AppState, Dimensions, FlatList} from 'react-native';
+import { StyleSheet, Text, View, TouchableOpacity, Alert, SafeAreaView, Platform, Image, Animated, Vibration, AppState, Dimensions, FlatList, TouchableWithoutFeedback} from 'react-native';
 import styled from "styled-components";
 import LoginScreen from './screens/LoginScreen.js';
 import { Start_Stack } from './navigation/Start_Stack.js';
@@ -78,6 +77,7 @@ const App = () => {
   const appHeight = Dimensions.get('window').height;
   const [allCredentialsStoredList, setAllCredentialsStoredList] = useState([])
   const [AccountSwitcherHeight, setAccountSwitcherHeight] = useState(0)
+  const DismissAccountSwitcherBoxActivated = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
       AppState.addEventListener("change", _handleAppStateChange);
@@ -89,6 +89,7 @@ const App = () => {
 
   useEffect(() => {
     if (showAccountSwitcher == true) {
+      Animated.timing(DismissAccountSwitcherBoxActivated, { toValue: 1, duration: 1, useNativeDriver: true }).start();
       Animated.timing(AccountSwitcherY, {
         toValue: -AccountSwitcherHeight + 60,
         duration: 100,
@@ -523,6 +524,7 @@ const App = () => {
     const onHandlerStateChange = event => {
       if (event.nativeEvent.oldState === State.ACTIVE) {
         if (event.nativeEvent.absoluteY > appHeight - 80 - AccountSwitcherHeight) {
+          Animated.timing(DismissAccountSwitcherBoxActivated, { toValue: 0, duration: 1, useNativeDriver: true }).start();
           Animated.timing(AccountSwitcherY, {
             toValue: 250,
             duration: 200,
@@ -530,7 +532,7 @@ const App = () => {
           }).start();
         } else {
           Animated.timing(AccountSwitcherY, {
-            toValue: 80 - AccountSwitcherHeight,
+            toValue: 60 - AccountSwitcherHeight,
             duration: 100,
             useNativeDriver: true
           }).start();
@@ -546,6 +548,7 @@ const App = () => {
     }
     const AddNewAccount = () => {
       AppNavigation.navigate('ModalLoginScreen', {modal: true});
+      Animated.timing(DismissAccountSwitcherBoxActivated, { toValue: 0, duration: 1, useNativeDriver: true }).start();
       Animated.timing(AccountSwitcherY, {
         toValue: 250,
         duration: 200,
@@ -555,6 +558,7 @@ const App = () => {
     const goToAccount = (account) => {
       setProfilePictureUri(account.profilePictureUri);
       setStoredCredentials(account);
+      Animated.timing(DismissAccountSwitcherBoxActivated, { toValue: 0, duration: 1, useNativeDriver: true }).start();
       Animated.timing(AccountSwitcherY, {
         toValue: 250,
         duration: 200,
@@ -985,6 +989,14 @@ const App = () => {
                                     </View>
                               }
                               <NotificationBox/>
+                              <Animated.View style={{position: 'absolute', height: '100%', width: '100%', top: 0, right: 0, zIndex: DismissAccountSwitcherBoxActivated.interpolate({inputRange: [0, 1], outputRange: [-10, 997]})}}>
+                                <TouchableOpacity style={{height: '100%', width: '100%'}} onPress={() => {
+                                    console.log('Account Switcher Dismiss Box pressed')
+                                    Animated.timing(DismissAccountSwitcherBoxActivated, { toValue: 0, duration: 1, useNativeDriver: true }).start();
+                                    Animated.timing(AccountSwitcherY, {toValue: 250, duration: 100, useNativeDriver: true}).start()
+                                  }}
+                                />
+                              </Animated.View>
                               <DisconnectedFromInternetBox/>
                               <AccountSwitcher/>
                               <AccountSwitchedBox/>

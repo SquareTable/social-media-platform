@@ -8,8 +8,6 @@ import {Formik} from 'formik';
 // icons
 import {Octicons, Ionicons, Fontisto} from '@expo/vector-icons';
 
-import ActionSheet from 'react-native-actionsheet';
-
 import {
     StyledContainer,
     InnerContainer,
@@ -40,7 +38,7 @@ import {
 const {brand, primary, tertiary, darkLight, slightlyLighterGrey, midWhite} = Colors;
 
 //From react native
-import {View, Image, ActivityIndicator, ImageBackground, StyleSheet, ScrollView, TouchableOpacity} from 'react-native';
+import {View, Image, ActivityIndicator, ImageBackground, StyleSheet, ScrollView, TouchableOpacity, Text} from 'react-native';
 
 // axios
 import axios from 'axios';
@@ -153,46 +151,12 @@ const CategoryCreationPage = ({navigation, route}) => {
         }
     }
 
-    const ActionMenuOptions = [
-        'Camera',
-        'Photo Library',
-        'Reset Icon',
-        'Cancel'
-    ]
-
-    let CategoryIconPickerActionMenu = useRef()
-
     const checkForCameraPermissions = async () => {
         navigation.navigate('TakeImage_Camera', {locationToGoTo: 'CategoryCreationPage'})
     }
 
     return(
         <>
-            <ActionSheet
-                ref={CategoryIconPickerActionMenu}
-                title={'How would you like to pick the icon?'}
-                options={ActionMenuOptions}
-                // Define cancel button index in the option array
-                // This will take the cancel option in bottom
-                // and will highlight it
-                cancelButtonIndex={3}
-                // Highlight any specific option
-                destructiveButtonIndex={2}
-                onPress={(index) => {
-                    if (index == 0) {
-                        console.log('Opening camera...')
-                        checkForCameraPermissions()
-                    } else if (index == 1) {
-                        console.log('Opening image library')
-                        OpenImgLibrary()
-                    } else if (index == 2) {
-                        console.log('Resetting icon')
-                        navigation.setParams({imageFromRoute: null})
-                    } else if (index == 3) {
-                        console.log('Cancelling picker menu')
-                    }
-                }}
-            />
             <KeyboardAvoidingWrapper>
                 <StyledContainer style={{backgroundColor: colors.primary}}>
                         <StatusBar style={colors.StatusBarColor}/>
@@ -256,9 +220,25 @@ const CategoryCreationPage = ({navigation, route}) => {
                                         {!image && (
                                             <Avatar resizeMode="cover" source={require("./../assets/img/Logo.png")}/>
                                         )}
-                                        <StyledButton style={{backgroundColor: colors.primary}} signUpButton={true} onPress={() => {CategoryIconPickerActionMenu.current.show();}}>
-                                            <ButtonText signUpButton={true} style={{top: -9.5}}>Change</ButtonText>
-                                        </StyledButton>
+                                        <View style={{height: 180}}>
+                                            <Text style={{color: colors.tertiary, fontSize: 25, fontWeight: 'bold', textAlign: 'center', marginTop: 10}}>Change Icon</Text>
+                                            <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+                                                <StyledButton style={{backgroundColor: dark ? colors.slightlyLighterPrimary : colors.borderColor, borderColor: colors.tertiary}} postImage={true} onPress={OpenImgLibrary}>
+                                                    <ButtonText style={{color: colors.tertiary}} postImage={true}>
+                                                        +
+                                                    </ButtonText>
+                                                </StyledButton>
+                                                <View style={{width: 20}}/>
+                                                <StyledButton style={{backgroundColor: dark ? colors.slightlyLighterPrimary : colors.borderColor, borderColor: colors.tertiary}} postImage={true} onPress={checkForCameraPermissions}>
+                                                    <Image
+                                                        source={require('../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/016-camera.png')}
+                                                        style={{height: 30, width: 30, tintColor: colors.tertiary}}
+                                                        resizeMode="contain"
+                                                        resizeMethod="resize"
+                                                    />
+                                                </StyledButton>
+                                            </View>
+                                        </View>
                                         <PostHorizontalView centerAlign={true}>
                                             <CheckBoxForPosts style={{borderWidth: dark ? 3 : 5}} selectedState={postIsNSFW} onPress={() => {
                                                 if (values.categoryNSFW == true) {

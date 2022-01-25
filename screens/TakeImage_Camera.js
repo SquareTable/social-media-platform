@@ -4,7 +4,6 @@ import {Camera} from 'expo-camera';
 import { AntDesign, MaterialIcons } from '@expo/vector-icons';
 import { useIsFocused } from '@react-navigation/native';
 import Constants from 'expo-constants'
-import * as IntentLauncher from 'expo-intent-launcher'
 import * as Linking from 'expo-linking';
 
 const TakeImage_Camera = ({navigation, route}) => {
@@ -81,22 +80,28 @@ const TakeImage_Camera = ({navigation, route}) => {
                     "No Camera Permission",
                     "SocialSquare does not have camera permissions enabled. If you want to take photos or videos with your camera, please go into your device settings and enable camera permission for SocialSquare.",
                     [
-                      { text: "Cancel", style: "cancel" },
-                      {
+                    { text: "Cancel", style: "cancel" },
+                    {
                         text: "Settings",
                         onPress: () => {
                             if (Platform.OS === 'ios') {
                                 Linking.openURL('app-settings:')
+                            } else if (Platform.OS === 'android') {
+                                import ('expo-intent-launcher').then(IntentLauncher => {
+                                    IntentLauncher.startActivityAsync(
+                                        IntentLauncher.ACTION_APPLICATION_DETAILS_SETTINGS,
+                                        { data: 'package:' + pkg },
+                                    )
+                                })
+                            } else if (Platform.OS === 'web') {
+                                window.open('app-settings:')
                             } else {
-                                IntentLauncher.startActivityAsync(
-                                    IntentLauncher.ACTION_APPLICATION_DETAILS_SETTINGS,
-                                    { data: 'package:' + pkg },
-                                )
+                                alert('Platform not supported yet.')
                             }
                         }
-                      },
+                    },
                     ]
-                  );
+                );
             }
         } else if (type == 'microphone') {
             var { status } = await Camera.requestMicrophonePermissionsAsync();
@@ -106,22 +111,28 @@ const TakeImage_Camera = ({navigation, route}) => {
                     "No Microphone Permission",
                     "SocialSquare does not have microphone permissions enabled. If you want to record video with sound, please go into your device settings and allow SocialSquare to use your microphone",
                     [
-                      { text: "Cancel", style: "cancel" },
-                      {
+                    { text: "Cancel", style: "cancel" },
+                    {
                         text: "Settings",
                         onPress: () => {
                             if (Platform.OS === 'ios') {
                                 Linking.openURL('app-settings:')
+                            } else if (Platform.OS == 'android') {
+                                import ('expo-intent-launcher').then(IntentLauncher => {
+                                    IntentLauncher.startActivityAsync(
+                                        IntentLauncher.ACTION_APPLICATION_DETAILS_SETTINGS,
+                                        { data: 'package:' + pkg },
+                                    )
+                                })
+                            } else if (Platform.OS == 'web') {
+                                window.open('app-settings:')
                             } else {
-                                IntentLauncher.startActivityAsync(
-                                    IntentLauncher.ACTION_APPLICATION_DETAILS_SETTINGS,
-                                    { data: 'package:' + pkg },
-                                )
+                                alert('Platform not supported yet.')
                             }
                         }
-                      },
+                    },
                     ]
-                  );
+                );
             }
         }
     }

@@ -1,7 +1,6 @@
-import React, {useCallback, useContext, useState, useRef, useEffect, memo} from 'react';
+import React, {useCallback, useContext, useState, useRef, useEffect} from 'react';
 import { StatusBar } from 'expo-status-bar';
 import * as Haptics from 'expo-haptics';
-import ActionSheet from 'react-native-actionsheet';
 import Icon from 'react-native-vector-icons/Feather';
 import FontAwesomeFive from 'react-native-vector-icons/FontAwesome5';
 
@@ -88,7 +87,7 @@ import * as ImagePicker from 'expo-image-picker';
 
 //credentials context
 import { CredentialsContext } from '../components/CredentialsContext';
-import { ImageBackground, ScrollView, SectionList, Image, View, ActivityIndicator, Touchable, RefreshControl, SafeAreaView, Text, Animated, useWindowDimensions, Easing } from 'react-native';
+import { ImageBackground, ScrollView, SectionList, Image, View, ActivityIndicator, Touchable, RefreshControl, SafeAreaView, Text, Animated, useWindowDimensions, Platform } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import {useTheme, useIsFocused} from "@react-navigation/native"
@@ -242,6 +241,11 @@ const Welcome = ({navigation, route}) => {
     // Account switcher
     const {showAccountSwitcher, setShowAccountSwitcher} = useContext(ShowAccountSwitcherContext)
     const {allCredentialsStoredList, setAllCredentialsStoredList} = useContext(AllCredentialsStoredContext);
+    // Top profile bar
+    const TopProfileBarFadeAnim = useRef(new Animated.Value(0)).current;
+    // Change profile picture menu opacity
+    const ChangePfpMenuOpacity = useRef(new Animated.Value(0)).current;
+
 
     const openDeletePrompt = (postId, creatorName) => {
         if (name == creatorName) {
@@ -2421,6 +2425,11 @@ const Welcome = ({navigation, route}) => {
                 pickImage()
             }
         }
+        Animated.timing(ChangePfpMenuOpacity, {
+            toValue: 0,
+            duration: 1,
+            useNativeDriver: 'true'
+        }).start()
     }
 
     const [refreshing, setRefreshing] = useState(false)
@@ -2451,17 +2460,12 @@ const Welcome = ({navigation, route}) => {
         }
     }
 
-    const TopProfileBarFadeAnim = useRef(new Animated.Value(0)).current;
-
-    const ActionMenuOptions = [
-        'Camera',
-        'Photo Library',
-        'Cancel'
-    ]
-
-    let PfpPickerActionMenu = useRef()
-
     const checkForCameraPermissions = async () => {
+        Animated.timing(ChangePfpMenuOpacity, {
+            toValue: 0,
+            duration: 1,
+            useNativeDriver: 'true'
+        }).start()
         navigation.navigate('TakeImage_Camera', {locationToGoTo: 'Welcome'})
     }
 
@@ -2479,31 +2483,42 @@ const Welcome = ({navigation, route}) => {
             changeToOne()
         }
     }, [storedCredentials])
+
+    const ChangePfp = () => {
+        setPageElementsState(true)
+        Animated.timing(ChangePfpMenuOpacity, {
+            toValue: 1,
+            duration: 1,
+            useNativeDriver: 'true'
+        }).start()
+    }
     return(
-        <>    
-            <ActionSheet
-                ref={PfpPickerActionMenu}
-                title={'How would you like to pick your profile picture?'}
-                options={ActionMenuOptions}
-                // Define cancel button index in the option array
-                // This will take the cancel option in bottom
-                // and will highlight it
-                cancelButtonIndex={2}
-                // Highlight any specific option
-                //destructiveButtonIndex={2}
-                onPress={(index) => {
-                    if (index == 0) {
-                        console.log('Opening camera...')
-                        checkForCameraPermissions()
-                    } else if (index == 1) {
-                        console.log('Opening image library')
-                        OpenImgLibrary()
-                    } else if (index == 2) {
-                        console.log('Cancelling picker menu')
-                    }
-                }}
-            />
+        <>
             <StatusBar style={colors.StatusBarColor}/>
+            <Animated.View style={{backgroundColor: colors.borderColor, opacity: ChangePfpMenuOpacity, position: 'absolute', top: StatusBarHeight + 100, height: 300, width: '80%', zIndex: ChangePfpMenuOpacity.interpolate({inputRange: [0,1], outputRange: [-10, 11]}), alignSelf: 'center', borderColor: colors.borderColor, borderWidth: 1, borderRadius: 20}}>
+                <Text style={{color: colors.tertiary, fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>Change profile picture</Text>
+                <View style={{height: 220}}>
+                    <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+                        <StyledButton style={{backgroundColor: dark ? colors.slightlyLighterPrimary : colors.borderColor, borderColor: colors.tertiary}} postImage={true} onPress={OpenImgLibrary}>
+                            <ButtonText style={{color: colors.tertiary}} postImage={true}>
+                                +
+                            </ButtonText>
+                        </StyledButton>
+                        <View style={{width: 20}}/>
+                        <StyledButton style={{backgroundColor: dark ? colors.slightlyLighterPrimary : colors.borderColor, borderColor: colors.tertiary}} postImage={true} onPress={checkForCameraPermissions}>
+                            <Image
+                                source={require('../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/016-camera.png')}
+                                style={{height: 30, width: 30, tintColor: colors.tertiary}}
+                                resizeMode="contain"
+                                resizeMethod="resize"
+                            />
+                        </StyledButton>
+                    </View>
+                </View>
+                <TouchableOpacity style={{borderColor: colors.errorColor, borderWidth: 3, borderRadius: 10, padding: 10, alignItems: 'center', justifyContent: 'center'}} onPress={() => {Animated.timing(ChangePfpMenuOpacity, {toValue: 0, duration: 1, useNativeDriver: true}).start()}}>
+                    <Text style={{color: colors.errorColor, fontSize: 20, fontWeight: 'bold'}}>Cancel</Text>
+                </TouchableOpacity>
+            </Animated.View>
             <Animated.View style={{paddingTop: StatusBarHeight - 10, backgroundColor: colors.primary, borderColor: colors.borderColor, borderBottomWidth: 1, alignItems: 'center', opacity: TopProfileBarFadeAnim, zIndex: TopProfileBarFadeAnim.interpolate({inputRange: [0, 1], outputRange: [-10, 100]}), position: 'absolute', top: 0, width: '100%', flexDirection: 'column'}}>
                 <>
                     {backButtonHidden == false &&
@@ -2519,7 +2534,9 @@ const Welcome = ({navigation, route}) => {
                         </View>
                     }
                     <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
-                        <PageTitle style={{fontSize: 24}} welcome={true}>{displayName || name || "Couldn't get name"}</PageTitle>
+                        <TouchableOpacity onPress={() => {setShowAccountSwitcher(true)}}>
+                            <PageTitle style={{fontSize: 24}} welcome={true}>{displayName || name || "Couldn't get name"}</PageTitle>
+                        </TouchableOpacity>
                         <Avatar style={{width: 40, height: 40}} resizeMode="cover" source={{uri: profilePictureUri}}/>
                     </View>
                     <View style={{position: 'absolute', right: 10, top: StatusBarHeight}}>
@@ -2579,7 +2596,7 @@ const Welcome = ({navigation, route}) => {
                             <View style={{alignSelf: 'center', alignContent: 'center'}}>
                                 <Avatar resizeMode="cover" source={{uri: profilePictureUri}}/>
                                 {changingPfp == false && (
-                                    <TouchableOpacity onPress={() => {PfpPickerActionMenu.current.show();}}>
+                                    <TouchableOpacity onPress={() => {ChangePfp()}}>
                                         <SubTitle style={{marginBottom: 0, color: darkestBlue, textAlign: 'center'}}>Change</SubTitle>
                                     </TouchableOpacity>
                                 )}
