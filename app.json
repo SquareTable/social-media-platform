@@ -38,7 +38,8 @@
       },
       "config": {
         "googleMobileAdsAppId": "ca-app-pub-6980968247752885~2757645493"
-      }
+      },
+      "package": "com.squaretabledevlopment.socialsquare"
     },
     "web": {
       "favicon": "./assets/favicon.png"
