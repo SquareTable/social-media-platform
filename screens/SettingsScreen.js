@@ -105,7 +105,11 @@ const SettingsPage = ({navigation}) => {
     const {colors} = useTheme();
 
     const seeAppIntroductionScreenAgainButtonOnPress = () => {
-        navigation.replace('IntroScreen')
+        if (storedCredentials) {
+            navigation.replace('IntroScreen')
+        } else {
+            navigation.replace('IntroScreen_NoCredentials')
+        }
     }
 
     const goToLink = async (linkToGoTo) => {
@@ -145,13 +149,17 @@ const SettingsPage = ({navigation}) => {
                             <SettingsItemImage style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/207-eye.png')}/>
                             <SettingsItemText style={{color: colors.tertiary}}>App Styling</SettingsItemText>
                         </SettingsPageItemTouchableOpacity>
-                        <SettingsPageItemTouchableOpacity disabled={!logoutViewState} style={{borderColor: colors.borderColor}} onPress={() => {navigation.navigate('ReportBugScreen')}}>
+                        <SettingsPageItemTouchableOpacity disabled={!logoutViewState} style={{borderColor: colors.borderColor}} onPress={() => {Linking.openURL('https://github.com/SquareTable/social-media-platform/issues/new?assignees=&labels=&template=bug-report.md&title=Write+Bug+Title+here')}}>
                             <SettingsItemImage style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/265-notification.png')}/>
                             <SettingsItemText style={{color: colors.tertiary}}>Report bug</SettingsItemText>
                         </SettingsPageItemTouchableOpacity>
-                        <SettingsPageItemTouchableOpacity disabled={!logoutViewState} style={{borderColor: colors.borderColor}} onPress={changeLogoutView}>
-                            <SettingsItemImage style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/277-exit.png')}/>
-                            <SettingsItemText style={{color: colors.tertiary}}>Logout</SettingsItemText>
+                        <SettingsPageItemTouchableOpacity disabled={!logoutViewState} style={{borderColor: colors.borderColor}} onPress={() => {storedCredentials ? changeLogoutView() : navigation.replace('LoginScreen')}}>
+                            {storedCredentials ?
+                                <SettingsItemImage style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/277-exit.png')}/>
+                            :
+                                <Icon name="login-variant" size={60} color={colors.tertiary}/>
+                            }
+                            <SettingsItemText style={{color: colors.tertiary}}>{storedCredentials ? 'Logout' : 'Login/Signup'}</SettingsItemText>
                         </SettingsPageItemTouchableOpacity>
                         <Text style={{color: colors.tertiary, fontSize: 24, textAlign: 'center'}}>© SquareTable 2022</Text>
                         <Text style={{color: colors.tertiary, fontSize: 24, textAlign: 'center', marginBottom: 10}}>All Rights Reserved</Text>

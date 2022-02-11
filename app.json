@@ -19,7 +19,7 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.squaretabledevlopment.socialsquare",
+      "bundleIdentifier": "com.squaretabledevelopment.socialsquare",
       "userInterfaceStyle": "automatic",
       "config": {
         "googleMobileAdsAppId": "ca-app-pub-6980968247752885~4685804835"
@@ -39,7 +39,7 @@
       "config": {
         "googleMobileAdsAppId": "ca-app-pub-6980968247752885~2757645493"
       },
-      "package": "com.squaretabledevlopment.socialsquare"
+      "package": "com.squaretabledevelopment.socialsquare"
     },
     "web": {
       "favicon": "./assets/favicon.png"

@@ -88,6 +88,11 @@ const Start_Stack = () => {
                             />
                             <Stack.Screen name="Tabs" component={Tabs}/>
                             <Stack.Screen name="DestroyingLocalDataScreen" component={DestroyingLocalDataScreen}/>
+                            <Stack.Screen name="IntroScreen_NoCredentials" component={IntroScreen}/>
+                            <Stack.Group screenOptions={{presentation: 'modal'}}>
+                                <Stack.Screen name="ModalLoginScreen" component={LoginScreen}/>
+                                <Stack.Screen name="ModalSignupScreen" component={Signup}/>
+                            </Stack.Group>
                         </>
                     ) : (
                         <>

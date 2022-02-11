@@ -54,7 +54,7 @@ const SimpleStylingMenu = ({navigation, route}) => {
     const [indexsOfStylesToUpdate, setIndexsOfStylesToUpdate] = useState([]);
     const [outdatedStyleWarningWhenEditingHidden, setOutdatedStyleWarningWhenEditingHidden] = useState(true);
     const isOnBuiltInStyling = useRef();
-    const {displayName} = storedCredentials;
+    if (storedCredentials) {var {displayName} = storedCredentials} else {var displayName = 'Guest'}
     const {ableToRefresh, indexNumToUse, backToProfileScreen} = route.params;
     if (IndexNumStyleToRefresh == null && indexNumToUse != null) {
         setIndexNumStyleToRefresh(indexNumToUse);

@@ -7,7 +7,6 @@ import {Formik} from 'formik';
 // icons
 import {Octicons, Ionicons, Fontisto} from '@expo/vector-icons';
 
-
 import {
     InnerContainer,
     PageTitle,
@@ -97,7 +96,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 //credentials context
 import { CredentialsContext } from './../components/CredentialsContext';
 
-import { View, ImageBackground, ScrollView, SectionList, ActivityIndicator, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, ImageBackground, ScrollView, SectionList, ActivityIndicator, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { ProfilePictureURIContext } from '../components/ProfilePictureURIContext';
 
@@ -108,7 +107,7 @@ const ViewPollPostPage = ({route, navigation}) => {
     const [message, setMessage] = useState();
     const [messageType, setMessageType] = useState();
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
-    const {_id, name, displayName, email, photoUrl} = storedCredentials;
+    if (storedCredentials) {var {_id, name } = storedCredentials} else {var {_id, name } = {_id: 'SSGUEST', name: 'SSGUEST'}};
     const { pollTitle, pollSubTitle, optionOne, optionOnesColor, optionOnesVotes, optionOnesBarLength, optionTwo, optionTwosColor, optionTwosVotes, optionTwosBarLength, optionThree, optionThreesColor, optionThreesVotes, optionThreesBarLength, optionFour, optionFoursColor, optionFoursVotes, optionFoursBarLength, optionFive, optionFivesColor, optionFivesVotes, optionFivesBarLength, optionSix, optionSixesColor, optionSixesVotes, optionSixesBarLength, totalNumberOfOptions, pollLikes, pollId, votedFor, creatorPfpB64, creatorName, creatorDisplayName, datePosted} = route.params;
     //Titles use states
     var allDataCollected = {data: {pollTitle: pollTitle, pollSubTitle: pollSubTitle, optionOne: optionOne, optionOnesColor: optionOnesColor, optionOnesVotes: optionOnesVotes, optionOnesBarLength: optionOnesBarLength, optionTwo: optionTwo, optionTwosColor: optionTwosColor, optionTwosVotes: optionTwosVotes, optionTwosBarLength: optionTwosBarLength, optionThree: optionThree, optionThreesColor: optionThreesColor, optionThreesVotes: optionThreesVotes, optionThreesBarLength: optionThreesBarLength, optionFour: optionFour, optionFoursColor: optionFoursColor, optionFoursVotes: optionFoursVotes, optionFoursBarLength: optionFoursBarLength, optionFive: optionFive, optionFivesColor: optionFivesColor, optionFivesVotes: optionFivesVotes, optionFivesBarLength: optionFivesBarLength, optionSix: optionSix, optionSixesColor: optionSixesColor, optionSixesVotes: optionSixesVotes, optionSixesBarLength: optionSixesBarLength, totalNumberOfOptions: totalNumberOfOptions, pollLikes: pollLikes, pollId: pollId, votedFor: votedFor, creatorPfpB64: creatorPfpB64, creatorName: creatorName, creatorDisplayName: creatorName, datePosted}}
@@ -459,380 +458,384 @@ const ViewPollPostPage = ({route, navigation}) => {
     }
 
     const handleVoteOnPoll = (optionSelected) => {
-        handleMessage(null);
-        console.log(optionSelected)
-        const url = "https://nameless-dawn-41038.herokuapp.com/user/voteonpoll";
+        if (storedCredentials) {
+            handleMessage(null);
+            console.log(optionSelected)
+            const url = "https://nameless-dawn-41038.herokuapp.com/user/voteonpoll";
 
-        var toSend = {userId: _id, optionSelected: optionSelected, pollId: pollId}
+            var toSend = {userId: _id, optionSelected: optionSelected, pollId: pollId}
 
-        console.log(toSend)
+            console.log(toSend)
 
-        axios.post(url, toSend).then((response) => {
-            const result = response.data;
-            const {message, status, data} = result;
+            axios.post(url, toSend).then((response) => {
+                const result = response.data;
+                const {message, status, data} = result;
 
-            if (status !== 'SUCCESS') {
-                handleMessage(message, status);
-            } else {
-                handleMessage(message, status);
-                console.log("Message:")
-                console.log(message)
-                var lastVote = data.lastVote
-                console.log("Last Vote:")
-                console.log(lastVote)
-                if (message == "Vote successful") {
-                    //voted
-                    var optionOnesBarLength = 16.6666666667
-                    var optionTwosBarLength = 16.6666666667
-                    var optionThreesBarLength = 16.6666666667
-                    var optionFoursBarLength = 16.6666666667
-                    var optionFivesBarLength = 16.6666666667
-                    var optionSixesBarLength = 16.6666666667
-                    var o1V = initialPollVotesForOptions.optionOne
-                    var o2V = initialPollVotesForOptions.optionTwo
-                    var o3V = initialPollVotesForOptions.optionThree
-                    var o4V = initialPollVotesForOptions.optionFour
-                    var o5V = initialPollVotesForOptions.optionFive
-                    var o6V = initialPollVotesForOptions.optionSix
-                    //Change depending on initial
-                    if (pollVoteOption == "None") {
-                        if (optionSelected == "optionOnesVotes") {
-                            o1V = o1V+1
-                        } else if (optionSelected == "optionTwosVotes") {
-                            o2V = o2V+1
-                        } else if (optionSelected == "optionThreesVotes") {
-                            o3V = o3V+1
-                        } else if (optionSelected == "optionFoursVotes") {
-                            o4V = o4V+1
-                        } else if (optionSelected == "optionFivesVotes") {
-                            o5V = o5V+1
-                        } else {
-                            //six
-                            o6V = o6V+1
-                        }
-                    } else if (pollVoteOption == "One") {
-                        o1V = o1V-1
-                        if (optionSelected == "optionOnesVotes") {
-                            o1V = o1V+1
-                        } else if (optionSelected == "optionTwosVotes") {
-                            o2V = o2V+1
-                        } else if (optionSelected == "optionThreesVotes") {
-                            o3V = o3V+1
-                        } else if (optionSelected == "optionFoursVotes") {
-                            o4V = o4V+1
-                        } else if (optionSelected == "optionFivesVotes") {
-                            o5V = o5V+1
-                        } else {
-                            //six
-                            o6V = o6V+1
-                        }
-                    } else if (pollVoteOption == "Two") {
-                        o2V = o2V-1
-                        if (optionSelected == "optionOnesVotes") {
-                            o1V = o1V+1
-                        } else if (optionSelected == "optionTwosVotes") {
-                            o2V = o2V+1
-                        } else if (optionSelected == "optionThreesVotes") {
-                            o3V = o3V+1
-                        } else if (optionSelected == "optionFoursVotes") {
-                            o4V = o4V+1
-                        } else if (optionSelected == "optionFivesVotes") {
-                            o5V = o5V+1
-                        } else {
-                            //six
-                            o6V = o6V+1
-                        }
-                    } else if (pollVoteOption == "Three") {
-                        o3V = o3V-1
-                        if (optionSelected == "optionOnesVotes") {
-                            o1V = o1V+1
-                        } else if (optionSelected == "optionTwosVotes") {
-                            o2V = o2V+1
-                        } else if (optionSelected == "optionThreesVotes") {
-                            o3V = o3V+1
-                        } else if (optionSelected == "optionFoursVotes") {
-                            o4V = o4V+1
-                        } else if (optionSelected == "optionFivesVotes") {
-                            o5V = o5V+1
-                        } else {
-                            //six
-                            o6V = o6V+1
-                        }
-                    } else if (pollVoteOption == "Four") {
-                        o4V = o4V-1
-                        if (optionSelected == "optionOnesVotes") {
-                            o1V = o1V+1
-                        } else if (optionSelected == "optionTwosVotes") {
-                            o2V = o2V+1
-                        } else if (optionSelected == "optionThreesVotes") {
-                            o3V = o3V+1
-                        } else if (optionSelected == "optionFoursVotes") {
-                            o4V = o4V+1
-                        } else if (optionSelected == "optionFivesVotes") {
-                            o5V = o5V+1
-                        } else {
-                            //six
-                            o6V = o6V+1
-                        }
-                    } else if (pollVoteOption == "Five") {
-                        o5V = o5V-1
-                        if (optionSelected == "optionOnesVotes") {
-                            o1V = o1V+1
-                        } else if (optionSelected == "optionTwosVotes") {
-                            o2V = o2V+1
-                        } else if (optionSelected == "optionThreesVotes") {
-                            o3V = o3V+1
-                        } else if (optionSelected == "optionFoursVotes") {
-                            o4V = o4V+1
-                        } else if (optionSelected == "optionFivesVotes") {
-                            o5V = o5V+1
-                        } else {
-                            //six
-                            o6V = o6V+1
-                        }
-                    } else {
-                        o6V = o6V-1
-                        if (optionSelected == "optionOnesVotes") {
-                            o1V = o1V+1
-                        } else if (optionSelected == "optionTwosVotes") {
-                            o2V = o2V+1
-                        } else if (optionSelected == "optionThreesVotes") {
-                            o3V = o3V+1
-                        } else if (optionSelected == "optionFoursVotes") {
-                            o4V = o4V+1
-                        } else if (optionSelected == "optionFivesVotes") {
-                            o5V = o5V+1
-                        } else {
-                            //six
-                            o6V = o6V+1
-                        }
-                    }
-                    var totalVotes = o1V+o2V+o3V+o4V+o5V+o6V
-                    optionOnesBarLength = (o1V/totalVotes)*100
-                    console.log("O1 BL")
-                    console.log(optionOnesBarLength)
-                    optionTwosBarLength = (o2V/totalVotes)*100
-                    console.log("O2 BL")
-                    console.log(optionTwosBarLength)
-                    optionThreesBarLength = (o3V/totalVotes)*100
-                    console.log("O3 BL")
-                    console.log(optionThreesBarLength)
-                    optionFoursBarLength = (o4V/totalVotes)*100
-                    console.log("O4 BL")
-                    console.log(optionFoursBarLength)
-                    optionFivesBarLength = (o5V/totalVotes)*100
-                    console.log("O5 BL")
-                    console.log(optionFivesBarLength)
-                    optionSixesBarLength = (o6V/totalVotes)*100
-                    console.log("O6 BL")
-                    console.log(optionSixesBarLength)
-                    if (Number.isNaN(optionOnesBarLength)) {
-                        optionOnesBarLength = 0
-                    }
-                    if (Number.isNaN(optionTwosBarLength)) {
-                        optionTwosBarLength = 0
-                    }
-                    if (Number.isNaN(optionThreesBarLength)) {
-                        optionThreesBarLength = 0
-                    }
-                    if (Number.isNaN(optionFoursBarLength)) {
-                        optionFoursBarLength = 0
-                    }
-                    if (Number.isNaN(optionFivesBarLength)) {
-                        optionFivesBarLength = 0
-                    }
-                    if (Number.isNaN(optionSixesBarLength)) {
-                        optionSixesBarLength = 0
-                    }
-                    if (optionSelected == "optionOnesVotes") {
-                        setOptionOneVoteText("Voted")
-                        setOptionTwoVoteText("Vote")
-                        setOptionThreeVoteText("Vote")
-                        setOptionFourVoteText("Vote")
-                        setOptionFiveVoteText("Vote")
-                        setOptionSixVoteText("Vote")
-                    } else if (optionSelected == "optionTwosVotes") {
-                        setOptionOneVoteText("Vote")
-                        setOptionTwoVoteText("Voted")
-                        setOptionThreeVoteText("Vote")
-                        setOptionFourVoteText("Vote")
-                        setOptionFiveVoteText("Vote")
-                        setOptionSixVoteText("Vote")
-                    } else if (optionSelected == "optionThreesVotes") {
-                        setOptionOneVoteText("Vote")
-                        setOptionTwoVoteText("Vote")
-                        setOptionThreeVoteText("Voted")
-                        setOptionFourVoteText("Vote")
-                        setOptionFiveVoteText("Vote")
-                        setOptionSixVoteText("Vote")
-                    } else if (optionSelected == "optionFoursVotes") {
-                        setOptionOneVoteText("Vote")
-                        setOptionTwoVoteText("Vote")
-                        setOptionThreeVoteText("Vote")
-                        setOptionFourVoteText("Voted")
-                        setOptionFiveVoteText("Vote")
-                        setOptionSixVoteText("Vote")
-                    } else if (optionSelected == "optionFivesVotes") {
-                        setOptionOneVoteText("Vote")
-                        setOptionTwoVoteText("Vote")
-                        setOptionThreeVoteText("Vote")
-                        setOptionFourVoteText("Vote")
-                        setOptionFiveVoteText("Voted")
-                        setOptionSixVoteText("Vote")
-                    } else {
-                        setOptionOneVoteText("Vote")
-                        setOptionTwoVoteText("Vote")
-                        setOptionThreeVoteText("Vote")
-                        setOptionFourVoteText("Vote")
-                        setOptionFiveVoteText("Vote")
-                        setOptionSixVoteText("Voted")
-                    }
-                    setPollVotesForOptions({optionOne: o1V, optionTwo: o2V, optionThree: o3V, optionFour: o4V, optionFive: o5V, optionSix: o6V})
-                    setPollBarLengths({optionOnesBarLength: optionOnesBarLength, optionTwosBarLength: optionTwosBarLength, optionThreesBarLength: optionThreesBarLength, optionFoursBarLength: optionFoursBarLength, optionFivesBarLength: optionFivesBarLength, optionSixesBarLength: optionSixesBarLength})
+                if (status !== 'SUCCESS') {
+                    handleMessage(message, status);
                 } else {
-                    //pulled
-                    console.log("Change based on pull")
-                    var optionOnesBarLength = 16.6666666667
-                    var optionTwosBarLength = 16.6666666667
-                    var optionThreesBarLength = 16.6666666667
-                    var optionFoursBarLength = 16.6666666667
-                    var optionFivesBarLength = 16.6666666667
-                    var optionSixesBarLength = 16.6666666667
-                    var o1V = initialPollVotesForOptions.optionOne
-                    var o2V = initialPollVotesForOptions.optionTwo
-                    var o3V = initialPollVotesForOptions.optionThree
-                    var o4V = initialPollVotesForOptions.optionFour
-                    var o5V = initialPollVotesForOptions.optionFive
-                    var o6V = initialPollVotesForOptions.optionSix
-                    if (o1V !== "Finding") {
-                        if (pollVoteOption == "One") {
+                    handleMessage(message, status);
+                    console.log("Message:")
+                    console.log(message)
+                    var lastVote = data.lastVote
+                    console.log("Last Vote:")
+                    console.log(lastVote)
+                    if (message == "Vote successful") {
+                        //voted
+                        var optionOnesBarLength = 16.6666666667
+                        var optionTwosBarLength = 16.6666666667
+                        var optionThreesBarLength = 16.6666666667
+                        var optionFoursBarLength = 16.6666666667
+                        var optionFivesBarLength = 16.6666666667
+                        var optionSixesBarLength = 16.6666666667
+                        var o1V = initialPollVotesForOptions.optionOne
+                        var o2V = initialPollVotesForOptions.optionTwo
+                        var o3V = initialPollVotesForOptions.optionThree
+                        var o4V = initialPollVotesForOptions.optionFour
+                        var o5V = initialPollVotesForOptions.optionFive
+                        var o6V = initialPollVotesForOptions.optionSix
+                        //Change depending on initial
+                        if (pollVoteOption == "None") {
+                            if (optionSelected == "optionOnesVotes") {
+                                o1V = o1V+1
+                            } else if (optionSelected == "optionTwosVotes") {
+                                o2V = o2V+1
+                            } else if (optionSelected == "optionThreesVotes") {
+                                o3V = o3V+1
+                            } else if (optionSelected == "optionFoursVotes") {
+                                o4V = o4V+1
+                            } else if (optionSelected == "optionFivesVotes") {
+                                o5V = o5V+1
+                            } else {
+                                //six
+                                o6V = o6V+1
+                            }
+                        } else if (pollVoteOption == "One") {
                             o1V = o1V-1
+                            if (optionSelected == "optionOnesVotes") {
+                                o1V = o1V+1
+                            } else if (optionSelected == "optionTwosVotes") {
+                                o2V = o2V+1
+                            } else if (optionSelected == "optionThreesVotes") {
+                                o3V = o3V+1
+                            } else if (optionSelected == "optionFoursVotes") {
+                                o4V = o4V+1
+                            } else if (optionSelected == "optionFivesVotes") {
+                                o5V = o5V+1
+                            } else {
+                                //six
+                                o6V = o6V+1
+                            }
                         } else if (pollVoteOption == "Two") {
                             o2V = o2V-1
+                            if (optionSelected == "optionOnesVotes") {
+                                o1V = o1V+1
+                            } else if (optionSelected == "optionTwosVotes") {
+                                o2V = o2V+1
+                            } else if (optionSelected == "optionThreesVotes") {
+                                o3V = o3V+1
+                            } else if (optionSelected == "optionFoursVotes") {
+                                o4V = o4V+1
+                            } else if (optionSelected == "optionFivesVotes") {
+                                o5V = o5V+1
+                            } else {
+                                //six
+                                o6V = o6V+1
+                            }
                         } else if (pollVoteOption == "Three") {
                             o3V = o3V-1
+                            if (optionSelected == "optionOnesVotes") {
+                                o1V = o1V+1
+                            } else if (optionSelected == "optionTwosVotes") {
+                                o2V = o2V+1
+                            } else if (optionSelected == "optionThreesVotes") {
+                                o3V = o3V+1
+                            } else if (optionSelected == "optionFoursVotes") {
+                                o4V = o4V+1
+                            } else if (optionSelected == "optionFivesVotes") {
+                                o5V = o5V+1
+                            } else {
+                                //six
+                                o6V = o6V+1
+                            }
                         } else if (pollVoteOption == "Four") {
                             o4V = o4V-1
+                            if (optionSelected == "optionOnesVotes") {
+                                o1V = o1V+1
+                            } else if (optionSelected == "optionTwosVotes") {
+                                o2V = o2V+1
+                            } else if (optionSelected == "optionThreesVotes") {
+                                o3V = o3V+1
+                            } else if (optionSelected == "optionFoursVotes") {
+                                o4V = o4V+1
+                            } else if (optionSelected == "optionFivesVotes") {
+                                o5V = o5V+1
+                            } else {
+                                //six
+                                o6V = o6V+1
+                            }
                         } else if (pollVoteOption == "Five") {
                             o5V = o5V-1
-                        } else if (pollVoteOption == "Six") {
-                            o6V = o6V-1
+                            if (optionSelected == "optionOnesVotes") {
+                                o1V = o1V+1
+                            } else if (optionSelected == "optionTwosVotes") {
+                                o2V = o2V+1
+                            } else if (optionSelected == "optionThreesVotes") {
+                                o3V = o3V+1
+                            } else if (optionSelected == "optionFoursVotes") {
+                                o4V = o4V+1
+                            } else if (optionSelected == "optionFivesVotes") {
+                                o5V = o5V+1
+                            } else {
+                                //six
+                                o6V = o6V+1
+                            }
                         } else {
-                            //Initial Poll Vote Option Would Be None
-                            //Keep original
-                            o1V = initialPollVotesForOptions.optionOne
-                            o2V = initialPollVotesForOptions.optionTwo
-                            o3V = initialPollVotesForOptions.optionThree
-                            o4V = initialPollVotesForOptions.optionFour
-                            o5V = initialPollVotesForOptions.optionFive
-                            o6V = initialPollVotesForOptions.optionSix
+                            o6V = o6V-1
+                            if (optionSelected == "optionOnesVotes") {
+                                o1V = o1V+1
+                            } else if (optionSelected == "optionTwosVotes") {
+                                o2V = o2V+1
+                            } else if (optionSelected == "optionThreesVotes") {
+                                o3V = o3V+1
+                            } else if (optionSelected == "optionFoursVotes") {
+                                o4V = o4V+1
+                            } else if (optionSelected == "optionFivesVotes") {
+                                o5V = o5V+1
+                            } else {
+                                //six
+                                o6V = o6V+1
+                            }
                         }
                         var totalVotes = o1V+o2V+o3V+o4V+o5V+o6V
-                        console.log("Total Votes:")
-                        console.log(totalVotes)
-                        if (totalVotes == 0) {
-                            console.log("No Votes")
-                            if (totalNumberOfOptions == "Two") {
-                                optionOnesBarLength = 100/2
-                                optionTwosBarLength = 100/2
-                                optionThreesBarLength = 0
-                                optionFoursBarLength = 0
-                                optionFivesBarLength = 0
-                                optionSixesBarLength = 0
-                                setPollVotesForOptions({optionOne: o1V, optionTwo: o2V, optionThree: o3V, optionFour: o4V, optionFive: o5V, optionSix: o6V})
-                                setPollBarLengths({optionOnesBarLength: optionOnesBarLength, optionTwosBarLength: optionTwosBarLength, optionThreesBarLength: optionThreesBarLength, optionFoursBarLength: optionFoursBarLength, optionFivesBarLength: optionFivesBarLength, optionSixesBarLength: optionSixesBarLength})
-                            } else if (totalNumberOfOptions == "Three") {
-                                optionOnesBarLength = 100/3
-                                optionTwosBarLength = 100/3
-                                optionThreesBarLength = 100/3
-                                optionFoursBarLength = 0
-                                optionFivesBarLength = 0
-                                optionSixesBarLength = 0
-                                setPollVotesForOptions({optionOne: o1V, optionTwo: o2V, optionThree: o3V, optionFour: o4V, optionFive: o5V, optionSix: o6V})
-                                setPollBarLengths({optionOnesBarLength: optionOnesBarLength, optionTwosBarLength: optionTwosBarLength, optionThreesBarLength: optionThreesBarLength, optionFoursBarLength: optionFoursBarLength, optionFivesBarLength: optionFivesBarLength, optionSixesBarLength: optionSixesBarLength})
-                            } else if (totalNumberOfOptions == "Four") {
-                                optionOnesBarLength = 100/4
-                                optionTwosBarLength = 100/4
-                                optionThreesBarLength = 100/4
-                                optionFoursBarLength = 100/4
-                                optionFivesBarLength = 0
-                                optionSixesBarLength = 0
-                                setPollVotesForOptions({optionOne: o1V, optionTwo: o2V, optionThree: o3V, optionFour: o4V, optionFive: o5V, optionSix: o6V})
-                                setPollBarLengths({optionOnesBarLength: optionOnesBarLength, optionTwosBarLength: optionTwosBarLength, optionThreesBarLength: optionThreesBarLength, optionFoursBarLength: optionFoursBarLength, optionFivesBarLength: optionFivesBarLength, optionSixesBarLength: optionSixesBarLength})
-                            } else if (totalNumberOfOptions == "Five") {
-                                optionOnesBarLength = 100/5
-                                optionTwosBarLength = 100/5
-                                optionThreesBarLength = 100/5
-                                optionFoursBarLength = 100/5
-                                optionFivesBarLength = 100/5
-                                optionSixesBarLength = 0
-                                setPollVotesForOptions({optionOne: o1V, optionTwo: o2V, optionThree: o3V, optionFour: o4V, optionFive: o5V, optionSix: o6V})
-                                setPollBarLengths({optionOnesBarLength: optionOnesBarLength, optionTwosBarLength: optionTwosBarLength, optionThreesBarLength: optionThreesBarLength, optionFoursBarLength: optionFoursBarLength, optionFivesBarLength: optionFivesBarLength, optionSixesBarLength: optionSixesBarLength})
-                            } else {
-                                optionOnesBarLength = 100/6
-                                optionTwosBarLength = 100/6
-                                optionThreesBarLength = 100/6
-                                optionFoursBarLength = 100/6
-                                optionFivesBarLength = 100/6
-                                optionSixesBarLength = 100/6
-                                setPollVotesForOptions({optionOne: o1V, optionTwo: o2V, optionThree: o3V, optionFour: o4V, optionFive: o5V, optionSix: o6V})
-                                setPollBarLengths({optionOnesBarLength: optionOnesBarLength, optionTwosBarLength: optionTwosBarLength, optionThreesBarLength: optionThreesBarLength, optionFoursBarLength: optionFoursBarLength, optionFivesBarLength: optionFivesBarLength, optionSixesBarLength: optionSixesBarLength})
-                            }
+                        optionOnesBarLength = (o1V/totalVotes)*100
+                        console.log("O1 BL")
+                        console.log(optionOnesBarLength)
+                        optionTwosBarLength = (o2V/totalVotes)*100
+                        console.log("O2 BL")
+                        console.log(optionTwosBarLength)
+                        optionThreesBarLength = (o3V/totalVotes)*100
+                        console.log("O3 BL")
+                        console.log(optionThreesBarLength)
+                        optionFoursBarLength = (o4V/totalVotes)*100
+                        console.log("O4 BL")
+                        console.log(optionFoursBarLength)
+                        optionFivesBarLength = (o5V/totalVotes)*100
+                        console.log("O5 BL")
+                        console.log(optionFivesBarLength)
+                        optionSixesBarLength = (o6V/totalVotes)*100
+                        console.log("O6 BL")
+                        console.log(optionSixesBarLength)
+                        if (Number.isNaN(optionOnesBarLength)) {
+                            optionOnesBarLength = 0
+                        }
+                        if (Number.isNaN(optionTwosBarLength)) {
+                            optionTwosBarLength = 0
+                        }
+                        if (Number.isNaN(optionThreesBarLength)) {
+                            optionThreesBarLength = 0
+                        }
+                        if (Number.isNaN(optionFoursBarLength)) {
+                            optionFoursBarLength = 0
+                        }
+                        if (Number.isNaN(optionFivesBarLength)) {
+                            optionFivesBarLength = 0
+                        }
+                        if (Number.isNaN(optionSixesBarLength)) {
+                            optionSixesBarLength = 0
+                        }
+                        if (optionSelected == "optionOnesVotes") {
+                            setOptionOneVoteText("Voted")
+                            setOptionTwoVoteText("Vote")
+                            setOptionThreeVoteText("Vote")
+                            setOptionFourVoteText("Vote")
+                            setOptionFiveVoteText("Vote")
+                            setOptionSixVoteText("Vote")
+                        } else if (optionSelected == "optionTwosVotes") {
+                            setOptionOneVoteText("Vote")
+                            setOptionTwoVoteText("Voted")
+                            setOptionThreeVoteText("Vote")
+                            setOptionFourVoteText("Vote")
+                            setOptionFiveVoteText("Vote")
+                            setOptionSixVoteText("Vote")
+                        } else if (optionSelected == "optionThreesVotes") {
+                            setOptionOneVoteText("Vote")
+                            setOptionTwoVoteText("Vote")
+                            setOptionThreeVoteText("Voted")
+                            setOptionFourVoteText("Vote")
+                            setOptionFiveVoteText("Vote")
+                            setOptionSixVoteText("Vote")
+                        } else if (optionSelected == "optionFoursVotes") {
+                            setOptionOneVoteText("Vote")
+                            setOptionTwoVoteText("Vote")
+                            setOptionThreeVoteText("Vote")
+                            setOptionFourVoteText("Voted")
+                            setOptionFiveVoteText("Vote")
+                            setOptionSixVoteText("Vote")
+                        } else if (optionSelected == "optionFivesVotes") {
+                            setOptionOneVoteText("Vote")
+                            setOptionTwoVoteText("Vote")
+                            setOptionThreeVoteText("Vote")
+                            setOptionFourVoteText("Vote")
+                            setOptionFiveVoteText("Voted")
+                            setOptionSixVoteText("Vote")
                         } else {
-                            console.log("Pulled results")
-                            optionOnesBarLength = (o1V/totalVotes)*100
-                            console.log("O1 BL")
-                            console.log(optionOnesBarLength)
-                            optionTwosBarLength = (o2V/totalVotes)*100
-                            console.log("O2 BL")
-                            console.log(optionTwosBarLength)
-                            optionThreesBarLength = (o3V/totalVotes)*100
-                            console.log("O3 BL")
-                            console.log(optionThreesBarLength)
-                            optionFoursBarLength = (o4V/totalVotes)*100
-                            console.log("O4 BL")
-                            console.log(optionFoursBarLength)
-                            optionFivesBarLength = (o5V/totalVotes)*100
-                            console.log("O5 BL")
-                            console.log(optionFivesBarLength)
-                            optionSixesBarLength = (o6V/totalVotes)*100
-                            console.log("O6 BL")
-                            console.log(optionSixesBarLength)
-                            if (Number.isNaN(optionOnesBarLength)) {
-                                optionOnesBarLength = 0
-                            }
-                            if (Number.isNaN(optionTwosBarLength)) {
-                                optionTwosBarLength = 0
-                            }
-                            if (Number.isNaN(optionThreesBarLength)) {
-                                optionThreesBarLength = 0
-                            }
-                            if (Number.isNaN(optionFoursBarLength)) {
-                                optionFoursBarLength = 0
-                            }
-                            if (Number.isNaN(optionFivesBarLength)) {
-                                optionFivesBarLength = 0
-                            }
-                            if (Number.isNaN(optionSixesBarLength)) {
-                                optionSixesBarLength = 0
-                            }
+                            setOptionOneVoteText("Vote")
+                            setOptionTwoVoteText("Vote")
+                            setOptionThreeVoteText("Vote")
+                            setOptionFourVoteText("Vote")
+                            setOptionFiveVoteText("Vote")
+                            setOptionSixVoteText("Voted")
                         }
                         setPollVotesForOptions({optionOne: o1V, optionTwo: o2V, optionThree: o3V, optionFour: o4V, optionFive: o5V, optionSix: o6V})
                         setPollBarLengths({optionOnesBarLength: optionOnesBarLength, optionTwosBarLength: optionTwosBarLength, optionThreesBarLength: optionThreesBarLength, optionFoursBarLength: optionFoursBarLength, optionFivesBarLength: optionFivesBarLength, optionSixesBarLength: optionSixesBarLength})
                     } else {
-                        handleMessage("Page didn't fully load try again", "FAILED")
-                    }    
+                        //pulled
+                        console.log("Change based on pull")
+                        var optionOnesBarLength = 16.6666666667
+                        var optionTwosBarLength = 16.6666666667
+                        var optionThreesBarLength = 16.6666666667
+                        var optionFoursBarLength = 16.6666666667
+                        var optionFivesBarLength = 16.6666666667
+                        var optionSixesBarLength = 16.6666666667
+                        var o1V = initialPollVotesForOptions.optionOne
+                        var o2V = initialPollVotesForOptions.optionTwo
+                        var o3V = initialPollVotesForOptions.optionThree
+                        var o4V = initialPollVotesForOptions.optionFour
+                        var o5V = initialPollVotesForOptions.optionFive
+                        var o6V = initialPollVotesForOptions.optionSix
+                        if (o1V !== "Finding") {
+                            if (pollVoteOption == "One") {
+                                o1V = o1V-1
+                            } else if (pollVoteOption == "Two") {
+                                o2V = o2V-1
+                            } else if (pollVoteOption == "Three") {
+                                o3V = o3V-1
+                            } else if (pollVoteOption == "Four") {
+                                o4V = o4V-1
+                            } else if (pollVoteOption == "Five") {
+                                o5V = o5V-1
+                            } else if (pollVoteOption == "Six") {
+                                o6V = o6V-1
+                            } else {
+                                //Initial Poll Vote Option Would Be None
+                                //Keep original
+                                o1V = initialPollVotesForOptions.optionOne
+                                o2V = initialPollVotesForOptions.optionTwo
+                                o3V = initialPollVotesForOptions.optionThree
+                                o4V = initialPollVotesForOptions.optionFour
+                                o5V = initialPollVotesForOptions.optionFive
+                                o6V = initialPollVotesForOptions.optionSix
+                            }
+                            var totalVotes = o1V+o2V+o3V+o4V+o5V+o6V
+                            console.log("Total Votes:")
+                            console.log(totalVotes)
+                            if (totalVotes == 0) {
+                                console.log("No Votes")
+                                if (totalNumberOfOptions == "Two") {
+                                    optionOnesBarLength = 100/2
+                                    optionTwosBarLength = 100/2
+                                    optionThreesBarLength = 0
+                                    optionFoursBarLength = 0
+                                    optionFivesBarLength = 0
+                                    optionSixesBarLength = 0
+                                    setPollVotesForOptions({optionOne: o1V, optionTwo: o2V, optionThree: o3V, optionFour: o4V, optionFive: o5V, optionSix: o6V})
+                                    setPollBarLengths({optionOnesBarLength: optionOnesBarLength, optionTwosBarLength: optionTwosBarLength, optionThreesBarLength: optionThreesBarLength, optionFoursBarLength: optionFoursBarLength, optionFivesBarLength: optionFivesBarLength, optionSixesBarLength: optionSixesBarLength})
+                                } else if (totalNumberOfOptions == "Three") {
+                                    optionOnesBarLength = 100/3
+                                    optionTwosBarLength = 100/3
+                                    optionThreesBarLength = 100/3
+                                    optionFoursBarLength = 0
+                                    optionFivesBarLength = 0
+                                    optionSixesBarLength = 0
+                                    setPollVotesForOptions({optionOne: o1V, optionTwo: o2V, optionThree: o3V, optionFour: o4V, optionFive: o5V, optionSix: o6V})
+                                    setPollBarLengths({optionOnesBarLength: optionOnesBarLength, optionTwosBarLength: optionTwosBarLength, optionThreesBarLength: optionThreesBarLength, optionFoursBarLength: optionFoursBarLength, optionFivesBarLength: optionFivesBarLength, optionSixesBarLength: optionSixesBarLength})
+                                } else if (totalNumberOfOptions == "Four") {
+                                    optionOnesBarLength = 100/4
+                                    optionTwosBarLength = 100/4
+                                    optionThreesBarLength = 100/4
+                                    optionFoursBarLength = 100/4
+                                    optionFivesBarLength = 0
+                                    optionSixesBarLength = 0
+                                    setPollVotesForOptions({optionOne: o1V, optionTwo: o2V, optionThree: o3V, optionFour: o4V, optionFive: o5V, optionSix: o6V})
+                                    setPollBarLengths({optionOnesBarLength: optionOnesBarLength, optionTwosBarLength: optionTwosBarLength, optionThreesBarLength: optionThreesBarLength, optionFoursBarLength: optionFoursBarLength, optionFivesBarLength: optionFivesBarLength, optionSixesBarLength: optionSixesBarLength})
+                                } else if (totalNumberOfOptions == "Five") {
+                                    optionOnesBarLength = 100/5
+                                    optionTwosBarLength = 100/5
+                                    optionThreesBarLength = 100/5
+                                    optionFoursBarLength = 100/5
+                                    optionFivesBarLength = 100/5
+                                    optionSixesBarLength = 0
+                                    setPollVotesForOptions({optionOne: o1V, optionTwo: o2V, optionThree: o3V, optionFour: o4V, optionFive: o5V, optionSix: o6V})
+                                    setPollBarLengths({optionOnesBarLength: optionOnesBarLength, optionTwosBarLength: optionTwosBarLength, optionThreesBarLength: optionThreesBarLength, optionFoursBarLength: optionFoursBarLength, optionFivesBarLength: optionFivesBarLength, optionSixesBarLength: optionSixesBarLength})
+                                } else {
+                                    optionOnesBarLength = 100/6
+                                    optionTwosBarLength = 100/6
+                                    optionThreesBarLength = 100/6
+                                    optionFoursBarLength = 100/6
+                                    optionFivesBarLength = 100/6
+                                    optionSixesBarLength = 100/6
+                                    setPollVotesForOptions({optionOne: o1V, optionTwo: o2V, optionThree: o3V, optionFour: o4V, optionFive: o5V, optionSix: o6V})
+                                    setPollBarLengths({optionOnesBarLength: optionOnesBarLength, optionTwosBarLength: optionTwosBarLength, optionThreesBarLength: optionThreesBarLength, optionFoursBarLength: optionFoursBarLength, optionFivesBarLength: optionFivesBarLength, optionSixesBarLength: optionSixesBarLength})
+                                }
+                            } else {
+                                console.log("Pulled results")
+                                optionOnesBarLength = (o1V/totalVotes)*100
+                                console.log("O1 BL")
+                                console.log(optionOnesBarLength)
+                                optionTwosBarLength = (o2V/totalVotes)*100
+                                console.log("O2 BL")
+                                console.log(optionTwosBarLength)
+                                optionThreesBarLength = (o3V/totalVotes)*100
+                                console.log("O3 BL")
+                                console.log(optionThreesBarLength)
+                                optionFoursBarLength = (o4V/totalVotes)*100
+                                console.log("O4 BL")
+                                console.log(optionFoursBarLength)
+                                optionFivesBarLength = (o5V/totalVotes)*100
+                                console.log("O5 BL")
+                                console.log(optionFivesBarLength)
+                                optionSixesBarLength = (o6V/totalVotes)*100
+                                console.log("O6 BL")
+                                console.log(optionSixesBarLength)
+                                if (Number.isNaN(optionOnesBarLength)) {
+                                    optionOnesBarLength = 0
+                                }
+                                if (Number.isNaN(optionTwosBarLength)) {
+                                    optionTwosBarLength = 0
+                                }
+                                if (Number.isNaN(optionThreesBarLength)) {
+                                    optionThreesBarLength = 0
+                                }
+                                if (Number.isNaN(optionFoursBarLength)) {
+                                    optionFoursBarLength = 0
+                                }
+                                if (Number.isNaN(optionFivesBarLength)) {
+                                    optionFivesBarLength = 0
+                                }
+                                if (Number.isNaN(optionSixesBarLength)) {
+                                    optionSixesBarLength = 0
+                                }
+                            }
+                            setPollVotesForOptions({optionOne: o1V, optionTwo: o2V, optionThree: o3V, optionFour: o4V, optionFive: o5V, optionSix: o6V})
+                            setPollBarLengths({optionOnesBarLength: optionOnesBarLength, optionTwosBarLength: optionTwosBarLength, optionThreesBarLength: optionThreesBarLength, optionFoursBarLength: optionFoursBarLength, optionFivesBarLength: optionFivesBarLength, optionSixesBarLength: optionSixesBarLength})
+                        } else {
+                            handleMessage("Page didn't fully load try again", "FAILED")
+                        }    
+                    }
+                    //loadAndGetValues()
+                    //persistLogin({...data[0]}, message, status);
                 }
-                //loadAndGetValues()
-                //persistLogin({...data[0]}, message, status);
-            }
-            setSubmitting(false);
+                setSubmitting(false);
 
-        }).catch(error => {
-            console.log(error);
-            setSubmitting(false);
-            handleMessage("An error occured. Try checking your network connection and retry.");
-        })
+            }).catch(error => {
+                console.log(error);
+                setSubmitting(false);
+                handleMessage("An error occured. Try checking your network connection and retry.");
+            })
+        } else {
+            navigation.navigate('ModalLoginScreen', {modal: true})
+        }
     }
 
     const handleMessage = (message, type = 'FAILED') => {
@@ -841,75 +844,83 @@ const ViewPollPostPage = ({route, navigation}) => {
     }
 
     const UpVotePoll = () => {
-        //Change to loading circle
-        const beforeChange = pollUpOrDownVoted
-        setPollUpOrDownVoted("Changing")
-        //Do rest
-        handleMessage(null, null, null);
-        const url = "https://nameless-dawn-41038.herokuapp.com/user/upvotepoll";
+        if (storedCredentials) {
+            //Change to loading circle
+            const beforeChange = pollUpOrDownVoted
+            setPollUpOrDownVoted("Changing")
+            //Do rest
+            handleMessage(null, null, null);
+            const url = "https://nameless-dawn-41038.herokuapp.com/user/upvotepoll";
 
-        var toSend = {userId: _id, pollId: pollId}
+            var toSend = {userId: _id, pollId: pollId}
 
-        console.log(toSend)
+            console.log(toSend)
 
-        axios.post(url, toSend).then((response) => {
-            const result = response.data;
-            const {message, status, data} = result;
-        
-            if (status !== 'SUCCESS') {
-                handleMessage(message, status, postNum);
-                setPollUpOrDownVoted(beforeChange)
-            } else {
-                handleMessage(message, status);
-                if (message == "Post UpVoted") {
-                    setPollUpOrDownVoted("UpVoted")
+            axios.post(url, toSend).then((response) => {
+                const result = response.data;
+                const {message, status, data} = result;
+            
+                if (status !== 'SUCCESS') {
+                    handleMessage(message, status, postNum);
+                    setPollUpOrDownVoted(beforeChange)
                 } else {
-                    setPollUpOrDownVoted("Neither")
+                    handleMessage(message, status);
+                    if (message == "Post UpVoted") {
+                        setPollUpOrDownVoted("UpVoted")
+                    } else {
+                        setPollUpOrDownVoted("Neither")
+                    }
+                    //loadAndGetValues()
+                    //persistLogin({...data[0]}, message, status);
                 }
-                //loadAndGetValues()
-                //persistLogin({...data[0]}, message, status);
-            }
-        }).catch(error => {
-            console.log(error);
-            setPollUpOrDownVoted(beforeChange)
-            handleMessage("An error occured. Try checking your network connection and retry.", 'FAILED', postNum);
-        })
+            }).catch(error => {
+                console.log(error);
+                setPollUpOrDownVoted(beforeChange)
+                handleMessage("An error occured. Try checking your network connection and retry.", 'FAILED', postNum);
+            })
+        } else {
+            navigation.navigate('ModalLoginScreen', {modal: true})
+        }
     }
 
     const DownVotePoll = () => {
-        //Change to loading circle
-        const beforeChange = pollUpOrDownVoted
-        setPollUpOrDownVoted("Changing")
-        //Do rest
-        handleMessage(null, null, null);
-        const url = "https://nameless-dawn-41038.herokuapp.com/user/downvotepoll";
+        if (storedCredentials) {
+            //Change to loading circle
+            const beforeChange = pollUpOrDownVoted
+            setPollUpOrDownVoted("Changing")
+            //Do rest
+            handleMessage(null, null, null);
+            const url = "https://nameless-dawn-41038.herokuapp.com/user/downvotepoll";
 
-        var toSend = {userId: _id, pollId: pollId}
+            var toSend = {userId: _id, pollId: pollId}
 
-        console.log(toSend)
+            console.log(toSend)
 
-        axios.post(url, toSend).then((response) => {
-            const result = response.data;
-            const {message, status, data} = result;
-        
-            if (status !== 'SUCCESS') {
-                handleMessage(message, status, postNum);
-                setPollUpOrDownVoted(beforeChange)
-            } else {
-                handleMessage(message, status);
-                if (message == "Post DownVoted") {
-                    setPollUpOrDownVoted("DownVoted")
+            axios.post(url, toSend).then((response) => {
+                const result = response.data;
+                const {message, status, data} = result;
+            
+                if (status !== 'SUCCESS') {
+                    handleMessage(message, status, postNum);
+                    setPollUpOrDownVoted(beforeChange)
                 } else {
-                    setPollUpOrDownVoted("Neither")
+                    handleMessage(message, status);
+                    if (message == "Post DownVoted") {
+                        setPollUpOrDownVoted("DownVoted")
+                    } else {
+                        setPollUpOrDownVoted("Neither")
+                    }
+                    //loadAndGetValues()
+                    //persistLogin({...data[0]}, message, status);
                 }
-                //loadAndGetValues()
-                //persistLogin({...data[0]}, message, status);
-            }
-        }).catch(error => {
-            console.log(error);
-            setPollUpOrDownVoted(beforeChange)
-            handleMessage("An error occured. Try checking your network connection and retry.", 'FAILED', postNum);
-        })
+            }).catch(error => {
+                console.log(error);
+                setPollUpOrDownVoted(beforeChange)
+                handleMessage("An error occured. Try checking your network connection and retry.", 'FAILED', postNum);
+            })
+        } else {
+            navigation.navigate('ModalLoginScreen', {modal: true})
+        }
     }
 
     const openOptionOne = () => {
@@ -1288,74 +1299,86 @@ const ViewPollPostPage = ({route, navigation}) => {
                             <SubTitle style={{flex: 1, alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{datePosted}</SubTitle>
                             <SubTitle style={{flex: 1, alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{commentsLength} comments</SubTitle>
                         </ViewScreenPollPostFrame>
-                        <ViewScreenPollPostCommentsFrame style={{width: '100%'}}>
-                            <PollPostTitle commentsTitle={true}>Comments</PollPostTitle>
-                            <CommentsHorizontalView writeCommentArea={true}>
-                                <Formik
-                                    initialValues={{comment: '', userName: name, userId: _id, pollId: pollId}}
-                                    onSubmit={(values, {setSubmitting}) => {
-                                        if (values.comment == "") {
-                                            handleMessage('You cant post and empty comment');
-                                            setSubmitting(false);
-                                        } else {
-                                            handleCommentPost(values, setSubmitting);
-                                        }
-                                    }}
-                                >
-                                    {({handleChange, handleBlur, handleSubmit, values, isSubmitting}) => (
-                                        <View>
-                                            <CommentsHorizontalView>
-                                                <CommentsHorizontalViewItem>
-                                                    <CommenterName>Img/GIF</CommenterName>
-                                                </CommentsHorizontalViewItem>
-                                                <CommentsHorizontalViewItem>
-                                                    <CommenterName>Text</CommenterName>
-                                                </CommentsHorizontalViewItem>
-                                                <CommentsHorizontalViewItem>
-                                                    <CommenterName>Short Video</CommenterName>
-                                                </CommentsHorizontalViewItem>
-                                            </CommentsHorizontalView>
-                                            <CommentsHorizontalView writeCommentArea={true}>
-                                                <CommentsVerticalView alongLeft={true}>
-                                                    <CommenterIcon source={{uri: profilePictureUri}}/>
-                                                </CommentsVerticalView>
-                                                <CommentsVerticalView>
-                                                    <UserTextInput
-                                                        placeholder="Post a comment"
-                                                        placeholderTextColor={darkLight}
-                                                        onChangeText={handleChange('comment')}
-                                                        onBlur={handleBlur('comment')}
-                                                        value={values.comment}
-                                                        multiline={true}
-                                                        style={{backgroundColor: colors.primary, color: colors.tertiary, borderColor: colors.borderColor}}
-                                                    />
-                                                </CommentsVerticalView>
-                                            </CommentsHorizontalView>
-                                            <CommentsHorizontalView belowWriteCommentArea={true}>
-                                                <CommentsVerticalView postComment={true}>
-                                                    {!isSubmitting && (<StyledButton style={{backgroundColor: colors.primary}} postComment={true} onPress={handleSubmit}>
-                                                        <ButtonText postComment={true}> Post </ButtonText>
-                                                    </StyledButton>)}
-                                                    <MsgBox type={messageType}>{message}</MsgBox>
-                                                    {isSubmitting && (<StyledButton disabled={true}>
-                                                        <ActivityIndicator size="large" color={primary} />
-                                                    </StyledButton>)}
-                                                </CommentsVerticalView>
-                                            </CommentsHorizontalView>
-                                        </View>
-                                        )}
-                                </Formik>
-                            </CommentsHorizontalView>
-                            <PollPostSubTitle style={{color: colors.tertiary}}>{ifCommentText}</PollPostSubTitle>
-                            <SectionList
-                                sections={changeSections}
-                                keyExtractor={(item, index) => item + index}
-                                renderItem={({ item }) => <Item commentId={item.commentId} commenterName={item.commenterName} commenterDisplayName={item.commenterDisplayName} commentsText={item.commentsText}  commentUpVotes={item.commentUpVotes} commentReplies={item.commentReplies} datePosted={item.datePosted} commenterImageB64={item.commenterImageB64}/>}
-                            />
-                            {loadingMoreComments == true && (
-                                <ActivityIndicator size="small" color={brand} />  
-                            )}
-                        </ViewScreenPollPostCommentsFrame>
+                        {storedCredentials ?
+                            <ViewScreenPollPostCommentsFrame style={{width: '100%'}}>
+                                <PollPostTitle commentsTitle={true}>Comments</PollPostTitle>
+                                <CommentsHorizontalView writeCommentArea={true}>
+                                    <Formik
+                                        initialValues={{comment: '', userName: name, userId: _id, pollId: pollId}}
+                                        onSubmit={(values, {setSubmitting}) => {
+                                            if (values.comment == "") {
+                                                handleMessage('You cant post and empty comment');
+                                                setSubmitting(false);
+                                            } else {
+                                                handleCommentPost(values, setSubmitting);
+                                            }
+                                        }}
+                                    >
+                                        {({handleChange, handleBlur, handleSubmit, values, isSubmitting}) => (
+                                            <View>
+                                                <CommentsHorizontalView>
+                                                    <CommentsHorizontalViewItem>
+                                                        <CommenterName>Img/GIF</CommenterName>
+                                                    </CommentsHorizontalViewItem>
+                                                    <CommentsHorizontalViewItem>
+                                                        <CommenterName>Text</CommenterName>
+                                                    </CommentsHorizontalViewItem>
+                                                    <CommentsHorizontalViewItem>
+                                                        <CommenterName>Short Video</CommenterName>
+                                                    </CommentsHorizontalViewItem>
+                                                </CommentsHorizontalView>
+                                                <CommentsHorizontalView writeCommentArea={true}>
+                                                    <CommentsVerticalView alongLeft={true}>
+                                                        <CommenterIcon source={{uri: profilePictureUri}}/>
+                                                    </CommentsVerticalView>
+                                                    <CommentsVerticalView>
+                                                        <UserTextInput
+                                                            placeholder="Post a comment"
+                                                            placeholderTextColor={darkLight}
+                                                            onChangeText={handleChange('comment')}
+                                                            onBlur={handleBlur('comment')}
+                                                            value={values.comment}
+                                                            multiline={true}
+                                                            style={{backgroundColor: colors.primary, color: colors.tertiary, borderColor: colors.borderColor}}
+                                                        />
+                                                    </CommentsVerticalView>
+                                                </CommentsHorizontalView>
+                                                <CommentsHorizontalView belowWriteCommentArea={true}>
+                                                    <CommentsVerticalView postComment={true}>
+                                                        {!isSubmitting && (<StyledButton style={{backgroundColor: colors.primary}} postComment={true} onPress={handleSubmit}>
+                                                            <ButtonText postComment={true}> Post </ButtonText>
+                                                        </StyledButton>)}
+                                                        <MsgBox type={messageType}>{message}</MsgBox>
+                                                        {isSubmitting && (<StyledButton disabled={true}>
+                                                            <ActivityIndicator size="large" color={primary} />
+                                                        </StyledButton>)}
+                                                    </CommentsVerticalView>
+                                                </CommentsHorizontalView>
+                                            </View>
+                                            )}
+                                    </Formik>
+                                </CommentsHorizontalView>
+                                <PollPostSubTitle style={{color: colors.tertiary}}>{ifCommentText}</PollPostSubTitle>
+                                <SectionList
+                                    sections={changeSections}
+                                    keyExtractor={(item, index) => item + index}
+                                    renderItem={({ item }) => <Item commentId={item.commentId} commenterName={item.commenterName} commenterDisplayName={item.commenterDisplayName} commentsText={item.commentsText}  commentUpVotes={item.commentUpVotes} commentReplies={item.commentReplies} datePosted={item.datePosted} commenterImageB64={item.commenterImageB64}/>}
+                                />
+                                {loadingMoreComments == true && (
+                                    <ActivityIndicator size="small" color={brand} />  
+                                )}
+                            </ViewScreenPollPostCommentsFrame>
+                        :
+                            <View style={{flex: 1, justifyContent: 'center', marginTop: 20}}>
+                                <Text style={{color: colors.tertiary, fontSize: 20, textAlign: 'center', marginBottom: 20}}>Please login to comment on this poll</Text>
+                                <StyledButton onPress={() => {navigation.navigate('ModalLoginScreen', {modal: true})}}>
+                                    <ButtonText> Login </ButtonText>
+                                </StyledButton>
+                                <StyledButton style={{backgroundColor: colors.primary, color: colors.tertiary}} signUpButton={true} onPress={() => navigation.navigate('ModalSignupScreen', {modal: true})}>
+                                        <ButtonText signUpButton={true} style={{color: colors.tertiary, top: -9.5}}> Signup </ButtonText>
+                                </StyledButton>
+                            </View>
+                        }
                     </WelcomeContainer>
                 </WelcomeContainer>
             </ScrollView>

@@ -88,7 +88,7 @@ import axios from 'axios';
 
 //credentials context
 import { CredentialsContext } from '../components/CredentialsContext';
-import { ImageBackground, ScrollView, SectionList, View, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { ImageBackground, ScrollView, SectionList, View, Image, TouchableOpacity, ActivityIndicator, Text } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { ProfilePictureURIContext } from '../components/ProfilePictureURIContext';
 
@@ -96,7 +96,7 @@ const ThreadViewPage = ({route, navigation}) => {
     const {colors, dark} = useTheme()
      //context
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
-    const {_id, name} = storedCredentials;
+    if (storedCredentials) {var {_id, name} = storedCredentials} else {var {_id, name} = {_id: 'SSGUEST', name: 'SSGUEST'}}
     const {threadId, creatorPfpB64} = route.params;
     const [AvatarImg, setAvatarImage] = useState(null)
     const [gridViewState, setGridViewState] = useState("flex")
@@ -387,6 +387,9 @@ const ThreadViewPage = ({route, navigation}) => {
             if (status !== 'SUCCESS') {
                 handleMessage(message, status);
                 setLoadingMoreComments(false)
+                if (message == 'No comments') {
+                    setCommentsLength(0)
+                }
             } else {
                 layoutComments({data});
             }
@@ -430,280 +433,288 @@ const ThreadViewPage = ({route, navigation}) => {
     }
 
     const UpVoteComment = (commentId, postNum) => {
-        //Change to loading circle
-        if (findingVotedComments.includes(commentId)) { 
-
-        } else {
-            if (changingVotedComments.includes(commentId)) {
+        if (storedCredentials) {
+            //Change to loading circle
+            if (findingVotedComments.includes(commentId)) { 
 
             } else {
-                console.log("UpVoting")
-                upVotedComments = upVotes
-                downVotedComments = downVotes
-                neitherVotedComments = neitherVotes
-                var beforeChange = "Neither"
-                if (upVotedComments.includes(commentId)) {
-                    beforeChange = "UpVoted"
-                    var index = upVotedComments.indexOf(commentId);
-                    if (index > -1) {
-                        upVotedComments.splice(index, 1);
-                    }
-                    setUpVotes(upVotedComments)
-                }
-                if (downVotedComments.includes(commentId)) {
-                    beforeChange = "DownVoted"
-                    var index = downVotedComments.indexOf(commentId);
-                    if (index > -1) {
-                        downVotedComments.splice(index, 1);
-                    }
-                    setDownVotes(downVotedComments)
-                }
-                if (neitherVotedComments.includes(commentId)) {
-                    beforeChange = "Neither"
-                    var index = neitherVotedComments.indexOf(commentId);
-                    if (index > -1) {
-                        neitherVotedComments.splice(index, 1);
-                    }
-                    setNeitherVotes(neitherVotedComments)
-                }
-                changingVotedCommentsArray = changingVotedComments
-                changingVotedCommentsArray.push(commentId)
-                setChangingVotedComments(changingVotedCommentsArray)
-                //Do rest
-                handleMessage(null, null, null);
-                const url = "https://nameless-dawn-41038.herokuapp.com/user/upvotecomment";
+                if (changingVotedComments.includes(commentId)) {
 
-                var toSend = {format: "Thread", userId: _id, postId: threadId, commentId: commentId}
+                } else {
+                    console.log("UpVoting")
+                    upVotedComments = upVotes
+                    downVotedComments = downVotes
+                    neitherVotedComments = neitherVotes
+                    var beforeChange = "Neither"
+                    if (upVotedComments.includes(commentId)) {
+                        beforeChange = "UpVoted"
+                        var index = upVotedComments.indexOf(commentId);
+                        if (index > -1) {
+                            upVotedComments.splice(index, 1);
+                        }
+                        setUpVotes(upVotedComments)
+                    }
+                    if (downVotedComments.includes(commentId)) {
+                        beforeChange = "DownVoted"
+                        var index = downVotedComments.indexOf(commentId);
+                        if (index > -1) {
+                            downVotedComments.splice(index, 1);
+                        }
+                        setDownVotes(downVotedComments)
+                    }
+                    if (neitherVotedComments.includes(commentId)) {
+                        beforeChange = "Neither"
+                        var index = neitherVotedComments.indexOf(commentId);
+                        if (index > -1) {
+                            neitherVotedComments.splice(index, 1);
+                        }
+                        setNeitherVotes(neitherVotedComments)
+                    }
+                    changingVotedCommentsArray = changingVotedComments
+                    changingVotedCommentsArray.push(commentId)
+                    setChangingVotedComments(changingVotedCommentsArray)
+                    //Do rest
+                    handleMessage(null, null, null);
+                    const url = "https://nameless-dawn-41038.herokuapp.com/user/upvotecomment";
 
-                console.log(toSend)
+                    var toSend = {format: "Thread", userId: _id, postId: threadId, commentId: commentId}
 
-                axios.post(url, toSend).then((response) => {
-                    const result = response.data;
-                    const {message, status, data} = result;
-                
-                    if (status !== 'SUCCESS') {
-                        handleMessage(message, status, postNum);
+                    console.log(toSend)
+
+                    axios.post(url, toSend).then((response) => {
+                        const result = response.data;
+                        const {message, status, data} = result;
+                    
+                        if (status !== 'SUCCESS') {
+                            handleMessage(message, status, postNum);
+                            changingVotedCommentsArray = changingVotedComments
+                            var index = changingVotedCommentsArray.indexOf(commentId);
+                            if (index > -1) {
+                                changingVotedCommentsArray.splice(index, 1);
+                                setChangingVotedComments(changingVotedCommentsArray)
+                            }
+                            if (beforeChange == "UpVoted") {
+                                upVotedComments = upVotes
+                                upVotedComments.push(commentId)
+                                setUpVotes(upVotedComments)
+                                setChangingVotedComments([])
+                                setChangingVotedComments(changingVotedCommentsArray)
+                            } 
+                            if (beforeChange == "DownVoted") {
+                                downVotedComments = downVotes
+                                downVotedComments.push(commentId)
+                                setDownVotes(downVotedComments)
+                                setChangingVotedComments([])
+                                setChangingVotedComments(changingVotedCommentsArray)
+                            }
+                            if (beforeChange == "Neither") {
+                                neitherVotedComments = neitherVotes
+                                neitherVotedComments.push(commentId)
+                                setNeitherVotes(neitherVotedComments)
+                                setChangingVotedComments([])
+                                setChangingVotedComments(changingVotedCommentsArray)
+                            }
+                        } else {
+                            handleMessage(message, status);
+                            var tempChangingVotedCommentsArray = changingVotedComments
+                            var index = tempChangingVotedCommentsArray.indexOf(commentId);
+                            if (index > -1) {
+                                tempChangingVotedCommentsArray.splice(index, 1);
+                                console.log("Spliced tempChangingVotedCommentsArray")
+                            } else {
+                                console.log("Didnt find in changing array")
+                            }
+                            if (message == "Comment UpVoted") {
+                                upVotedComments = upVotes
+                                upVotedComments.push(commentId)
+                                setUpVotes([])
+                                setUpVotes(upVotedComments)
+                                setChangingVotedComments([])
+                                setChangingVotedComments(tempChangingVotedCommentsArray)
+                            } else {
+                                //Neither
+                                neitherVotedComments = neitherVotes
+                                neitherVotedComments.push(commentId)
+                                setNeitherVotes([])
+                                setNeitherVotes(neitherVotedComments)
+                                setChangingVotedComments([])
+                                setChangingVotedComments(tempChangingVotedCommentsArray)
+                            }
+                            //loadAndGetValues()
+                            //persistLogin({...data[0]}, message, status);
+                        }
+                    }).catch(error => {
+                        console.log(error);
                         changingVotedCommentsArray = changingVotedComments
                         var index = changingVotedCommentsArray.indexOf(commentId);
                         if (index > -1) {
                             changingVotedCommentsArray.splice(index, 1);
-                            setChangingVotedComments(changingVotedCommentsArray)
                         }
+                        setChangingVotedComments(changingVotedCommentsArray)
                         if (beforeChange == "UpVoted") {
                             upVotedComments = upVotes
                             upVotedComments.push(commentId)
                             setUpVotes(upVotedComments)
-                            setChangingVotedComments([])
-                            setChangingVotedComments(changingVotedCommentsArray)
                         } 
                         if (beforeChange == "DownVoted") {
                             downVotedComments = downVotes
                             downVotedComments.push(commentId)
                             setDownVotes(downVotedComments)
-                            setChangingVotedComments([])
-                            setChangingVotedComments(changingVotedCommentsArray)
                         }
                         if (beforeChange == "Neither") {
                             neitherVotedComments = neitherVotes
                             neitherVotedComments.push(commentId)
                             setNeitherVotes(neitherVotedComments)
-                            setChangingVotedComments([])
-                            setChangingVotedComments(changingVotedCommentsArray)
                         }
-                    } else {
-                        handleMessage(message, status);
-                        var tempChangingVotedCommentsArray = changingVotedComments
-                        var index = tempChangingVotedCommentsArray.indexOf(commentId);
-                        if (index > -1) {
-                            tempChangingVotedCommentsArray.splice(index, 1);
-                            console.log("Spliced tempChangingVotedCommentsArray")
-                        } else {
-                            console.log("Didnt find in changing array")
-                        }
-                        if (message == "Comment UpVoted") {
-                            upVotedComments = upVotes
-                            upVotedComments.push(commentId)
-                            setUpVotes([])
-                            setUpVotes(upVotedComments)
-                            setChangingVotedComments([])
-                            setChangingVotedComments(tempChangingVotedCommentsArray)
-                        } else {
-                            //Neither
-                            neitherVotedComments = neitherVotes
-                            neitherVotedComments.push(commentId)
-                            setNeitherVotes([])
-                            setNeitherVotes(neitherVotedComments)
-                            setChangingVotedComments([])
-                            setChangingVotedComments(tempChangingVotedCommentsArray)
-                        }
-                        //loadAndGetValues()
-                        //persistLogin({...data[0]}, message, status);
-                    }
-                }).catch(error => {
-                    console.log(error);
-                    changingVotedCommentsArray = changingVotedComments
-                    var index = changingVotedCommentsArray.indexOf(commentId);
-                    if (index > -1) {
-                        changingVotedCommentsArray.splice(index, 1);
-                    }
-                    setChangingVotedComments(changingVotedCommentsArray)
-                    if (beforeChange == "UpVoted") {
-                        upVotedComments = upVotes
-                        upVotedComments.push(commentId)
-                        setUpVotes(upVotedComments)
-                    } 
-                    if (beforeChange == "DownVoted") {
-                        downVotedComments = downVotes
-                        downVotedComments.push(commentId)
-                        setDownVotes(downVotedComments)
-                    }
-                    if (beforeChange == "Neither") {
-                        neitherVotedComments = neitherVotes
-                        neitherVotedComments.push(commentId)
-                        setNeitherVotes(neitherVotedComments)
-                    }
-                    handleMessage("An error occured. Try checking your network connection and retry.", 'FAILED', postNum);
-                })
+                        handleMessage("An error occured. Try checking your network connection and retry.", 'FAILED', postNum);
+                    })
+                }
             }
+        } else {
+            navigation.navigate('ModalLoginScreen', {modal: true})
         }
     }
 
     const DownVoteComment = (commentId, postNum) => {
-        //Change to loading circle
-        if (findingVotedComments.includes(commentId)) { 
-
-        } else {
-            if (changingVotedComments.includes(commentId)) {
+        if (storedCredentials) {
+            //Change to loading circle
+            if (findingVotedComments.includes(commentId)) { 
 
             } else {
-                console.log("UpVoting")
-                upVotedComments = upVotes
-                downVotedComments = downVotes
-                neitherVotedComments = neitherVotes
-                var beforeChange = "Neither"
-                if (upVotedComments.includes(commentId)) {
-                    beforeChange = "UpVoted"
-                    var index = upVotedComments.indexOf(commentId);
-                    if (index > -1) {
-                        upVotedComments.splice(index, 1);
-                    }
-                    setUpVotes(upVotedComments)
-                }
-                if (downVotedComments.includes(commentId)) {
-                    beforeChange = "DownVoted"
-                    var index = downVotedComments.indexOf(commentId);
-                    if (index > -1) {
-                        downVotedComments.splice(index, 1);
-                    }
-                    setDownVotes(downVotedComments)
-                }
-                if (neitherVotedComments.includes(commentId)) {
-                    beforeChange = "Neither"
-                    var index = neitherVotedComments.indexOf(commentId);
-                    if (index > -1) {
-                        neitherVotedComments.splice(index, 1);
-                    }
-                    setNeitherVotes(neitherVotedComments)
-                }
-                changingVotedCommentsArray = changingVotedComments
-                changingVotedCommentsArray.push(commentId)
-                setChangingVotedComments(changingVotedCommentsArray)
-                //Do rest
-                handleMessage(null, null, null);
-                const url = "https://nameless-dawn-41038.herokuapp.com/user/downvotecomment";
+                if (changingVotedComments.includes(commentId)) {
 
-                var toSend = {format: "Thread", userId: _id, postId: threadId, commentId: commentId}
+                } else {
+                    console.log("UpVoting")
+                    upVotedComments = upVotes
+                    downVotedComments = downVotes
+                    neitherVotedComments = neitherVotes
+                    var beforeChange = "Neither"
+                    if (upVotedComments.includes(commentId)) {
+                        beforeChange = "UpVoted"
+                        var index = upVotedComments.indexOf(commentId);
+                        if (index > -1) {
+                            upVotedComments.splice(index, 1);
+                        }
+                        setUpVotes(upVotedComments)
+                    }
+                    if (downVotedComments.includes(commentId)) {
+                        beforeChange = "DownVoted"
+                        var index = downVotedComments.indexOf(commentId);
+                        if (index > -1) {
+                            downVotedComments.splice(index, 1);
+                        }
+                        setDownVotes(downVotedComments)
+                    }
+                    if (neitherVotedComments.includes(commentId)) {
+                        beforeChange = "Neither"
+                        var index = neitherVotedComments.indexOf(commentId);
+                        if (index > -1) {
+                            neitherVotedComments.splice(index, 1);
+                        }
+                        setNeitherVotes(neitherVotedComments)
+                    }
+                    changingVotedCommentsArray = changingVotedComments
+                    changingVotedCommentsArray.push(commentId)
+                    setChangingVotedComments(changingVotedCommentsArray)
+                    //Do rest
+                    handleMessage(null, null, null);
+                    const url = "https://nameless-dawn-41038.herokuapp.com/user/downvotecomment";
 
-                console.log(toSend)
+                    var toSend = {format: "Thread", userId: _id, postId: threadId, commentId: commentId}
 
-                axios.post(url, toSend).then((response) => {
-                    const result = response.data;
-                    const {message, status, data} = result;
-                
-                    if (status !== 'SUCCESS') {
-                        handleMessage(message, status, postNum);
+                    console.log(toSend)
+
+                    axios.post(url, toSend).then((response) => {
+                        const result = response.data;
+                        const {message, status, data} = result;
+                    
+                        if (status !== 'SUCCESS') {
+                            handleMessage(message, status, postNum);
+                            changingVotedCommentsArray = changingVotedComments
+                            var index = changingVotedCommentsArray.indexOf(commentId);
+                            if (index > -1) {
+                                changingVotedCommentsArray.splice(index, 1);
+                                setChangingVotedComments(changingVotedCommentsArray)
+                            }
+                            if (beforeChange == "UpVoted") {
+                                upVotedComments = upVotes
+                                upVotedComments.push(commentId)
+                                setUpVotes(upVotedComments)
+                                setChangingVotedComments([])
+                                setChangingVotedComments(changingVotedCommentsArray)
+                            } 
+                            if (beforeChange == "DownVoted") {
+                                downVotedComments = downVotes
+                                downVotedComments.push(commentId)
+                                setDownVotes(downVotedComments)
+                                setChangingVotedComments([])
+                                setChangingVotedComments(changingVotedCommentsArray)
+                            }
+                            if (beforeChange == "Neither") {
+                                neitherVotedComments = neitherVotes
+                                neitherVotedComments.push(commentId)
+                                setNeitherVotes(neitherVotedComments)
+                                setChangingVotedComments([])
+                                setChangingVotedComments(changingVotedCommentsArray)
+                            }
+                        } else {
+                            handleMessage(message, status);
+                            var tempChangingVotedCommentsArray = changingVotedComments
+                            var index = tempChangingVotedCommentsArray.indexOf(commentId);
+                            if (index > -1) {
+                                tempChangingVotedCommentsArray.splice(index, 1);
+                                console.log("Spliced tempChangingVotedCommentsArray")
+                            } else {
+                                console.log("Didnt find in changing array")
+                            }
+                            if (message == "Comment DownVoted") {
+                                downVotedComments = downVotes
+                                downVotedComments.push(commentId)
+                                setDownVotes([])
+                                setDownVotes(downVotedComments)
+                                setChangingVotedComments([])
+                                setChangingVotedComments(tempChangingVotedCommentsArray)
+                            } else {
+                                //Neither
+                                neitherVotedComments = neitherVotes
+                                neitherVotedComments.push(commentId)
+                                setNeitherVotes([])
+                                setNeitherVotes(neitherVotedComments)
+                                setChangingVotedComments([])
+                                setChangingVotedComments(tempChangingVotedCommentsArray)
+                            }
+                            //loadAndGetValues()
+                            //persistLogin({...data[0]}, message, status);
+                        }
+                    }).catch(error => {
+                        console.log(error);
                         changingVotedCommentsArray = changingVotedComments
                         var index = changingVotedCommentsArray.indexOf(commentId);
                         if (index > -1) {
                             changingVotedCommentsArray.splice(index, 1);
-                            setChangingVotedComments(changingVotedCommentsArray)
                         }
+                        setChangingVotedComments(changingVotedCommentsArray)
                         if (beforeChange == "UpVoted") {
                             upVotedComments = upVotes
                             upVotedComments.push(commentId)
                             setUpVotes(upVotedComments)
-                            setChangingVotedComments([])
-                            setChangingVotedComments(changingVotedCommentsArray)
                         } 
                         if (beforeChange == "DownVoted") {
                             downVotedComments = downVotes
                             downVotedComments.push(commentId)
                             setDownVotes(downVotedComments)
-                            setChangingVotedComments([])
-                            setChangingVotedComments(changingVotedCommentsArray)
                         }
                         if (beforeChange == "Neither") {
                             neitherVotedComments = neitherVotes
                             neitherVotedComments.push(commentId)
                             setNeitherVotes(neitherVotedComments)
-                            setChangingVotedComments([])
-                            setChangingVotedComments(changingVotedCommentsArray)
                         }
-                    } else {
-                        handleMessage(message, status);
-                        var tempChangingVotedCommentsArray = changingVotedComments
-                        var index = tempChangingVotedCommentsArray.indexOf(commentId);
-                        if (index > -1) {
-                            tempChangingVotedCommentsArray.splice(index, 1);
-                            console.log("Spliced tempChangingVotedCommentsArray")
-                        } else {
-                            console.log("Didnt find in changing array")
-                        }
-                        if (message == "Comment DownVoted") {
-                            downVotedComments = downVotes
-                            downVotedComments.push(commentId)
-                            setDownVotes([])
-                            setDownVotes(downVotedComments)
-                            setChangingVotedComments([])
-                            setChangingVotedComments(tempChangingVotedCommentsArray)
-                        } else {
-                            //Neither
-                            neitherVotedComments = neitherVotes
-                            neitherVotedComments.push(commentId)
-                            setNeitherVotes([])
-                            setNeitherVotes(neitherVotedComments)
-                            setChangingVotedComments([])
-                            setChangingVotedComments(tempChangingVotedCommentsArray)
-                        }
-                        //loadAndGetValues()
-                        //persistLogin({...data[0]}, message, status);
-                    }
-                }).catch(error => {
-                    console.log(error);
-                    changingVotedCommentsArray = changingVotedComments
-                    var index = changingVotedCommentsArray.indexOf(commentId);
-                    if (index > -1) {
-                        changingVotedCommentsArray.splice(index, 1);
-                    }
-                    setChangingVotedComments(changingVotedCommentsArray)
-                    if (beforeChange == "UpVoted") {
-                        upVotedComments = upVotes
-                        upVotedComments.push(commentId)
-                        setUpVotes(upVotedComments)
-                    } 
-                    if (beforeChange == "DownVoted") {
-                        downVotedComments = downVotes
-                        downVotedComments.push(commentId)
-                        setDownVotes(downVotedComments)
-                    }
-                    if (beforeChange == "Neither") {
-                        neitherVotedComments = neitherVotes
-                        neitherVotedComments.push(commentId)
-                        setNeitherVotes(neitherVotedComments)
-                    }
-                    handleMessage("An error occured. Try checking your network connection and retry.", 'FAILED', postNum);
-                })
+                        handleMessage("An error occured. Try checking your network connection and retry.", 'FAILED', postNum);
+                    })
+                }
             }
+        } else {
+            navigation.navigate('ModalLoginScreen', {modal: true})
         }
     }
 
@@ -815,79 +826,87 @@ const ThreadViewPage = ({route, navigation}) => {
     );
 
     const UpVoteThread = (threadId) => {
-        //Change to loading circle
-        const beforeChange = threadUpOrDownVoted
-        setThreadUpOrDownVoted("Changing")
-        //Do rest
-        handleMessage(null, null, null);
-        const url = "https://nameless-dawn-41038.herokuapp.com/user/upvotethread";
+        if (storedCredentials) {
+            //Change to loading circle
+            const beforeChange = threadUpOrDownVoted
+            setThreadUpOrDownVoted("Changing")
+            //Do rest
+            handleMessage(null, null, null);
+            const url = "https://nameless-dawn-41038.herokuapp.com/user/upvotethread";
 
-        var toSend = {userId: _id, threadId: threadId}
+            var toSend = {userId: _id, threadId: threadId}
 
-        console.log(toSend)
+            console.log(toSend)
 
-        axios.post(url, toSend).then((response) => {
-            const result = response.data;
-            const {message, status, data} = result;
-        
-            if (status !== 'SUCCESS') {
-                handleMessage(message, status);
-                setThreadUpOrDownVoted(beforeChange)
-            } else {
-                handleMessage(message, status);
-                if (message == "Thread UpVoted") {
+            axios.post(url, toSend).then((response) => {
+                const result = response.data;
+                const {message, status, data} = result;
+            
+                if (status !== 'SUCCESS') {
                     handleMessage(message, status);
-                    setThreadUpOrDownVoted("UpVoted")
+                    setThreadUpOrDownVoted(beforeChange)
                 } else {
                     handleMessage(message, status);
-                    setThreadUpOrDownVoted("Neither")
+                    if (message == "Thread UpVoted") {
+                        handleMessage(message, status);
+                        setThreadUpOrDownVoted("UpVoted")
+                    } else {
+                        handleMessage(message, status);
+                        setThreadUpOrDownVoted("Neither")
+                    }
+                    //loadAndGetValues()
+                    //persistLogin({...data[0]}, message, status);
                 }
-                //loadAndGetValues()
-                //persistLogin({...data[0]}, message, status);
-            }
-        }).catch(error => {
-            console.log(error);
-            setThreadUpOrDownVoted("UpVoted");
-            handleMessage("An error occured. Try checking your network connection and retry.", 'FAILED');
-        })
+            }).catch(error => {
+                console.log(error);
+                setThreadUpOrDownVoted("UpVoted");
+                handleMessage("An error occured. Try checking your network connection and retry.", 'FAILED');
+            })
+        } else {
+            navigation.navigate('ModalLoginScreen', {modal: true});
+        }
     }
 
     const DownVoteThread = (threadId) => {
-        //Change to loading circle
-        const beforeChange = threadUpOrDownVoted
-        setThreadUpOrDownVoted("Changing")
-        //Do rest
-        handleMessage(null, null, null);
-        const url = "https://nameless-dawn-41038.herokuapp.com/user/downvotethread";
+        if (storedCredentials) {
+            //Change to loading circle
+            const beforeChange = threadUpOrDownVoted
+            setThreadUpOrDownVoted("Changing")
+            //Do rest
+            handleMessage(null, null, null);
+            const url = "https://nameless-dawn-41038.herokuapp.com/user/downvotethread";
 
-        var toSend = {userId: _id, threadId: threadId}
+            var toSend = {userId: _id, threadId: threadId}
 
-        console.log(toSend)
+            console.log(toSend)
 
-        axios.post(url, toSend).then((response) => {
-            const result = response.data;
-            const {message, status, data} = result;
-        
-            if (status !== 'SUCCESS') {
-                handleMessage(message, status);
-                setThreadUpOrDownVoted(beforeChange)
-            } else {
-                handleMessage(message, status);
-                if (message == "Thread DownVoted") {
+            axios.post(url, toSend).then((response) => {
+                const result = response.data;
+                const {message, status, data} = result;
+            
+                if (status !== 'SUCCESS') {
                     handleMessage(message, status);
-                    setThreadUpOrDownVoted("DownVoted")
+                    setThreadUpOrDownVoted(beforeChange)
                 } else {
                     handleMessage(message, status);
-                    setThreadUpOrDownVoted("Neither")
+                    if (message == "Thread DownVoted") {
+                        handleMessage(message, status);
+                        setThreadUpOrDownVoted("DownVoted")
+                    } else {
+                        handleMessage(message, status);
+                        setThreadUpOrDownVoted("Neither")
+                    }
+                    //loadAndGetValues()
+                    //persistLogin({...data[0]}, message, status);
                 }
-                //loadAndGetValues()
-                //persistLogin({...data[0]}, message, status);
-            }
-        }).catch(error => {
-            console.log(error);
-            setThreadUpOrDownVoted("UpVoted")
-            handleMessage("An error occured. Try checking your network connection and retry.", 'FAILED');
-        })
+            }).catch(error => {
+                console.log(error);
+                setThreadUpOrDownVoted("UpVoted")
+                handleMessage("An error occured. Try checking your network connection and retry.", 'FAILED');
+            })
+        } else {
+            navigation.navigate('ModalLoginScreen', {modal: true});
+        }
     }
 
     return(
@@ -1045,7 +1064,8 @@ const ThreadViewPage = ({route, navigation}) => {
                     <View style={{backgroundColor: dark ? slightlyLighterPrimary : colors.primary, borderBottomLeftRadius: 30, borderBottomRightRadius: 30, height: 30, width: '100%'}}>
                         <SubTitle style={{flex: 1, alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{commentsLength} comments</SubTitle>
                     </View>
-                    <ViewScreenPollPostCommentsFrame style={{width: '100%', marginLeft: 0, marginRight: 0}}>
+                    {storedCredentials ?
+                        <ViewScreenPollPostCommentsFrame style={{width: '100%', marginLeft: 0, marginRight: 0}}>
                             <PollPostTitle commentsTitle={true}>Comments</PollPostTitle>
                             <CommentsHorizontalView writeCommentArea={true}>
                                 <Formik
@@ -1114,6 +1134,17 @@ const ThreadViewPage = ({route, navigation}) => {
                                 <ActivityIndicator size="small" color={brand} />  
                             )}
                         </ViewScreenPollPostCommentsFrame>
+                    :
+                        <View style={{flex: 1, justifyContent: 'center', marginHorizontal: '2%'}}>
+                            <Text style={{color: colors.tertiary, fontSize: 20, textAlign: 'center', marginBottom: 20}}>Please login to comment on this thread</Text>
+                            <StyledButton onPress={() => {navigation.navigate('ModalLoginScreen', {modal: true})}}>
+                                <ButtonText> Login </ButtonText>
+                            </StyledButton>
+                            <StyledButton style={{backgroundColor: colors.primary, color: colors.tertiary}} signUpButton={true} onPress={() => navigation.navigate('ModalSignupScreen', {modal: true})}>
+                                    <ButtonText signUpButton={true} style={{color: colors.tertiary, top: -9.5}}> Signup </ButtonText>
+                            </StyledButton>
+                        </View>
+                    }
             </ScrollView>
         </>
     );

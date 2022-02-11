@@ -10,7 +10,7 @@ const DestroyingLocalDataScreen = ({navigation}) => {
     async function destroyLocalData() {
         try {
             await AsyncStorage.clear().then(() => {
-                navigation.navigate("LoginScreen")
+                navigation.replace("LoginScreen")
             })
         } catch (e) {
             console.warn(e)

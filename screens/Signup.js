@@ -53,6 +53,8 @@ import { AllCredentialsStoredContext } from '../components/AllCredentialsStoredC
 import SocialSquareLogo_B64_png from '../assets/SocialSquareLogo_Base64_png.js';
 import { ProfilePictureURIContext } from '../components/ProfilePictureURIContext.js';
 
+import AntDesign from 'react-native-vector-icons/AntDesign';
+
 
 const Signup = ({navigation, route}) => {
     if (darkModeOn === true) {
@@ -69,7 +71,7 @@ const Signup = ({navigation, route}) => {
         setWebBrowserResult(result);
     };
 
-    if (route.params) {var {modal} = route.params;}
+    if (route.params) {var {modal, Modal_NoCredentials} = route.params;}
 
     const {colors} = useTheme();
 
@@ -140,7 +142,12 @@ const Signup = ({navigation, route}) => {
 
     const goBackToLoginScreen = () => {
         if (modal == true) {
-            navigation.goBack();
+            if (Modal_NoCredentials) {
+                navigation.goBack();
+                navigation.navigate('ModalLoginScreen', {modal: true});
+            } else {
+                navigation.goBack();
+            }
         } else {
             navigation.reset({
                 index: 0,
@@ -232,7 +239,7 @@ const Signup = ({navigation, route}) => {
                                     <ButtonText> Signup </ButtonText>
                                 </StyledButton>)}
 
-                                {!isSubmitting && modal == true && (<StyledButton onPress={() => {navigation.pop(2)}}>
+                                {!isSubmitting && modal == true && storedCredentials && (<StyledButton onPress={() => {navigation.pop(2)}}>
                                     <ButtonText> Close </ButtonText>
                                 </StyledButton>)}
 
@@ -245,6 +252,10 @@ const Signup = ({navigation, route}) => {
                                         <TextLinkContent style={{color: colors.brand, fontSize: 20, top: 5}}>Login</TextLinkContent>
                                     </TextLink>
                                 </ExtraView>
+                                <TouchableOpacity onPress={() => {modal == true ? navigation.pop(2) : navigation.reset({index: 0, routes:[{name: 'Tabs'}]})}} style={{justifyContent: 'center', alignItems: 'center', flexDirection: 'row'}}>
+                                    <ButtonText style={{color: colors.tertiary, fontSize: 20}}>Continue without an account</ButtonText>
+                                    <AntDesign name="arrowright" size={40} color={colors.tertiary} style={{marginLeft: 5}}/>
+                                </TouchableOpacity>
                                 <Text style={{textAlign: 'center', color: colors.tertiary, marginTop: 20}}>By signing up, you agree to our </Text>
                                 <TextLink onPress={() => {goToLink('https://squaretable.github.io/social-media-platform/TermsAndConditions')}}>
                                     <TextLinkContent style={{color: colors.brand}}>Terms of Service</TextLinkContent>

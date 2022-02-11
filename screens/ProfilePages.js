@@ -107,7 +107,7 @@ const ProfilePages = ({ route, navigation }) => {
     //context
     const { profilesName, profilesDisplayName, following, followers, totalLikes, profileKey } = route.params;
     const { storedCredentials, setStoredCredentials } = useContext(CredentialsContext);
-    const { _id, name, displayName, email, photoUrl } = storedCredentials;
+    if (storedCredentials) {var { _id } = storedCredentials} else {var _id = "SSGUEST"}
     const [gridViewState, setGridViewState] = useState("flex")
     const [featuredViewState, setFeaturedViewState] = useState("none")
     const [selectedPostFormat, setSelectedPostFormat] = useState("One")
@@ -260,135 +260,139 @@ const ProfilePages = ({ route, navigation }) => {
             if (changingVotedImages.includes(imageId)) {
 
             } else {
-                upVotedImages = upVotesImages
-                downVotedImages = downVotesImages
-                neitherVotedImages = neitherVotesImages
-                var beforeChange = "Neither"
-                if (upVotedImages.includes(imageId)) {
-                    beforeChange = "UpVoted"
-                    var index = upVotedImages.indexOf(imageId);
-                    if (index > -1) {
-                        upVotedImages.splice(index, 1);
+                if (storedCredentials) {
+                    upVotedImages = upVotesImages
+                    downVotedImages = downVotesImages
+                    neitherVotedImages = neitherVotesImages
+                    var beforeChange = "Neither"
+                    if (upVotedImages.includes(imageId)) {
+                        beforeChange = "UpVoted"
+                        var index = upVotedImages.indexOf(imageId);
+                        if (index > -1) {
+                            upVotedImages.splice(index, 1);
+                        }
+                        showNeutralVoteImageAnimation()
+                        setUpVotesImages(upVotedImages)
                     }
-                    showNeutralVoteImageAnimation()
-                    setUpVotesImages(upVotedImages)
-                }
-                if (downVotedImages.includes(imageId)) {
-                    beforeChange = "DownVoted"
-                    var index = downVotedImages.indexOf(imageId);
-                    if (index > -1) {
-                        downVotedImages.splice(index, 1);
+                    if (downVotedImages.includes(imageId)) {
+                        beforeChange = "DownVoted"
+                        var index = downVotedImages.indexOf(imageId);
+                        if (index > -1) {
+                            downVotedImages.splice(index, 1);
+                        }
+                        showUpvoteImageAnimation()
+                        setDownVotesImages(downVotedImages)
                     }
-                    showUpvoteImageAnimation()
-                    setDownVotesImages(downVotedImages)
-                }
-                if (neitherVotedImages.includes(imageId)) {
-                    beforeChange = "Neither"
-                    var index = neitherVotedImages.indexOf(imageId);
-                    if (index > -1) {
-                        neitherVotedImages.splice(index, 1);
+                    if (neitherVotedImages.includes(imageId)) {
+                        beforeChange = "Neither"
+                        var index = neitherVotedImages.indexOf(imageId);
+                        if (index > -1) {
+                            neitherVotedImages.splice(index, 1);
+                        }
+                        showUpvoteImageAnimation()
+                        setNeitherVotesImages(neitherVotedImages)
                     }
-                    showUpvoteImageAnimation()
-                    setNeitherVotesImages(neitherVotedImages)
-                }
-                changingVotedImagesArray = changingVotedImages
-                changingVotedImagesArray.push(imageId)
-                setChangingVotedImages(changingVotedImagesArray)
-                //Do rest
-                handleMessage(null, null, null);
-                const url = "https://nameless-dawn-41038.herokuapp.com/user/upvoteimage";
+                    changingVotedImagesArray = changingVotedImages
+                    changingVotedImagesArray.push(imageId)
+                    setChangingVotedImages(changingVotedImagesArray)
+                    //Do rest
+                    handleMessage(null, null, null);
+                    const url = "https://nameless-dawn-41038.herokuapp.com/user/upvoteimage";
 
-                var toSend = { userId: _id, imageId: imageId }
+                    var toSend = { userId: _id, imageId: imageId }
 
-                console.log(toSend)
+                    console.log(toSend)
 
-                axios.post(url, toSend).then((response) => {
-                    const result = response.data;
-                    const { message, status, data } = result;
+                    axios.post(url, toSend).then((response) => {
+                        const result = response.data;
+                        const { message, status, data } = result;
 
-                    if (status !== 'SUCCESS') {
-                        handleMessage(message, status, postNum);
+                        if (status !== 'SUCCESS') {
+                            handleMessage(message, status, postNum);
+                            changingVotedImagesArray = changingVotedImages
+                            var index = changingVotedImagesArray.indexOf(imageId);
+                            if (index > -1) {
+                                changingVotedImagesArray.splice(index, 1);
+                            }
+                            if (beforeChange == "UpVoted") {
+                                upVotedImages = upVotesImages
+                                upVotedImages.push(imageId)
+                                setUpVotesImages(upVotedImages)
+                                setChangingVotedImages([])
+                                setChangingVotedImages(changingVotedImagesArray)
+                            }
+                            if (beforeChange == "DownVoted") {
+                                downVotedImages = downVotesImages
+                                downVotedImages.push(imageId)
+                                setDownVotesImages(downVotedImages)
+                                setChangingVotedImages([])
+                                setChangingVotedImages(changingVotedImagesArray)
+                            }
+                            if (beforeChange == "Neither") {
+                                neitherVotedImages = neitherVotesImages
+                                neitherVotedImages.push(imageId)
+                                setNeitherVotesImages(neitherVotedImages)
+                                setChangingVotedImages([])
+                                setChangingVotedImages(changingVotedImagesArray)
+                            }
+                        } else {
+                            handleMessage(message, status);
+                            var tempChangingVotedImagesArray = changingVotedImages
+                            var index = tempChangingVotedImagesArray.indexOf(imageId);
+                            if (index > -1) {
+                                tempChangingVotedImagesArray.splice(index, 1);
+                                console.log("Spliced tempChangingVotedImagesArray")
+                            } else {
+                                console.log("Didnt find in changing array")
+                            }
+                            if (message == "Post UpVoted") {
+                                upVotedImages = upVotesImages
+                                upVotedImages.push(imageId)
+                                setUpVotesImages([])
+                                setUpVotesImages(upVotedImages)
+                                setChangingVotedImages([])
+                                setChangingVotedImages(tempChangingVotedImagesArray)
+                            } else {
+                                //Neither
+                                neitherVotedImages = neitherVotesImages
+                                neitherVotedImages.push(imageId)
+                                setNeitherVotesImages([])
+                                setNeitherVotesImages(neitherVotedImages)
+                                setChangingVotedImages([])
+                                setChangingVotedImages(tempChangingVotedImagesArray)
+                            }
+                            setImageKeyToShowImageAnimation(null)
+                            //loadAndGetValues()
+                            //persistLogin({...data[0]}, message, status);
+                        }
+                    }).catch(error => {
+                        console.log(error);
                         changingVotedImagesArray = changingVotedImages
                         var index = changingVotedImagesArray.indexOf(imageId);
                         if (index > -1) {
                             changingVotedImagesArray.splice(index, 1);
                         }
+                        setChangingVotedImages(changingVotedImagesArray)
                         if (beforeChange == "UpVoted") {
                             upVotedImages = upVotesImages
                             upVotedImages.push(imageId)
                             setUpVotesImages(upVotedImages)
-                            setChangingVotedImages([])
-                            setChangingVotedImages(changingVotedImagesArray)
                         }
                         if (beforeChange == "DownVoted") {
                             downVotedImages = downVotesImages
                             downVotedImages.push(imageId)
                             setDownVotesImages(downVotedImages)
-                            setChangingVotedImages([])
-                            setChangingVotedImages(changingVotedImagesArray)
                         }
                         if (beforeChange == "Neither") {
                             neitherVotedImages = neitherVotesImages
                             neitherVotedImages.push(imageId)
                             setNeitherVotesImages(neitherVotedImages)
-                            setChangingVotedImages([])
-                            setChangingVotedImages(changingVotedImagesArray)
                         }
-                    } else {
-                        handleMessage(message, status);
-                        var tempChangingVotedImagesArray = changingVotedImages
-                        var index = tempChangingVotedImagesArray.indexOf(imageId);
-                        if (index > -1) {
-                            tempChangingVotedImagesArray.splice(index, 1);
-                            console.log("Spliced tempChangingVotedImagesArray")
-                        } else {
-                            console.log("Didnt find in changing array")
-                        }
-                        if (message == "Post UpVoted") {
-                            upVotedImages = upVotesImages
-                            upVotedImages.push(imageId)
-                            setUpVotesImages([])
-                            setUpVotesImages(upVotedImages)
-                            setChangingVotedImages([])
-                            setChangingVotedImages(tempChangingVotedImagesArray)
-                        } else {
-                            //Neither
-                            neitherVotedImages = neitherVotesImages
-                            neitherVotedImages.push(imageId)
-                            setNeitherVotesImages([])
-                            setNeitherVotesImages(neitherVotedImages)
-                            setChangingVotedImages([])
-                            setChangingVotedImages(tempChangingVotedImagesArray)
-                        }
-                        setImageKeyToShowImageAnimation(null)
-                        //loadAndGetValues()
-                        //persistLogin({...data[0]}, message, status);
-                    }
-                }).catch(error => {
-                    console.log(error);
-                    changingVotedImagesArray = changingVotedImages
-                    var index = changingVotedImagesArray.indexOf(imageId);
-                    if (index > -1) {
-                        changingVotedImagesArray.splice(index, 1);
-                    }
-                    setChangingVotedImages(changingVotedImagesArray)
-                    if (beforeChange == "UpVoted") {
-                        upVotedImages = upVotesImages
-                        upVotedImages.push(imageId)
-                        setUpVotesImages(upVotedImages)
-                    }
-                    if (beforeChange == "DownVoted") {
-                        downVotedImages = downVotesImages
-                        downVotedImages.push(imageId)
-                        setDownVotesImages(downVotedImages)
-                    }
-                    if (beforeChange == "Neither") {
-                        neitherVotedImages = neitherVotesImages
-                        neitherVotedImages.push(imageId)
-                        setNeitherVotesImages(neitherVotedImages)
-                    }
-                    handleMessage("An error occured. Try checking your network connection and retry.", 'FAILED', postNum);
-                })
+                        handleMessage("An error occured. Try checking your network connection and retry.", 'FAILED', postNum);
+                    })
+                } else {
+                    navigation.navigate('ModalLoginScreen', {modal: true})
+                }
             }
         }
     }
@@ -401,131 +405,135 @@ const ProfilePages = ({ route, navigation }) => {
             if (changingVotedImages.includes(imageId)) {
 
             } else {
-                upVotedImages = upVotesImages
-                downVotedImages = downVotesImages
-                neitherVotedImages = neitherVotesImages
-                var beforeChange = "Neither"
-                if (upVotedImages.includes(imageId)) {
-                    beforeChange = "UpVoted"
-                    var index = upVotedImages.indexOf(imageId);
-                    if (index > -1) {
-                        upVotedImages.splice(index, 1);
+                if (storedCredentials) {
+                    upVotedImages = upVotesImages
+                    downVotedImages = downVotesImages
+                    neitherVotedImages = neitherVotesImages
+                    var beforeChange = "Neither"
+                    if (upVotedImages.includes(imageId)) {
+                        beforeChange = "UpVoted"
+                        var index = upVotedImages.indexOf(imageId);
+                        if (index > -1) {
+                            upVotedImages.splice(index, 1);
+                        }
+                        setUpVotesImages(upVotedImages)
                     }
-                    setUpVotesImages(upVotedImages)
-                }
-                if (downVotedImages.includes(imageId)) {
-                    beforeChange = "DownVoted"
-                    var index = downVotedImages.indexOf(imageId);
-                    if (index > -1) {
-                        downVotedImages.splice(index, 1);
+                    if (downVotedImages.includes(imageId)) {
+                        beforeChange = "DownVoted"
+                        var index = downVotedImages.indexOf(imageId);
+                        if (index > -1) {
+                            downVotedImages.splice(index, 1);
+                        }
+                        setDownVotesImages(downVotedImages)
                     }
-                    setDownVotesImages(downVotedImages)
-                }
-                if (neitherVotedImages.includes(imageId)) {
-                    beforeChange = "Neither"
-                    var index = neitherVotedImages.indexOf(imageId);
-                    if (index > -1) {
-                        neitherVotedImages.splice(index, 1);
+                    if (neitherVotedImages.includes(imageId)) {
+                        beforeChange = "Neither"
+                        var index = neitherVotedImages.indexOf(imageId);
+                        if (index > -1) {
+                            neitherVotedImages.splice(index, 1);
+                        }
+                        setNeitherVotesImages(neitherVotedImages)
                     }
-                    setNeitherVotesImages(neitherVotedImages)
-                }
-                changingVotedImagesArray = changingVotedImages
-                changingVotedImagesArray.push(imageId)
-                setChangingVotedImages(changingVotedImagesArray)
-                //Do rest
-                handleMessage(null, null, null);
-                const url = "https://nameless-dawn-41038.herokuapp.com/user/downvoteimage";
+                    changingVotedImagesArray = changingVotedImages
+                    changingVotedImagesArray.push(imageId)
+                    setChangingVotedImages(changingVotedImagesArray)
+                    //Do rest
+                    handleMessage(null, null, null);
+                    const url = "https://nameless-dawn-41038.herokuapp.com/user/downvoteimage";
 
-                var toSend = { userId: _id, imageId: imageId }
+                    var toSend = { userId: _id, imageId: imageId }
 
-                console.log(toSend)
+                    console.log(toSend)
 
-                axios.post(url, toSend).then((response) => {
-                    const result = response.data;
-                    const { message, status, data } = result;
+                    axios.post(url, toSend).then((response) => {
+                        const result = response.data;
+                        const { message, status, data } = result;
 
-                    if (status !== 'SUCCESS') {
-                        handleMessage(message, status, postNum);
+                        if (status !== 'SUCCESS') {
+                            handleMessage(message, status, postNum);
+                            changingVotedImagesArray = changingVotedImages
+                            var index = changingVotedImagesArray.indexOf(imageId);
+                            if (index > -1) {
+                                changingVotedImagesArray.splice(index, 1);
+                            }
+                            if (beforeChange == "UpVoted") {
+                                upVotedImages = upVotesImages
+                                upVotedImages.push(imageId)
+                                setUpVotesImages(upVotedImages)
+                                setChangingVotedPolls([])
+                                setChangingVotedImages(changingVotedImagesArray)
+                            }
+                            if (beforeChange == "DownVoted") {
+                                downVotedImages = downVotesImages
+                                downVotedImages.push(imageId)
+                                setDownVotesImages(downVotedImages)
+                                setChangingVotedPolls([])
+                                setChangingVotedImages(changingVotedImagesArray)
+                            }
+                            if (beforeChange == "Neither") {
+                                neitherVotedImages = neitherVotesImages
+                                neitherVotedImages.push(imageId)
+                                setNeitherVotesImages(neitherVotedImages)
+                                setChangingVotedPolls([])
+                                setChangingVotedImages(changingVotedImagesArray)
+                            }
+                        } else {
+                            handleMessage(message, status);
+                            var tempChangingVotedImagesArray = changingVotedImages
+                            var index = tempChangingVotedImagesArray.indexOf(imageId);
+                            if (index > -1) {
+                                tempChangingVotedImagesArray.splice(index, 1);
+                                console.log("Spliced tempChangingVotedImagesArray")
+                            } else {
+                                console.log("Didnt find in changing array")
+                            }
+                            if (message == "Post DownVoted") {
+                                downVotedImages = downVotesImages
+                                downVotedImages.push(imageId)
+                                setDownVotesImages([])
+                                setDownVotesImages(downVotedImages)
+                                setChangingVotedImages([])
+                                setChangingVotedImages(tempChangingVotedImagesArray)
+                            } else {
+                                //Neither
+                                neitherVotedImages = neitherVotesImages
+                                neitherVotedImages.push(imageId)
+                                setNeitherVotesImages([])
+                                setNeitherVotesImages(neitherVotedImages)
+                                setChangingVotedImages([])
+                                setChangingVotedImages(tempChangingVotedImagesArray)
+                            }
+                            //loadAndGetValues()
+                            //persistLogin({...data[0]}, message, status);
+                        }
+                    }).catch(error => {
+                        console.log(error);
                         changingVotedImagesArray = changingVotedImages
                         var index = changingVotedImagesArray.indexOf(imageId);
                         if (index > -1) {
                             changingVotedImagesArray.splice(index, 1);
                         }
+                        setChangingVotedImages(changingVotedImagesArray)
                         if (beforeChange == "UpVoted") {
                             upVotedImages = upVotesImages
                             upVotedImages.push(imageId)
                             setUpVotesImages(upVotedImages)
-                            setChangingVotedPolls([])
-                            setChangingVotedImages(changingVotedImagesArray)
                         }
                         if (beforeChange == "DownVoted") {
                             downVotedImages = downVotesImages
                             downVotedImages.push(imageId)
                             setDownVotesImages(downVotedImages)
-                            setChangingVotedPolls([])
-                            setChangingVotedImages(changingVotedImagesArray)
                         }
                         if (beforeChange == "Neither") {
                             neitherVotedImages = neitherVotesImages
                             neitherVotedImages.push(imageId)
                             setNeitherVotesImages(neitherVotedImages)
-                            setChangingVotedPolls([])
-                            setChangingVotedImages(changingVotedImagesArray)
                         }
-                    } else {
-                        handleMessage(message, status);
-                        var tempChangingVotedImagesArray = changingVotedImages
-                        var index = tempChangingVotedImagesArray.indexOf(imageId);
-                        if (index > -1) {
-                            tempChangingVotedImagesArray.splice(index, 1);
-                            console.log("Spliced tempChangingVotedImagesArray")
-                        } else {
-                            console.log("Didnt find in changing array")
-                        }
-                        if (message == "Post DownVoted") {
-                            downVotedImages = downVotesImages
-                            downVotedImages.push(imageId)
-                            setDownVotesImages([])
-                            setDownVotesImages(downVotedImages)
-                            setChangingVotedImages([])
-                            setChangingVotedImages(tempChangingVotedImagesArray)
-                        } else {
-                            //Neither
-                            neitherVotedImages = neitherVotesImages
-                            neitherVotedImages.push(imageId)
-                            setNeitherVotesImages([])
-                            setNeitherVotesImages(neitherVotedImages)
-                            setChangingVotedImages([])
-                            setChangingVotedImages(tempChangingVotedImagesArray)
-                        }
-                        //loadAndGetValues()
-                        //persistLogin({...data[0]}, message, status);
-                    }
-                }).catch(error => {
-                    console.log(error);
-                    changingVotedImagesArray = changingVotedImages
-                    var index = changingVotedImagesArray.indexOf(imageId);
-                    if (index > -1) {
-                        changingVotedImagesArray.splice(index, 1);
-                    }
-                    setChangingVotedImages(changingVotedImagesArray)
-                    if (beforeChange == "UpVoted") {
-                        upVotedImages = upVotesImages
-                        upVotedImages.push(imageId)
-                        setUpVotesImages(upVotedImages)
-                    }
-                    if (beforeChange == "DownVoted") {
-                        downVotedImages = downVotesImages
-                        downVotedImages.push(imageId)
-                        setDownVotesImages(downVotedImages)
-                    }
-                    if (beforeChange == "Neither") {
-                        neitherVotedImages = neitherVotesImages
-                        neitherVotedImages.push(imageId)
-                        setNeitherVotesImages(neitherVotedImages)
-                    }
-                    handleMessage("An error occured. Try checking your network connection and retry.", 'FAILED', postNum);
-                })
+                        handleMessage("An error occured. Try checking your network connection and retry.", 'FAILED', postNum);
+                    })
+                } else {
+                    navigation.navigate('ModalLoginScreen', {modal: true})
+                }
             }
         }
     }
@@ -538,132 +546,136 @@ const ProfilePages = ({ route, navigation }) => {
             if (changingVotedPolls.includes(pollId)) {
 
             } else {
-                console.log("UpVoting")
-                upVotedPolls = upVotesPolls
-                downVotedPolls = downVotesPolls
-                neitherVotedPolls = neitherVotesPolls
-                var beforeChange = "Neither"
-                if (upVotedPolls.includes(pollId)) {
-                    beforeChange = "UpVoted"
-                    var index = upVotedPolls.indexOf(pollId);
-                    if (index > -1) {
-                        upVotedPolls.splice(index, 1);
+                if (storedCredentials) {
+                    console.log("UpVoting")
+                    upVotedPolls = upVotesPolls
+                    downVotedPolls = downVotesPolls
+                    neitherVotedPolls = neitherVotesPolls
+                    var beforeChange = "Neither"
+                    if (upVotedPolls.includes(pollId)) {
+                        beforeChange = "UpVoted"
+                        var index = upVotedPolls.indexOf(pollId);
+                        if (index > -1) {
+                            upVotedPolls.splice(index, 1);
+                        }
+                        setUpVotesPolls(upVotedPolls)
                     }
-                    setUpVotesPolls(upVotedPolls)
-                }
-                if (downVotedPolls.includes(pollId)) {
-                    beforeChange = "DownVoted"
-                    var index = downVotedPolls.indexOf(pollId);
-                    if (index > -1) {
-                        downVotedPolls.splice(index, 1);
+                    if (downVotedPolls.includes(pollId)) {
+                        beforeChange = "DownVoted"
+                        var index = downVotedPolls.indexOf(pollId);
+                        if (index > -1) {
+                            downVotedPolls.splice(index, 1);
+                        }
+                        setDownVotesPolls(downVotedPolls)
                     }
-                    setDownVotesPolls(downVotedPolls)
-                }
-                if (neitherVotedPolls.includes(pollId)) {
-                    beforeChange = "Neither"
-                    var index = neitherVotedPolls.indexOf(pollId);
-                    if (index > -1) {
-                        neitherVotedPolls.splice(index, 1);
+                    if (neitherVotedPolls.includes(pollId)) {
+                        beforeChange = "Neither"
+                        var index = neitherVotedPolls.indexOf(pollId);
+                        if (index > -1) {
+                            neitherVotedPolls.splice(index, 1);
+                        }
+                        setNeitherVotesPolls(neitherVotedPolls)
                     }
-                    setNeitherVotesPolls(neitherVotedPolls)
-                }
-                changingVotedPollsArray = changingVotedPolls
-                changingVotedPollsArray.push(pollId)
-                setChangingVotedPolls(changingVotedPollsArray)
-                //Do rest
-                handleMessage(null, null, null);
-                const url = "https://nameless-dawn-41038.herokuapp.com/user/upvotepoll";
+                    changingVotedPollsArray = changingVotedPolls
+                    changingVotedPollsArray.push(pollId)
+                    setChangingVotedPolls(changingVotedPollsArray)
+                    //Do rest
+                    handleMessage(null, null, null);
+                    const url = "https://nameless-dawn-41038.herokuapp.com/user/upvotepoll";
 
-                var toSend = { userId: _id, pollId: pollId }
+                    var toSend = { userId: _id, pollId: pollId }
 
-                console.log(toSend)
+                    console.log(toSend)
 
-                axios.post(url, toSend).then((response) => {
-                    const result = response.data;
-                    const { message, status, data } = result;
+                    axios.post(url, toSend).then((response) => {
+                        const result = response.data;
+                        const { message, status, data } = result;
 
-                    if (status !== 'SUCCESS') {
-                        handleMessage(message, status, postNum);
+                        if (status !== 'SUCCESS') {
+                            handleMessage(message, status, postNum);
+                            changingVotedPollsArray = changingVotedPolls
+                            var index = changingVotedPollsArray.indexOf(pollId);
+                            if (index > -1) {
+                                changingVotedPollsArray.splice(index, 1);
+                            }
+                            if (beforeChange == "UpVoted") {
+                                upVotedPolls = upVotesPolls
+                                upVotedPolls.push(pollId)
+                                setUpVotesPolls(upVotedPolls)
+                                setChangingVotedPolls([])
+                                setChangingVotedPolls(changingVotedPollsArray)
+                            }
+                            if (beforeChange == "DownVoted") {
+                                downVotedPolls = downVotesPolls
+                                downVotedPolls.push(pollId)
+                                setDownVotesPolls(downVotedPolls)
+                                setChangingVotedPolls([])
+                                setChangingVotedPolls(changingVotedPollsArray)
+                            }
+                            if (beforeChange == "Neither") {
+                                neitherVotedPolls = neitherVotesPolls
+                                neitherVotedPolls.push(pollId)
+                                setNeitherVotesPolls(neitherVotedPolls)
+                                setChangingVotedPolls([])
+                                setChangingVotedPolls(changingVotedPollsArray)
+                            }
+                        } else {
+                            handleMessage(message, status);
+                            var tempChangingVotedPollsArray = changingVotedPolls
+                            var index = tempChangingVotedPollsArray.indexOf(pollId);
+                            if (index > -1) {
+                                tempChangingVotedPollsArray.splice(index, 1);
+                                console.log("Spliced tempChangingVotedPollsArray")
+                            } else {
+                                console.log("Didnt find in changing array")
+                            }
+                            if (message == "Post UpVoted") {
+                                upVotedPolls = upVotesPolls
+                                upVotedPolls.push(pollId)
+                                setUpVotesPolls([])
+                                setUpVotesPolls(upVotedPolls)
+                                setChangingVotedPolls([])
+                                setChangingVotedPolls(tempChangingVotedPollsArray)
+                            } else {
+                                //Neither
+                                neitherVotedPolls = neitherVotesPolls
+                                neitherVotedPolls.push(pollId)
+                                setNeitherVotesPolls([])
+                                setNeitherVotesPolls(neitherVotedPolls)
+                                setChangingVotedPolls([])
+                                setChangingVotedPolls(tempChangingVotedPollsArray)
+                            }
+                            //loadAndGetValues()
+                            //persistLogin({...data[0]}, message, status);
+                        }
+                    }).catch(error => {
+                        console.log(error);
                         changingVotedPollsArray = changingVotedPolls
                         var index = changingVotedPollsArray.indexOf(pollId);
                         if (index > -1) {
                             changingVotedPollsArray.splice(index, 1);
                         }
+                        setChangingVotedImages(changingVotedPollsArray)
                         if (beforeChange == "UpVoted") {
                             upVotedPolls = upVotesPolls
                             upVotedPolls.push(pollId)
                             setUpVotesPolls(upVotedPolls)
-                            setChangingVotedPolls([])
-                            setChangingVotedPolls(changingVotedPollsArray)
                         }
                         if (beforeChange == "DownVoted") {
                             downVotedPolls = downVotesPolls
                             downVotedPolls.push(pollId)
                             setDownVotesPolls(downVotedPolls)
-                            setChangingVotedPolls([])
-                            setChangingVotedPolls(changingVotedPollsArray)
                         }
                         if (beforeChange == "Neither") {
                             neitherVotedPolls = neitherVotesPolls
                             neitherVotedPolls.push(pollId)
                             setNeitherVotesPolls(neitherVotedPolls)
-                            setChangingVotedPolls([])
-                            setChangingVotedPolls(changingVotedPollsArray)
                         }
-                    } else {
-                        handleMessage(message, status);
-                        var tempChangingVotedPollsArray = changingVotedPolls
-                        var index = tempChangingVotedPollsArray.indexOf(pollId);
-                        if (index > -1) {
-                            tempChangingVotedPollsArray.splice(index, 1);
-                            console.log("Spliced tempChangingVotedPollsArray")
-                        } else {
-                            console.log("Didnt find in changing array")
-                        }
-                        if (message == "Post UpVoted") {
-                            upVotedPolls = upVotesPolls
-                            upVotedPolls.push(pollId)
-                            setUpVotesPolls([])
-                            setUpVotesPolls(upVotedPolls)
-                            setChangingVotedPolls([])
-                            setChangingVotedPolls(tempChangingVotedPollsArray)
-                        } else {
-                            //Neither
-                            neitherVotedPolls = neitherVotesPolls
-                            neitherVotedPolls.push(pollId)
-                            setNeitherVotesPolls([])
-                            setNeitherVotesPolls(neitherVotedPolls)
-                            setChangingVotedPolls([])
-                            setChangingVotedPolls(tempChangingVotedPollsArray)
-                        }
-                        //loadAndGetValues()
-                        //persistLogin({...data[0]}, message, status);
-                    }
-                }).catch(error => {
-                    console.log(error);
-                    changingVotedPollsArray = changingVotedPolls
-                    var index = changingVotedPollsArray.indexOf(pollId);
-                    if (index > -1) {
-                        changingVotedPollsArray.splice(index, 1);
-                    }
-                    setChangingVotedImages(changingVotedPollsArray)
-                    if (beforeChange == "UpVoted") {
-                        upVotedPolls = upVotesPolls
-                        upVotedPolls.push(pollId)
-                        setUpVotesPolls(upVotedPolls)
-                    }
-                    if (beforeChange == "DownVoted") {
-                        downVotedPolls = downVotesPolls
-                        downVotedPolls.push(pollId)
-                        setDownVotesPolls(downVotedPolls)
-                    }
-                    if (beforeChange == "Neither") {
-                        neitherVotedPolls = neitherVotesPolls
-                        neitherVotedPolls.push(pollId)
-                        setNeitherVotesPolls(neitherVotedPolls)
-                    }
-                    handleMessage("An error occured. Try checking your network connection and retry.", 'FAILED', postNum);
-                })
+                        handleMessage("An error occured. Try checking your network connection and retry.", 'FAILED', postNum);
+                    })
+                } else {
+                    navigation.navigate('ModalLoginScreen', {modal: true})
+                }
             }
         }
     }
@@ -676,132 +688,136 @@ const ProfilePages = ({ route, navigation }) => {
             if (changingVotedPolls.includes(pollId)) {
 
             } else {
-                console.log("DownVoting")
-                upVotedPolls = upVotesPolls
-                downVotedPolls = downVotesPolls
-                neitherVotedPolls = neitherVotesPolls
-                var beforeChange = "Neither"
-                if (upVotedPolls.includes(pollId)) {
-                    beforeChange = "UpVoted"
-                    var index = upVotedPolls.indexOf(pollId);
-                    if (index > -1) {
-                        upVotedPolls.splice(index, 1);
+                if (storedCredentials) {
+                    console.log("DownVoting")
+                    upVotedPolls = upVotesPolls
+                    downVotedPolls = downVotesPolls
+                    neitherVotedPolls = neitherVotesPolls
+                    var beforeChange = "Neither"
+                    if (upVotedPolls.includes(pollId)) {
+                        beforeChange = "UpVoted"
+                        var index = upVotedPolls.indexOf(pollId);
+                        if (index > -1) {
+                            upVotedPolls.splice(index, 1);
+                        }
+                        setUpVotesPolls(upVotedPolls)
                     }
-                    setUpVotesPolls(upVotedPolls)
-                }
-                if (downVotedPolls.includes(pollId)) {
-                    beforeChange = "DownVoted"
-                    var index = downVotedPolls.indexOf(pollId);
-                    if (index > -1) {
-                        downVotedPolls.splice(index, 1);
+                    if (downVotedPolls.includes(pollId)) {
+                        beforeChange = "DownVoted"
+                        var index = downVotedPolls.indexOf(pollId);
+                        if (index > -1) {
+                            downVotedPolls.splice(index, 1);
+                        }
+                        setDownVotesPolls(downVotedPolls)
                     }
-                    setDownVotesPolls(downVotedPolls)
-                }
-                if (neitherVotedPolls.includes(pollId)) {
-                    beforeChange = "Neither"
-                    var index = neitherVotedPolls.indexOf(pollId);
-                    if (index > -1) {
-                        neitherVotedPolls.splice(index, 1);
+                    if (neitherVotedPolls.includes(pollId)) {
+                        beforeChange = "Neither"
+                        var index = neitherVotedPolls.indexOf(pollId);
+                        if (index > -1) {
+                            neitherVotedPolls.splice(index, 1);
+                        }
+                        setNeitherVotesPolls(neitherVotedPolls)
                     }
-                    setNeitherVotesPolls(neitherVotedPolls)
-                }
-                changingVotedPollsArray = changingVotedPolls
-                changingVotedPollsArray.push(pollId)
-                setChangingVotedPolls(changingVotedPollsArray)
-                //Do rest
-                handleMessage(null, null, null);
-                const url = "https://nameless-dawn-41038.herokuapp.com/user/downvotepoll";
+                    changingVotedPollsArray = changingVotedPolls
+                    changingVotedPollsArray.push(pollId)
+                    setChangingVotedPolls(changingVotedPollsArray)
+                    //Do rest
+                    handleMessage(null, null, null);
+                    const url = "https://nameless-dawn-41038.herokuapp.com/user/downvotepoll";
 
-                var toSend = { userId: _id, pollId: pollId }
+                    var toSend = { userId: _id, pollId: pollId }
 
-                console.log(toSend)
+                    console.log(toSend)
 
-                axios.post(url, toSend).then((response) => {
-                    const result = response.data;
-                    const { message, status, data } = result;
+                    axios.post(url, toSend).then((response) => {
+                        const result = response.data;
+                        const { message, status, data } = result;
 
-                    if (status !== 'SUCCESS') {
-                        handleMessage(message, status, postNum);
+                        if (status !== 'SUCCESS') {
+                            handleMessage(message, status, postNum);
+                            changingVotedPollsArray = changingVotedPolls
+                            var index = changingVotedPollsArray.indexOf(pollId);
+                            if (index > -1) {
+                                changingVotedPollsArray.splice(index, 1);
+                            }
+                            if (beforeChange == "UpVoted") {
+                                upVotedPolls = upVotesPolls
+                                upVotedPolls.push(pollId)
+                                setUpVotesPolls(upVotedPolls)
+                                setChangingVotedPolls([])
+                                setChangingVotedPolls(changingVotedPollsArray)
+                            }
+                            if (beforeChange == "DownVoted") {
+                                downVotedPolls = downVotesPolls
+                                downVotedPolls.push(pollId)
+                                setDownVotesPolls(downVotedPolls)
+                                setChangingVotedPolls([])
+                                setChangingVotedPolls(changingVotedPollsArray)
+                            }
+                            if (beforeChange == "Neither") {
+                                neitherVotedPolls = neitherVotesPolls
+                                neitherVotedPolls.push(pollId)
+                                setNeitherVotesPolls(neitherVotedPolls)
+                                setChangingVotedPolls([])
+                                setChangingVotedPolls(changingVotedPollsArray)
+                            }
+                        } else {
+                            handleMessage(message, status);
+                            var tempChangingVotedPollsArray = changingVotedPolls
+                            var index = tempChangingVotedPollsArray.indexOf(pollId);
+                            if (index > -1) {
+                                tempChangingVotedPollsArray.splice(index, 1);
+                                console.log("Spliced tempChangingVotedPollsArray")
+                            } else {
+                                console.log("Didnt find in changing array")
+                            }
+                            if (message == "Post DownVoted") {
+                                downVotedPolls = downVotesPolls
+                                downVotedPolls.push(pollId)
+                                setDownVotesPolls([])
+                                setDownVotesPolls(downVotedPolls)
+                                setChangingVotedPolls([])
+                                setChangingVotedPolls(tempChangingVotedPollsArray)
+                            } else {
+                                //Neither
+                                neitherVotedPolls = neitherVotesPolls
+                                neitherVotedPolls.push(pollId)
+                                setNeitherVotesPolls([])
+                                setNeitherVotesPolls(neitherVotedPolls)
+                                setChangingVotedPolls([])
+                                setChangingVotedPolls(tempChangingVotedPollsArray)
+                            }
+                            //loadAndGetValues()
+                            //persistLogin({...data[0]}, message, status);
+                        }
+                    }).catch(error => {
+                        console.log(error);
                         changingVotedPollsArray = changingVotedPolls
                         var index = changingVotedPollsArray.indexOf(pollId);
                         if (index > -1) {
                             changingVotedPollsArray.splice(index, 1);
                         }
+                        setChangingVotedImages(changingVotedPollsArray)
                         if (beforeChange == "UpVoted") {
                             upVotedPolls = upVotesPolls
                             upVotedPolls.push(pollId)
                             setUpVotesPolls(upVotedPolls)
-                            setChangingVotedPolls([])
-                            setChangingVotedPolls(changingVotedPollsArray)
                         }
                         if (beforeChange == "DownVoted") {
                             downVotedPolls = downVotesPolls
                             downVotedPolls.push(pollId)
                             setDownVotesPolls(downVotedPolls)
-                            setChangingVotedPolls([])
-                            setChangingVotedPolls(changingVotedPollsArray)
                         }
                         if (beforeChange == "Neither") {
                             neitherVotedPolls = neitherVotesPolls
                             neitherVotedPolls.push(pollId)
                             setNeitherVotesPolls(neitherVotedPolls)
-                            setChangingVotedPolls([])
-                            setChangingVotedPolls(changingVotedPollsArray)
                         }
-                    } else {
-                        handleMessage(message, status);
-                        var tempChangingVotedPollsArray = changingVotedPolls
-                        var index = tempChangingVotedPollsArray.indexOf(pollId);
-                        if (index > -1) {
-                            tempChangingVotedPollsArray.splice(index, 1);
-                            console.log("Spliced tempChangingVotedPollsArray")
-                        } else {
-                            console.log("Didnt find in changing array")
-                        }
-                        if (message == "Post DownVoted") {
-                            downVotedPolls = downVotesPolls
-                            downVotedPolls.push(pollId)
-                            setDownVotesPolls([])
-                            setDownVotesPolls(downVotedPolls)
-                            setChangingVotedPolls([])
-                            setChangingVotedPolls(tempChangingVotedPollsArray)
-                        } else {
-                            //Neither
-                            neitherVotedPolls = neitherVotesPolls
-                            neitherVotedPolls.push(pollId)
-                            setNeitherVotesPolls([])
-                            setNeitherVotesPolls(neitherVotedPolls)
-                            setChangingVotedPolls([])
-                            setChangingVotedPolls(tempChangingVotedPollsArray)
-                        }
-                        //loadAndGetValues()
-                        //persistLogin({...data[0]}, message, status);
-                    }
-                }).catch(error => {
-                    console.log(error);
-                    changingVotedPollsArray = changingVotedPolls
-                    var index = changingVotedPollsArray.indexOf(pollId);
-                    if (index > -1) {
-                        changingVotedPollsArray.splice(index, 1);
-                    }
-                    setChangingVotedImages(changingVotedPollsArray)
-                    if (beforeChange == "UpVoted") {
-                        upVotedPolls = upVotesPolls
-                        upVotedPolls.push(pollId)
-                        setUpVotesPolls(upVotedPolls)
-                    }
-                    if (beforeChange == "DownVoted") {
-                        downVotedPolls = downVotesPolls
-                        downVotedPolls.push(pollId)
-                        setDownVotesPolls(downVotedPolls)
-                    }
-                    if (beforeChange == "Neither") {
-                        neitherVotedPolls = neitherVotesPolls
-                        neitherVotedPolls.push(pollId)
-                        setNeitherVotesPolls(neitherVotedPolls)
-                    }
-                    handleMessage("An error occured. Try checking your network connection and retry.", 'FAILED', postNum);
-                })
+                        handleMessage("An error occured. Try checking your network connection and retry.", 'FAILED', postNum);
+                    })
+                } else {
+                    navigation.navigate('ModalLoginScreen', {modal: true})
+                }
             }
         }
     }
@@ -814,133 +830,137 @@ const ProfilePages = ({ route, navigation }) => {
             if (changingVotedThreads.includes(threadId)) {
 
             } else {
-                console.log("UpVoting")
-                upVotedThreads = upVotesThreads
-                downVotedThreads = downVotesThreads
-                neitherVotedThreads = neitherVotesThreads
-                var beforeChange = "Neither"
-                if (upVotedThreads.includes(threadId)) {
-                    beforeChange = "UpVoted"
-                    var index = upVotedThreads.indexOf(threadId);
-                    if (index > -1) {
-                        upVotedThreads.splice(index, 1);
+                if (storedCredentials) {
+                    console.log("UpVoting")
+                    upVotedThreads = upVotesThreads
+                    downVotedThreads = downVotesThreads
+                    neitherVotedThreads = neitherVotesThreads
+                    var beforeChange = "Neither"
+                    if (upVotedThreads.includes(threadId)) {
+                        beforeChange = "UpVoted"
+                        var index = upVotedThreads.indexOf(threadId);
+                        if (index > -1) {
+                            upVotedThreads.splice(index, 1);
+                        }
+                        setUpVotesThreads(upVotedThreads)
                     }
-                    setUpVotesThreads(upVotedThreads)
-                }
-                if (downVotedThreads.includes(threadId)) {
-                    beforeChange = "DownVoted"
-                    var index = downVotedThreads.indexOf(threadId);
-                    if (index > -1) {
-                        downVotedThreads.splice(index, 1);
+                    if (downVotedThreads.includes(threadId)) {
+                        beforeChange = "DownVoted"
+                        var index = downVotedThreads.indexOf(threadId);
+                        if (index > -1) {
+                            downVotedThreads.splice(index, 1);
+                        }
+                        setDownVotesThreads(downVotedThreads)
                     }
-                    setDownVotesThreads(downVotedThreads)
-                }
-                if (neitherVotedThreads.includes(threadId)) {
-                    beforeChange = "Neither"
-                    var index = neitherVotedThreads.indexOf(threadId);
-                    if (index > -1) {
-                        neitherVotedThreads.splice(index, 1);
+                    if (neitherVotedThreads.includes(threadId)) {
+                        beforeChange = "Neither"
+                        var index = neitherVotedThreads.indexOf(threadId);
+                        if (index > -1) {
+                            neitherVotedThreads.splice(index, 1);
+                        }
+                        setNeitherVotesThreads(neitherVotedThreads)
                     }
-                    setNeitherVotesThreads(neitherVotedThreads)
-                }
-                changingVotedThreadsArray = changingVotedThreads
-                changingVotedThreadsArray.push(threadId)
-                setChangingVotedThreads(changingVotedThreadsArray)
-                //Do rest
-                handleMessage(null, null, null);
-                const url = "https://nameless-dawn-41038.herokuapp.com/user/upvotethread";
+                    changingVotedThreadsArray = changingVotedThreads
+                    changingVotedThreadsArray.push(threadId)
+                    setChangingVotedThreads(changingVotedThreadsArray)
+                    //Do rest
+                    handleMessage(null, null, null);
+                    const url = "https://nameless-dawn-41038.herokuapp.com/user/upvotethread";
 
-                var toSend = { userId: _id, threadId: threadId }
+                    var toSend = { userId: _id, threadId: threadId }
 
-                console.log(toSend)
+                    console.log(toSend)
 
-                axios.post(url, toSend).then((response) => {
-                    const result = response.data;
-                    const { message, status, data } = result;
+                    axios.post(url, toSend).then((response) => {
+                        const result = response.data;
+                        const { message, status, data } = result;
 
-                    if (status !== 'SUCCESS') {
-                        handleMessage(message, status, postNum);
+                        if (status !== 'SUCCESS') {
+                            handleMessage(message, status, postNum);
+                            changingVotedThreadsArray = changingVotedThreads
+                            var index = changingVotedThreadsArray.indexOf(threadId);
+                            if (index > -1) {
+                                changingVotedThreadsArray.splice(index, 1);
+                                setChangingVotedThreads(changingVotedThreadsArray)
+                            }
+                            if (beforeChange == "UpVoted") {
+                                upVotedThreads = upVotesThreads
+                                upVotedThreads.push(threadId)
+                                setUpVotesThreads(upVotedThreads)
+                                setChangingVotedThreads([])
+                                setChangingVotedThreads(changingVotedThreadsArray)
+                            }
+                            if (beforeChange == "DownVoted") {
+                                downVotedThreads = downVotesThreads
+                                downVotedThreads.push(threadId)
+                                setDownVotesThreads(downVotedThreads)
+                                setChangingVotedThreads([])
+                                setChangingVotedThreads(changingVotedThreadsArray)
+                            }
+                            if (beforeChange == "Neither") {
+                                neitherVotedThreads = neitherVotesThreads
+                                neitherVotedThreads.push(threadId)
+                                setNeitherVotesThreads(neitherVotedThreads)
+                                setChangingVotedThreads([])
+                                setChangingVotedThreads(changingVotedThreadsArray)
+                            }
+                        } else {
+                            handleMessage(message, status);
+                            var tempChangingVotedThreadsArray = changingVotedThreads
+                            var index = tempChangingVotedThreadsArray.indexOf(threadId);
+                            if (index > -1) {
+                                tempChangingVotedThreadsArray.splice(index, 1);
+                                console.log("Spliced tempChangingVotedThreadsArray")
+                            } else {
+                                console.log("Didnt find in changing array")
+                            }
+                            if (message == "Thread UpVoted") {
+                                upVotedThreads = upVotesThreads
+                                upVotedThreads.push(threadId)
+                                setUpVotesThreads([])
+                                setUpVotesThreads(upVotedThreads)
+                                setChangingVotedThreads([])
+                                setChangingVotedThreads(tempChangingVotedThreadsArray)
+                            } else {
+                                //Neither
+                                neitherVotedThreads = neitherVotesImages
+                                neitherVotedThreads.push(threadId)
+                                setNeitherVotesThreads([])
+                                setNeitherVotesThreads(neitherVotedThreads)
+                                setChangingVotedThreads([])
+                                setChangingVotedThreads(tempChangingVotedThreadsArray)
+                            }
+                            //loadAndGetValues()
+                            //persistLogin({...data[0]}, message, status);
+                        }
+                    }).catch(error => {
+                        console.log(error);
                         changingVotedThreadsArray = changingVotedThreads
                         var index = changingVotedThreadsArray.indexOf(threadId);
                         if (index > -1) {
                             changingVotedThreadsArray.splice(index, 1);
-                            setChangingVotedThreads(changingVotedThreadsArray)
                         }
+                        setChangingVotedThreads(changingVotedThreadsArray)
                         if (beforeChange == "UpVoted") {
                             upVotedThreads = upVotesThreads
                             upVotedThreads.push(threadId)
                             setUpVotesThreads(upVotedThreads)
-                            setChangingVotedThreads([])
-                            setChangingVotedThreads(changingVotedThreadsArray)
                         }
                         if (beforeChange == "DownVoted") {
                             downVotedThreads = downVotesThreads
                             downVotedThreads.push(threadId)
                             setDownVotesThreads(downVotedThreads)
-                            setChangingVotedThreads([])
-                            setChangingVotedThreads(changingVotedThreadsArray)
                         }
                         if (beforeChange == "Neither") {
                             neitherVotedThreads = neitherVotesThreads
                             neitherVotedThreads.push(threadId)
                             setNeitherVotesThreads(neitherVotedThreads)
-                            setChangingVotedThreads([])
-                            setChangingVotedThreads(changingVotedThreadsArray)
                         }
-                    } else {
-                        handleMessage(message, status);
-                        var tempChangingVotedThreadsArray = changingVotedThreads
-                        var index = tempChangingVotedThreadsArray.indexOf(threadId);
-                        if (index > -1) {
-                            tempChangingVotedThreadsArray.splice(index, 1);
-                            console.log("Spliced tempChangingVotedThreadsArray")
-                        } else {
-                            console.log("Didnt find in changing array")
-                        }
-                        if (message == "Thread UpVoted") {
-                            upVotedThreads = upVotesThreads
-                            upVotedThreads.push(threadId)
-                            setUpVotesThreads([])
-                            setUpVotesThreads(upVotedThreads)
-                            setChangingVotedThreads([])
-                            setChangingVotedThreads(tempChangingVotedThreadsArray)
-                        } else {
-                            //Neither
-                            neitherVotedThreads = neitherVotesImages
-                            neitherVotedThreads.push(threadId)
-                            setNeitherVotesThreads([])
-                            setNeitherVotesThreads(neitherVotedThreads)
-                            setChangingVotedThreads([])
-                            setChangingVotedThreads(tempChangingVotedThreadsArray)
-                        }
-                        //loadAndGetValues()
-                        //persistLogin({...data[0]}, message, status);
-                    }
-                }).catch(error => {
-                    console.log(error);
-                    changingVotedThreadsArray = changingVotedThreads
-                    var index = changingVotedThreadsArray.indexOf(threadId);
-                    if (index > -1) {
-                        changingVotedThreadsArray.splice(index, 1);
-                    }
-                    setChangingVotedThreads(changingVotedThreadsArray)
-                    if (beforeChange == "UpVoted") {
-                        upVotedThreads = upVotesThreads
-                        upVotedThreads.push(threadId)
-                        setUpVotesThreads(upVotedThreads)
-                    }
-                    if (beforeChange == "DownVoted") {
-                        downVotedThreads = downVotesThreads
-                        downVotedThreads.push(threadId)
-                        setDownVotesThreads(downVotedThreads)
-                    }
-                    if (beforeChange == "Neither") {
-                        neitherVotedThreads = neitherVotesThreads
-                        neitherVotedThreads.push(threadId)
-                        setNeitherVotesThreads(neitherVotedThreads)
-                    }
-                    handleMessage("An error occured. Try checking your network connection and retry.", 'FAILED', postNum);
-                })
+                        handleMessage("An error occured. Try checking your network connection and retry.", 'FAILED', postNum);
+                    })
+                } else {
+                    navigation.navigate('ModalLoginScreen', {modal: true})
+                }
             }
         }
     }
@@ -953,133 +973,137 @@ const ProfilePages = ({ route, navigation }) => {
             if (changingVotedThreads.includes(threadId)) {
 
             } else {
-                console.log("DownVoting")
-                upVotedThreads = upVotesThreads
-                downVotedThreads = downVotesThreads
-                neitherVotedThreads = neitherVotesThreads
-                var beforeChange = "Neither"
-                if (upVotedThreads.includes(threadId)) {
-                    beforeChange = "UpVoted"
-                    var index = upVotedThreads.indexOf(threadId);
-                    if (index > -1) {
-                        upVotedThreads.splice(index, 1);
+                if (storedCredentials) {
+                    console.log("DownVoting")
+                    upVotedThreads = upVotesThreads
+                    downVotedThreads = downVotesThreads
+                    neitherVotedThreads = neitherVotesThreads
+                    var beforeChange = "Neither"
+                    if (upVotedThreads.includes(threadId)) {
+                        beforeChange = "UpVoted"
+                        var index = upVotedThreads.indexOf(threadId);
+                        if (index > -1) {
+                            upVotedThreads.splice(index, 1);
+                        }
+                        setUpVotesThreads(upVotedThreads)
                     }
-                    setUpVotesThreads(upVotedThreads)
-                }
-                if (downVotedThreads.includes(threadId)) {
-                    beforeChange = "DownVoted"
-                    var index = downVotedThreads.indexOf(threadId);
-                    if (index > -1) {
-                        downVotedThreads.splice(index, 1);
+                    if (downVotedThreads.includes(threadId)) {
+                        beforeChange = "DownVoted"
+                        var index = downVotedThreads.indexOf(threadId);
+                        if (index > -1) {
+                            downVotedThreads.splice(index, 1);
+                        }
+                        setDownVotesThreads(downVotedThreads)
                     }
-                    setDownVotesThreads(downVotedThreads)
-                }
-                if (neitherVotedThreads.includes(threadId)) {
-                    beforeChange = "Neither"
-                    var index = neitherVotedThreads.indexOf(threadId);
-                    if (index > -1) {
-                        neitherVotedThreads.splice(index, 1);
+                    if (neitherVotedThreads.includes(threadId)) {
+                        beforeChange = "Neither"
+                        var index = neitherVotedThreads.indexOf(threadId);
+                        if (index > -1) {
+                            neitherVotedThreads.splice(index, 1);
+                        }
+                        setNeitherVotesThreads(neitherVotedThreads)
                     }
-                    setNeitherVotesThreads(neitherVotedThreads)
-                }
-                changingVotedThreadsArray = changingVotedThreads
-                changingVotedThreadsArray.push(threadId)
-                setChangingVotedThreads(changingVotedThreadsArray)
-                //Do rest
-                handleMessage(null, null, null);
-                const url = "https://nameless-dawn-41038.herokuapp.com/user/downvotethread";
+                    changingVotedThreadsArray = changingVotedThreads
+                    changingVotedThreadsArray.push(threadId)
+                    setChangingVotedThreads(changingVotedThreadsArray)
+                    //Do rest
+                    handleMessage(null, null, null);
+                    const url = "https://nameless-dawn-41038.herokuapp.com/user/downvotethread";
 
-                var toSend = { userId: _id, threadId: threadId }
+                    var toSend = { userId: _id, threadId: threadId }
 
-                console.log(toSend)
+                    console.log(toSend)
 
-                axios.post(url, toSend).then((response) => {
-                    const result = response.data;
-                    const { message, status, data } = result;
+                    axios.post(url, toSend).then((response) => {
+                        const result = response.data;
+                        const { message, status, data } = result;
 
-                    if (status !== 'SUCCESS') {
-                        handleMessage(message, status, postNum);
+                        if (status !== 'SUCCESS') {
+                            handleMessage(message, status, postNum);
+                            changingVotedThreadsArray = changingVotedThreads
+                            var index = changingVotedThreadsArray.indexOf(threadId);
+                            if (index > -1) {
+                                changingVotedThreadsArray.splice(index, 1);
+                                setChangingVotedThreads(changingVotedThreadsArray)
+                            }
+                            if (beforeChange == "UpVoted") {
+                                upVotedThreads = upVotesThreads
+                                upVotedThreads.push(threadId)
+                                setUpVotesThreads(upVotedThreads)
+                                setChangingVotedThreads([])
+                                setChangingVotedThreads(changingVotedThreadsArray)
+                            }
+                            if (beforeChange == "DownVoted") {
+                                downVotedThreads = downVotesThreads
+                                downVotedThreads.push(threadId)
+                                setDownVotesThreads(downVotedThreads)
+                                setChangingVotedThreads([])
+                                setChangingVotedThreads(changingVotedThreadsArray)
+                            }
+                            if (beforeChange == "Neither") {
+                                neitherVotedThreads = neitherVotesThreads
+                                neitherVotedThreads.push(threadId)
+                                setNeitherVotesThreads(neitherVotedThreads)
+                                setChangingVotedThreads([])
+                                setChangingVotedThreads(changingVotedThreadsArray)
+                            }
+                        } else {
+                            handleMessage(message, status);
+                            var tempChangingVotedThreadsArray = changingVotedThreads
+                            var index = tempChangingVotedThreadsArray.indexOf(threadId);
+                            if (index > -1) {
+                                tempChangingVotedThreadsArray.splice(index, 1);
+                                console.log("Spliced tempChangingVotedThreadsArray")
+                            } else {
+                                console.log("Didnt find in changing array")
+                            }
+                            if (message == "Thread DownVoted") {
+                                downVotedThreads = downVotesThreads
+                                downVotedThreads.push(threadId)
+                                setDownVotesThreads([])
+                                setDownVotesThreads(downVotedThreads)
+                                setChangingVotedThreads([])
+                                setChangingVotedThreads(tempChangingVotedThreadsArray)
+                            } else {
+                                //Neither
+                                neitherVotedThreads = neitherVotesThreads
+                                neitherVotedThreads.push(threadId)
+                                setNeitherVotesThreads([])
+                                setNeitherVotesThreads(neitherVotedThreads)
+                                setChangingVotedThreads([])
+                                setChangingVotedThreads(tempChangingVotedThreadsArray)
+                            }
+                            //loadAndGetValues()
+                            //persistLogin({...data[0]}, message, status);
+                        }
+                    }).catch(error => {
+                        console.log(error);
                         changingVotedThreadsArray = changingVotedThreads
                         var index = changingVotedThreadsArray.indexOf(threadId);
                         if (index > -1) {
                             changingVotedThreadsArray.splice(index, 1);
-                            setChangingVotedThreads(changingVotedThreadsArray)
                         }
+                        setChangingVotedThreads(changingVotedThreadsArray)
                         if (beforeChange == "UpVoted") {
                             upVotedThreads = upVotesThreads
                             upVotedThreads.push(threadId)
                             setUpVotesThreads(upVotedThreads)
-                            setChangingVotedThreads([])
-                            setChangingVotedThreads(changingVotedThreadsArray)
                         }
                         if (beforeChange == "DownVoted") {
-                            downVotedThreads = downVotesThreads
+                            downVotedThreads = downVotesPolls
                             downVotedThreads.push(threadId)
                             setDownVotesThreads(downVotedThreads)
-                            setChangingVotedThreads([])
-                            setChangingVotedThreads(changingVotedThreadsArray)
                         }
                         if (beforeChange == "Neither") {
-                            neitherVotedThreads = neitherVotesThreads
+                            neitherVotedThreads = neitherVotesImages
                             neitherVotedThreads.push(threadId)
                             setNeitherVotesThreads(neitherVotedThreads)
-                            setChangingVotedThreads([])
-                            setChangingVotedThreads(changingVotedThreadsArray)
                         }
-                    } else {
-                        handleMessage(message, status);
-                        var tempChangingVotedThreadsArray = changingVotedThreads
-                        var index = tempChangingVotedThreadsArray.indexOf(threadId);
-                        if (index > -1) {
-                            tempChangingVotedThreadsArray.splice(index, 1);
-                            console.log("Spliced tempChangingVotedThreadsArray")
-                        } else {
-                            console.log("Didnt find in changing array")
-                        }
-                        if (message == "Thread DownVoted") {
-                            downVotedThreads = downVotesThreads
-                            downVotedThreads.push(threadId)
-                            setDownVotesThreads([])
-                            setDownVotesThreads(downVotedThreads)
-                            setChangingVotedThreads([])
-                            setChangingVotedThreads(tempChangingVotedThreadsArray)
-                        } else {
-                            //Neither
-                            neitherVotedThreads = neitherVotesThreads
-                            neitherVotedThreads.push(threadId)
-                            setNeitherVotesThreads([])
-                            setNeitherVotesThreads(neitherVotedThreads)
-                            setChangingVotedThreads([])
-                            setChangingVotedThreads(tempChangingVotedThreadsArray)
-                        }
-                        //loadAndGetValues()
-                        //persistLogin({...data[0]}, message, status);
-                    }
-                }).catch(error => {
-                    console.log(error);
-                    changingVotedThreadsArray = changingVotedThreads
-                    var index = changingVotedThreadsArray.indexOf(threadId);
-                    if (index > -1) {
-                        changingVotedThreadsArray.splice(index, 1);
-                    }
-                    setChangingVotedThreads(changingVotedThreadsArray)
-                    if (beforeChange == "UpVoted") {
-                        upVotedThreads = upVotesThreads
-                        upVotedThreads.push(threadId)
-                        setUpVotesThreads(upVotedThreads)
-                    }
-                    if (beforeChange == "DownVoted") {
-                        downVotedThreads = downVotesPolls
-                        downVotedThreads.push(threadId)
-                        setDownVotesThreads(downVotedThreads)
-                    }
-                    if (beforeChange == "Neither") {
-                        neitherVotedThreads = neitherVotesImages
-                        neitherVotedThreads.push(threadId)
-                        setNeitherVotesThreads(neitherVotedThreads)
-                    }
-                    handleMessage("An error occured. Try checking your network connection and retry.", 'FAILED', postNum);
-                })
+                        handleMessage("An error occured. Try checking your network connection and retry.", 'FAILED', postNum);
+                    })
+                } else {
+                    navigation.navigate('ModalLoginScreen', {modal: true})
+                }
             }
         }
     }
@@ -2389,8 +2413,12 @@ const ProfilePages = ({ route, navigation }) => {
         if (delta < DOUBLE_PRESS_DELAY) {
             // Success double press
             console.log('double press');
-            setImageKeyToShowImageAnimation(imageKey)
-            UpVoteImage(imageKey, postNum)
+            if (storedCredentials) {
+                setImageKeyToShowImageAnimation(imageKey)
+                UpVoteImage(imageKey, postNum)
+            } else {
+                navigation.navigate('ModalLoginScreen', {modal: true})
+            }
 
         }
         lastPress = time;

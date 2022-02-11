@@ -20,17 +20,21 @@ import {
     Navigator_BackButton,
     TestText,
     TextLink,
-    TextLinkContent
+    TextLinkContent,
+    StyledButton,
+    ButtonText
 } from '../screens/screenStylings/styling.js';
 import {useTheme} from "@react-navigation/native";
 import { ImageBackground, ScrollView, Text, TouchableOpacity, View, Image } from 'react-native';
 import { ProfilePictureURIContext } from '../components/ProfilePictureURIContext.js';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { CredentialsContext } from '../components/CredentialsContext';
 
 
 const NotificationsSettingsScreen = ({navigation}) => {
     const {colors, dark} = useTheme();
     const {profilePictureUri, setProfilePictureUri} = useContext(ProfilePictureURIContext)
+    const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
     // Receive notifications
     const [textMessages, setTextMessages] = useState(true)
     const [upvotesOnPosts, setUpvotesOnPosts] = useState(true)
@@ -568,654 +572,681 @@ const NotificationsSettingsScreen = ({navigation}) => {
                 }
             }).catch((e) => console.error(e))
         }
-        getNotificationsSettings()
+        if (storedCredentials) {
+            getNotificationsSettings()
+        }
     }, [])
     return(
         <> 
-            <StatusBar style={colors.StatusBarColor}/>   
-            <BackgroundDarkColor style={{backgroundColor: colors.primary}}>
-                <ChatScreen_Title style={{backgroundColor: colors.primary, borderWidth: 0}}>
-                    <Navigator_BackButton onPress={() => {navigation.goBack()}}>
-                        <Image
-                        source={require('../assets/app_icons/back_arrow.png')}
-                        style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2, tintColor: colors.tertiary}}
-                        resizeMode="contain"
-                        resizeMethod="resize"
-                        />
-                    </Navigator_BackButton>
-                    <TestText style={{textAlign: 'center', color: colors.tertiary}}>Notifications Settings</TestText>
-                </ChatScreen_Title>
-                <ScrollView>
-                    <WelcomeContainer style={{backgroundColor: colors.primary, marginTop: -50}}>
-                        <Avatar resizeMode="cover" source={{uri: profilePictureUri}} />
-                        {showSettings == true ?
-                            <>
-                                <TestText style={{textAlign: 'center', color: colors.tertiary}}>Receive notifications</TestText>
-                                <View style={{flexDirection: 'row'}}>
-                                    <TextLink onPress={turnOnAllReceiveNotifications}>
-                                        <TextLinkContent style={{color: colors.brand, fontSize: 22}}>Turn On All</TextLinkContent>
-                                    </TextLink>
-                                    <TextLink style={{marginLeft: 50}} onPress={turnOffAllReceiveNotifications}>
-                                        <TextLinkContent style={{color: colors.brand, fontSize: 22}}>Turn Off All</TextLinkContent>
-                                    </TextLink>
-                                </View>
-                                <View style={{flex: 1, flexDirection: 'row'}}>
-                                    <View style={{flexDirection: 'column', flex: 1}}>
-                                        <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Text Messages</Text>
-                                        <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Upvotes on your posts</Text>
-                                        <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Neutral votes on your posts</Text>
-                                        <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Downvotes on your posts</Text>
-                                        <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Upvotes on your videos</Text>
-                                        <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Neutral votes on your videos</Text>
-                                        <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Downvotes on your videos</Text>
-                                        <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Upvotes on your polls</Text>
-                                        <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Neutral votes on your polls</Text>
-                                        <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Downvotes on your polls</Text>
-                                        <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Upvotes on your threads</Text>
-                                        <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Neutral votes on your threads</Text>
-                                        <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Downvotes on your threads</Text>
-                                        <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Person joining a category you are in</Text>
+            <StatusBar style={colors.StatusBarColor}/>
+            {storedCredentials ? 
+                <BackgroundDarkColor style={{backgroundColor: colors.primary}}>
+                    <ChatScreen_Title style={{backgroundColor: colors.primary, borderWidth: 0}}>
+                        <Navigator_BackButton onPress={() => {navigation.goBack()}}>
+                            <Image
+                            source={require('../assets/app_icons/back_arrow.png')}
+                            style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2, tintColor: colors.tertiary}}
+                            resizeMode="contain"
+                            resizeMethod="resize"
+                            />
+                        </Navigator_BackButton>
+                        <TestText style={{textAlign: 'center', color: colors.tertiary}}>Notifications Settings</TestText>
+                    </ChatScreen_Title>
+                    <ScrollView>
+                        <WelcomeContainer style={{backgroundColor: colors.primary, marginTop: -50}}>
+                            <Avatar resizeMode="cover" source={{uri: profilePictureUri}} />
+                            {showSettings == true ?
+                                <>
+                                    <TestText style={{textAlign: 'center', color: colors.tertiary}}>Receive notifications</TestText>
+                                    <View style={{flexDirection: 'row'}}>
+                                        <TextLink onPress={turnOnAllReceiveNotifications}>
+                                            <TextLinkContent style={{color: colors.brand, fontSize: 22}}>Turn On All</TextLinkContent>
+                                        </TextLink>
+                                        <TextLink style={{marginLeft: 50}} onPress={turnOffAllReceiveNotifications}>
+                                            <TextLinkContent style={{color: colors.brand, fontSize: 22}}>Turn Off All</TextLinkContent>
+                                        </TextLink>
                                     </View>
-                                    <View style={{flex: 0.3, flexDirection: 'column', alignItems: 'center'}}>
-                                        <SwitchToggle
-                                            switchOn={textMessages}
-                                            onPress={() => {setContextAndAsyncStorage('TextMessages')}}
-                                            circleColorOff={colors.tertiary}
-                                            circleColorOn={dark? colors.teritary : colors.primary}
-                                            backgroundColorOn={colors.darkestBlue}
-                                            backgroundColorOff={colors.borderColor}
-                                            containerStyle={{
-                                                width: 50,
-                                                height: 28,
-                                                borderRadius: 25,
-                                                padding: 5,
-                                                marginVertical: marginVerticalOnSwitches
-                                            }}
-                                            circleStyle={{
-                                                width: 20,
-                                                height: 20,
-                                                borderRadius: 20,
-                                            }}
-                                        />
-                                        <SwitchToggle
-                                            switchOn={upvotesOnPosts}
-                                            onPress={() => {setContextAndAsyncStorage('UpvotesOnPosts')}}
-                                            circleColorOff={colors.tertiary}
-                                            circleColorOn={dark? colors.teritary : colors.primary}
-                                            backgroundColorOn={colors.darkestBlue}
-                                            backgroundColorOff={colors.borderColor}
-                                            containerStyle={{
-                                                width: 50,
-                                                height: 28,
-                                                borderRadius: 25,
-                                                padding: 5,
-                                                marginVertical: marginVerticalOnSwitches
-                                            }}
-                                            circleStyle={{
-                                                width: 20,
-                                                height: 20,
-                                                borderRadius: 20,
-                                            }}
-                                        />
-                                        <SwitchToggle
-                                            switchOn={neutralVotesOnPosts}
-                                            onPress={() => {setContextAndAsyncStorage('NeutralVotesOnPosts')}}
-                                            circleColorOff={colors.tertiary}
-                                            circleColorOn={dark? colors.teritary : colors.primary}
-                                            backgroundColorOn={colors.darkestBlue}
-                                            backgroundColorOff={colors.borderColor}
-                                            containerStyle={{
-                                                width: 50,
-                                                height: 28,
-                                                borderRadius: 25,
-                                                padding: 5,
-                                                marginVertical: marginVerticalOnSwitches
-                                            }}
-                                            circleStyle={{
-                                                width: 20,
-                                                height: 20,
-                                                borderRadius: 20,
-                                            }}
-                                        />
-                                        <SwitchToggle
-                                            switchOn={downvotesOnPosts}
-                                            onPress={() => {setContextAndAsyncStorage('DownvotesOnPosts')}}
-                                            circleColorOff={colors.tertiary}
-                                            circleColorOn={dark? colors.teritary : colors.primary}
-                                            backgroundColorOn={colors.darkestBlue}
-                                            backgroundColorOff={colors.borderColor}
-                                            containerStyle={{
-                                                width: 50,
-                                                height: 28,
-                                                borderRadius: 25,
-                                                padding: 5,
-                                                marginVertical: marginVerticalOnSwitches
-                                            }}
-                                            circleStyle={{
-                                                width: 20,
-                                                height: 20,
-                                                borderRadius: 20,
-                                            }}
-                                        />
-                                        <SwitchToggle
-                                            switchOn={upvotesOnVideos}
-                                            onPress={() => {setContextAndAsyncStorage('UpvotesOnVideos')}}
-                                            circleColorOff={colors.tertiary}
-                                            circleColorOn={dark? colors.teritary : colors.primary}
-                                            backgroundColorOn={colors.darkestBlue}
-                                            backgroundColorOff={colors.borderColor}
-                                            containerStyle={{
-                                                width: 50,
-                                                height: 28,
-                                                borderRadius: 25,
-                                                padding: 5,
-                                                marginVertical: marginVerticalOnSwitches
-                                            }}
-                                            circleStyle={{
-                                                width: 20,
-                                                height: 20,
-                                                borderRadius: 20,
-                                            }}
-                                        />
-                                        <SwitchToggle
-                                            switchOn={neutralVotesOnVideos}
-                                            onPress={() => {setContextAndAsyncStorage('NeutralVotesOnVideos')}}
-                                            circleColorOff={colors.tertiary}
-                                            circleColorOn={dark? colors.teritary : colors.primary}
-                                            backgroundColorOn={colors.darkestBlue}
-                                            backgroundColorOff={colors.borderColor}
-                                            containerStyle={{
-                                                width: 50,
-                                                height: 28,
-                                                borderRadius: 25,
-                                                padding: 5,
-                                                marginVertical: marginVerticalOnSwitches
-                                            }}
-                                            circleStyle={{
-                                                width: 20,
-                                                height: 20,
-                                                borderRadius: 20,
-                                            }}
-                                        />
-                                        <SwitchToggle
-                                            switchOn={downvotesOnVideos}
-                                            onPress={() => {setContextAndAsyncStorage('DownvotesOnVideos')}}
-                                            circleColorOff={colors.tertiary}
-                                            circleColorOn={dark? colors.teritary : colors.primary}
-                                            backgroundColorOn={colors.darkestBlue}
-                                            backgroundColorOff={colors.borderColor}
-                                            containerStyle={{
-                                                width: 50,
-                                                height: 28,
-                                                borderRadius: 25,
-                                                padding: 5,
-                                                marginVertical: marginVerticalOnSwitches
-                                            }}
-                                            circleStyle={{
-                                                width: 20,
-                                                height: 20,
-                                                borderRadius: 20,
-                                            }}
-                                        />
-                                        <SwitchToggle
-                                            switchOn={upvotesOnPolls}
-                                            onPress={() => {setContextAndAsyncStorage('UpvotesOnPolls')}}
-                                            circleColorOff={colors.tertiary}
-                                            circleColorOn={dark? colors.teritary : colors.primary}
-                                            backgroundColorOn={colors.darkestBlue}
-                                            backgroundColorOff={colors.borderColor}
-                                            containerStyle={{
-                                                width: 50,
-                                                height: 28,
-                                                borderRadius: 25,
-                                                padding: 5,
-                                                marginVertical: marginVerticalOnSwitches
-                                            }}
-                                            circleStyle={{
-                                                width: 20,
-                                                height: 20,
-                                                borderRadius: 20,
-                                            }}
-                                        />
-                                        <SwitchToggle
-                                            switchOn={neutralVotesOnPolls}
-                                            onPress={() => {setContextAndAsyncStorage('NeutralVotesOnPolls')}}
-                                            circleColorOff={colors.tertiary}
-                                            circleColorOn={dark? colors.teritary : colors.primary}
-                                            backgroundColorOn={colors.darkestBlue}
-                                            backgroundColorOff={colors.borderColor}
-                                            containerStyle={{
-                                                width: 50,
-                                                height: 28,
-                                                borderRadius: 25,
-                                                padding: 5,
-                                                marginVertical: marginVerticalOnSwitches
-                                            }}
-                                            circleStyle={{
-                                                width: 20,
-                                                height: 20,
-                                                borderRadius: 20,
-                                            }}
-                                        />
-                                        <SwitchToggle
-                                            switchOn={downvotesOnPolls}
-                                            onPress={() => {setContextAndAsyncStorage('DownvotesOnPolls')}}
-                                            circleColorOff={colors.tertiary}
-                                            circleColorOn={dark? colors.teritary : colors.primary}
-                                            backgroundColorOn={colors.darkestBlue}
-                                            backgroundColorOff={colors.borderColor}
-                                            containerStyle={{
-                                                width: 50,
-                                                height: 28,
-                                                borderRadius: 25,
-                                                padding: 5,
-                                                marginVertical: marginVerticalOnSwitches
-                                            }}
-                                            circleStyle={{
-                                                width: 20,
-                                                height: 20,
-                                                borderRadius: 20,
-                                            }}
-                                        />
-                                        <SwitchToggle
-                                            switchOn={upvotesOnThreads}
-                                            onPress={() => {setContextAndAsyncStorage('UpvotesOnThreads')}}
-                                            circleColorOff={colors.tertiary}
-                                            circleColorOn={dark? colors.teritary : colors.primary}
-                                            backgroundColorOn={colors.darkestBlue}
-                                            backgroundColorOff={colors.borderColor}
-                                            containerStyle={{
-                                                width: 50,
-                                                height: 28,
-                                                borderRadius: 25,
-                                                padding: 5,
-                                                marginVertical: marginVerticalOnSwitches
-                                            }}
-                                            circleStyle={{
-                                                width: 20,
-                                                height: 20,
-                                                borderRadius: 20,
-                                            }}
-                                        />
-                                        <SwitchToggle
-                                            switchOn={neutralVotesOnThreads}
-                                            onPress={() => {setContextAndAsyncStorage('NeutralVotesOnThreads')}}
-                                            circleColorOff={colors.tertiary}
-                                            circleColorOn={dark? colors.teritary : colors.primary}
-                                            backgroundColorOn={colors.darkestBlue}
-                                            backgroundColorOff={colors.borderColor}
-                                            containerStyle={{
-                                                width: 50,
-                                                height: 28,
-                                                borderRadius: 25,
-                                                padding: 5,
-                                                marginVertical: marginVerticalOnSwitches
-                                            }}
-                                            circleStyle={{
-                                                width: 20,
-                                                height: 20,
-                                                borderRadius: 20,
-                                            }}
-                                        />
-                                        <SwitchToggle
-                                            switchOn={downvotesOnThreads}
-                                            onPress={() => {setContextAndAsyncStorage('DownvotesOnThreads')}}
-                                            circleColorOff={colors.tertiary}
-                                            circleColorOn={dark? colors.teritary : colors.primary}
-                                            backgroundColorOn={colors.darkestBlue}
-                                            backgroundColorOff={colors.borderColor}
-                                            containerStyle={{
-                                                width: 50,
-                                                height: 28,
-                                                borderRadius: 25,
-                                                padding: 5,
-                                                marginVertical: marginVerticalOnSwitches
-                                            }}
-                                            circleStyle={{
-                                                width: 20,
-                                                height: 20,
-                                                borderRadius: 20,
-                                            }}
-                                        />
-                                        <SwitchToggle
-                                            switchOn={personJoiningCategory}
-                                            onPress={() => {setContextAndAsyncStorage('PersonJoiningCategory')}}
-                                            circleColorOff={colors.tertiary}
-                                            circleColorOn={dark? colors.teritary : colors.primary}
-                                            backgroundColorOn={colors.darkestBlue}
-                                            backgroundColorOff={colors.borderColor}
-                                            containerStyle={{
-                                                width: 50,
-                                                height: 28,
-                                                borderRadius: 25,
-                                                padding: 5,
-                                                marginVertical: marginVerticalOnSwitches
-                                            }}
-                                            circleStyle={{
-                                                width: 20,
-                                                height: 20,
-                                                borderRadius: 20,
-                                            }}
-                                        />
+                                    <View style={{flex: 1, flexDirection: 'row'}}>
+                                        <View style={{flexDirection: 'column', flex: 1}}>
+                                            <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Text Messages</Text>
+                                            <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Upvotes on your posts</Text>
+                                            <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Neutral votes on your posts</Text>
+                                            <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Downvotes on your posts</Text>
+                                            <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Upvotes on your videos</Text>
+                                            <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Neutral votes on your videos</Text>
+                                            <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Downvotes on your videos</Text>
+                                            <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Upvotes on your polls</Text>
+                                            <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Neutral votes on your polls</Text>
+                                            <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Downvotes on your polls</Text>
+                                            <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Upvotes on your threads</Text>
+                                            <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Neutral votes on your threads</Text>
+                                            <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Downvotes on your threads</Text>
+                                            <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Person joining a category you are in</Text>
+                                        </View>
+                                        <View style={{flex: 0.3, flexDirection: 'column', alignItems: 'center'}}>
+                                            <SwitchToggle
+                                                switchOn={textMessages}
+                                                onPress={() => {setContextAndAsyncStorage('TextMessages')}}
+                                                circleColorOff={colors.tertiary}
+                                                circleColorOn={dark? colors.teritary : colors.primary}
+                                                backgroundColorOn={colors.darkestBlue}
+                                                backgroundColorOff={colors.borderColor}
+                                                containerStyle={{
+                                                    width: 50,
+                                                    height: 28,
+                                                    borderRadius: 25,
+                                                    padding: 5,
+                                                    marginVertical: marginVerticalOnSwitches
+                                                }}
+                                                circleStyle={{
+                                                    width: 20,
+                                                    height: 20,
+                                                    borderRadius: 20,
+                                                }}
+                                            />
+                                            <SwitchToggle
+                                                switchOn={upvotesOnPosts}
+                                                onPress={() => {setContextAndAsyncStorage('UpvotesOnPosts')}}
+                                                circleColorOff={colors.tertiary}
+                                                circleColorOn={dark? colors.teritary : colors.primary}
+                                                backgroundColorOn={colors.darkestBlue}
+                                                backgroundColorOff={colors.borderColor}
+                                                containerStyle={{
+                                                    width: 50,
+                                                    height: 28,
+                                                    borderRadius: 25,
+                                                    padding: 5,
+                                                    marginVertical: marginVerticalOnSwitches
+                                                }}
+                                                circleStyle={{
+                                                    width: 20,
+                                                    height: 20,
+                                                    borderRadius: 20,
+                                                }}
+                                            />
+                                            <SwitchToggle
+                                                switchOn={neutralVotesOnPosts}
+                                                onPress={() => {setContextAndAsyncStorage('NeutralVotesOnPosts')}}
+                                                circleColorOff={colors.tertiary}
+                                                circleColorOn={dark? colors.teritary : colors.primary}
+                                                backgroundColorOn={colors.darkestBlue}
+                                                backgroundColorOff={colors.borderColor}
+                                                containerStyle={{
+                                                    width: 50,
+                                                    height: 28,
+                                                    borderRadius: 25,
+                                                    padding: 5,
+                                                    marginVertical: marginVerticalOnSwitches
+                                                }}
+                                                circleStyle={{
+                                                    width: 20,
+                                                    height: 20,
+                                                    borderRadius: 20,
+                                                }}
+                                            />
+                                            <SwitchToggle
+                                                switchOn={downvotesOnPosts}
+                                                onPress={() => {setContextAndAsyncStorage('DownvotesOnPosts')}}
+                                                circleColorOff={colors.tertiary}
+                                                circleColorOn={dark? colors.teritary : colors.primary}
+                                                backgroundColorOn={colors.darkestBlue}
+                                                backgroundColorOff={colors.borderColor}
+                                                containerStyle={{
+                                                    width: 50,
+                                                    height: 28,
+                                                    borderRadius: 25,
+                                                    padding: 5,
+                                                    marginVertical: marginVerticalOnSwitches
+                                                }}
+                                                circleStyle={{
+                                                    width: 20,
+                                                    height: 20,
+                                                    borderRadius: 20,
+                                                }}
+                                            />
+                                            <SwitchToggle
+                                                switchOn={upvotesOnVideos}
+                                                onPress={() => {setContextAndAsyncStorage('UpvotesOnVideos')}}
+                                                circleColorOff={colors.tertiary}
+                                                circleColorOn={dark? colors.teritary : colors.primary}
+                                                backgroundColorOn={colors.darkestBlue}
+                                                backgroundColorOff={colors.borderColor}
+                                                containerStyle={{
+                                                    width: 50,
+                                                    height: 28,
+                                                    borderRadius: 25,
+                                                    padding: 5,
+                                                    marginVertical: marginVerticalOnSwitches
+                                                }}
+                                                circleStyle={{
+                                                    width: 20,
+                                                    height: 20,
+                                                    borderRadius: 20,
+                                                }}
+                                            />
+                                            <SwitchToggle
+                                                switchOn={neutralVotesOnVideos}
+                                                onPress={() => {setContextAndAsyncStorage('NeutralVotesOnVideos')}}
+                                                circleColorOff={colors.tertiary}
+                                                circleColorOn={dark? colors.teritary : colors.primary}
+                                                backgroundColorOn={colors.darkestBlue}
+                                                backgroundColorOff={colors.borderColor}
+                                                containerStyle={{
+                                                    width: 50,
+                                                    height: 28,
+                                                    borderRadius: 25,
+                                                    padding: 5,
+                                                    marginVertical: marginVerticalOnSwitches
+                                                }}
+                                                circleStyle={{
+                                                    width: 20,
+                                                    height: 20,
+                                                    borderRadius: 20,
+                                                }}
+                                            />
+                                            <SwitchToggle
+                                                switchOn={downvotesOnVideos}
+                                                onPress={() => {setContextAndAsyncStorage('DownvotesOnVideos')}}
+                                                circleColorOff={colors.tertiary}
+                                                circleColorOn={dark? colors.teritary : colors.primary}
+                                                backgroundColorOn={colors.darkestBlue}
+                                                backgroundColorOff={colors.borderColor}
+                                                containerStyle={{
+                                                    width: 50,
+                                                    height: 28,
+                                                    borderRadius: 25,
+                                                    padding: 5,
+                                                    marginVertical: marginVerticalOnSwitches
+                                                }}
+                                                circleStyle={{
+                                                    width: 20,
+                                                    height: 20,
+                                                    borderRadius: 20,
+                                                }}
+                                            />
+                                            <SwitchToggle
+                                                switchOn={upvotesOnPolls}
+                                                onPress={() => {setContextAndAsyncStorage('UpvotesOnPolls')}}
+                                                circleColorOff={colors.tertiary}
+                                                circleColorOn={dark? colors.teritary : colors.primary}
+                                                backgroundColorOn={colors.darkestBlue}
+                                                backgroundColorOff={colors.borderColor}
+                                                containerStyle={{
+                                                    width: 50,
+                                                    height: 28,
+                                                    borderRadius: 25,
+                                                    padding: 5,
+                                                    marginVertical: marginVerticalOnSwitches
+                                                }}
+                                                circleStyle={{
+                                                    width: 20,
+                                                    height: 20,
+                                                    borderRadius: 20,
+                                                }}
+                                            />
+                                            <SwitchToggle
+                                                switchOn={neutralVotesOnPolls}
+                                                onPress={() => {setContextAndAsyncStorage('NeutralVotesOnPolls')}}
+                                                circleColorOff={colors.tertiary}
+                                                circleColorOn={dark? colors.teritary : colors.primary}
+                                                backgroundColorOn={colors.darkestBlue}
+                                                backgroundColorOff={colors.borderColor}
+                                                containerStyle={{
+                                                    width: 50,
+                                                    height: 28,
+                                                    borderRadius: 25,
+                                                    padding: 5,
+                                                    marginVertical: marginVerticalOnSwitches
+                                                }}
+                                                circleStyle={{
+                                                    width: 20,
+                                                    height: 20,
+                                                    borderRadius: 20,
+                                                }}
+                                            />
+                                            <SwitchToggle
+                                                switchOn={downvotesOnPolls}
+                                                onPress={() => {setContextAndAsyncStorage('DownvotesOnPolls')}}
+                                                circleColorOff={colors.tertiary}
+                                                circleColorOn={dark? colors.teritary : colors.primary}
+                                                backgroundColorOn={colors.darkestBlue}
+                                                backgroundColorOff={colors.borderColor}
+                                                containerStyle={{
+                                                    width: 50,
+                                                    height: 28,
+                                                    borderRadius: 25,
+                                                    padding: 5,
+                                                    marginVertical: marginVerticalOnSwitches
+                                                }}
+                                                circleStyle={{
+                                                    width: 20,
+                                                    height: 20,
+                                                    borderRadius: 20,
+                                                }}
+                                            />
+                                            <SwitchToggle
+                                                switchOn={upvotesOnThreads}
+                                                onPress={() => {setContextAndAsyncStorage('UpvotesOnThreads')}}
+                                                circleColorOff={colors.tertiary}
+                                                circleColorOn={dark? colors.teritary : colors.primary}
+                                                backgroundColorOn={colors.darkestBlue}
+                                                backgroundColorOff={colors.borderColor}
+                                                containerStyle={{
+                                                    width: 50,
+                                                    height: 28,
+                                                    borderRadius: 25,
+                                                    padding: 5,
+                                                    marginVertical: marginVerticalOnSwitches
+                                                }}
+                                                circleStyle={{
+                                                    width: 20,
+                                                    height: 20,
+                                                    borderRadius: 20,
+                                                }}
+                                            />
+                                            <SwitchToggle
+                                                switchOn={neutralVotesOnThreads}
+                                                onPress={() => {setContextAndAsyncStorage('NeutralVotesOnThreads')}}
+                                                circleColorOff={colors.tertiary}
+                                                circleColorOn={dark? colors.teritary : colors.primary}
+                                                backgroundColorOn={colors.darkestBlue}
+                                                backgroundColorOff={colors.borderColor}
+                                                containerStyle={{
+                                                    width: 50,
+                                                    height: 28,
+                                                    borderRadius: 25,
+                                                    padding: 5,
+                                                    marginVertical: marginVerticalOnSwitches
+                                                }}
+                                                circleStyle={{
+                                                    width: 20,
+                                                    height: 20,
+                                                    borderRadius: 20,
+                                                }}
+                                            />
+                                            <SwitchToggle
+                                                switchOn={downvotesOnThreads}
+                                                onPress={() => {setContextAndAsyncStorage('DownvotesOnThreads')}}
+                                                circleColorOff={colors.tertiary}
+                                                circleColorOn={dark? colors.teritary : colors.primary}
+                                                backgroundColorOn={colors.darkestBlue}
+                                                backgroundColorOff={colors.borderColor}
+                                                containerStyle={{
+                                                    width: 50,
+                                                    height: 28,
+                                                    borderRadius: 25,
+                                                    padding: 5,
+                                                    marginVertical: marginVerticalOnSwitches
+                                                }}
+                                                circleStyle={{
+                                                    width: 20,
+                                                    height: 20,
+                                                    borderRadius: 20,
+                                                }}
+                                            />
+                                            <SwitchToggle
+                                                switchOn={personJoiningCategory}
+                                                onPress={() => {setContextAndAsyncStorage('PersonJoiningCategory')}}
+                                                circleColorOff={colors.tertiary}
+                                                circleColorOn={dark? colors.teritary : colors.primary}
+                                                backgroundColorOn={colors.darkestBlue}
+                                                backgroundColorOff={colors.borderColor}
+                                                containerStyle={{
+                                                    width: 50,
+                                                    height: 28,
+                                                    borderRadius: 25,
+                                                    padding: 5,
+                                                    marginVertical: marginVerticalOnSwitches
+                                                }}
+                                                circleStyle={{
+                                                    width: 20,
+                                                    height: 20,
+                                                    borderRadius: 20,
+                                                }}
+                                            />
+                                        </View>
                                     </View>
-                                </View>
-                                <TestText style={{textAlign: 'center', color: colors.tertiary}}>Send notifications</TestText>
-                                <View style={{flexDirection: 'row'}}>
-                                    <TextLink onPress={turnOnAllSendNotifications}>
-                                        <TextLinkContent style={{color: colors.brand, fontSize: 22}}>Turn On All</TextLinkContent>
-                                    </TextLink>
-                                    <TextLink style={{marginLeft: 50}} onPress={turnOffAllSendNotifications}>
-                                        <TextLinkContent style={{color: colors.brand, fontSize: 22}}>Turn Off All</TextLinkContent>
-                                    </TextLink>
-                                </View>
-                                <View style={{flex: 1, flexDirection: 'row'}}>
-                                    <View style={{flexDirection: 'column', flex: 1}}>
-                                        <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Text Messages</Text>
-                                        <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Upvotes on posts</Text>
-                                        <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Neutral votes on posts</Text>
-                                        <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Downvotes on posts</Text>
-                                        <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Upvotes on videos</Text>
-                                        <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Neutral votes on videos</Text>
-                                        <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Downvotes on videos</Text>
-                                        <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Upvotes on polls</Text>
-                                        <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Neutral votes on polls</Text>
-                                        <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Downvotes on polls</Text>
-                                        <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Upvotes on threads</Text>
-                                        <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Neutral votes on threads</Text>
-                                        <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Downvotes on threads</Text>
-                                        <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>You joining a category</Text>
+                                    <TestText style={{textAlign: 'center', color: colors.tertiary}}>Send notifications</TestText>
+                                    <View style={{flexDirection: 'row'}}>
+                                        <TextLink onPress={turnOnAllSendNotifications}>
+                                            <TextLinkContent style={{color: colors.brand, fontSize: 22}}>Turn On All</TextLinkContent>
+                                        </TextLink>
+                                        <TextLink style={{marginLeft: 50}} onPress={turnOffAllSendNotifications}>
+                                            <TextLinkContent style={{color: colors.brand, fontSize: 22}}>Turn Off All</TextLinkContent>
+                                        </TextLink>
                                     </View>
-                                    <View style={{flex: 0.3, flexDirection: 'column', alignItems: 'center'}}>
-                                        <SwitchToggle
-                                            switchOn={sendTextMessages}
-                                            onPress={() => {setContextAndAsyncStorage('SendTextMessages')}}
-                                            circleColorOff={colors.tertiary}
-                                            circleColorOn={dark? colors.teritary : colors.primary}
-                                            backgroundColorOn={colors.darkestBlue}
-                                            backgroundColorOff={colors.borderColor}
-                                            containerStyle={{
-                                                width: 50,
-                                                height: 28,
-                                                borderRadius: 25,
-                                                padding: 5,
-                                                marginVertical: marginVerticalOnSwitches
-                                            }}
-                                            circleStyle={{
-                                                width: 20,
-                                                height: 20,
-                                                borderRadius: 20,
-                                            }}
-                                        />
-                                        <SwitchToggle
-                                            switchOn={sendUpvotesOnPosts}
-                                            onPress={() => {setContextAndAsyncStorage('SendUpvotesOnPosts')}}
-                                            circleColorOff={colors.tertiary}
-                                            circleColorOn={dark? colors.teritary : colors.primary}
-                                            backgroundColorOn={colors.darkestBlue}
-                                            backgroundColorOff={colors.borderColor}
-                                            containerStyle={{
-                                                width: 50,
-                                                height: 28,
-                                                borderRadius: 25,
-                                                padding: 5,
-                                                marginVertical: marginVerticalOnSwitches
-                                            }}
-                                            circleStyle={{
-                                                width: 20,
-                                                height: 20,
-                                                borderRadius: 20,
-                                            }}
-                                        />
-                                        <SwitchToggle
-                                            switchOn={sendNeutralVotesOnPosts}
-                                            onPress={() => {setContextAndAsyncStorage('SendNeutralVotesOnPosts')}}
-                                            circleColorOff={colors.tertiary}
-                                            circleColorOn={dark? colors.teritary : colors.primary}
-                                            backgroundColorOn={colors.darkestBlue}
-                                            backgroundColorOff={colors.borderColor}
-                                            containerStyle={{
-                                                width: 50,
-                                                height: 28,
-                                                borderRadius: 25,
-                                                padding: 5,
-                                                marginVertical: marginVerticalOnSwitches
-                                            }}
-                                            circleStyle={{
-                                                width: 20,
-                                                height: 20,
-                                                borderRadius: 20,
-                                            }}
-                                        />
-                                        <SwitchToggle
-                                            switchOn={sendDownvotesOnPosts}
-                                            onPress={() => {setContextAndAsyncStorage('SendDownvotesOnPosts')}}
-                                            circleColorOff={colors.tertiary}
-                                            circleColorOn={dark? colors.teritary : colors.primary}
-                                            backgroundColorOn={colors.darkestBlue}
-                                            backgroundColorOff={colors.borderColor}
-                                            containerStyle={{
-                                                width: 50,
-                                                height: 28,
-                                                borderRadius: 25,
-                                                padding: 5,
-                                                marginVertical: marginVerticalOnSwitches
-                                            }}
-                                            circleStyle={{
-                                                width: 20,
-                                                height: 20,
-                                                borderRadius: 20,
-                                            }}
-                                        />
-                                        <SwitchToggle
-                                            switchOn={sendUpvotesOnVideos}
-                                            onPress={() => {setContextAndAsyncStorage('SendUpvotesOnVideos')}}
-                                            circleColorOff={colors.tertiary}
-                                            circleColorOn={dark? colors.teritary : colors.primary}
-                                            backgroundColorOn={colors.darkestBlue}
-                                            backgroundColorOff={colors.borderColor}
-                                            containerStyle={{
-                                                width: 50,
-                                                height: 28,
-                                                borderRadius: 25,
-                                                padding: 5,
-                                                marginVertical: marginVerticalOnSwitches
-                                            }}
-                                            circleStyle={{
-                                                width: 20,
-                                                height: 20,
-                                                borderRadius: 20,
-                                            }}
-                                        />
-                                        <SwitchToggle
-                                            switchOn={sendNeutralVotesOnVideos}
-                                            onPress={() => {setContextAndAsyncStorage('SendNeutralVotesOnVideos')}}
-                                            circleColorOff={colors.tertiary}
-                                            circleColorOn={dark? colors.teritary : colors.primary}
-                                            backgroundColorOn={colors.darkestBlue}
-                                            backgroundColorOff={colors.borderColor}
-                                            containerStyle={{
-                                                width: 50,
-                                                height: 28,
-                                                borderRadius: 25,
-                                                padding: 5,
-                                                marginVertical: marginVerticalOnSwitches
-                                            }}
-                                            circleStyle={{
-                                                width: 20,
-                                                height: 20,
-                                                borderRadius: 20,
-                                            }}
-                                        />
-                                        <SwitchToggle
-                                            switchOn={sendDownvotesOnVideos}
-                                            onPress={() => {setContextAndAsyncStorage('SendDownvotesOnVideos')}}
-                                            circleColorOff={colors.tertiary}
-                                            circleColorOn={dark? colors.teritary : colors.primary}
-                                            backgroundColorOn={colors.darkestBlue}
-                                            backgroundColorOff={colors.borderColor}
-                                            containerStyle={{
-                                                width: 50,
-                                                height: 28,
-                                                borderRadius: 25,
-                                                padding: 5,
-                                                marginVertical: marginVerticalOnSwitches
-                                            }}
-                                            circleStyle={{
-                                                width: 20,
-                                                height: 20,
-                                                borderRadius: 20,
-                                            }}
-                                        />
-                                        <SwitchToggle
-                                            switchOn={sendUpvotesOnPolls}
-                                            onPress={() => {setContextAndAsyncStorage('SendUpvotesOnPolls')}}
-                                            circleColorOff={colors.tertiary}
-                                            circleColorOn={dark? colors.teritary : colors.primary}
-                                            backgroundColorOn={colors.darkestBlue}
-                                            backgroundColorOff={colors.borderColor}
-                                            containerStyle={{
-                                                width: 50,
-                                                height: 28,
-                                                borderRadius: 25,
-                                                padding: 5,
-                                                marginVertical: marginVerticalOnSwitches
-                                            }}
-                                            circleStyle={{
-                                                width: 20,
-                                                height: 20,
-                                                borderRadius: 20,
-                                            }}
-                                        />
-                                        <SwitchToggle
-                                            switchOn={sendNeutralVotesOnPolls}
-                                            onPress={() => {setContextAndAsyncStorage('SendNeutralVotesOnPolls')}}
-                                            circleColorOff={colors.tertiary}
-                                            circleColorOn={dark? colors.teritary : colors.primary}
-                                            backgroundColorOn={colors.darkestBlue}
-                                            backgroundColorOff={colors.borderColor}
-                                            containerStyle={{
-                                                width: 50,
-                                                height: 28,
-                                                borderRadius: 25,
-                                                padding: 5,
-                                                marginVertical: marginVerticalOnSwitches
-                                            }}
-                                            circleStyle={{
-                                                width: 20,
-                                                height: 20,
-                                                borderRadius: 20,
-                                            }}
-                                        />
-                                        <SwitchToggle
-                                            switchOn={sendDownvotesOnPolls}
-                                            onPress={() => {setContextAndAsyncStorage('SendDownvotesOnPolls')}}
-                                            circleColorOff={colors.tertiary}
-                                            circleColorOn={dark? colors.teritary : colors.primary}
-                                            backgroundColorOn={colors.darkestBlue}
-                                            backgroundColorOff={colors.borderColor}
-                                            containerStyle={{
-                                                width: 50,
-                                                height: 28,
-                                                borderRadius: 25,
-                                                padding: 5,
-                                                marginVertical: marginVerticalOnSwitches
-                                            }}
-                                            circleStyle={{
-                                                width: 20,
-                                                height: 20,
-                                                borderRadius: 20,
-                                            }}
-                                        />
-                                        <SwitchToggle
-                                            switchOn={sendUpvotesOnThreads}
-                                            onPress={() => {setContextAndAsyncStorage('SendUpvotesOnThreads')}}
-                                            circleColorOff={colors.tertiary}
-                                            circleColorOn={dark? colors.teritary : colors.primary}
-                                            backgroundColorOn={colors.darkestBlue}
-                                            backgroundColorOff={colors.borderColor}
-                                            containerStyle={{
-                                                width: 50,
-                                                height: 28,
-                                                borderRadius: 25,
-                                                padding: 5,
-                                                marginVertical: marginVerticalOnSwitches
-                                            }}
-                                            circleStyle={{
-                                                width: 20,
-                                                height: 20,
-                                                borderRadius: 20,
-                                            }}
-                                        />
-                                        <SwitchToggle
-                                            switchOn={sendNeutralVotesOnThreads}
-                                            onPress={() => {setContextAndAsyncStorage('SendNeutralVotesOnThreads')}}
-                                            circleColorOff={colors.tertiary}
-                                            circleColorOn={dark? colors.teritary : colors.primary}
-                                            backgroundColorOn={colors.darkestBlue}
-                                            backgroundColorOff={colors.borderColor}
-                                            containerStyle={{
-                                                width: 50,
-                                                height: 28,
-                                                borderRadius: 25,
-                                                padding: 5,
-                                                marginVertical: marginVerticalOnSwitches
-                                            }}
-                                            circleStyle={{
-                                                width: 20,
-                                                height: 20,
-                                                borderRadius: 20,
-                                            }}
-                                        />
-                                        <SwitchToggle
-                                            switchOn={sendDownvotesOnThreads}
-                                            onPress={() => {setContextAndAsyncStorage('SendDownvotesOnThreads')}}
-                                            circleColorOff={colors.tertiary}
-                                            circleColorOn={dark? colors.teritary : colors.primary}
-                                            backgroundColorOn={colors.darkestBlue}
-                                            backgroundColorOff={colors.borderColor}
-                                            containerStyle={{
-                                                width: 50,
-                                                height: 28,
-                                                borderRadius: 25,
-                                                padding: 5,
-                                                marginVertical: marginVerticalOnSwitches
-                                            }}
-                                            circleStyle={{
-                                                width: 20,
-                                                height: 20,
-                                                borderRadius: 20,
-                                            }}
-                                        />
-                                        <SwitchToggle
-                                            switchOn={sendJoiningCategory}
-                                            onPress={() => {setContextAndAsyncStorage('SendJoiningCategory')}}
-                                            circleColorOff={colors.tertiary}
-                                            circleColorOn={dark? colors.teritary : colors.primary}
-                                            backgroundColorOn={colors.darkestBlue}
-                                            backgroundColorOff={colors.borderColor}
-                                            containerStyle={{
-                                                width: 50,
-                                                height: 28,
-                                                borderRadius: 25,
-                                                padding: 5,
-                                                marginVertical: marginVerticalOnSwitches
-                                            }}
-                                            circleStyle={{
-                                                width: 20,
-                                                height: 20,
-                                                borderRadius: 20,
-                                            }}
-                                        />
+                                    <View style={{flex: 1, flexDirection: 'row'}}>
+                                        <View style={{flexDirection: 'column', flex: 1}}>
+                                            <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Text Messages</Text>
+                                            <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Upvotes on posts</Text>
+                                            <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Neutral votes on posts</Text>
+                                            <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Downvotes on posts</Text>
+                                            <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Upvotes on videos</Text>
+                                            <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Neutral votes on videos</Text>
+                                            <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Downvotes on videos</Text>
+                                            <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Upvotes on polls</Text>
+                                            <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Neutral votes on polls</Text>
+                                            <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Downvotes on polls</Text>
+                                            <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Upvotes on threads</Text>
+                                            <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Neutral votes on threads</Text>
+                                            <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Downvotes on threads</Text>
+                                            <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>You joining a category</Text>
+                                        </View>
+                                        <View style={{flex: 0.3, flexDirection: 'column', alignItems: 'center'}}>
+                                            <SwitchToggle
+                                                switchOn={sendTextMessages}
+                                                onPress={() => {setContextAndAsyncStorage('SendTextMessages')}}
+                                                circleColorOff={colors.tertiary}
+                                                circleColorOn={dark? colors.teritary : colors.primary}
+                                                backgroundColorOn={colors.darkestBlue}
+                                                backgroundColorOff={colors.borderColor}
+                                                containerStyle={{
+                                                    width: 50,
+                                                    height: 28,
+                                                    borderRadius: 25,
+                                                    padding: 5,
+                                                    marginVertical: marginVerticalOnSwitches
+                                                }}
+                                                circleStyle={{
+                                                    width: 20,
+                                                    height: 20,
+                                                    borderRadius: 20,
+                                                }}
+                                            />
+                                            <SwitchToggle
+                                                switchOn={sendUpvotesOnPosts}
+                                                onPress={() => {setContextAndAsyncStorage('SendUpvotesOnPosts')}}
+                                                circleColorOff={colors.tertiary}
+                                                circleColorOn={dark? colors.teritary : colors.primary}
+                                                backgroundColorOn={colors.darkestBlue}
+                                                backgroundColorOff={colors.borderColor}
+                                                containerStyle={{
+                                                    width: 50,
+                                                    height: 28,
+                                                    borderRadius: 25,
+                                                    padding: 5,
+                                                    marginVertical: marginVerticalOnSwitches
+                                                }}
+                                                circleStyle={{
+                                                    width: 20,
+                                                    height: 20,
+                                                    borderRadius: 20,
+                                                }}
+                                            />
+                                            <SwitchToggle
+                                                switchOn={sendNeutralVotesOnPosts}
+                                                onPress={() => {setContextAndAsyncStorage('SendNeutralVotesOnPosts')}}
+                                                circleColorOff={colors.tertiary}
+                                                circleColorOn={dark? colors.teritary : colors.primary}
+                                                backgroundColorOn={colors.darkestBlue}
+                                                backgroundColorOff={colors.borderColor}
+                                                containerStyle={{
+                                                    width: 50,
+                                                    height: 28,
+                                                    borderRadius: 25,
+                                                    padding: 5,
+                                                    marginVertical: marginVerticalOnSwitches
+                                                }}
+                                                circleStyle={{
+                                                    width: 20,
+                                                    height: 20,
+                                                    borderRadius: 20,
+                                                }}
+                                            />
+                                            <SwitchToggle
+                                                switchOn={sendDownvotesOnPosts}
+                                                onPress={() => {setContextAndAsyncStorage('SendDownvotesOnPosts')}}
+                                                circleColorOff={colors.tertiary}
+                                                circleColorOn={dark? colors.teritary : colors.primary}
+                                                backgroundColorOn={colors.darkestBlue}
+                                                backgroundColorOff={colors.borderColor}
+                                                containerStyle={{
+                                                    width: 50,
+                                                    height: 28,
+                                                    borderRadius: 25,
+                                                    padding: 5,
+                                                    marginVertical: marginVerticalOnSwitches
+                                                }}
+                                                circleStyle={{
+                                                    width: 20,
+                                                    height: 20,
+                                                    borderRadius: 20,
+                                                }}
+                                            />
+                                            <SwitchToggle
+                                                switchOn={sendUpvotesOnVideos}
+                                                onPress={() => {setContextAndAsyncStorage('SendUpvotesOnVideos')}}
+                                                circleColorOff={colors.tertiary}
+                                                circleColorOn={dark? colors.teritary : colors.primary}
+                                                backgroundColorOn={colors.darkestBlue}
+                                                backgroundColorOff={colors.borderColor}
+                                                containerStyle={{
+                                                    width: 50,
+                                                    height: 28,
+                                                    borderRadius: 25,
+                                                    padding: 5,
+                                                    marginVertical: marginVerticalOnSwitches
+                                                }}
+                                                circleStyle={{
+                                                    width: 20,
+                                                    height: 20,
+                                                    borderRadius: 20,
+                                                }}
+                                            />
+                                            <SwitchToggle
+                                                switchOn={sendNeutralVotesOnVideos}
+                                                onPress={() => {setContextAndAsyncStorage('SendNeutralVotesOnVideos')}}
+                                                circleColorOff={colors.tertiary}
+                                                circleColorOn={dark? colors.teritary : colors.primary}
+                                                backgroundColorOn={colors.darkestBlue}
+                                                backgroundColorOff={colors.borderColor}
+                                                containerStyle={{
+                                                    width: 50,
+                                                    height: 28,
+                                                    borderRadius: 25,
+                                                    padding: 5,
+                                                    marginVertical: marginVerticalOnSwitches
+                                                }}
+                                                circleStyle={{
+                                                    width: 20,
+                                                    height: 20,
+                                                    borderRadius: 20,
+                                                }}
+                                            />
+                                            <SwitchToggle
+                                                switchOn={sendDownvotesOnVideos}
+                                                onPress={() => {setContextAndAsyncStorage('SendDownvotesOnVideos')}}
+                                                circleColorOff={colors.tertiary}
+                                                circleColorOn={dark? colors.teritary : colors.primary}
+                                                backgroundColorOn={colors.darkestBlue}
+                                                backgroundColorOff={colors.borderColor}
+                                                containerStyle={{
+                                                    width: 50,
+                                                    height: 28,
+                                                    borderRadius: 25,
+                                                    padding: 5,
+                                                    marginVertical: marginVerticalOnSwitches
+                                                }}
+                                                circleStyle={{
+                                                    width: 20,
+                                                    height: 20,
+                                                    borderRadius: 20,
+                                                }}
+                                            />
+                                            <SwitchToggle
+                                                switchOn={sendUpvotesOnPolls}
+                                                onPress={() => {setContextAndAsyncStorage('SendUpvotesOnPolls')}}
+                                                circleColorOff={colors.tertiary}
+                                                circleColorOn={dark? colors.teritary : colors.primary}
+                                                backgroundColorOn={colors.darkestBlue}
+                                                backgroundColorOff={colors.borderColor}
+                                                containerStyle={{
+                                                    width: 50,
+                                                    height: 28,
+                                                    borderRadius: 25,
+                                                    padding: 5,
+                                                    marginVertical: marginVerticalOnSwitches
+                                                }}
+                                                circleStyle={{
+                                                    width: 20,
+                                                    height: 20,
+                                                    borderRadius: 20,
+                                                }}
+                                            />
+                                            <SwitchToggle
+                                                switchOn={sendNeutralVotesOnPolls}
+                                                onPress={() => {setContextAndAsyncStorage('SendNeutralVotesOnPolls')}}
+                                                circleColorOff={colors.tertiary}
+                                                circleColorOn={dark? colors.teritary : colors.primary}
+                                                backgroundColorOn={colors.darkestBlue}
+                                                backgroundColorOff={colors.borderColor}
+                                                containerStyle={{
+                                                    width: 50,
+                                                    height: 28,
+                                                    borderRadius: 25,
+                                                    padding: 5,
+                                                    marginVertical: marginVerticalOnSwitches
+                                                }}
+                                                circleStyle={{
+                                                    width: 20,
+                                                    height: 20,
+                                                    borderRadius: 20,
+                                                }}
+                                            />
+                                            <SwitchToggle
+                                                switchOn={sendDownvotesOnPolls}
+                                                onPress={() => {setContextAndAsyncStorage('SendDownvotesOnPolls')}}
+                                                circleColorOff={colors.tertiary}
+                                                circleColorOn={dark? colors.teritary : colors.primary}
+                                                backgroundColorOn={colors.darkestBlue}
+                                                backgroundColorOff={colors.borderColor}
+                                                containerStyle={{
+                                                    width: 50,
+                                                    height: 28,
+                                                    borderRadius: 25,
+                                                    padding: 5,
+                                                    marginVertical: marginVerticalOnSwitches
+                                                }}
+                                                circleStyle={{
+                                                    width: 20,
+                                                    height: 20,
+                                                    borderRadius: 20,
+                                                }}
+                                            />
+                                            <SwitchToggle
+                                                switchOn={sendUpvotesOnThreads}
+                                                onPress={() => {setContextAndAsyncStorage('SendUpvotesOnThreads')}}
+                                                circleColorOff={colors.tertiary}
+                                                circleColorOn={dark? colors.teritary : colors.primary}
+                                                backgroundColorOn={colors.darkestBlue}
+                                                backgroundColorOff={colors.borderColor}
+                                                containerStyle={{
+                                                    width: 50,
+                                                    height: 28,
+                                                    borderRadius: 25,
+                                                    padding: 5,
+                                                    marginVertical: marginVerticalOnSwitches
+                                                }}
+                                                circleStyle={{
+                                                    width: 20,
+                                                    height: 20,
+                                                    borderRadius: 20,
+                                                }}
+                                            />
+                                            <SwitchToggle
+                                                switchOn={sendNeutralVotesOnThreads}
+                                                onPress={() => {setContextAndAsyncStorage('SendNeutralVotesOnThreads')}}
+                                                circleColorOff={colors.tertiary}
+                                                circleColorOn={dark? colors.teritary : colors.primary}
+                                                backgroundColorOn={colors.darkestBlue}
+                                                backgroundColorOff={colors.borderColor}
+                                                containerStyle={{
+                                                    width: 50,
+                                                    height: 28,
+                                                    borderRadius: 25,
+                                                    padding: 5,
+                                                    marginVertical: marginVerticalOnSwitches
+                                                }}
+                                                circleStyle={{
+                                                    width: 20,
+                                                    height: 20,
+                                                    borderRadius: 20,
+                                                }}
+                                            />
+                                            <SwitchToggle
+                                                switchOn={sendDownvotesOnThreads}
+                                                onPress={() => {setContextAndAsyncStorage('SendDownvotesOnThreads')}}
+                                                circleColorOff={colors.tertiary}
+                                                circleColorOn={dark? colors.teritary : colors.primary}
+                                                backgroundColorOn={colors.darkestBlue}
+                                                backgroundColorOff={colors.borderColor}
+                                                containerStyle={{
+                                                    width: 50,
+                                                    height: 28,
+                                                    borderRadius: 25,
+                                                    padding: 5,
+                                                    marginVertical: marginVerticalOnSwitches
+                                                }}
+                                                circleStyle={{
+                                                    width: 20,
+                                                    height: 20,
+                                                    borderRadius: 20,
+                                                }}
+                                            />
+                                            <SwitchToggle
+                                                switchOn={sendJoiningCategory}
+                                                onPress={() => {setContextAndAsyncStorage('SendJoiningCategory')}}
+                                                circleColorOff={colors.tertiary}
+                                                circleColorOn={dark? colors.teritary : colors.primary}
+                                                backgroundColorOn={colors.darkestBlue}
+                                                backgroundColorOff={colors.borderColor}
+                                                containerStyle={{
+                                                    width: 50,
+                                                    height: 28,
+                                                    borderRadius: 25,
+                                                    padding: 5,
+                                                    marginVertical: marginVerticalOnSwitches
+                                                }}
+                                                circleStyle={{
+                                                    width: 20,
+                                                    height: 20,
+                                                    borderRadius: 20,
+                                                }}
+                                            />
+                                        </View>
                                     </View>
-                                </View>
-                            </>
-                        : <TestText style={{textAlign: 'center', color: colors.tertiary, marginVertical: 30}}>Loading...</TestText>}
-                        <Text style={{color: colors.tertiary, fontSize: 24, textAlign: 'center'}}>© SquareTable 2022</Text>
-                        <Text style={{color: colors.tertiary, fontSize: 24, textAlign: 'center', marginBottom: 10}}>All Rights Reserved</Text>
-                        <Text style={{color: colors.tertiary, fontSize: 18, textAlign: 'center', marginBottom: 10}}>Made by Sebastian Webster, Kovid Dev, Didula Semasinghe, and Jacob Bowden</Text>
-                    </WelcomeContainer>
-                </ScrollView>
-            </BackgroundDarkColor>
+                                </>
+                            : <TestText style={{textAlign: 'center', color: colors.tertiary, marginVertical: 30}}>Loading...</TestText>}
+                            <Text style={{color: colors.tertiary, fontSize: 24, textAlign: 'center'}}>© SquareTable 2022</Text>
+                            <Text style={{color: colors.tertiary, fontSize: 24, textAlign: 'center', marginBottom: 10}}>All Rights Reserved</Text>
+                            <Text style={{color: colors.tertiary, fontSize: 18, textAlign: 'center', marginBottom: 10}}>Made by Sebastian Webster, Kovid Dev, Didula Semasinghe, and Jacob Bowden</Text>
+                        </WelcomeContainer>
+                    </ScrollView>
+                </BackgroundDarkColor>
+            :
+                <>
+                    <ChatScreen_Title style={{backgroundColor: colors.primary, borderWidth: 0}}>
+                        <Navigator_BackButton onPress={() => {navigation.goBack()}}>
+                            <Image
+                            source={require('../assets/app_icons/back_arrow.png')}
+                            style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2, tintColor: colors.tertiary}}
+                            resizeMode="contain"
+                            resizeMethod="resize"
+                            />
+                        </Navigator_BackButton>
+                        <TestText style={{textAlign: 'center', color: colors.tertiary}}>Notifications Settings</TestText>
+                    </ChatScreen_Title>
+                    <View style={{flex: 1, justifyContent: 'center', marginHorizontal: '2%'}}>
+                        <Text style={{color: colors.tertiary, fontSize: 20, textAlign: 'center', marginBottom: 20}}>Please login to change notifications settings</Text>
+                        <StyledButton onPress={() => {navigation.navigate('ModalLoginScreen', {modal: true})}}>
+                            <ButtonText> Login </ButtonText>
+                        </StyledButton>
+                        <StyledButton style={{backgroundColor: colors.primary, color: colors.tertiary}} signUpButton={true} onPress={() => navigation.navigate('ModalSignupScreen', {modal: true, Modal_NoCredentials: true})}>
+                                <ButtonText signUpButton={true} style={{color: colors.tertiary, top: -9.5}}> Signup </ButtonText>
+                        </StyledButton>
+                    </View>
+                </>
+            }   
         </>
     );
 }

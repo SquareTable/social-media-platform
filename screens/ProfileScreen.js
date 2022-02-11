@@ -2478,12 +2478,6 @@ const Welcome = ({navigation, route}) => {
         }
     })
 
-    useEffect(() => {
-        if (storedCredentials) {
-            changeToOne()
-        }
-    }, [storedCredentials])
-
     const ChangePfp = () => {
         setPageElementsState(true)
         Animated.timing(ChangePfpMenuOpacity, {
@@ -2495,237 +2489,254 @@ const Welcome = ({navigation, route}) => {
     return(
         <>
             <StatusBar style={colors.StatusBarColor}/>
-            <Animated.View style={{backgroundColor: colors.borderColor, opacity: ChangePfpMenuOpacity, position: 'absolute', top: StatusBarHeight + 100, height: 300, width: '80%', zIndex: ChangePfpMenuOpacity.interpolate({inputRange: [0,1], outputRange: [-10, 11]}), alignSelf: 'center', borderColor: colors.borderColor, borderWidth: 1, borderRadius: 20}}>
-                <Text style={{color: colors.tertiary, fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>Change profile picture</Text>
-                <View style={{height: 220}}>
-                    <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
-                        <StyledButton style={{backgroundColor: dark ? colors.slightlyLighterPrimary : colors.borderColor, borderColor: colors.tertiary}} postImage={true} onPress={OpenImgLibrary}>
-                            <ButtonText style={{color: colors.tertiary}} postImage={true}>
-                                +
-                            </ButtonText>
-                        </StyledButton>
-                        <View style={{width: 20}}/>
-                        <StyledButton style={{backgroundColor: dark ? colors.slightlyLighterPrimary : colors.borderColor, borderColor: colors.tertiary}} postImage={true} onPress={checkForCameraPermissions}>
-                            <Image
-                                source={require('../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/016-camera.png')}
-                                style={{height: 30, width: 30, tintColor: colors.tertiary}}
-                                resizeMode="contain"
-                                resizeMethod="resize"
-                            />
-                        </StyledButton>
-                    </View>
-                </View>
-                <TouchableOpacity style={{borderColor: colors.errorColor, borderWidth: 3, borderRadius: 10, padding: 10, alignItems: 'center', justifyContent: 'center'}} onPress={() => {Animated.timing(ChangePfpMenuOpacity, {toValue: 0, duration: 1, useNativeDriver: true}).start()}}>
-                    <Text style={{color: colors.errorColor, fontSize: 20, fontWeight: 'bold'}}>Cancel</Text>
-                </TouchableOpacity>
-            </Animated.View>
-            <Animated.View style={{paddingTop: StatusBarHeight - 10, backgroundColor: colors.primary, borderColor: colors.borderColor, borderBottomWidth: 1, alignItems: 'center', opacity: TopProfileBarFadeAnim, zIndex: TopProfileBarFadeAnim.interpolate({inputRange: [0, 1], outputRange: [-10, 100]}), position: 'absolute', top: 0, width: '100%', flexDirection: 'column'}}>
+            {storedCredentials ?
                 <>
-                    {backButtonHidden == false &&
-                        <View style={{position: 'absolute', top: StatusBarHeight, left: 10}}>
-                            <TouchableOpacity style={{marginRight: '75.5%'}} disabled={PageElementsState} onPress={() => {navigation.goBack()}}>
-                                <Image
-                                    source={require('../assets/app_icons/back_arrow.png')}
-                                    style={{ width: 40, height: 40, tintColor: colors.tertiary}}
-                                    resizeMode="contain"
-                                    resizeMethod="resize"
-                                />
-                            </TouchableOpacity>
+                    <Animated.View style={{backgroundColor: colors.borderColor, opacity: ChangePfpMenuOpacity, position: 'absolute', top: StatusBarHeight + 100, height: 300, width: '80%', zIndex: ChangePfpMenuOpacity.interpolate({inputRange: [0,1], outputRange: [-10, 11]}), alignSelf: 'center', borderColor: colors.borderColor, borderWidth: 1, borderRadius: 20}}>
+                        <Text style={{color: colors.tertiary, fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>Change profile picture</Text>
+                        <View style={{height: 220}}>
+                            <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+                                <StyledButton style={{backgroundColor: dark ? colors.slightlyLighterPrimary : colors.borderColor, borderColor: colors.tertiary}} postImage={true} onPress={OpenImgLibrary}>
+                                    <ButtonText style={{color: colors.tertiary}} postImage={true}>
+                                        +
+                                    </ButtonText>
+                                </StyledButton>
+                                <View style={{width: 20}}/>
+                                <StyledButton style={{backgroundColor: dark ? colors.slightlyLighterPrimary : colors.borderColor, borderColor: colors.tertiary}} postImage={true} onPress={checkForCameraPermissions}>
+                                    <Image
+                                        source={require('../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/016-camera.png')}
+                                        style={{height: 30, width: 30, tintColor: colors.tertiary}}
+                                        resizeMode="contain"
+                                        resizeMethod="resize"
+                                    />
+                                </StyledButton>
+                            </View>
                         </View>
-                    }
-                    <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
-                        <TouchableOpacity onPress={() => {setShowAccountSwitcher(true)}}>
-                            <PageTitle style={{fontSize: 24}} welcome={true}>{displayName || name || "Couldn't get name"}</PageTitle>
+                        <TouchableOpacity style={{borderColor: colors.errorColor, borderWidth: 3, borderRadius: 10, padding: 10, alignItems: 'center', justifyContent: 'center'}} onPress={() => {Animated.timing(ChangePfpMenuOpacity, {toValue: 0, duration: 1, useNativeDriver: true}).start()}}>
+                            <Text style={{color: colors.errorColor, fontSize: 20, fontWeight: 'bold'}}>Cancel</Text>
                         </TouchableOpacity>
-                        <Avatar style={{width: 40, height: 40}} resizeMode="cover" source={{uri: profilePictureUri}}/>
-                    </View>
-                    <View style={{position: 'absolute', right: 10, top: StatusBarHeight}}>
-                        <TouchableOpacity disabled={PageElementsState} onPress={goToSettingsScreen}>
-                            <Image
-                                source={require('../assets/app_icons/settings.png')}
-                                style={{ width: 40, height: 40, tintColor: colors.tertiary}}
-                                resizeMode="contain"
-                                resizeMethod="resize"
-                            />
-                        </TouchableOpacity>
-                    </View>
-                </>
-                <ProfilePostsSelectionView style={{height: 50, borderBottomWidth: 0}}>
-                    <ProfilePostsSelectionBtns onPress={changeToGrid}>
-                        <Icon name="grid" color={colors.tertiary} size={30}/>
-                    </ProfilePostsSelectionBtns>
-                    <ProfilePostsSelectionBtns onPress={changeToFeatured}>
-                        <FontAwesomeFive name="user-tag" color={colors.tertiary} size={30}/>
-                    </ProfilePostsSelectionBtns>
-                    <Animated.View style={{backgroundColor: colors.tertiary, height: 3, width: '50%', position: 'absolute', bottom: 0, transform: [{translateX: GridOrTagLineTranslateX}], zIndex: 1002}}/>
-                    <View style={{backgroundColor: colors.borderColor, height: 3, width: '100%', position: 'absolute', bottom: 0}}/>
-                </ProfilePostsSelectionView>
-            </Animated.View>
-            <ScrollView
-                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-                onScroll={handleScroll}
-                scrollEventThrottle={1}
-                nestedScrollEnabled={true}
-            >
-                <WelcomeContainer style={{backgroundColor: colors.primary}}>
-                    <ProfileHorizontalView topItems={true}>
-                        <ViewHider viewHidden={backButtonHidden}>
-                            <TouchableOpacity style={{marginRight: '65%'}} disabled={PageElementsState} onPress={() => {navigation.goBack()}}>
-                                <Image
-                                    source={require('../assets/app_icons/back_arrow.png')}
-                                    style={{ width: 40, height: 40, tintColor: colors.tertiary}}
-                                    resizeMode="contain"
-                                    resizeMethod="resize"
-                                />
-                            </TouchableOpacity>
-                        </ViewHider>
-                        <ViewHider viewHidden={!backButtonHidden}>
-                            <View style={{minWidth: 40, marginRight: '65%'}}/>
-                        </ViewHider>
-                        <TouchableOpacity disabled={PageElementsState} onPress={goToSettingsScreen}>
-                            <Image
-                                source={require('../assets/app_icons/settings.png')}
-                                style={{ width: 40, height: 40, tintColor: colors.tertiary}}
-                                resizeMode="contain"
-                                resizeMethod="resize"
-                            />
-                        </TouchableOpacity>
-                    </ProfileHorizontalView>
-                    <ProfInfoAreaImage>
-                        {loadingPfp == false && (
-                            <View style={{alignSelf: 'center', alignContent: 'center'}}>
-                                <Avatar resizeMode="cover" source={{uri: profilePictureUri}}/>
-                                {changingPfp == false && (
-                                    <TouchableOpacity onPress={() => {ChangePfp()}}>
-                                        <SubTitle style={{marginBottom: 0, color: darkestBlue, textAlign: 'center'}}>Change</SubTitle>
+                    </Animated.View>
+                    <Animated.View style={{paddingTop: StatusBarHeight - 10, backgroundColor: colors.primary, borderColor: colors.borderColor, borderBottomWidth: 1, alignItems: 'center', opacity: TopProfileBarFadeAnim, zIndex: TopProfileBarFadeAnim.interpolate({inputRange: [0, 1], outputRange: [-10, 100]}), position: 'absolute', top: 0, width: '100%', flexDirection: 'column'}}>
+                        <>
+                            {backButtonHidden == false &&
+                                <View style={{position: 'absolute', top: StatusBarHeight, left: 10}}>
+                                    <TouchableOpacity style={{marginRight: '75.5%'}} disabled={PageElementsState} onPress={() => {navigation.goBack()}}>
+                                        <Image
+                                            source={require('../assets/app_icons/back_arrow.png')}
+                                            style={{ width: 40, height: 40, tintColor: colors.tertiary}}
+                                            resizeMode="contain"
+                                            resizeMethod="resize"
+                                        />
                                     </TouchableOpacity>
-                                )}
-                                {changingPfp == true && (
-                                    <ActivityIndicator size="large" color={brand} style={{marginBottom: 20}} />  
-                                )}
+                                </View>
+                            }
+                            <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+                                <TouchableOpacity onPress={() => {setShowAccountSwitcher(true)}}>
+                                    <PageTitle style={{fontSize: 24}} welcome={true}>{displayName || name || "Couldn't get name"}</PageTitle>
+                                </TouchableOpacity>
+                                <Avatar style={{width: 40, height: 40}} resizeMode="cover" source={{uri: profilePictureUri}}/>
                             </View>
-                        )}
-                        {loadingPfp == true && (
-                            <View style={{alignSelf: 'center', alignContent: 'center'}}>
-                                <ActivityIndicator size={10} color={brand} style={{marginBottom: 20, padding: 40, borderColor: darkestBlue, borderWidth: 3, borderRadius: 150}} />  
-                                <SubTitle style={{marginBottom: 0, color: darkestBlue, textAlign: 'center'}}></SubTitle>
+                            <View style={{position: 'absolute', right: 10, top: StatusBarHeight}}>
+                                <TouchableOpacity disabled={PageElementsState} onPress={goToSettingsScreen}>
+                                    <Image
+                                        source={require('../assets/app_icons/settings.png')}
+                                        style={{ width: 40, height: 40, tintColor: colors.tertiary}}
+                                        resizeMode="contain"
+                                        resizeMethod="resize"
+                                    />
+                                </TouchableOpacity>
                             </View>
-                        )}
-                        <TouchableOpacity onPress={() => {setShowAccountSwitcher(true)}}>
-                            <PageTitle welcome={true}>{displayName || name || "Couldn't get name"}</PageTitle>
-                        </TouchableOpacity>
-                        <SubTitle style={{color: colors.tertiary}}>{"@"+name}</SubTitle>
-                        <ProfileBadgesView onPress={() => navigation.navigate("AccountBadges")}>
-                            <ProfileBadgeIcons source={require('./../assets/img/TempProfIcons.jpg')}/>
-                            <ProfileBadgeIcons source={require('./../assets/img/BgImage1.png')}/>
-                            <ProfileBadgeIcons source={require('./../assets/img/TempProfIcons.jpg')}/>
-                            <ProfileBadgeIcons source={require('./../assets/img/Toga.jpg')}/>
-                            <ProfileBadgeIcons source={require('./../assets/img/TempProfIcons.jpg')}/>
-                        </ProfileBadgesView>
-                        <SubTitle style={{color: colors.tertiary}} bioText={true} > Bio </SubTitle>
-                    </ProfInfoAreaImage>
-                    <ProfileHorizontalView>
-                        <ProfileHorizontalViewItem profLeftIcon={true}>
-                            <TouchableOpacity onPress={() => {navigation.navigate('ProfileStats', {name: name, followers: followers, type: 'Followers'})}} style={{alignItems: 'center'}}>
-                                <SubTitle style={{color: colors.tertiary}} welcome={true}> Followers </SubTitle>
-                                <ProfIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/114-user.png')}/>
-                                <SubTitle style={{color: colors.tertiary}} welcome={true}> 0 </SubTitle>
-                            </TouchableOpacity>
-                        </ProfileHorizontalViewItem>
-                        <ProfileHorizontalViewItem profCenterIcon={true}>
-                            <TouchableOpacity onPress={() => {navigation.navigate('ProfileStats', {name: name, followers: following, type: 'Following'})}} style={{alignItems: 'center'}}>
-                                <SubTitle style={{color: colors.tertiary}} welcome={true}> Following </SubTitle>
-                                <ProfIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/115-users.png')}/>
-                                <SubTitle style={{color: colors.tertiary}} welcome={true}> 0 </SubTitle>
-                            </TouchableOpacity>
-                        </ProfileHorizontalViewItem>
-                        <ProfileHorizontalViewItem profRightIcon={true}>
-                            <SubTitle style={{color: colors.tertiary}} welcome={true}> Likes </SubTitle>
-                            <ProfIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/219-heart.png')}/>
-                            <SubTitle style={{color: colors.tertiary}} welcome={true}> 0 </SubTitle>
-                        </ProfileHorizontalViewItem>
-                    </ProfileHorizontalView>
-                    <ProfilePostsSelectionView style={{position: 'relative', borderBottomWidth: 0}}>
-                        <ProfilePostsSelectionBtns onPress={changeToGrid}>
-                            <Icon name="grid" color={colors.tertiary} size={45}/>
-                        </ProfilePostsSelectionBtns>
-                        <ProfilePostsSelectionBtns onPress={changeToFeatured}>
-                            <FontAwesomeFive name="user-tag" color={colors.tertiary} size={45}/>
-                        </ProfilePostsSelectionBtns>
-                        <Animated.View style={{backgroundColor: colors.tertiary, height: 3, width: '50%', position: 'absolute', bottom: 0, transform: [{translateX: GridOrTagLineTranslateX}], zIndex: 2}}/>
-                        <View style={{backgroundColor: colors.borderColor, height: 3, width: '100%', position: 'absolute', bottom: 0}}/>
-                    </ProfilePostsSelectionView>
-                    <ProfileSelectMediaTypeHorizontalView>
-                        <ProfileSelectMediaTypeItem onPress={changeToOne}>
-                            <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor, borderColor: selectedPostFormat == 'One' ? colors.brand : colors.borderColor}}>
-                                <ProfileSelectMediaTypeIcons style={{tintColor: selectedPostFormat == 'One' ? colors.brand : colors.tertiary, margin: 5}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/015-images.png')}/>
-                            </ProfileSelectMediaTypeIconsBorder>
-                        </ProfileSelectMediaTypeItem>
-                        <ProfileSelectMediaTypeItem onPress={changeToTwo}>
-                            <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor, borderColor: selectedPostFormat == 'Two' ? colors.brand : colors.borderColor}}>
-                                <ProfileSelectMediaTypeIcons style={{tintColor: selectedPostFormat == 'Two' ? colors.brand : colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/020-film.png')}/>
-                            </ProfileSelectMediaTypeIconsBorder>                        
-                        </ProfileSelectMediaTypeItem>
-                        <ProfileSelectMediaTypeItem onPress={changeToThree}>
-                            <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor, borderColor: selectedPostFormat == 'Three' ? colors.brand : colors.borderColor}}>     
-                                <ProfileSelectMediaTypeIcons style={{tintColor: selectedPostFormat == 'Three' ? colors.brand : colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/157-stats-bars.png')}/>
-                            </ProfileSelectMediaTypeIconsBorder>     
-                        </ProfileSelectMediaTypeItem>
-                        <ProfileSelectMediaTypeItem onPress={changeToFour}>
-                            <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor, borderColor: selectedPostFormat == 'Four' ? colors.brand : colors.borderColor}}>     
-                                <ProfileSelectMediaTypeIcons style={{height: '80%', width: '80%', tintColor: selectedPostFormat == 'Four' ? colors.brand : colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/007-pencil2.png')}/>
-                            </ProfileSelectMediaTypeIconsBorder>     
-                        </ProfileSelectMediaTypeItem>
-                        <ProfileSelectMediaTypeItem onPress={changeToFive}>
-                            <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor, borderColor: selectedPostFormat == 'Five' ? colors.brand : colors.borderColor}}>     
-                                <ProfileSelectMediaTypeIcons style={{height: '80%', width: '80%', tintColor: selectedPostFormat == 'Five' ? colors.brand : colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/093-drawer.png')}/>
-                            </ProfileSelectMediaTypeIconsBorder>     
-                        </ProfileSelectMediaTypeItem>
-                    </ProfileSelectMediaTypeHorizontalView>
-                </WelcomeContainer>
-                <ProfileGridPosts display={gridViewState} style={{marginBottom: 20}}>
-                    {selectedPostFormat == "One" && (<SectionList
-                        sections={changeSectionsOne}
-                        keyExtractor={(item, index) => item + index}
-                        renderItem={({ item }) => <ImageItem imageKey={item.imageKey} imageB64={item.imageB64} imageTitle={item.imageTitle} imageDescription={item.imageDescription} imageUpVotes={item.imageUpVotes} imageComments={item.imageComments} creatorName={item.creatorName} creatorDisplayName={item.creatorDisplayName} creatorPfpB64={item.creatorPfpB64} datePosted={item.datePosted} postNum={item.postNum}/>}
-                        ListFooterComponent={<PostLoadingSpinners selectedPostFormat={selectedPostFormat} loadingPostsImage={loadingPostsImage} loadingPostsVideo={loadingPostsVideo} loadingPostsPoll={loadingPostsPoll} loadingPostsThread={loadingPostsThread} loadingPostsCategory={loadingPostsCategory}/>}
-                        ListHeaderComponent={<PostMessages selectedPostFormat={selectedPostFormat} formatOneText={formatOneText} formatTwoText={formatTwoText} formatThreeText={formatThreeText} formatFourText={formatFourText} formatFiveText={formatFiveText} colors={colors}/>}
-                    />)}
-                    {selectedPostFormat == "Two" && (<SectionList
-                        sections={changeSectionsTwo}
-                        keyExtractor={(item, index) => item + index}
-                        renderItem={({ item }) => <PollItem pollTitle={item.pollTitle} pollSubTitle={item.pollSubTitle} optionOne={item.optionOne} optionOnesColor={item.optionOnesColor} optionOnesVotes={item.optionOnesVotes} optionOnesBarLength={item.optionOnesBarLength} optionTwo={item.optionTwo} optionTwosColor={item.optionTwosColor} optionTwosVotes={item.optionTwosVotes} optionTwosBarLength={item.optionTwosBarLength} optionThree={item.optionThree} optionThreesColor={item.optionThreesColor} optionThreesVotes={item.optionThreesVotes} optionThreesBarLength={item.optionThreesBarLength} optionFour={item.optionFour} optionFoursColor={item.optionFoursColor} optionFoursVotes={item.optionFoursVotes} optionFoursBarLength={item.optionFoursBarLength} optionFive={item.optionFive} optionFivesColor={item.optionFivesColor} optionFivesVotes={item.optionFivesVotes} optionFivesBarLength={item.optionFivesBarLength} optionSix={item.optionSix} optionSixesColor={item.optionSixesColor} optionSixesVotes={item.optionSixesVotes} optionSixesBarLength={item.optionSixesBarLength} totalNumberOfOptions={item.totalNumberOfOptions} pollUpOrDownVotes={item.pollUpOrDownVotes} pollId={item.pollId} votedFor={item.votedFor} pollLiked={item.pollLiked} pfpB64={item.pfpB64} creatorName={item.creatorName} creatorDisplayName={item.creatorDisplayName}/>}
-                        ListFooterComponent={<PostLoadingSpinners selectedPostFormat={selectedPostFormat} loadingPostsImage={loadingPostsImage} loadingPostsVideo={loadingPostsVideo} loadingPostsPoll={loadingPostsPoll} loadingPostsThread={loadingPostsThread} loadingPostsCategory={loadingPostsCategory}/>}
-                        ListHeaderComponent={<PostMessages selectedPostFormat={selectedPostFormat} formatOneText={formatOneText} formatTwoText={formatTwoText} formatThreeText={formatThreeText} formatFourText={formatFourText} formatFiveText={formatFiveText} colors={colors}/>}
-                    />)}
-                    {selectedPostFormat == "Three" && (<SectionList
-                        sections={changeSectionsThree}
-                        keyExtractor={(item, index) => item + index}
-                        renderItem={({ item }) => <PollItem pollTitle={item.pollTitle} pollSubTitle={item.pollSubTitle} optionOne={item.optionOne} optionOnesColor={item.optionOnesColor} optionOnesVotes={item.optionOnesVotes} optionOnesBarLength={item.optionOnesBarLength} optionTwo={item.optionTwo} optionTwosColor={item.optionTwosColor} optionTwosVotes={item.optionTwosVotes} optionTwosBarLength={item.optionTwosBarLength} optionThree={item.optionThree} optionThreesColor={item.optionThreesColor} optionThreesVotes={item.optionThreesVotes} optionThreesBarLength={item.optionThreesBarLength} optionFour={item.optionFour} optionFoursColor={item.optionFoursColor} optionFoursVotes={item.optionFoursVotes} optionFoursBarLength={item.optionFoursBarLength} optionFive={item.optionFive} optionFivesColor={item.optionFivesColor} optionFivesVotes={item.optionFivesVotes} optionFivesBarLength={item.optionFivesBarLength} optionSix={item.optionSix} optionSixesColor={item.optionSixesColor} optionSixesVotes={item.optionSixesVotes} optionSixesBarLength={item.optionSixesBarLength} totalNumberOfOptions={item.totalNumberOfOptions} pollUpOrDownVotes={item.pollUpOrDownVotes} pollId={item.pollId} votedFor={item.votedFor} pfpB64={item.pfpB64} creatorName={item.creatorName} creatorDisplayName={item.creatorDisplayName} postNum={item.postNum} datePosted={item.datePosted} pollComments={item.pollComments}/>}
-                        ListFooterComponent={<PostLoadingSpinners selectedPostFormat={selectedPostFormat} loadingPostsImage={loadingPostsImage} loadingPostsVideo={loadingPostsVideo} loadingPostsPoll={loadingPostsPoll} loadingPostsThread={loadingPostsThread} loadingPostsCategory={loadingPostsCategory}/>}
-                        ListHeaderComponent={<PostMessages selectedPostFormat={selectedPostFormat} formatOneText={formatOneText} formatTwoText={formatTwoText} formatThreeText={formatThreeText} formatFourText={formatFourText} formatFiveText={formatFiveText} colors={colors}/>}
-                    />)}
-                    {selectedPostFormat == "Four" && (<SectionList
-                        sections={changeSectionsFour}
-                        keyExtractor={(item, index) => item + index}
-                        renderItem={({ item }) => <ThreadItems postNum={item.postNum} threadId={item.threadId} threadComments={item.threadComments} threadType={item.threadType} threadUpVotes={item.threadUpVotes} threadTitle={item.threadTitle} threadSubtitle={item.threadSubtitle} threadTags={item.threadTags} threadCategory={item.threadCategory} threadBody={item.threadBody} threadImageKey={item.threadImageKey} threadImageDescription={item.threadImageDescription} threadNSFW={item.threadNSFW} threadNSFL={item.threadNSFL} datePosted={item.datePosted} threadUpVoted={item.threadUpVoted} threadDownVoted={item.threadDownVoted} creatorDisplayName={item.creatorDisplayName} creatorName={item.creatorName} creatorImageB64={item.creatorImageB64} imageInThreadB64={item.imageInThreadB64}/>}
-                        ListFooterComponent={<PostLoadingSpinners selectedPostFormat={selectedPostFormat} loadingPostsImage={loadingPostsImage} loadingPostsVideo={loadingPostsVideo} loadingPostsPoll={loadingPostsPoll} loadingPostsThread={loadingPostsThread} loadingPostsCategory={loadingPostsCategory}/>}
-                        ListHeaderComponent={<PostMessages selectedPostFormat={selectedPostFormat} formatOneText={formatOneText} formatTwoText={formatTwoText} formatThreeText={formatThreeText} formatFourText={formatFourText} formatFiveText={formatFiveText} colors={colors}/>}
-                    />)}
-                    {selectedPostFormat == "Five" && (<SectionList
-                        sections={changeSectionsFive}
-                        keyExtractor={(item, index) => item + index}
-                        renderItem={({ item }) => <CategoryItem categoryTitle={item.categoryTitle} categoryDescription={item.categoryDescription} members={item.members} categoryTags={item.categoryTags} image={item.image} NSFW={item.NSFW} NSFL={item.NSFL} datePosted={item.datePosted}/>}
-                        ListFooterComponent={<PostLoadingSpinners selectedPostFormat={selectedPostFormat} loadingPostsImage={loadingPostsImage} loadingPostsVideo={loadingPostsVideo} loadingPostsPoll={loadingPostsPoll} loadingPostsThread={loadingPostsThread} loadingPostsCategory={loadingPostsCategory}/>}
-                        ListHeaderComponent={<PostMessages selectedPostFormat={selectedPostFormat} formatOneText={formatOneText} formatTwoText={formatTwoText} formatThreeText={formatThreeText} formatFourText={formatFourText} formatFiveText={formatFiveText} colors={colors}/>}
-                    />)}
-                </ProfileGridPosts>
-                <ProfileFeaturedPosts display={featuredViewState}>
-                    <SubTitle style={{color: colors.tertiary}} profNoPosts={true}>
-                        Features don't work yet...
-                    </SubTitle>
-                </ProfileFeaturedPosts>
-            </ScrollView>
+                        </>
+                        <ProfilePostsSelectionView style={{height: 50, borderBottomWidth: 0}}>
+                            <ProfilePostsSelectionBtns onPress={changeToGrid}>
+                                <Icon name="grid" color={colors.tertiary} size={30}/>
+                            </ProfilePostsSelectionBtns>
+                            <ProfilePostsSelectionBtns onPress={changeToFeatured}>
+                                <FontAwesomeFive name="user-tag" color={colors.tertiary} size={30}/>
+                            </ProfilePostsSelectionBtns>
+                            <Animated.View style={{backgroundColor: colors.tertiary, height: 3, width: '50%', position: 'absolute', bottom: 0, transform: [{translateX: GridOrTagLineTranslateX}], zIndex: 1002}}/>
+                            <View style={{backgroundColor: colors.borderColor, height: 3, width: '100%', position: 'absolute', bottom: 0}}/>
+                        </ProfilePostsSelectionView>
+                    </Animated.View>
+                    <ScrollView
+                        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+                        onScroll={handleScroll}
+                        scrollEventThrottle={1}
+                        nestedScrollEnabled={true}
+                    >
+                        <WelcomeContainer style={{backgroundColor: colors.primary}}>
+                            <ProfileHorizontalView topItems={true}>
+                                <ViewHider viewHidden={backButtonHidden}>
+                                    <TouchableOpacity style={{marginRight: '65%'}} disabled={PageElementsState} onPress={() => {navigation.goBack()}}>
+                                        <Image
+                                            source={require('../assets/app_icons/back_arrow.png')}
+                                            style={{ width: 40, height: 40, tintColor: colors.tertiary}}
+                                            resizeMode="contain"
+                                            resizeMethod="resize"
+                                        />
+                                    </TouchableOpacity>
+                                </ViewHider>
+                                <ViewHider viewHidden={!backButtonHidden}>
+                                    <View style={{minWidth: 40, marginRight: '65%'}}/>
+                                </ViewHider>
+                                <TouchableOpacity disabled={PageElementsState} onPress={goToSettingsScreen}>
+                                    <Image
+                                        source={require('../assets/app_icons/settings.png')}
+                                        style={{ width: 40, height: 40, tintColor: colors.tertiary}}
+                                        resizeMode="contain"
+                                        resizeMethod="resize"
+                                    />
+                                </TouchableOpacity>
+                            </ProfileHorizontalView>
+                            <ProfInfoAreaImage>
+                                {loadingPfp == false && (
+                                    <View style={{alignSelf: 'center', alignContent: 'center'}}>
+                                        <Avatar resizeMode="cover" source={{uri: profilePictureUri}}/>
+                                        {changingPfp == false && (
+                                            <TouchableOpacity onPress={() => {ChangePfp()}}>
+                                                <SubTitle style={{marginBottom: 0, color: darkestBlue, textAlign: 'center'}}>Change</SubTitle>
+                                            </TouchableOpacity>
+                                        )}
+                                        {changingPfp == true && (
+                                            <ActivityIndicator size="large" color={brand} style={{marginBottom: 20}} />  
+                                        )}
+                                    </View>
+                                )}
+                                {loadingPfp == true && (
+                                    <View style={{alignSelf: 'center', alignContent: 'center'}}>
+                                        <ActivityIndicator size={10} color={brand} style={{marginBottom: 20, padding: 40, borderColor: darkestBlue, borderWidth: 3, borderRadius: 150}} />  
+                                        <SubTitle style={{marginBottom: 0, color: darkestBlue, textAlign: 'center'}}></SubTitle>
+                                    </View>
+                                )}
+                                <TouchableOpacity onPress={() => {setShowAccountSwitcher(true)}}>
+                                    <PageTitle welcome={true}>{displayName || name || "Couldn't get name"}</PageTitle>
+                                </TouchableOpacity>
+                                <SubTitle style={{color: colors.tertiary}}>{"@"+name}</SubTitle>
+                                <ProfileBadgesView onPress={() => navigation.navigate("AccountBadges")}>
+                                    <ProfileBadgeIcons source={require('./../assets/img/TempProfIcons.jpg')}/>
+                                    <ProfileBadgeIcons source={require('./../assets/img/BgImage1.png')}/>
+                                    <ProfileBadgeIcons source={require('./../assets/img/TempProfIcons.jpg')}/>
+                                    <ProfileBadgeIcons source={require('./../assets/img/Toga.jpg')}/>
+                                    <ProfileBadgeIcons source={require('./../assets/img/TempProfIcons.jpg')}/>
+                                </ProfileBadgesView>
+                                <SubTitle style={{color: colors.tertiary}} bioText={true} > Bio </SubTitle>
+                            </ProfInfoAreaImage>
+                            <ProfileHorizontalView>
+                                <ProfileHorizontalViewItem profLeftIcon={true}>
+                                    <TouchableOpacity onPress={() => {navigation.navigate('ProfileStats', {name: name, followers: followers, type: 'Followers'})}} style={{alignItems: 'center'}}>
+                                        <SubTitle style={{color: colors.tertiary}} welcome={true}> Followers </SubTitle>
+                                        <ProfIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/114-user.png')}/>
+                                        <SubTitle style={{color: colors.tertiary}} welcome={true}> 0 </SubTitle>
+                                    </TouchableOpacity>
+                                </ProfileHorizontalViewItem>
+                                <ProfileHorizontalViewItem profCenterIcon={true}>
+                                    <TouchableOpacity onPress={() => {navigation.navigate('ProfileStats', {name: name, followers: following, type: 'Following'})}} style={{alignItems: 'center'}}>
+                                        <SubTitle style={{color: colors.tertiary}} welcome={true}> Following </SubTitle>
+                                        <ProfIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/115-users.png')}/>
+                                        <SubTitle style={{color: colors.tertiary}} welcome={true}> 0 </SubTitle>
+                                    </TouchableOpacity>
+                                </ProfileHorizontalViewItem>
+                                <ProfileHorizontalViewItem profRightIcon={true}>
+                                    <SubTitle style={{color: colors.tertiary}} welcome={true}> Likes </SubTitle>
+                                    <ProfIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/219-heart.png')}/>
+                                    <SubTitle style={{color: colors.tertiary}} welcome={true}> 0 </SubTitle>
+                                </ProfileHorizontalViewItem>
+                            </ProfileHorizontalView>
+                            <ProfilePostsSelectionView style={{position: 'relative', borderBottomWidth: 0}}>
+                                <ProfilePostsSelectionBtns onPress={changeToGrid}>
+                                    <Icon name="grid" color={colors.tertiary} size={45}/>
+                                </ProfilePostsSelectionBtns>
+                                <ProfilePostsSelectionBtns onPress={changeToFeatured}>
+                                    <FontAwesomeFive name="user-tag" color={colors.tertiary} size={45}/>
+                                </ProfilePostsSelectionBtns>
+                                <Animated.View style={{backgroundColor: colors.tertiary, height: 3, width: '50%', position: 'absolute', bottom: 0, transform: [{translateX: GridOrTagLineTranslateX}], zIndex: 2}}/>
+                                <View style={{backgroundColor: colors.borderColor, height: 3, width: '100%', position: 'absolute', bottom: 0}}/>
+                            </ProfilePostsSelectionView>
+                            <ProfileSelectMediaTypeHorizontalView>
+                                <ProfileSelectMediaTypeItem onPress={changeToOne}>
+                                    <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor, borderColor: selectedPostFormat == 'One' ? colors.brand : colors.borderColor}}>
+                                        <ProfileSelectMediaTypeIcons style={{tintColor: selectedPostFormat == 'One' ? colors.brand : colors.tertiary, margin: 5}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/015-images.png')}/>
+                                    </ProfileSelectMediaTypeIconsBorder>
+                                </ProfileSelectMediaTypeItem>
+                                <ProfileSelectMediaTypeItem onPress={changeToTwo}>
+                                    <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor, borderColor: selectedPostFormat == 'Two' ? colors.brand : colors.borderColor}}>
+                                        <ProfileSelectMediaTypeIcons style={{tintColor: selectedPostFormat == 'Two' ? colors.brand : colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/020-film.png')}/>
+                                    </ProfileSelectMediaTypeIconsBorder>                        
+                                </ProfileSelectMediaTypeItem>
+                                <ProfileSelectMediaTypeItem onPress={changeToThree}>
+                                    <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor, borderColor: selectedPostFormat == 'Three' ? colors.brand : colors.borderColor}}>     
+                                        <ProfileSelectMediaTypeIcons style={{tintColor: selectedPostFormat == 'Three' ? colors.brand : colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/157-stats-bars.png')}/>
+                                    </ProfileSelectMediaTypeIconsBorder>     
+                                </ProfileSelectMediaTypeItem>
+                                <ProfileSelectMediaTypeItem onPress={changeToFour}>
+                                    <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor, borderColor: selectedPostFormat == 'Four' ? colors.brand : colors.borderColor}}>     
+                                        <ProfileSelectMediaTypeIcons style={{height: '80%', width: '80%', tintColor: selectedPostFormat == 'Four' ? colors.brand : colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/007-pencil2.png')}/>
+                                    </ProfileSelectMediaTypeIconsBorder>     
+                                </ProfileSelectMediaTypeItem>
+                                <ProfileSelectMediaTypeItem onPress={changeToFive}>
+                                    <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor, borderColor: selectedPostFormat == 'Five' ? colors.brand : colors.borderColor}}>     
+                                        <ProfileSelectMediaTypeIcons style={{height: '80%', width: '80%', tintColor: selectedPostFormat == 'Five' ? colors.brand : colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/093-drawer.png')}/>
+                                    </ProfileSelectMediaTypeIconsBorder>     
+                                </ProfileSelectMediaTypeItem>
+                            </ProfileSelectMediaTypeHorizontalView>
+                        </WelcomeContainer>
+                        <ProfileGridPosts display={gridViewState} style={{marginBottom: 20}}>
+                            {selectedPostFormat == "One" && (<SectionList
+                                sections={changeSectionsOne}
+                                keyExtractor={(item, index) => item + index}
+                                renderItem={({ item }) => <ImageItem imageKey={item.imageKey} imageB64={item.imageB64} imageTitle={item.imageTitle} imageDescription={item.imageDescription} imageUpVotes={item.imageUpVotes} imageComments={item.imageComments} creatorName={item.creatorName} creatorDisplayName={item.creatorDisplayName} creatorPfpB64={item.creatorPfpB64} datePosted={item.datePosted} postNum={item.postNum}/>}
+                                ListFooterComponent={<PostLoadingSpinners selectedPostFormat={selectedPostFormat} loadingPostsImage={loadingPostsImage} loadingPostsVideo={loadingPostsVideo} loadingPostsPoll={loadingPostsPoll} loadingPostsThread={loadingPostsThread} loadingPostsCategory={loadingPostsCategory}/>}
+                                ListHeaderComponent={<PostMessages selectedPostFormat={selectedPostFormat} formatOneText={formatOneText} formatTwoText={formatTwoText} formatThreeText={formatThreeText} formatFourText={formatFourText} formatFiveText={formatFiveText} colors={colors}/>}
+                            />)}
+                            {selectedPostFormat == "Two" && (<SectionList
+                                sections={changeSectionsTwo}
+                                keyExtractor={(item, index) => item + index}
+                                renderItem={({ item }) => <PollItem pollTitle={item.pollTitle} pollSubTitle={item.pollSubTitle} optionOne={item.optionOne} optionOnesColor={item.optionOnesColor} optionOnesVotes={item.optionOnesVotes} optionOnesBarLength={item.optionOnesBarLength} optionTwo={item.optionTwo} optionTwosColor={item.optionTwosColor} optionTwosVotes={item.optionTwosVotes} optionTwosBarLength={item.optionTwosBarLength} optionThree={item.optionThree} optionThreesColor={item.optionThreesColor} optionThreesVotes={item.optionThreesVotes} optionThreesBarLength={item.optionThreesBarLength} optionFour={item.optionFour} optionFoursColor={item.optionFoursColor} optionFoursVotes={item.optionFoursVotes} optionFoursBarLength={item.optionFoursBarLength} optionFive={item.optionFive} optionFivesColor={item.optionFivesColor} optionFivesVotes={item.optionFivesVotes} optionFivesBarLength={item.optionFivesBarLength} optionSix={item.optionSix} optionSixesColor={item.optionSixesColor} optionSixesVotes={item.optionSixesVotes} optionSixesBarLength={item.optionSixesBarLength} totalNumberOfOptions={item.totalNumberOfOptions} pollUpOrDownVotes={item.pollUpOrDownVotes} pollId={item.pollId} votedFor={item.votedFor} pollLiked={item.pollLiked} pfpB64={item.pfpB64} creatorName={item.creatorName} creatorDisplayName={item.creatorDisplayName}/>}
+                                ListFooterComponent={<PostLoadingSpinners selectedPostFormat={selectedPostFormat} loadingPostsImage={loadingPostsImage} loadingPostsVideo={loadingPostsVideo} loadingPostsPoll={loadingPostsPoll} loadingPostsThread={loadingPostsThread} loadingPostsCategory={loadingPostsCategory}/>}
+                                ListHeaderComponent={<PostMessages selectedPostFormat={selectedPostFormat} formatOneText={formatOneText} formatTwoText={formatTwoText} formatThreeText={formatThreeText} formatFourText={formatFourText} formatFiveText={formatFiveText} colors={colors}/>}
+                            />)}
+                            {selectedPostFormat == "Three" && (<SectionList
+                                sections={changeSectionsThree}
+                                keyExtractor={(item, index) => item + index}
+                                renderItem={({ item }) => <PollItem pollTitle={item.pollTitle} pollSubTitle={item.pollSubTitle} optionOne={item.optionOne} optionOnesColor={item.optionOnesColor} optionOnesVotes={item.optionOnesVotes} optionOnesBarLength={item.optionOnesBarLength} optionTwo={item.optionTwo} optionTwosColor={item.optionTwosColor} optionTwosVotes={item.optionTwosVotes} optionTwosBarLength={item.optionTwosBarLength} optionThree={item.optionThree} optionThreesColor={item.optionThreesColor} optionThreesVotes={item.optionThreesVotes} optionThreesBarLength={item.optionThreesBarLength} optionFour={item.optionFour} optionFoursColor={item.optionFoursColor} optionFoursVotes={item.optionFoursVotes} optionFoursBarLength={item.optionFoursBarLength} optionFive={item.optionFive} optionFivesColor={item.optionFivesColor} optionFivesVotes={item.optionFivesVotes} optionFivesBarLength={item.optionFivesBarLength} optionSix={item.optionSix} optionSixesColor={item.optionSixesColor} optionSixesVotes={item.optionSixesVotes} optionSixesBarLength={item.optionSixesBarLength} totalNumberOfOptions={item.totalNumberOfOptions} pollUpOrDownVotes={item.pollUpOrDownVotes} pollId={item.pollId} votedFor={item.votedFor} pfpB64={item.pfpB64} creatorName={item.creatorName} creatorDisplayName={item.creatorDisplayName} postNum={item.postNum} datePosted={item.datePosted} pollComments={item.pollComments}/>}
+                                ListFooterComponent={<PostLoadingSpinners selectedPostFormat={selectedPostFormat} loadingPostsImage={loadingPostsImage} loadingPostsVideo={loadingPostsVideo} loadingPostsPoll={loadingPostsPoll} loadingPostsThread={loadingPostsThread} loadingPostsCategory={loadingPostsCategory}/>}
+                                ListHeaderComponent={<PostMessages selectedPostFormat={selectedPostFormat} formatOneText={formatOneText} formatTwoText={formatTwoText} formatThreeText={formatThreeText} formatFourText={formatFourText} formatFiveText={formatFiveText} colors={colors}/>}
+                            />)}
+                            {selectedPostFormat == "Four" && (<SectionList
+                                sections={changeSectionsFour}
+                                keyExtractor={(item, index) => item + index}
+                                renderItem={({ item }) => <ThreadItems postNum={item.postNum} threadId={item.threadId} threadComments={item.threadComments} threadType={item.threadType} threadUpVotes={item.threadUpVotes} threadTitle={item.threadTitle} threadSubtitle={item.threadSubtitle} threadTags={item.threadTags} threadCategory={item.threadCategory} threadBody={item.threadBody} threadImageKey={item.threadImageKey} threadImageDescription={item.threadImageDescription} threadNSFW={item.threadNSFW} threadNSFL={item.threadNSFL} datePosted={item.datePosted} threadUpVoted={item.threadUpVoted} threadDownVoted={item.threadDownVoted} creatorDisplayName={item.creatorDisplayName} creatorName={item.creatorName} creatorImageB64={item.creatorImageB64} imageInThreadB64={item.imageInThreadB64}/>}
+                                ListFooterComponent={<PostLoadingSpinners selectedPostFormat={selectedPostFormat} loadingPostsImage={loadingPostsImage} loadingPostsVideo={loadingPostsVideo} loadingPostsPoll={loadingPostsPoll} loadingPostsThread={loadingPostsThread} loadingPostsCategory={loadingPostsCategory}/>}
+                                ListHeaderComponent={<PostMessages selectedPostFormat={selectedPostFormat} formatOneText={formatOneText} formatTwoText={formatTwoText} formatThreeText={formatThreeText} formatFourText={formatFourText} formatFiveText={formatFiveText} colors={colors}/>}
+                            />)}
+                            {selectedPostFormat == "Five" && (<SectionList
+                                sections={changeSectionsFive}
+                                keyExtractor={(item, index) => item + index}
+                                renderItem={({ item }) => <CategoryItem categoryTitle={item.categoryTitle} categoryDescription={item.categoryDescription} members={item.members} categoryTags={item.categoryTags} image={item.image} NSFW={item.NSFW} NSFL={item.NSFL} datePosted={item.datePosted}/>}
+                                ListFooterComponent={<PostLoadingSpinners selectedPostFormat={selectedPostFormat} loadingPostsImage={loadingPostsImage} loadingPostsVideo={loadingPostsVideo} loadingPostsPoll={loadingPostsPoll} loadingPostsThread={loadingPostsThread} loadingPostsCategory={loadingPostsCategory}/>}
+                                ListHeaderComponent={<PostMessages selectedPostFormat={selectedPostFormat} formatOneText={formatOneText} formatTwoText={formatTwoText} formatThreeText={formatThreeText} formatFourText={formatFourText} formatFiveText={formatFiveText} colors={colors}/>}
+                            />)}
+                        </ProfileGridPosts>
+                        <ProfileFeaturedPosts display={featuredViewState}>
+                            <SubTitle style={{color: colors.tertiary}} profNoPosts={true}>
+                                Features don't work yet...
+                            </SubTitle>
+                        </ProfileFeaturedPosts>
+                    </ScrollView>
+                </>
+            :
+                <View style={{flex: 1, justifyContent: 'center', marginHorizontal: '2%'}}>
+                    <Text style={{color: colors.tertiary, fontSize: 20, textAlign: 'center', marginBottom: 20}}>Please login to access your profile screen</Text>
+                    <StyledButton onPress={() => {navigation.navigate('ModalLoginScreen', {modal: true})}}>
+                        <ButtonText> Login </ButtonText>
+                    </StyledButton>
+                    <StyledButton style={{backgroundColor: colors.primary, color: colors.tertiary}} signUpButton={true} onPress={() => navigation.navigate('ModalSignupScreen', {modal: true, Modal_NoCredentials: true})}>
+                            <ButtonText signUpButton={true} style={{color: colors.tertiary, top: -9.5}}> Signup </ButtonText>
+                    </StyledButton>
+                    <StyledButton style={{backgroundColor: colors.primary, color: colors.tertiary}} signUpButton={true} onPress={goToSettingsScreen}>
+                            <ButtonText signUpButton={true} style={{color: colors.tertiary, top: -9.5}}> Settings </ButtonText>
+                    </StyledButton>
+                </View>
+            }
         </>
     );
 }

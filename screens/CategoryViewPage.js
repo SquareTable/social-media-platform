@@ -73,14 +73,14 @@ import axios from 'axios';
 
 //credentials context
 import { CredentialsContext } from '../components/CredentialsContext';
-import { ImageBackground, ScrollView, SectionList, View, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { ImageBackground, ScrollView, SectionList, View, Image, TouchableOpacity, ActivityIndicator, Text } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 
 const CategoryViewPage = ({route, navigation}) => {
     const {colors, dark} = useTheme()
      //context
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
-    const {_id} = storedCredentials;
+    if (storedCredentials) {var {_id} = storedCredentials} else {var _id = 'SSGUEST'}
     const {categoryTitle} = route.params;
     const [AvatarImg, setAvatarImage] = useState(null)
     const [gridViewState, setGridViewState] = useState("flex")
@@ -231,314 +231,326 @@ const CategoryViewPage = ({route, navigation}) => {
     }
 
     const JoinCategory = () => {
-        if (inCategory !== "Finding") {
-            const url = "https://nameless-dawn-41038.herokuapp.com/user/joincategory";
+        if (storedCredentials) {
+            if (inCategory !== "Finding") {
+                const url = "https://nameless-dawn-41038.herokuapp.com/user/joincategory";
 
-            var toSend = {userId: _id, categoryTitle: categoryTitle}
-            const beforeChange = inCategory
-            setInCategory("Changing")
-            console.log(toSend)
+                var toSend = {userId: _id, categoryTitle: categoryTitle}
+                const beforeChange = inCategory
+                setInCategory("Changing")
+                console.log(toSend)
 
-            axios.post(url, toSend).then((response) => {
-                const result = response.data;
-                const {message, status, data} = result;
-            
-                if (status !== 'SUCCESS') {
-                    handleMessage(message, status);
-                    setInCategory(beforeChange)
-                } else {
-                    handleMessage(message, status);
-                    if (message == "Joined Category") {
-                        setInCategory(true)
+                axios.post(url, toSend).then((response) => {
+                    const result = response.data;
+                    const {message, status, data} = result;
+                
+                    if (status !== 'SUCCESS') {
+                        handleMessage(message, status);
+                        setInCategory(beforeChange)
                     } else {
-                        setInCategory(false)
+                        handleMessage(message, status);
+                        if (message == "Joined Category") {
+                            setInCategory(true)
+                        } else {
+                            setInCategory(false)
+                        }
+                        //loadAndGetValues()
+                        //persistLogin({...data[0]}, message, status);
                     }
-                    //loadAndGetValues()
-                    //persistLogin({...data[0]}, message, status);
-                }
-            }).catch(error => {
-                console.log(error);
-                setInCategory(beforeChange)
-                handleMessage("An error occured. Try checking your network connection and retry.", 'FAILED', postNum);
-            })
+                }).catch(error => {
+                    console.log(error);
+                    setInCategory(beforeChange)
+                    handleMessage("An error occured. Try checking your network connection and retry.", 'FAILED', postNum);
+                })
+            }
+        } else {
+            navigation.navigate('ModalLoginScreen', {modal: true})
         }
     }
 
     const UpVoteThread = (threadId, postNum) => {
-        //Change to loading circle
-        if (findingVotedThreads.includes(threadId)) { 
-
-        } else {
-            if (changingVotedThreads.includes(threadId)) {
+        if (storedCredentials) {
+            //Change to loading circle
+            if (findingVotedThreads.includes(threadId)) { 
 
             } else {
-                console.log("UpVoting")
-                upVotedThreads = upVotes
-                downVotedThreads = downVotes
-                neitherVotedThreads = neitherVotes
-                var beforeChange = "Neither"
-                if (upVotedThreads.includes(threadId)) {
-                    beforeChange = "UpVoted"
-                    var index = upVotedThreads.indexOf(threadId);
-                    if (index > -1) {
-                        upVotedThreads.splice(index, 1);
-                    }
-                    setUpVotes(upVotedThreads)
-                }
-                if (downVotedThreads.includes(threadId)) {
-                    beforeChange = "DownVoted"
-                    var index = downVotedThreads.indexOf(threadId);
-                    if (index > -1) {
-                        downVotedThreads.splice(index, 1);
-                    }
-                    setDownVotes(downVotedThreads)
-                }
-                if (neitherVotedThreads.includes(threadId)) {
-                    beforeChange = "Neither"
-                    var index = neitherVotedThreads.indexOf(threadId);
-                    if (index > -1) {
-                        neitherVotedThreads.splice(index, 1);
-                    }
-                    setNeitherVotes(neitherVotedThreads)
-                }
-                changingVotedThreadsArray = changingVotedThreads
-                changingVotedThreadsArray.push(threadId)
-                setChangingVotedThreads(changingVotedThreadsArray)
-                //Do rest
-                handleMessage(null, null, null);
-                const url = "https://nameless-dawn-41038.herokuapp.com/user/upvotethread";
+                if (changingVotedThreads.includes(threadId)) {
 
-                var toSend = {userId: _id, threadId: threadId}
+                } else {
+                    console.log("UpVoting")
+                    upVotedThreads = upVotes
+                    downVotedThreads = downVotes
+                    neitherVotedThreads = neitherVotes
+                    var beforeChange = "Neither"
+                    if (upVotedThreads.includes(threadId)) {
+                        beforeChange = "UpVoted"
+                        var index = upVotedThreads.indexOf(threadId);
+                        if (index > -1) {
+                            upVotedThreads.splice(index, 1);
+                        }
+                        setUpVotes(upVotedThreads)
+                    }
+                    if (downVotedThreads.includes(threadId)) {
+                        beforeChange = "DownVoted"
+                        var index = downVotedThreads.indexOf(threadId);
+                        if (index > -1) {
+                            downVotedThreads.splice(index, 1);
+                        }
+                        setDownVotes(downVotedThreads)
+                    }
+                    if (neitherVotedThreads.includes(threadId)) {
+                        beforeChange = "Neither"
+                        var index = neitherVotedThreads.indexOf(threadId);
+                        if (index > -1) {
+                            neitherVotedThreads.splice(index, 1);
+                        }
+                        setNeitherVotes(neitherVotedThreads)
+                    }
+                    changingVotedThreadsArray = changingVotedThreads
+                    changingVotedThreadsArray.push(threadId)
+                    setChangingVotedThreads(changingVotedThreadsArray)
+                    //Do rest
+                    handleMessage(null, null, null);
+                    const url = "https://nameless-dawn-41038.herokuapp.com/user/upvotethread";
 
-                console.log(toSend)
+                    var toSend = {userId: _id, threadId: threadId}
 
-                axios.post(url, toSend).then((response) => {
-                    const result = response.data;
-                    const {message, status, data} = result;
-                
-                    if (status !== 'SUCCESS') {
-                        handleMessage(message, status, postNum);
+                    console.log(toSend)
+
+                    axios.post(url, toSend).then((response) => {
+                        const result = response.data;
+                        const {message, status, data} = result;
+                    
+                        if (status !== 'SUCCESS') {
+                            handleMessage(message, status, postNum);
+                            changingVotedThreadsArray = changingVotedThreads
+                            var index = changingVotedThreadsArray.indexOf(threadId);
+                            if (index > -1) {
+                                changingVotedThreadsArray.splice(index, 1);
+                                setChangingVotedThreads(changingVotedThreadsArray)
+                            }
+                            if (beforeChange == "UpVoted") {
+                                upVotedThreads = upVotes
+                                upVotedThreads.push(threadId)
+                                setUpVotes(upVotedThreads)
+                                setChangingVotedThreads([])
+                                setChangingVotedThreads(changingVotedThreadsArray)
+                            } 
+                            if (beforeChange == "DownVoted") {
+                                downVotedThreads = downVotes
+                                downVotedThreads.push(threadId)
+                                setDownVotes(downVotedThreads)
+                                setChangingVotedThreads([])
+                                setChangingVotedThreads(changingVotedThreadsArray)
+                            }
+                            if (beforeChange == "Neither") {
+                                neitherVotedThreads = neitherVotes
+                                neitherVotedThreads.push(threadId)
+                                setNeitherVotes(neitherVotedThreads)
+                                setChangingVotedThreads([])
+                                setChangingVotedThreads(changingVotedThreadsArray)
+                            }
+                        } else {
+                            handleMessage(message, status);
+                            var tempChangingVotedThreadsArray = changingVotedThreads
+                            var index = tempChangingVotedThreadsArray.indexOf(threadId);
+                            if (index > -1) {
+                                tempChangingVotedThreadsArray.splice(index, 1);
+                                console.log("Spliced tempChangingVotedThreadsArray")
+                            } else {
+                                console.log("Didnt find in changing array")
+                            }
+                            if (message == "Thread UpVoted") {
+                                upVotedThreads = upVotes
+                                upVotedThreads.push(threadId)
+                                setUpVotes([])
+                                setUpVotes(upVotedThreads)
+                                setChangingVotedThreads([])
+                                setChangingVotedThreads(tempChangingVotedThreadsArray)
+                            } else {
+                                //Neither
+                                neitherVotedThreads = neitherVotes
+                                neitherVotedThreads.push(threadId)
+                                setNeitherVotes([])
+                                setNeitherVotes(neitherVotedThreads)
+                                setChangingVotedThreads([])
+                                setChangingVotedThreads(tempChangingVotedThreadsArray)
+                            }
+                            //loadAndGetValues()
+                            //persistLogin({...data[0]}, message, status);
+                        }
+                    }).catch(error => {
+                        console.log(error);
                         changingVotedThreadsArray = changingVotedThreads
                         var index = changingVotedThreadsArray.indexOf(threadId);
                         if (index > -1) {
                             changingVotedThreadsArray.splice(index, 1);
-                            setChangingVotedThreads(changingVotedThreadsArray)
                         }
+                        setChangingVotedThreads(changingVotedThreadsArray)
                         if (beforeChange == "UpVoted") {
                             upVotedThreads = upVotes
                             upVotedThreads.push(threadId)
                             setUpVotes(upVotedThreads)
-                            setChangingVotedThreads([])
-                            setChangingVotedThreads(changingVotedThreadsArray)
                         } 
                         if (beforeChange == "DownVoted") {
                             downVotedThreads = downVotes
                             downVotedThreads.push(threadId)
                             setDownVotes(downVotedThreads)
-                            setChangingVotedThreads([])
-                            setChangingVotedThreads(changingVotedThreadsArray)
                         }
                         if (beforeChange == "Neither") {
                             neitherVotedThreads = neitherVotes
                             neitherVotedThreads.push(threadId)
                             setNeitherVotes(neitherVotedThreads)
-                            setChangingVotedThreads([])
-                            setChangingVotedThreads(changingVotedThreadsArray)
                         }
-                    } else {
-                        handleMessage(message, status);
-                        var tempChangingVotedThreadsArray = changingVotedThreads
-                        var index = tempChangingVotedThreadsArray.indexOf(threadId);
-                        if (index > -1) {
-                            tempChangingVotedThreadsArray.splice(index, 1);
-                            console.log("Spliced tempChangingVotedThreadsArray")
-                        } else {
-                            console.log("Didnt find in changing array")
-                        }
-                        if (message == "Thread UpVoted") {
-                            upVotedThreads = upVotes
-                            upVotedThreads.push(threadId)
-                            setUpVotes([])
-                            setUpVotes(upVotedThreads)
-                            setChangingVotedThreads([])
-                            setChangingVotedThreads(tempChangingVotedThreadsArray)
-                        } else {
-                            //Neither
-                            neitherVotedThreads = neitherVotes
-                            neitherVotedThreads.push(threadId)
-                            setNeitherVotes([])
-                            setNeitherVotes(neitherVotedThreads)
-                            setChangingVotedThreads([])
-                            setChangingVotedThreads(tempChangingVotedThreadsArray)
-                        }
-                        //loadAndGetValues()
-                        //persistLogin({...data[0]}, message, status);
-                    }
-                }).catch(error => {
-                    console.log(error);
-                    changingVotedThreadsArray = changingVotedThreads
-                    var index = changingVotedThreadsArray.indexOf(threadId);
-                    if (index > -1) {
-                        changingVotedThreadsArray.splice(index, 1);
-                    }
-                    setChangingVotedThreads(changingVotedThreadsArray)
-                    if (beforeChange == "UpVoted") {
-                        upVotedThreads = upVotes
-                        upVotedThreads.push(threadId)
-                        setUpVotes(upVotedThreads)
-                    } 
-                    if (beforeChange == "DownVoted") {
-                        downVotedThreads = downVotes
-                        downVotedThreads.push(threadId)
-                        setDownVotes(downVotedThreads)
-                    }
-                    if (beforeChange == "Neither") {
-                        neitherVotedThreads = neitherVotes
-                        neitherVotedThreads.push(threadId)
-                        setNeitherVotes(neitherVotedThreads)
-                    }
-                    handleMessage("An error occured. Try checking your network connection and retry.", 'FAILED', postNum);
-                })
+                        handleMessage("An error occured. Try checking your network connection and retry.", 'FAILED', postNum);
+                    })
+                }
             }
+        } else {
+            navigation.navigate('ModalLoginScreen', {modal: true})
         }
     }
 
     const DownVoteThread = (threadId, postNum) => {
-        //Change to loading circle
-        if (findingVotedThreads.includes(threadId)) { 
-
-        } else {
-            if (changingVotedThreads.includes(threadId)) {
+        if (storedCredentials) {
+            //Change to loading circle
+            if (findingVotedThreads.includes(threadId)) { 
 
             } else {
-                console.log("DownVoting")
-                upVotedThreads = upVotes
-                downVotedThreads = downVotes
-                neitherVotedThreads = neitherVotes
-                var beforeChange = "Neither"
-                if (upVotedThreads.includes(threadId)) {
-                    beforeChange = "UpVoted"
-                    var index = upVotedThreads.indexOf(threadId);
-                    if (index > -1) {
-                        upVotedThreads.splice(index, 1);
-                    }
-                    setUpVotes(upVotedThreads)
-                }
-                if (downVotedThreads.includes(threadId)) {
-                    beforeChange = "DownVoted"
-                    var index = downVotedThreads.indexOf(threadId);
-                    if (index > -1) {
-                        downVotedThreads.splice(index, 1);
-                    }
-                    setDownVotes(downVotedThreads)
-                }
-                if (neitherVotedThreads.includes(threadId)) {
-                    beforeChange = "Neither"
-                    var index = neitherVotedThreads.indexOf(threadId);
-                    if (index > -1) {
-                        neitherVotedThreads.splice(index, 1);
-                    }
-                    setNeitherVotes(neitherVotedThreads)
-                }
-                changingVotedThreadsArray = changingVotedThreads
-                changingVotedThreadsArray.push(threadId)
-                setChangingVotedThreads(changingVotedThreadsArray)
-                //Do rest
-                handleMessage(null, null, null);
-                const url = "https://nameless-dawn-41038.herokuapp.com/user/downvotethread";
+                if (changingVotedThreads.includes(threadId)) {
 
-                var toSend = {userId: _id, threadId: threadId}
+                } else {
+                    console.log("DownVoting")
+                    upVotedThreads = upVotes
+                    downVotedThreads = downVotes
+                    neitherVotedThreads = neitherVotes
+                    var beforeChange = "Neither"
+                    if (upVotedThreads.includes(threadId)) {
+                        beforeChange = "UpVoted"
+                        var index = upVotedThreads.indexOf(threadId);
+                        if (index > -1) {
+                            upVotedThreads.splice(index, 1);
+                        }
+                        setUpVotes(upVotedThreads)
+                    }
+                    if (downVotedThreads.includes(threadId)) {
+                        beforeChange = "DownVoted"
+                        var index = downVotedThreads.indexOf(threadId);
+                        if (index > -1) {
+                            downVotedThreads.splice(index, 1);
+                        }
+                        setDownVotes(downVotedThreads)
+                    }
+                    if (neitherVotedThreads.includes(threadId)) {
+                        beforeChange = "Neither"
+                        var index = neitherVotedThreads.indexOf(threadId);
+                        if (index > -1) {
+                            neitherVotedThreads.splice(index, 1);
+                        }
+                        setNeitherVotes(neitherVotedThreads)
+                    }
+                    changingVotedThreadsArray = changingVotedThreads
+                    changingVotedThreadsArray.push(threadId)
+                    setChangingVotedThreads(changingVotedThreadsArray)
+                    //Do rest
+                    handleMessage(null, null, null);
+                    const url = "https://nameless-dawn-41038.herokuapp.com/user/downvotethread";
 
-                console.log(toSend)
+                    var toSend = {userId: _id, threadId: threadId}
 
-                axios.post(url, toSend).then((response) => {
-                    const result = response.data;
-                    const {message, status, data} = result;
-                
-                    if (status !== 'SUCCESS') {
-                        handleMessage(message, status, postNum);
+                    console.log(toSend)
+
+                    axios.post(url, toSend).then((response) => {
+                        const result = response.data;
+                        const {message, status, data} = result;
+                    
+                        if (status !== 'SUCCESS') {
+                            handleMessage(message, status, postNum);
+                            changingVotedThreadsArray = changingVotedThreads
+                            var index = changingVotedThreadsArray.indexOf(threadId);
+                            if (index > -1) {
+                                changingVotedThreadsArray.splice(index, 1);
+                                setChangingVotedThreads(changingVotedThreadsArray)
+                            }
+                            if (beforeChange == "UpVoted") {
+                                upVotedThreads = upVotes
+                                upVotedThreads.push(threadId)
+                                setUpVotes(upVotedThreads)
+                                setChangingVotedThreads([])
+                                setChangingVotedThreads(changingVotedThreadsArray)
+                            } 
+                            if (beforeChange == "DownVoted") {
+                                downVotedThreads = downVotes
+                                downVotedThreads.push(threadId)
+                                setDownVotes(downVotedThreads)
+                                setChangingVotedThreads([])
+                                setChangingVotedThreads(changingVotedThreadsArray)
+                            }
+                            if (beforeChange == "Neither") {
+                                neitherVotedThreads = neitherVotes
+                                neitherVotedThreads.push(threadId)
+                                setNeitherVotes(neitherVotedThreads)
+                                setChangingVotedThreads([])
+                                setChangingVotedThreads(changingVotedThreadsArray)
+                            }
+                        } else {
+                            handleMessage(message, status);
+                            var tempChangingVotedThreadsArray = changingVotedThreads
+                            var index = tempChangingVotedThreadsArray.indexOf(threadId);
+                            if (index > -1) {
+                                tempChangingVotedThreadsArray.splice(index, 1);
+                                console.log("Spliced tempChangingVotedThreadsArray")
+                            } else {
+                                console.log("Didnt find in changing array")
+                            }
+                            if (message == "Thread DownVoted") {
+                                downVotedThreads = downVotes
+                                downVotedThreads.push(threadId)
+                                setDownVotes([])
+                                setDownVotes(downVotedThreads)
+                                setChangingVotedThreads([])
+                                setChangingVotedThreads(tempChangingVotedThreadsArray)
+                            } else {
+                                //Neither
+                                neitherVotedThreads = neitherVotes
+                                neitherVotedThreads.push(threadId)
+                                setNeitherVotes([])
+                                setNeitherVotes(neitherVotedThreads)
+                                setChangingVotedThreads([])
+                                setChangingVotedThreads(tempChangingVotedThreadsArray)
+                            }
+                            //loadAndGetValues()
+                            //persistLogin({...data[0]}, message, status);
+                        }
+                    }).catch(error => {
+                        console.log(error);
                         changingVotedThreadsArray = changingVotedThreads
                         var index = changingVotedThreadsArray.indexOf(threadId);
                         if (index > -1) {
                             changingVotedThreadsArray.splice(index, 1);
-                            setChangingVotedThreads(changingVotedThreadsArray)
                         }
+                        setChangingVotedThreads(changingVotedThreadsArray)
                         if (beforeChange == "UpVoted") {
                             upVotedThreads = upVotes
                             upVotedThreads.push(threadId)
                             setUpVotes(upVotedThreads)
-                            setChangingVotedThreads([])
-                            setChangingVotedThreads(changingVotedThreadsArray)
                         } 
                         if (beforeChange == "DownVoted") {
                             downVotedThreads = downVotes
                             downVotedThreads.push(threadId)
                             setDownVotes(downVotedThreads)
-                            setChangingVotedThreads([])
-                            setChangingVotedThreads(changingVotedThreadsArray)
                         }
                         if (beforeChange == "Neither") {
                             neitherVotedThreads = neitherVotes
                             neitherVotedThreads.push(threadId)
                             setNeitherVotes(neitherVotedThreads)
-                            setChangingVotedThreads([])
-                            setChangingVotedThreads(changingVotedThreadsArray)
                         }
-                    } else {
-                        handleMessage(message, status);
-                        var tempChangingVotedThreadsArray = changingVotedThreads
-                        var index = tempChangingVotedThreadsArray.indexOf(threadId);
-                        if (index > -1) {
-                            tempChangingVotedThreadsArray.splice(index, 1);
-                            console.log("Spliced tempChangingVotedThreadsArray")
-                        } else {
-                            console.log("Didnt find in changing array")
-                        }
-                        if (message == "Thread DownVoted") {
-                            downVotedThreads = downVotes
-                            downVotedThreads.push(threadId)
-                            setDownVotes([])
-                            setDownVotes(downVotedThreads)
-                            setChangingVotedThreads([])
-                            setChangingVotedThreads(tempChangingVotedThreadsArray)
-                        } else {
-                            //Neither
-                            neitherVotedThreads = neitherVotes
-                            neitherVotedThreads.push(threadId)
-                            setNeitherVotes([])
-                            setNeitherVotes(neitherVotedThreads)
-                            setChangingVotedThreads([])
-                            setChangingVotedThreads(tempChangingVotedThreadsArray)
-                        }
-                        //loadAndGetValues()
-                        //persistLogin({...data[0]}, message, status);
-                    }
-                }).catch(error => {
-                    console.log(error);
-                    changingVotedThreadsArray = changingVotedThreads
-                    var index = changingVotedThreadsArray.indexOf(threadId);
-                    if (index > -1) {
-                        changingVotedThreadsArray.splice(index, 1);
-                    }
-                    setChangingVotedThreads(changingVotedThreadsArray)
-                    if (beforeChange == "UpVoted") {
-                        upVotedThreads = upVotes
-                        upVotedThreads.push(threadId)
-                        setUpVotes(upVotedThreads)
-                    } 
-                    if (beforeChange == "DownVoted") {
-                        downVotedThreads = downVotes
-                        downVotedThreads.push(threadId)
-                        setDownVotes(downVotedThreads)
-                    }
-                    if (beforeChange == "Neither") {
-                        neitherVotedThreads = neitherVotes
-                        neitherVotedThreads.push(threadId)
-                        setNeitherVotes(neitherVotedThreads)
-                    }
-                    handleMessage("An error occured. Try checking your network connection and retry.", 'FAILED', postNum);
-                })
+                        handleMessage("An error occured. Try checking your network connection and retry.", 'FAILED', postNum);
+                    })
+                }
             }
+        } else {
+            navigation.navigate('ModalLoginScreen', {modal: true})
         }
     }
 
@@ -1011,7 +1023,7 @@ const CategoryViewPage = ({route, navigation}) => {
                             <SubTitle welcome={true} style={{width: '80%', textAlign: 'center', color: colors.tertiary}}> {datePosted} </SubTitle>
                         </ProfileHorizontalViewItem>
                     </ProfileHorizontalView>
-                    <StyledButton style={{backgroundColor: colors.primary}} postCategory={true} onPress={() => {navigation.navigate("ThreadUploadPage", {threadFormat: null, threadTitle: null, threadSubtitle: null, threadTags: null, categoryTitle: categoryTitle, threadBody: null, threadImage: null, threadImageDescription: null, threadNSFW: null, threadNSFL: null, goBackAfterPost: true})}}>
+                    <StyledButton style={{backgroundColor: colors.primary}} postCategory={true} onPress={() => {storedCredentials ? navigation.navigate("ThreadUploadPage", {threadFormat: null, threadTitle: null, threadSubtitle: null, threadTags: null, categoryTitle: categoryTitle, threadBody: null, threadImage: null, threadImageDescription: null, threadNSFW: null, threadNSFL: null, goBackAfterPost: true}) : navigation.navigate('ModalLoginScreen', {modal: true})}}>
                         <ButtonText style={{color: colors.tertiary}} postCategory={true}>Post Thread</ButtonText>
                     </StyledButton>
                     <ProfileSelectMediaTypeHorizontalView>

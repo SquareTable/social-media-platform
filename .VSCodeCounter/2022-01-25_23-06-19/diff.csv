@@ -1,0 +1,14 @@
+"filename", "language", "JavaScript", "HTML", "JSON", "comment", "blank", "total"
+"/Users/sebastianwebster/GitHub/social-media-platform/App.js", "JavaScript", 17, 0, 0, 0, 0, 17
+"/Users/sebastianwebster/GitHub/social-media-platform/app.json", "JSON", 0, 0, 0, 1, 0, 1
+"/Users/sebastianwebster/GitHub/social-media-platform/docs/PrivacyPolicy.html", "HTML", 0, 48, 0, 0, 0, 48
+"/Users/sebastianwebster/GitHub/social-media-platform/docs/TermsAndConditions.html", "HTML", 0, 82, 0, 0, 0, 82
+"/Users/sebastianwebster/GitHub/social-media-platform/eas.json", "JSON", 0, 0, 18, 0, 1, 19
+"/Users/sebastianwebster/GitHub/social-media-platform/screens/CategoryCreationPage.js", "JavaScript", -13, 0, 0, -4, -3, -20
+"/Users/sebastianwebster/GitHub/social-media-platform/screens/ChatScreenNavigator.js", "JavaScript", -72, 0, 0, 0, 0, -72
+"/Users/sebastianwebster/GitHub/social-media-platform/screens/FindScreen.js", "JavaScript", -54, 0, 0, 0, -2, -56
+"/Users/sebastianwebster/GitHub/social-media-platform/screens/HomeScreen.js", "JavaScript", 3, 0, 0, 0, 0, 3
+"/Users/sebastianwebster/GitHub/social-media-platform/screens/PostScreens/RecordAudioPage.js", "JavaScript", 5, 0, 0, 0, 0, 5
+"/Users/sebastianwebster/GitHub/social-media-platform/screens/ProfileScreen.js", "JavaScript", 21, 0, 0, -3, -1, 17
+"/Users/sebastianwebster/GitHub/social-media-platform/screens/TakeImage_Camera.js", "JavaScript", 11, 0, 0, 0, 0, 11
+"Total", "-", -82, 130, 18, -6, -5, 55

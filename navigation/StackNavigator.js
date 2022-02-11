@@ -37,7 +37,6 @@ import ChangeDisplayNamePage from "../screens/ChangeDisplayNamePage";
 import ChangeUsernamePage from "../screens/ChangeUsernamePage";
 import ChangeEmailPage from "../screens/ChangeEmailPage";
 
-import ReportBugScreen from "../screens/ReportBugScreen.js";
 import ChatScreenNavigator from "../screens/ChatScreenNavigator.js";
 import RecordAudioPage from "../screens/PostScreens/RecordAudioPage.js";
 import SendAudioPage from "../screens/PostScreens/SendAudioPage.js";
@@ -121,11 +120,9 @@ const RootStack = () => {
       <Stack.Screen name="SettingsScreen" component={SettingsScreen}/>
       <Stack.Screen name="BadgesScreen" component={BadgesScreen}/>
       <Stack.Screen name="AccountBadges" component={AccountBadges}/>
-      <Stack.Screen name="AccountSettings" component={AccountSettings}/>
       <Stack.Screen name="ChangeDisplayNamePage" component={ChangeDisplayNamePage}/>
       <Stack.Screen name="ChangeUsernamePage" component={ChangeUsernamePage}/>
       <Stack.Screen name="ChangeEmailPage" component={ChangeEmailPage}/>
-      <Stack.Screen name="ReportBugScreen" component={ReportBugScreen}/>
       <Stack.Screen name="CategoryViewPage" component={CategoryViewPage}/>
       <Stack.Screen name="CommentViewPage" component={CommentViewPage}/>
       <Stack.Screen name="ThreadViewPage" component={ThreadViewPage}/>
@@ -161,6 +158,7 @@ const RootStack = () => {
         <Stack.Screen name="Simple_ColorPickerScreen" component={Simple_ColorPickerScreen}/>
         <Stack.Screen name="BuiltInStylingMenu" component={BuiltInStylingMenu}/>
         <Stack.Screen name="LoginAttempts" component={LoginAttempts}/>
+        <Stack.Screen name="AccountSettings" component={AccountSettings}/>
       </Stack.Group>
     </Stack.Navigator>
   );

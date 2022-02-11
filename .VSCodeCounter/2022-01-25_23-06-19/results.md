@@ -1,29 +1,32 @@
 # Summary
 
-Date : 2021-12-31 02:02:15
+Date : 2022-01-25 23:06:19
 
 Directory /Users/sebastianwebster/GitHub/social-media-platform
 
-Total : 597 files,  84462 codes, 1328 comments, 2228 blanks, all 88018 lines
+Total : 596 files,  84262 codes, 1255 comments, 2183 blanks, all 87700 lines
 
-[details](details.md)
+summary / [details](details.md) / [diff summary](diff.md) / [diff details](diff-details.md)
 
 ## Languages
 | language | files | code | comment | blank | total |
 | :--- | ---: | ---: | ---: | ---: | ---: |
-| JSON | 6 | 47,189 | 29 | 3 | 47,221 |
-| JavaScript | 87 | 25,969 | 787 | 1,703 | 28,459 |
-| HTML | 4 | 6,529 | 2 | 1 | 6,532 |
+| JSON | 7 | 47,207 | 33 | 4 | 47,244 |
+| JavaScript | 84 | 25,590 | 681 | 1,646 | 27,917 |
+| HTML | 4 | 6,659 | 2 | 1 | 6,662 |
 | XML | 494 | 2,767 | 491 | 491 | 3,749 |
 | CSS | 1 | 1,936 | 3 | 7 | 1,946 |
 | Python | 3 | 59 | 16 | 10 | 85 |
+| YAML | 1 | 31 | 29 | 11 | 71 |
 | Markdown | 2 | 13 | 0 | 13 | 26 |
 
 ## Directories
 | path | files | code | comment | blank | total |
 | :--- | ---: | ---: | ---: | ---: | ---: |
-| . | 597 | 84,462 | 1,328 | 2,228 | 88,018 |
+| . | 596 | 84,262 | 1,255 | 2,183 | 87,700 |
 | .expo-shared | 2 | 7 | 0 | 7 | 14 |
+| .github | 1 | 31 | 29 | 11 | 71 |
+| .github/workflows | 1 | 31 | 29 | 11 | 71 |
 | .idea | 3 | 23 | 0 | 0 | 23 |
 | assets | 500 | 38,079 | 501 | 514 | 39,094 |
 | assets/badgeimages | 1 | 4 | 0 | 4 | 8 |
@@ -32,16 +35,16 @@ Total : 597 files,  84462 codes, 1328 comments, 2228 blanks, all 88018 lines
 | assets/icomoon-icons/IcoMoon-Free-master/Font | 5 | 26,324 | 10 | 12 | 26,346 |
 | assets/icomoon-icons/IcoMoon-Free-master/Font/demo-files | 3 | 2,988 | 8 | 11 | 3,007 |
 | assets/icomoon-icons/IcoMoon-Free-master/SVG | 491 | 2,744 | 491 | 491 | 3,726 |
-| components | 16 | 222 | 10 | 36 | 268 |
-| docs | 3 | 112 | 0 | 0 | 112 |
-| navigation | 4 | 587 | 62 | 46 | 695 |
+| components | 20 | 255 | 12 | 46 | 313 |
+| docs | 3 | 242 | 0 | 0 | 242 |
+| navigation | 4 | 562 | 3 | 45 | 610 |
 | posts | 4 | 433 | 2 | 11 | 446 |
 | python_scripts | 3 | 59 | 16 | 10 | 85 |
-| screens | 57 | 22,917 | 694 | 1,556 | 25,167 |
+| screens | 50 | 22,304 | 648 | 1,487 | 24,439 |
 | screens/IntroductionScreens | 1 | 149 | 0 | 2 | 151 |
-| screens/PostScreens | 7 | 2,199 | 77 | 192 | 2,468 |
-| screens/SecuritySettingsScreens | 4 | 174 | 0 | 8 | 182 |
-| screens/SimpleStylingScreens | 9 | 1,634 | 6 | 110 | 1,750 |
-| screens/screenStylings | 1 | 1,930 | 7 | 183 | 2,120 |
+| screens/PostScreens | 7 | 2,159 | 85 | 174 | 2,418 |
+| screens/SecuritySettingsScreens | 5 | 208 | 0 | 10 | 218 |
+| screens/SimpleStylingScreens | 3 | 967 | 0 | 57 | 1,024 |
+| screens/screenStylings | 1 | 1,937 | 7 | 183 | 2,127 |
 
-[details](details.md)
+summary / [details](details.md) / [diff summary](diff.md) / [diff details](diff-details.md)

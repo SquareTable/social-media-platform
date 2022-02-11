@@ -1,23 +1,24 @@
 # Details
 
-Date : 2021-12-31 02:02:15
+Date : 2022-01-25 23:06:19
 
 Directory /Users/sebastianwebster/GitHub/social-media-platform
 
-Total : 597 files,  84462 codes, 1328 comments, 2228 blanks, all 88018 lines
+Total : 596 files,  84262 codes, 1255 comments, 2183 blanks, all 87700 lines
 
-[summary](results.md)
+[summary](results.md) / details / [diff summary](diff.md) / [diff details](diff-details.md)
 
 ## Files
 | filename | language | code | comment | blank | total |
 | :--- | :--- | ---: | ---: | ---: | ---: |
 | [.expo-shared/README.md](/.expo-shared/README.md) | Markdown | 6 | 0 | 6 | 12 |
 | [.expo-shared/assets.json](/.expo-shared/assets.json) | JSON | 1 | 0 | 1 | 2 |
+| [.github/workflows/codeql-analysis.yml](/.github/workflows/codeql-analysis.yml) | YAML | 31 | 29 | 11 | 71 |
 | [.idea/modules.xml](/.idea/modules.xml) | XML | 8 | 0 | 0 | 8 |
 | [.idea/social-media-platform.iml](/.idea/social-media-platform.iml) | XML | 9 | 0 | 0 | 9 |
 | [.idea/vcs.xml](/.idea/vcs.xml) | XML | 6 | 0 | 0 | 6 |
-| [App.js](/App.js) | JavaScript | 739 | 14 | 44 | 797 |
-| [app.json](/app.json) | JSON | 18 | 29 | 0 | 47 |
+| [App.js](/App.js) | JavaScript | 965 | 11 | 47 | 1,023 |
+| [app.json](/app.json) | JSON | 18 | 33 | 0 | 51 |
 | [assets/SocialSquareLogo_Base64_png.js](/assets/SocialSquareLogo_Base64_png.js) | JavaScript | 2 | 0 | 0 | 2 |
 | [assets/badgeimages/imageDir.js](/assets/badgeimages/imageDir.js) | JavaScript | 4 | 0 | 4 | 8 |
 | [assets/icomoon-icons/IcoMoon-Free-master/Font/Reference.html](/assets/icomoon-icons/IcoMoon-Free-master/Font/Reference.html) | HTML | 6,417 | 2 | 1 | 6,420 |
@@ -520,28 +521,33 @@ Total : 597 files,  84462 codes, 1328 comments, 2228 blanks, all 88018 lines
 | [assets/icomoon-icons/IcoMoon-Free-master/SVG/491-IcoMoon.svg](/assets/icomoon-icons/IcoMoon-Free-master/SVG/491-IcoMoon.svg) | XML | 5 | 1 | 1 | 7 |
 | [babel.config.js](/babel.config.js) | JavaScript | 13 | 0 | 2 | 15 |
 | [components/AdIDContext.js](/components/AdIDContext.js) | JavaScript | 2 | 1 | 1 | 4 |
+| [components/AllCredentialsStoredContext.js](/components/AllCredentialsStoredContext.js) | JavaScript | 2 | 0 | 1 | 3 |
 | [components/AppStylingContext.js](/components/AppStylingContext.js) | JavaScript | 2 | 1 | 1 | 4 |
 | [components/Content_ChatInformationScreen.js](/components/Content_ChatInformationScreen.js) | JavaScript | 44 | 0 | 3 | 47 |
 | [components/CredentialsContext.js](/components/CredentialsContext.js) | JavaScript | 2 | 1 | 1 | 4 |
 | [components/KeyboardAvoidingWrapper.js](/components/KeyboardAvoidingWrapper.js) | JavaScript | 18 | 1 | 4 | 23 |
+| [components/KeyboardAvoidingWrapper_NoScrollview copy.js](/components/KeyboardAvoidingWrapper_NoScrollview%20copy.js) | JavaScript | 14 | 1 | 4 | 19 |
 | [components/KeyboardAvoidingWrapper_NoScrollview.js](/components/KeyboardAvoidingWrapper_NoScrollview.js) | JavaScript | 14 | 1 | 4 | 19 |
 | [components/LockSocialSquareContext.js](/components/LockSocialSquareContext.js) | JavaScript | 2 | 1 | 1 | 4 |
 | [components/MemberRow_ChatInformationScreen.js](/components/MemberRow_ChatInformationScreen.js) | JavaScript | 40 | 0 | 3 | 43 |
 | [components/OfflineNotice.js](/components/OfflineNotice.js) | JavaScript | 62 | 0 | 9 | 71 |
 | [components/OpenAppContext.js](/components/OpenAppContext.js) | JavaScript | 2 | 1 | 1 | 4 |
 | [components/ProfilePictureURIContext.js](/components/ProfilePictureURIContext.js) | JavaScript | 2 | 1 | 1 | 4 |
+| [components/ReactNavigationRef.js](/components/ReactNavigationRef.js) | JavaScript | 15 | 1 | 4 | 20 |
 | [components/RefreshAppStylingContext.js](/components/RefreshAppStylingContext.js) | JavaScript | 2 | 1 | 1 | 4 |
 | [components/ScalableProgressiveImage.js](/components/ScalableProgressiveImage.js) | JavaScript | 25 | 0 | 4 | 29 |
+| [components/ShowAccountSwitcherContext.js](/components/ShowAccountSwitcherContext.js) | JavaScript | 2 | 0 | 1 | 3 |
 | [components/ShowPlaceholderScreenContext.js](/components/ShowPlaceholderScreenContext.js) | JavaScript | 2 | 1 | 1 | 4 |
 | [components/StylingVersionsFile.js](/components/StylingVersionsFile.js) | JavaScript | 1 | 0 | 0 | 1 |
 | [components/devModeOn.js](/components/devModeOn.js) | JavaScript | 2 | 0 | 1 | 3 |
-| [docs/PrivacyPolicy.html](/docs/PrivacyPolicy.html) | HTML | 41 | 0 | 0 | 41 |
-| [docs/TermsAndConditions.html](/docs/TermsAndConditions.html) | HTML | 41 | 0 | 0 | 41 |
+| [docs/PrivacyPolicy.html](/docs/PrivacyPolicy.html) | HTML | 89 | 0 | 0 | 89 |
+| [docs/TermsAndConditions.html](/docs/TermsAndConditions.html) | HTML | 123 | 0 | 0 | 123 |
 | [docs/index.html](/docs/index.html) | HTML | 30 | 0 | 0 | 30 |
-| [navigation/StackNavigator.js](/navigation/StackNavigator.js) | JavaScript | 259 | 59 | 25 | 343 |
-| [navigation/Start_Stack.js](/navigation/Start_Stack.js) | JavaScript | 100 | 0 | 12 | 112 |
+| [eas.json](/eas.json) | JSON | 18 | 0 | 1 | 19 |
+| [navigation/StackNavigator.js](/navigation/StackNavigator.js) | JavaScript | 246 | 0 | 23 | 269 |
+| [navigation/Start_Stack.js](/navigation/Start_Stack.js) | JavaScript | 98 | 0 | 12 | 110 |
 | [navigation/navigationImages.js](/navigation/navigationImages.js) | JavaScript | 7 | 0 | 1 | 8 |
-| [navigation/tabs.js](/navigation/tabs.js) | JavaScript | 221 | 3 | 8 | 232 |
+| [navigation/tabs.js](/navigation/tabs.js) | JavaScript | 211 | 3 | 9 | 223 |
 | [package-lock.json](/package-lock.json) | JSON | 21,147 | 0 | 1 | 21,148 |
 | [package.json](/package.json) | JSON | 106 | 0 | 1 | 107 |
 | [posts/ProgressiveImage.js](/posts/ProgressiveImage.js) | JavaScript | 24 | 0 | 4 | 28 |
@@ -556,57 +562,50 @@ Total : 597 files,  84462 codes, 1328 comments, 2228 blanks, all 88018 lines
 | [screens/AppStyling.js](/screens/AppStyling.js) | JavaScript | 153 | 0 | 10 | 163 |
 | [screens/BadgesScreen.js](/screens/BadgesScreen.js) | JavaScript | 73 | 2 | 18 | 93 |
 | [screens/BuiltInStylingMenu.js](/screens/BuiltInStylingMenu.js) | JavaScript | 76 | 0 | 9 | 85 |
-| [screens/CategoryCreationPage.js](/screens/CategoryCreationPage.js) | JavaScript | 333 | 13 | 39 | 385 |
+| [screens/CategoryCreationPage.js](/screens/CategoryCreationPage.js) | JavaScript | 269 | 9 | 29 | 307 |
 | [screens/CategoryHome.js](/screens/CategoryHome.js) | JavaScript | 163 | 8 | 24 | 195 |
 | [screens/CategoryViewPage.js](/screens/CategoryViewPage.js) | JavaScript | 971 | 41 | 51 | 1,063 |
 | [screens/ChangeDisplayNamePage.js](/screens/ChangeDisplayNamePage.js) | JavaScript | 163 | 9 | 30 | 202 |
 | [screens/ChangeEmailPage.js](/screens/ChangeEmailPage.js) | JavaScript | 163 | 9 | 29 | 201 |
 | [screens/ChangeUsernamePage.js](/screens/ChangeUsernamePage.js) | JavaScript | 163 | 9 | 29 | 201 |
-| [screens/ChatInformationScreen.js](/screens/ChatInformationScreen.js) | JavaScript | 122 | 0 | 3 | 125 |
-| [screens/ChatScreen.js](/screens/ChatScreen.js) | JavaScript | 257 | 25 | 13 | 295 |
-| [screens/ChatScreenNavigator.js](/screens/ChatScreenNavigator.js) | JavaScript | 136 | 4 | 10 | 150 |
+| [screens/ChatScreenNavigator.js](/screens/ChatScreenNavigator.js) | JavaScript | 13 | 0 | 2 | 15 |
 | [screens/CommentViewPage.js](/screens/CommentViewPage.js) | JavaScript | 950 | 47 | 45 | 1,042 |
-| [screens/CreateChatScreen.js](/screens/CreateChatScreen.js) | JavaScript | 69 | 0 | 4 | 73 |
-| [screens/FindScreen.js](/screens/FindScreen.js) | JavaScript | 588 | 19 | 31 | 638 |
-| [screens/HomeScreen.js](/screens/HomeScreen.js) | JavaScript | 865 | 17 | 38 | 920 |
+| [screens/DestroyingLocalDataScreen.js](/screens/DestroyingLocalDataScreen.js) | JavaScript | 41 | 0 | 2 | 43 |
+| [screens/FindScreen.js](/screens/FindScreen.js) | JavaScript | 448 | 15 | 30 | 493 |
+| [screens/HomeScreen.js](/screens/HomeScreen.js) | JavaScript | 1,471 | 20 | 64 | 1,555 |
 | [screens/IntroductionScreens/IntroScreen.js](/screens/IntroductionScreens/IntroScreen.js) | JavaScript | 149 | 0 | 2 | 151 |
-| [screens/LoginScreen.js](/screens/LoginScreen.js) | JavaScript | 162 | 9 | 32 | 203 |
+| [screens/LoginScreen.js](/screens/LoginScreen.js) | JavaScript | 304 | 13 | 38 | 355 |
 | [screens/NotificationsSettingsScreen.js](/screens/NotificationsSettingsScreen.js) | JavaScript | 1,209 | 3 | 11 | 1,223 |
-| [screens/PostScreen.js](/screens/PostScreen.js) | JavaScript | 135 | 3 | 15 | 153 |
+| [screens/PostScreen.js](/screens/PostScreen.js) | JavaScript | 165 | 3 | 17 | 185 |
 | [screens/PostScreens/AudioUploadPage.js](/screens/PostScreens/AudioUploadPage.js) | JavaScript | 109 | 2 | 8 | 119 |
-| [screens/PostScreens/MultiMediaUploadPage.js](/screens/PostScreens/MultiMediaUploadPage.js) | JavaScript | 186 | 7 | 29 | 222 |
-| [screens/PostScreens/MultiMediaUploadPreview.js](/screens/PostScreens/MultiMediaUploadPreview.js) | JavaScript | 126 | 9 | 22 | 157 |
-| [screens/PostScreens/PollUploadPage.js](/screens/PostScreens/PollUploadPage.js) | JavaScript | 816 | 11 | 38 | 865 |
-| [screens/PostScreens/RecordAudioPage.js](/screens/PostScreens/RecordAudioPage.js) | JavaScript | 369 | 8 | 34 | 411 |
-| [screens/PostScreens/SendAudioPage.js](/screens/PostScreens/SendAudioPage.js) | JavaScript | 135 | 29 | 25 | 189 |
-| [screens/PostScreens/ThreadUploadPage.js](/screens/PostScreens/ThreadUploadPage.js) | JavaScript | 458 | 11 | 36 | 505 |
-| [screens/ProfilePages.js](/screens/ProfilePages.js) | JavaScript | 2,741 | 92 | 123 | 2,956 |
-| [screens/ProfileScreen.js](/screens/ProfileScreen.js) | JavaScript | 2,581 | 92 | 118 | 2,791 |
+| [screens/PostScreens/MultiMediaUploadPage.js](/screens/PostScreens/MultiMediaUploadPage.js) | JavaScript | 193 | 7 | 30 | 230 |
+| [screens/PostScreens/MultiMediaUploadPreview.js](/screens/PostScreens/MultiMediaUploadPreview.js) | JavaScript | 101 | 19 | 18 | 138 |
+| [screens/PostScreens/PollUploadPage.js](/screens/PostScreens/PollUploadPage.js) | JavaScript | 814 | 11 | 33 | 858 |
+| [screens/PostScreens/RecordAudioPage.js](/screens/PostScreens/RecordAudioPage.js) | JavaScript | 371 | 8 | 29 | 408 |
+| [screens/PostScreens/SendAudioPage.js](/screens/PostScreens/SendAudioPage.js) | JavaScript | 142 | 29 | 26 | 197 |
+| [screens/PostScreens/ThreadUploadPage.js](/screens/PostScreens/ThreadUploadPage.js) | JavaScript | 429 | 9 | 30 | 468 |
+| [screens/ProfilePages.js](/screens/ProfilePages.js) | JavaScript | 2,658 | 87 | 118 | 2,863 |
+| [screens/ProfileScreen.js](/screens/ProfileScreen.js) | JavaScript | 2,587 | 94 | 126 | 2,807 |
 | [screens/ProfileStats.js](/screens/ProfileStats.js) | JavaScript | 57 | 0 | 2 | 59 |
 | [screens/ReportBugScreen.js](/screens/ReportBugScreen.js) | JavaScript | 254 | 32 | 33 | 319 |
-| [screens/SecuritySettingsScreen.js](/screens/SecuritySettingsScreen.js) | JavaScript | 186 | 2 | 10 | 198 |
+| [screens/SecuritySettingsScreen.js](/screens/SecuritySettingsScreen.js) | JavaScript | 329 | 2 | 21 | 352 |
 | [screens/SecuritySettingsScreens/2FA.js](/screens/SecuritySettingsScreens/2FA.js) | JavaScript | 34 | 0 | 2 | 36 |
 | [screens/SecuritySettingsScreens/GDPRCompliance.js](/screens/SecuritySettingsScreens/GDPRCompliance.js) | JavaScript | 46 | 0 | 2 | 48 |
 | [screens/SecuritySettingsScreens/LoginActivity.js](/screens/SecuritySettingsScreens/LoginActivity.js) | JavaScript | 34 | 0 | 2 | 36 |
+| [screens/SecuritySettingsScreens/LoginAttempts.js](/screens/SecuritySettingsScreens/LoginAttempts.js) | JavaScript | 34 | 0 | 2 | 36 |
 | [screens/SecuritySettingsScreens/WhatIsStoredOnOurServers.js](/screens/SecuritySettingsScreens/WhatIsStoredOnOurServers.js) | JavaScript | 60 | 0 | 2 | 62 |
 | [screens/SelectCategorySearchScreen.js](/screens/SelectCategorySearchScreen.js) | JavaScript | 213 | 8 | 22 | 243 |
-| [screens/SettingsScreen.js](/screens/SettingsScreen.js) | JavaScript | 135 | 3 | 14 | 152 |
-| [screens/Signup.js](/screens/Signup.js) | JavaScript | 212 | 8 | 31 | 251 |
-| [screens/SimpleStylingScreens/ColorPicker.js](/screens/SimpleStylingScreens/ColorPicker.js) | JavaScript | 185 | 0 | 10 | 195 |
-| [screens/SimpleStylingScreens/EditPostGroupScreens.js](/screens/SimpleStylingScreens/EditPostGroupScreens.js) | JavaScript | 76 | 0 | 7 | 83 |
-| [screens/SimpleStylingScreens/EditPostScreenBackgroundColor.js](/screens/SimpleStylingScreens/EditPostScreenBackgroundColor.js) | JavaScript | 81 | 0 | 5 | 86 |
-| [screens/SimpleStylingScreens/EditPostScreenContinueButtonStyle.js](/screens/SimpleStylingScreens/EditPostScreenContinueButtonStyle.js) | JavaScript | 61 | 0 | 5 | 66 |
-| [screens/SimpleStylingScreens/EditPostScreenIconColors.js](/screens/SimpleStylingScreens/EditPostScreenIconColors.js) | JavaScript | 72 | 0 | 6 | 78 |
-| [screens/SimpleStylingScreens/EditPostScreenStyle.js](/screens/SimpleStylingScreens/EditPostScreenStyle.js) | JavaScript | 92 | 0 | 5 | 97 |
-| [screens/SimpleStylingScreens/EditSimpleStyle.js](/screens/SimpleStylingScreens/EditSimpleStyle.js) | JavaScript | 258 | 0 | 29 | 287 |
-| [screens/SimpleStylingScreens/PerScreenEdit.js](/screens/SimpleStylingScreens/PerScreenEdit.js) | JavaScript | 111 | 6 | 13 | 130 |
-| [screens/SimpleStylingScreens/SimpleStylingMenu.js](/screens/SimpleStylingScreens/SimpleStylingMenu.js) | JavaScript | 698 | 0 | 30 | 728 |
-| [screens/TakeImage_Camera.js](/screens/TakeImage_Camera.js) | JavaScript | 213 | 0 | 13 | 226 |
-| [screens/ThreadViewPage.js](/screens/ThreadViewPage.js) | JavaScript | 1,077 | 55 | 60 | 1,192 |
-| [screens/ViewImagePostPage.js](/screens/ViewImagePostPage.js) | JavaScript | 615 | 33 | 51 | 699 |
-| [screens/ViewPollPostPage.js](/screens/ViewPollPostPage.js) | JavaScript | 1,282 | 52 | 89 | 1,423 |
+| [screens/SettingsScreen.js](/screens/SettingsScreen.js) | JavaScript | 166 | 3 | 14 | 183 |
+| [screens/Signup.js](/screens/Signup.js) | JavaScript | 241 | 8 | 33 | 282 |
+| [screens/SimpleStylingScreens/ColorPicker.js](/screens/SimpleStylingScreens/ColorPicker.js) | JavaScript | 86 | 0 | 8 | 94 |
+| [screens/SimpleStylingScreens/EditSimpleStyle.js](/screens/SimpleStylingScreens/EditSimpleStyle.js) | JavaScript | 251 | 0 | 29 | 280 |
+| [screens/SimpleStylingScreens/SimpleStylingMenu.js](/screens/SimpleStylingScreens/SimpleStylingMenu.js) | JavaScript | 630 | 0 | 20 | 650 |
+| [screens/TakeImage_Camera.js](/screens/TakeImage_Camera.js) | JavaScript | 224 | 0 | 13 | 237 |
+| [screens/ThreadViewPage.js](/screens/ThreadViewPage.js) | JavaScript | 1,026 | 50 | 55 | 1,131 |
+| [screens/ViewImagePostPage.js](/screens/ViewImagePostPage.js) | JavaScript | 577 | 28 | 47 | 652 |
+| [screens/ViewPollPostPage.js](/screens/ViewPollPostPage.js) | JavaScript | 1,243 | 47 | 85 | 1,375 |
 | [screens/VisitingProfileScreen.js](/screens/VisitingProfileScreen.js) | JavaScript | 343 | 3 | 26 | 372 |
 | [screens/customizeStylingScreen.js](/screens/customizeStylingScreen.js) | JavaScript | 46 | 1 | 2 | 49 |
-| [screens/screenStylings/styling.js](/screens/screenStylings/styling.js) | JavaScript | 1,930 | 7 | 183 | 2,120 |
+| [screens/screenStylings/styling.js](/screens/screenStylings/styling.js) | JavaScript | 1,937 | 7 | 183 | 2,127 |
 
-[summary](results.md)
+[summary](results.md) / details / [diff summary](diff.md) / [diff details](diff-details.md)

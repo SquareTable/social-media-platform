@@ -2,7 +2,6 @@ import React, {useContext, useState, useEffect} from 'react';
 import { StatusBar } from 'expo-status-bar';
 import * as Haptics from 'expo-haptics';
 import SwitchToggle from "react-native-switch-toggle";
-import {Formik} from 'formik';
 
 import {
     Avatar,
@@ -164,11 +163,6 @@ const SecuritySettingsScreen = ({navigation}) => {
         setProfilePictureUri(SocialSquareLogo_B64_png);
         navigation.replace('DestroyingLocalDataScreen')
     }
-
-    const goToLastDestroyDataScreen = () => {
-        setDestroyLocalDataMenuHidden(true)
-        setConfirmDestroyLocalDataMenuHidden(false)
-    }
     return(
         <> 
             <StatusBar style={colors.StatusBarColor}/>   
@@ -190,63 +184,9 @@ const SecuritySettingsScreen = ({navigation}) => {
                     <ConfirmLogoutButtons cancelButton={true} onPress={() => {setDestroyLocalDataMenuHidden(true)}}>
                         <ConfirmLogoutButtonText cancelButton={true}>Cancel</ConfirmLogoutButtonText>
                     </ConfirmLogoutButtons> 
-                    <ConfirmLogoutButtons confirmButton={true} onPress={goToLastDestroyDataScreen}>
+                    <ConfirmLogoutButtons confirmButton={true} onPress={destroyAllData}>
                         <ConfirmLogoutButtonText confirmButton>Confirm</ConfirmLogoutButtonText>
                     </ConfirmLogoutButtons> 
-                </ConfirmLogoutView>
-                <ConfirmLogoutView style={{backgroundColor: colors.primary, height: 430}} viewHidden={confirmDestroyLocalDataMenuHidden}>
-                    <KeyboardAvoidingWrapper>
-                        <View style={{alignItems: 'center'}}>
-                            <ConfirmLogoutText style={{color: colors.tertiary, fontSize: 20}}>Please type in your password to confirm local data deletion</ConfirmLogoutText>
-                            <Formik
-                                initialValues={{email: email, password: ''}}
-                                onSubmit={(values, {setSubmitting}) => {
-                                    console.log("Submitting password")
-                                    if (values.password == "") {
-                                        handleMessage('Please enter a password.');
-                                        setSubmitting(false);
-                                    } else {
-                                        handleLogin(values, setSubmitting);
-                                    }
-                                }}
-                            >
-                                {({handleChange, handleBlur, handleSubmit, values, isSubmitting}) => (
-                                    <StyledFormArea>
-                                        <UserTextInput
-                                            icon="lock"
-                                            placeholder="Enter Password"
-                                            placeholderTextColor={colors.tertiary}
-                                            onChangeText={handleChange('password')}
-                                            onBlur={handleBlur('password')}
-                                            value={values.password}
-                                            style={{backgroundColor: colors.primary, color: colors.tertiary}}
-                                            secureTextEntry={hidePassword}
-                                            isPassword={true}
-                                            hidePassword={hidePassword}
-                                            setHidePassword={setHidePassword}
-                                        />
-
-                                        {isSubmitting && (<ActivityIndicator size="large" color={colors.brand} />)}
-                                    
-                                        {!isSubmitting && (
-                                            <View style={{alignItems: 'center'}}>
-                                                <ConfirmLogoutButtons style={{height: 90}} cancelButton={true} onPress={() => {
-                                                    setDestroyLocalDataMenuHidden(true)
-                                                    setConfirmDestroyLocalDataMenuHidden(true)
-                                                }}>
-                                                    <ConfirmLogoutButtonText cancelButton={true}>Cancel</ConfirmLogoutButtonText>
-                                                </ConfirmLogoutButtons> 
-                                                <ConfirmLogoutButtons style={{height: 90}} confirmButton={true} onPress={handleSubmit}>
-                                                    <ConfirmLogoutButtonText confirmButton>Confirm</ConfirmLogoutButtonText>
-                                                </ConfirmLogoutButtons> 
-                                            </View>
-                                        )}
-                                        <Text style={{color: colors.errorColor, fontSize: 20, textAlign: 'center', fontWeight: 'bold'}}>{message}</Text>
-                                    </StyledFormArea>
-                                )}
-                            </Formik>
-                        </View>
-                    </KeyboardAvoidingWrapper>
                 </ConfirmLogoutView>
                 <ScrollView scrollEnabled={destroyLocalDataMenuHidden} style={{height: '100%', backgroundColor: colors.primary}}>
                     <View style={{backgroundColor: colors.primary}}>

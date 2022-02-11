@@ -596,7 +596,12 @@ const App = () => {
                 <Text style={{color: 'white', fontSize: 20, fontWeight: 'bold', marginLeft: 5, marginTop: 16}}>Add New Account</Text>
               </TouchableOpacity>
             </>
-          : null}
+          :
+            <TouchableOpacity onPress={AddNewAccount} style={{flexDirection: 'row', justifyContent: 'flex-start', height: 60}}>
+              <EvilIcons name="plus" size={60} color="white" style={{marginLeft: 6, marginTop: 4}}/>
+              <Text style={{color: 'white', fontSize: 20, fontWeight: 'bold', marginLeft: 5, marginTop: 16}}>Add New Account</Text>
+            </TouchableOpacity>
+          }
         </Animated.View>
       </PanGestureHandler>
     )

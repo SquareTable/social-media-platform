@@ -101,7 +101,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 //credentials context
 import { CredentialsContext } from './../components/CredentialsContext';
 
-import { View, ImageBackground, ScrollView, SectionList, ActivityIndicator, StyleSheet, TouchableOpacity, Image, Animated } from 'react-native';
+import { View, ImageBackground, ScrollView, SectionList, ActivityIndicator, StyleSheet, TouchableOpacity, Image, Animated, Text } from 'react-native';
 
 import { useTheme } from '@react-navigation/native';
 import { ProfilePictureURIContext } from '../components/ProfilePictureURIContext';
@@ -112,7 +112,7 @@ const ViewImagePostPage = ({route, navigation}) => {
     const [message, setMessage] = useState();
     const [messageType, setMessageType] = useState();
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
-    const {_id, name, displayName, email} = storedCredentials;
+    if (storedCredentials) {var {_id, name } = storedCredentials} else {var {_id, name } = {_id: 'SSGUEST', name: 'SSGUEST'}}
     const [pfpB64, setpfpB64] = useState('./../assets/img/Logo.png')
     const {imageKey, imageB64, imageTitle, imageDescription, creatorName, creatorDisplayName, creatorPfpB64, datePosted} = route.params;
     //Comment stuff
@@ -155,75 +155,83 @@ const ViewImagePostPage = ({route, navigation}) => {
     }
 
     const UpVoteImage = () => {
-        //Change to loading circle
-        const beforeChange = imageUpOrDownVoted
-        setImageUpOrDownVoted("Changing")
-        //Do rest
-        handleMessage(null, null, null);
-        const url = "https://nameless-dawn-41038.herokuapp.com/user/upvoteimage";
+        if (storedCredentials) {
+            //Change to loading circle
+            const beforeChange = imageUpOrDownVoted
+            setImageUpOrDownVoted("Changing")
+            //Do rest
+            handleMessage(null, null, null);
+            const url = "https://nameless-dawn-41038.herokuapp.com/user/upvoteimage";
 
-        var toSend = {userId: _id, imageId: imageKey}
+            var toSend = {userId: _id, imageId: imageKey}
 
-        console.log(toSend)
+            console.log(toSend)
 
-        axios.post(url, toSend).then((response) => {
-            const result = response.data;
-            const {message, status, data} = result;
-        
-            if (status !== 'SUCCESS') {
-                handleMessage(message, status);
-                setImageUpOrDownVoted(beforeChange)
-            } else {
-                handleMessage(message, status);
-                if (message == "Post UpVoted") {
-                    setImageUpOrDownVoted("UpVoted")
+            axios.post(url, toSend).then((response) => {
+                const result = response.data;
+                const {message, status, data} = result;
+            
+                if (status !== 'SUCCESS') {
+                    handleMessage(message, status);
+                    setImageUpOrDownVoted(beforeChange)
                 } else {
-                    setImageUpOrDownVoted("Neither")
+                    handleMessage(message, status);
+                    if (message == "Post UpVoted") {
+                        setImageUpOrDownVoted("UpVoted")
+                    } else {
+                        setImageUpOrDownVoted("Neither")
+                    }
+                    //loadAndGetValues()
+                    //persistLogin({...data[0]}, message, status);
                 }
-                //loadAndGetValues()
-                //persistLogin({...data[0]}, message, status);
-            }
-        }).catch(error => {
-            console.log(error);
-            setImageUpOrDownVoted(beforeChange)
-            handleMessage("An error occured. Try checking your network connection and retry.", 'FAILED');
-        })
+            }).catch(error => {
+                console.log(error);
+                setImageUpOrDownVoted(beforeChange)
+                handleMessage("An error occured. Try checking your network connection and retry.", 'FAILED');
+            })
+        } else {
+            navigation.navigate('ModalLoginScreen', {modal: true})
+        }
     }
 
     const DownVoteImage = () => {
-        //Change to loading circle
-        const beforeChange = imageUpOrDownVoted
-        setImageUpOrDownVoted("Changing")
-        //Do rest
-        handleMessage(null, null, null);
-        const url = "https://nameless-dawn-41038.herokuapp.com/user/downvoteimage";
+        if (storedCredentials) {
+            //Change to loading circle
+            const beforeChange = imageUpOrDownVoted
+            setImageUpOrDownVoted("Changing")
+            //Do rest
+            handleMessage(null, null, null);
+            const url = "https://nameless-dawn-41038.herokuapp.com/user/downvoteimage";
 
-        var toSend = {userId: _id, imageId: imageKey}
+            var toSend = {userId: _id, imageId: imageKey}
 
-        console.log(toSend)
+            console.log(toSend)
 
-        axios.post(url, toSend).then((response) => {
-            const result = response.data;
-            const {message, status, data} = result;
-        
-            if (status !== 'SUCCESS') {
-                handleMessage(message, status);
-                setImageUpOrDownVoted(beforeChange)
-            } else {
-                handleMessage(message, status);
-                if (message == "Post DownVoted") {
-                    setImageUpOrDownVoted("DownVoted")
+            axios.post(url, toSend).then((response) => {
+                const result = response.data;
+                const {message, status, data} = result;
+            
+                if (status !== 'SUCCESS') {
+                    handleMessage(message, status);
+                    setImageUpOrDownVoted(beforeChange)
                 } else {
-                    setImageUpOrDownVoted("Neither")
+                    handleMessage(message, status);
+                    if (message == "Post DownVoted") {
+                        setImageUpOrDownVoted("DownVoted")
+                    } else {
+                        setImageUpOrDownVoted("Neither")
+                    }
+                    //loadAndGetValues()
+                    //persistLogin({...data[0]}, message, status);
                 }
-                //loadAndGetValues()
-                //persistLogin({...data[0]}, message, status);
-            }
-        }).catch(error => {
-            console.log(error);
-            setImageUpOrDownVoted(beforeChange)
-            handleMessage("An error occured. Try checking your network connection and retry.", 'FAILED');
-        })
+            }).catch(error => {
+                console.log(error);
+                setImageUpOrDownVoted(beforeChange)
+                handleMessage("An error occured. Try checking your network connection and retry.", 'FAILED');
+            })
+        } else {
+            navigation.navigate('ModalLoginScreen', {modal: true})
+        }
     }
     
     const Item = ({commentId, commenterName, commenterDisplayName, commentsText, commentUpVotes, commentReplies, datePosted, commenterImageB64}) => (
@@ -323,40 +331,42 @@ const ViewImagePostPage = ({route, navigation}) => {
             console.log(commentData.length)
             var tempSections = []
             var itemsProcessed = 0;
-            commentData.forEach(function (item, index) {
-                if (index+1 <= commentLoadMax) {
-                    var displayName = commentData[index].commenterDisplayName
-                    if (displayName == "") {
-                        displayName = commentData[index].commenterName
-                    }
-                    //get pfp
-                    if (commentData[index].profileImageKey !== "" || data !== null) {
-                        async function getImageWithAwait() {
-                            const imageInPfp = await getImageInPfpComments(imageData, index)
-                            var pfpB64 = `data:image/jpg;base64,${imageInPfp.data}`
-                            var tempSectionsTemp = {data: [{commentId: commentData[index].commentId, commenterName: commentData[index].commenterName, commenterDisplayName: displayName, commentsText: commentData[index].commentText, commentUpVotes: commentData[index].commentUpVotes, commentReplies: commentData[index].commentReplies, datePosted: commentData[index].datePosted, commenterImageB64: pfpB64}]}
+            if (storedCredentials) {
+                commentData.forEach(function (item, index) {
+                    if (index+1 <= commentLoadMax) {
+                        var displayName = commentData[index].commenterDisplayName
+                        if (displayName == "") {
+                            displayName = commentData[index].commenterName
+                        }
+                        //get pfp
+                        if (commentData[index].profileImageKey !== "" || data !== null) {
+                            async function getImageWithAwait() {
+                                const imageInPfp = await getImageInPfpComments(imageData, index)
+                                var pfpB64 = `data:image/jpg;base64,${imageInPfp.data}`
+                                var tempSectionsTemp = {data: [{commentId: commentData[index].commentId, commenterName: commentData[index].commenterName, commenterDisplayName: displayName, commentsText: commentData[index].commentText, commentUpVotes: commentData[index].commentUpVotes, commentReplies: commentData[index].commentReplies, datePosted: commentData[index].datePosted, commenterImageB64: pfpB64}]}
+                                tempSections.push(tempSectionsTemp)
+                                itemsProcessed++;
+                                if(itemsProcessed === imageData.length) {
+                                    console.log(tempSections)
+                                    setLoadingMoreComments(false)
+                                    setChangeSections(tempSections) 
+                                }
+                            }
+                            getImageWithAwait();
+                        } else {
+                            //add to list
+                            var tempSectionsTemp = {data: [{commentId: commentData[index].commentId, commenterName: commentData[index].commenterName, commenterDisplayName: displayName, commentsText: commentData[index].commentText, commentUpVotes: commentData[index].commentUpVotes, commentReplies: commentData[index].commentReplies, datePosted: commentData[index].datePosted, commenterImageB64: require("./../assets/img/Logo.png")}]}
                             tempSections.push(tempSectionsTemp)
                             itemsProcessed++;
                             if(itemsProcessed === imageData.length) {
                                 console.log(tempSections)
                                 setLoadingMoreComments(false)
-                                setChangeSections(tempSections) 
+                                setChangeSections(tempSections)
                             }
                         }
-                        getImageWithAwait();
-                    } else {
-                        //add to list
-                        var tempSectionsTemp = {data: [{commentId: commentData[index].commentId, commenterName: commentData[index].commenterName, commenterDisplayName: displayName, commentsText: commentData[index].commentText, commentUpVotes: commentData[index].commentUpVotes, commentReplies: commentData[index].commentReplies, datePosted: commentData[index].datePosted, commenterImageB64: require("./../assets/img/Logo.png")}]}
-                        tempSections.push(tempSectionsTemp)
-                        itemsProcessed++;
-                        if(itemsProcessed === imageData.length) {
-                            console.log(tempSections)
-                            setLoadingMoreComments(false)
-                            setChangeSections(tempSections)
-                        }
                     }
-                }
-            });
+                });
+            }
         }
 
         const urlTwo = `https://nameless-dawn-41038.herokuapp.com/user/getimagecommentswithkey/${imageKey}/${_id}`;
@@ -368,6 +378,9 @@ const ViewImagePostPage = ({route, navigation}) => {
             if (status !== 'SUCCESS') {
                 handleMessage(message, status);
                 setLoadingMoreComments(false)
+                if (message == 'No Comments') {
+                    setCommentsLength(0)
+                }
             } else {
                 layoutComments({data});
             }
@@ -566,6 +579,7 @@ const ViewImagePostPage = ({route, navigation}) => {
                         <SubTitle style={{flex: 1, alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{datePosted}</SubTitle>
                         <SubTitle style={{flex: 1, alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{commentsLength} comments</SubTitle>
                     </View>
+                    {storedCredentials ?
                         <ViewScreenPollPostCommentsFrame style={{width: '100%', marginLeft: 0, marginRight: 0}}>
                             <PollPostTitle commentsTitle={true}>Comments</PollPostTitle>
                             <CommentsHorizontalView writeCommentArea={true}>
@@ -635,6 +649,17 @@ const ViewImagePostPage = ({route, navigation}) => {
                                 <ActivityIndicator size="small" color={brand} />  
                             )}
                         </ViewScreenPollPostCommentsFrame>
+                    :
+                        <View style={{marginTop: 20}}>
+                            <Text style={{color: colors.tertiary, fontSize: 20, textAlign: 'center', marginBottom: 20}}>Please login to post comments on this post</Text>
+                            <StyledButton onPress={() => {navigation.navigate('ModalLoginScreen', {modal: true})}}>
+                                <ButtonText> Login </ButtonText>
+                            </StyledButton>
+                            <StyledButton style={{backgroundColor: colors.primary, color: colors.tertiary}} signUpButton={true} onPress={() => navigation.navigate('ModalSignupScreen', {modal: true})}>
+                                    <ButtonText signUpButton={true} style={{color: colors.tertiary, top: -9.5}}> Signup </ButtonText>
+                            </StyledButton>
+                        </View>
+                    }
                 </ScrollView>
         </>
     );
