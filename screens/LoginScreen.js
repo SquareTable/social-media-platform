@@ -55,6 +55,7 @@ import SocialSquareLogo_B64_png from '../assets/SocialSquareLogo_Base64_png.js';
 import { ProfilePictureURIContext } from '../components/ProfilePictureURIContext.js';
 
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import { ServerUrlContext } from '../components/ServerUrlContext.js';
 
 
 const LoginScreen = ({navigation, route}) => {
@@ -69,6 +70,7 @@ const LoginScreen = ({navigation, route}) => {
     const {allCredentialsStoredList, setAllCredentialsStoredList} = useContext(AllCredentialsStoredContext);
     const {profilePictureUri, setProfilePictureUri} = useContext(ProfilePictureURIContext)
     const [profilePictureData, setProfilePictureData] = useState(null);
+    const {serverUrl, setServerUrl} = useContext(ServerUrlContext)
 
     const sameAccount = useRef(false)
 
@@ -76,7 +78,7 @@ const LoginScreen = ({navigation, route}) => {
 
     const handleLogin = (credentials, setSubmitting) => {
         handleMessage(null);
-        const url = "https://nameless-dawn-41038.herokuapp.com/user/signin";
+        const url = serverUrl + "/user/signin";
 
         axios.post(url, credentials).then((response) => {
             const result = response.data;
@@ -116,7 +118,7 @@ const LoginScreen = ({navigation, route}) => {
         }
         console.log('Getting profile picture for ProfilePictureUriContext')
         const getProfilePicture = () => {
-            const url = `https://nameless-dawn-41038.herokuapp.com/user/getProfilePic/${credentialsToUse.name}`;
+            const url = serverUrl + '/user/getProfilePic/' + credentialsToUse.name;
     
             axios.get(url).then((response) => {
                 const result = response.data;
@@ -130,7 +132,7 @@ const LoginScreen = ({navigation, route}) => {
                 } else {
                     console.log(status)
                     console.log(message)
-                    axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${data}`)
+                    axios.get(serverUrl + '/getImage/' + data)
                     .then((response) => {
                         const result = response.data;
                         const {message, status, data} = result;
@@ -194,6 +196,7 @@ const LoginScreen = ({navigation, route}) => {
             let status = profilePictureData[2];
             let credentialsToUse = profilePictureData[3];
             let temp = allCredentialsStoredList;
+            let tempStoredCreds = storedCredentials;
             setProfilePictureUri(profilePictureUriData);
             if (temp == null || temp == undefined) {
                 temp = [];
@@ -215,10 +218,14 @@ const LoginScreen = ({navigation, route}) => {
                         setAllCredentialsStoredList(temp);
                     }
                     if (modal === true) {
-                        navigation.reset({
-                            index: 0,
-                            routes: [{ name: 'Tabs' }],
-                        });
+                        if (!tempStoredCreds) {
+                            navigation.goBack();
+                        } else {
+                            navigation.reset({
+                                index: 0,
+                                routes: [{ name: 'Tabs' }],
+                            });
+                        }
                     } else {
                         navigation.replace("Tabs");
                     }
@@ -309,10 +316,12 @@ const LoginScreen = ({navigation, route}) => {
                                                     <ButtonText signUpButton={true} style={{color: colors.tertiary, top: -9.5}}> Signup </ButtonText>
                                             </StyledButton>
 
-                                            <TouchableOpacity onPress={() => {modal == true ? navigation.goBack() : navigation.replace('Tabs')}} style={{justifyContent: 'center', alignItems: 'center', flexDirection: 'row'}}>
-                                                <ButtonText style={{color: colors.tertiary, fontSize: 20}}>Continue without an account</ButtonText>
-                                                <AntDesign name="arrowright" size={40} color={colors.tertiary} style={{marginLeft: 5}}/>
-                                            </TouchableOpacity>
+                                            {!storedCredentials &&
+                                                <TouchableOpacity onPress={() => {modal == true ? navigation.goBack() : navigation.replace('Tabs')}} style={{justifyContent: 'center', alignItems: 'center', flexDirection: 'row'}}>
+                                                    <ButtonText style={{color: colors.tertiary, fontSize: 20}}>Continue without an account</ButtonText>
+                                                    <AntDesign name="arrowright" size={40} color={colors.tertiary} style={{marginLeft: 5}}/>
+                                                </TouchableOpacity>
+                                            }
 
                                             {modal == true && storedCredentials ?
                                                 <StyledButton style={{backgroundColor: colors.primary, color: colors.tertiary}} signUpButton={true} onPress={() => navigation.goBack()}>

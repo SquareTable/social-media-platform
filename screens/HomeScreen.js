@@ -104,6 +104,7 @@ import IframeRenderer, { iframeModel } from '@native-html/iframe-plugin';
 import WebView from 'react-native-webview';
 import axios from 'axios';
 import { ProfilePictureURIContext } from '../components/ProfilePictureURIContext.js';
+import { ServerUrlContext } from '../components/ServerUrlContext.js';
 
 const {brand, primary, tertiary, greyish, darkLight, darkestBlue, slightlyLighterPrimary, slightlyLighterGrey, descTextColor, darkest, red, orange, yellow, green, purple} = Colors;
 
@@ -141,6 +142,7 @@ const HomeScreen = ({navigation, route}) => {
     const [optionFivesBarLength, setOptionFivesBarLength] = useState(0);
     const [optionSixesBarLength, setOptionSixesBarLength] = useState(0);
     if (storedCredentials) {var {name, displayName, email, photoUrl, _id} = storedCredentials}
+    const {serverUrl, setServerUrl} = useContext(ServerUrlContext);
 
     // Uploading posts code
     const postMultiMedia = (postData) => { // Creating multimedia post
@@ -158,7 +160,7 @@ const HomeScreen = ({navigation, route}) => {
         console.log("Post pressed")
         setUploadingText('Uploading photo post...')
         setUploading(true)
-        const url = "https://nameless-dawn-41038.herokuapp.com/user/postImage";
+        const url = serverUrl + '/user/postImage';
 
         axios.post(url, formData, {
             headers: {
@@ -192,7 +194,7 @@ const HomeScreen = ({navigation, route}) => {
         setUploadingText('Uploading poll post...')
         setUploading(true)
         console.log(pollValues)
-        const url = "https://nameless-dawn-41038.herokuapp.com/user/createpollpost";
+        const url = serverUrl + '/user/createpollpost';
 
         axios.post(url, pollValues).then((response) => {
             const result = response.data;
@@ -221,7 +223,7 @@ const HomeScreen = ({navigation, route}) => {
         setUploading(true)
         if (selectFormat == "Text") {
             console.log("Text Format")
-            const url = "https://nameless-dawn-41038.herokuapp.com/user/posttextthread";
+            const url = serverUrl + '/user/posttextthread';
             var toSend = {creatorId: _id, threadTitle: credentials.threadTitle, threadSubtitle: credentials.threadSubtitle, threadTags: credentials.threadTags, threadCategory: credentials.selectedCategory, threadBody: credentials.threadBody, threadNSFW: credentials.threadNSFW, threadNSFL: credentials.threadNSFL, screenshotsAllowed: credentials.screenshotsAllowed}
             axios.post(url, toSend).then((response) => {
                 const result = response.data;
@@ -265,7 +267,7 @@ const HomeScreen = ({navigation, route}) => {
             console.log(formData);
             
             //post
-            const url = "https://nameless-dawn-41038.herokuapp.com/user/postimagethread";
+            const url = serverUrl + '/user/postimagethread';
             axios.post(url, formData, {
                 headers: {
                     Accept: 'application/json',
@@ -311,7 +313,7 @@ const HomeScreen = ({navigation, route}) => {
             formData.append("categoryNSFL", credentials.categoryNSFL)
             console.log(formData);
 
-            const url = "https://nameless-dawn-41038.herokuapp.com/user/postcategorywithimage";
+            const url = serverUrl + '/user/postcategorywithimage';
             
             axios.post(url, formData, {
                 headers: {
@@ -338,7 +340,7 @@ const HomeScreen = ({navigation, route}) => {
                 setErrorOccuredWhileUploading(true);
             })
         } else {
-            const url = "https://nameless-dawn-41038.herokuapp.com/user/postcategorywithoutimage";
+            const url = serverUrl + '/user/postcategorywithoutimage';
             const toSend = {creatorId: _id, categoryTitle: credentials.categoryTitle, categoryDescription: credentials.categoryDescription, categoryTags: credentials.categoryTags, categoryNSFW: credentials.categoryNSFW, categoryNSFL: credentials.categoryNSFL}
             axios.post(url, toSend).then((response) => {
                 const result = response.data;

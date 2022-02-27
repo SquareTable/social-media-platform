@@ -36,6 +36,7 @@ import { AllCredentialsStoredContext } from './components/AllCredentialsStoredCo
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import { navigationRef } from './components/ReactNavigationRef.js';
 import * as AppNavigation from './components/ReactNavigationRef.js';
+import { ServerUrlContext } from './components/ServerUrlContext.js';
 const Stack = createStackNavigator();
 
 
@@ -78,6 +79,7 @@ const App = () => {
   const [allCredentialsStoredList, setAllCredentialsStoredList] = useState([])
   const [AccountSwitcherHeight, setAccountSwitcherHeight] = useState(0)
   const DismissAccountSwitcherBoxActivated = useRef(new Animated.Value(0)).current;
+  const [serverUrl, setServerUrl] = useState('https://nameless-dawn-41038.herokuapp.com')
 
   useEffect(() => {
       AppState.addEventListener("change", _handleAppStateChange);
@@ -149,7 +151,15 @@ const App = () => {
       const { status: existingStatus } = await Notifications.getPermissionsAsync();
       let finalStatus = existingStatus;
       if (existingStatus !== 'granted') {
-        const { status } = await Notifications.requestPermissionsAsync();
+        const { status } = await Notifications.requestPermissionsAsync({
+          ios: {
+            allowAlert: true,
+            allowBadge: true,
+            allowSound: true,
+            allowAnnouncements: true,
+          }
+        }
+      );
         finalStatus = status;
       }
       if (finalStatus !== 'granted') {
@@ -939,6 +949,15 @@ const App = () => {
       } else {
         setBiometricsCanBeUsed(true)
       }
+
+      await AsyncStorage.getItem('SocialSquareServerUrl').then(value => {
+        if (value == null) {
+          setServerUrl('https://nameless-dawn-41038.herokuapp.com')
+          AsyncStorage.setItem('SocialSquareServerUrl', 'https://nameless-dawn-41038.herokuapp.com')
+        } else {
+          setServerUrl(value)
+        }
+      })
   
       const cacheImages = images.map(image => {
         return Asset.fromModule(image).downloadAsync();
@@ -966,48 +985,50 @@ const App = () => {
                     <OpenAppContext.Provider value={{openApp, setOpenApp}}>
                       <ShowAccountSwitcherContext.Provider value={{showAccountSwitcher, setShowAccountSwitcher}}>
                         <AllCredentialsStoredContext.Provider value={{allCredentialsStoredList, setAllCredentialsStoredList}}>
-                          {AppStylingContextState != 'Default' && AppStylingContextState != 'Light' && AppStylingContextState != 'Dark' && AppStylingContextState != 'PureDark' && AppStylingContextState != 'PureLight' ? previousStylingState.current != AppStylingContextState ? setCurrentSimpleStylingDataToStyle(AppStylingContextState) : null : null}
-                          <AppearanceProvider>
-                            <NavigationContainer ref={navigationRef} theme={AppStylingContextState == 'Default' ? scheme === 'dark' ? AppDarkTheme : AppLightTheme : AppStylingContextState == 'Dark' ? AppDarkTheme : AppStylingContextState == 'Light' ? AppLightTheme : AppStylingContextState == 'PureDark' ? AppPureDarkTheme : AppStylingContextState == 'PureLight' ? AppPureLightTheme : currentSimpleStylingData} onStateChange={() => {console.log('Screen changed')}}>
-                              {lockSocialSquare == false ?
-                                showPlaceholderScreen == true && (appStateVisible == 'background' || appStateVisible == 'inactive') &&
-                                    <Image source={require('./assets/Splash_Screen.png')} resizeMode="contain" style={{width: '100%', height: '100%', position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, zIndex: 100, backgroundColor: '#3B4252', borderWidth: 0}}/>
-                                :
-                                  showSocialSquareLockedWarning == false ?
-                                    previousAppStateVisible == 'inactive' || previousAppStateVisible == 'background' ?
-                                      biometricsCanBeUsed == false ? null :
-                                        openApp == false ?
+                          <ServerUrlContext.Provider value={{serverUrl, setServerUrl}}>
+                            {AppStylingContextState != 'Default' && AppStylingContextState != 'Light' && AppStylingContextState != 'Dark' && AppStylingContextState != 'PureDark' && AppStylingContextState != 'PureLight' ? previousStylingState.current != AppStylingContextState ? setCurrentSimpleStylingDataToStyle(AppStylingContextState) : null : null}
+                            <AppearanceProvider>
+                              <NavigationContainer ref={navigationRef} theme={AppStylingContextState == 'Default' ? scheme === 'dark' ? AppDarkTheme : AppLightTheme : AppStylingContextState == 'Dark' ? AppDarkTheme : AppStylingContextState == 'Light' ? AppLightTheme : AppStylingContextState == 'PureDark' ? AppPureDarkTheme : AppStylingContextState == 'PureLight' ? AppPureLightTheme : currentSimpleStylingData} onStateChange={() => {console.log('Screen changed')}}>
+                                {lockSocialSquare == false ?
+                                  showPlaceholderScreen == true && (appStateVisible == 'background' || appStateVisible == 'inactive') &&
+                                      <Image source={require('./assets/Splash_Screen.png')} resizeMode="contain" style={{width: '100%', height: '100%', position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, zIndex: 100, backgroundColor: '#3B4252', borderWidth: 0}}/>
+                                  :
+                                    showSocialSquareLockedWarning == false ?
+                                      previousAppStateVisible == 'inactive' || previousAppStateVisible == 'background' ?
+                                        biometricsCanBeUsed == false ? null :
+                                          openApp == false ?
+                                              <Image source={require('./assets/Splash_Screen.png')} resizeMode="contain" style={{width: '100%', height: '100%', position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, zIndex: 100, backgroundColor: '#3B4252', borderWidth: 0}}/>
+                                          : null
+                                      : appStateVisible == 'inactive' || appStateVisible == 'background' ?
+                                            <Image source={require('./assets/Splash_Screen.png')} resizeMode="contain" style={{width: '100%', height: '100%', position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, zIndex: 100, backgroundColor: '#3B4252', borderWidth: 0}}/>
+                                        : openApp == false ? biometricsCanBeUsed == false ? null :
                                             <Image source={require('./assets/Splash_Screen.png')} resizeMode="contain" style={{width: '100%', height: '100%', position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, zIndex: 100, backgroundColor: '#3B4252', borderWidth: 0}}/>
                                         : null
-                                    : appStateVisible == 'inactive' || appStateVisible == 'background' ?
-                                          <Image source={require('./assets/Splash_Screen.png')} resizeMode="contain" style={{width: '100%', height: '100%', position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, zIndex: 100, backgroundColor: '#3B4252', borderWidth: 0}}/>
-                                      : openApp == false ? biometricsCanBeUsed == false ? null :
-                                          <Image source={require('./assets/Splash_Screen.png')} resizeMode="contain" style={{width: '100%', height: '100%', position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, zIndex: 100, backgroundColor: '#3B4252', borderWidth: 0}}/>
-                                      : null
-                                  :
-                                    <View style={{position: 'absolute', height: '100%', width: '100%', top: 0, right: 0, backgroundColor: '#3B4252', zIndex: 1000}}>
-                                      <Image style={{width: 200, height: 200, position: 'absolute', top: StatusBarHeight, right: '25%', zIndex: 1001}} source={require('./assets/img/LogoWithBorder.png')}/>
-                                      <Text style={{color: '#eceff4', fontSize: 30, position: 'absolute', right: '10%', textAlign: 'center', fontWeight: 'bold', top: StatusBarHeight + 230, zIndex: 1001, width: '80%'}}>SocialSquare is currently locked</Text>
-                                      <TouchableOpacity onPress={handleAppAuth} style={{position: 'absolute', top: 400, right: '25%', zIndex: 1001, width: '50%'}}>
-                                        <Text style={{color: '#88c0d0', fontSize: 24, fontWeight: 'bold', textDecorationLine: 'underline', textDecorationColor: '#88c0d0', textAlign: 'center'}}>Unlock now</Text>
-                                      </TouchableOpacity>
-                                    </View>
-                              }
-                              <NotificationBox/>
-                              <Animated.View style={{position: 'absolute', height: '100%', width: '100%', top: 0, right: 0, zIndex: DismissAccountSwitcherBoxActivated.interpolate({inputRange: [0, 1], outputRange: [-10, 997]})}}>
-                                <TouchableOpacity style={{height: '100%', width: '100%'}} onPress={() => {
-                                    console.log('Account Switcher Dismiss Box pressed')
-                                    Animated.timing(DismissAccountSwitcherBoxActivated, { toValue: 0, duration: 1, useNativeDriver: true }).start();
-                                    Animated.timing(AccountSwitcherY, {toValue: 250, duration: 100, useNativeDriver: true}).start()
-                                  }}
-                                />
-                              </Animated.View>
-                              <DisconnectedFromInternetBox/>
-                              <AccountSwitcher/>
-                              <AccountSwitchedBox/>
-                              <Start_Stack/>
-                            </NavigationContainer>
-                          </AppearanceProvider>
+                                    :
+                                      <View style={{position: 'absolute', height: '100%', width: '100%', top: 0, right: 0, backgroundColor: '#3B4252', zIndex: 1000}}>
+                                        <Image style={{width: 200, height: 200, position: 'absolute', top: StatusBarHeight, right: '25%', zIndex: 1001}} source={require('./assets/img/LogoWithBorder.png')}/>
+                                        <Text style={{color: '#eceff4', fontSize: 30, position: 'absolute', right: '10%', textAlign: 'center', fontWeight: 'bold', top: StatusBarHeight + 230, zIndex: 1001, width: '80%'}}>SocialSquare is currently locked</Text>
+                                        <TouchableOpacity onPress={handleAppAuth} style={{position: 'absolute', top: 400, right: '25%', zIndex: 1001, width: '50%'}}>
+                                          <Text style={{color: '#88c0d0', fontSize: 24, fontWeight: 'bold', textDecorationLine: 'underline', textDecorationColor: '#88c0d0', textAlign: 'center'}}>Unlock now</Text>
+                                        </TouchableOpacity>
+                                      </View>
+                                }
+                                <NotificationBox/>
+                                <Animated.View style={{position: 'absolute', height: '100%', width: '100%', top: 0, right: 0, zIndex: DismissAccountSwitcherBoxActivated.interpolate({inputRange: [0, 1], outputRange: [-10, 997]})}}>
+                                  <TouchableOpacity style={{height: '100%', width: '100%'}} onPress={() => {
+                                      console.log('Account Switcher Dismiss Box pressed')
+                                      Animated.timing(DismissAccountSwitcherBoxActivated, { toValue: 0, duration: 1, useNativeDriver: true }).start();
+                                      Animated.timing(AccountSwitcherY, {toValue: 250, duration: 100, useNativeDriver: true}).start()
+                                    }}
+                                  />
+                                </Animated.View>
+                                <DisconnectedFromInternetBox/>
+                                <AccountSwitcher/>
+                                <AccountSwitchedBox/>
+                                <Start_Stack/>
+                              </NavigationContainer>
+                            </AppearanceProvider>
+                          </ServerUrlContext.Provider>
                         </AllCredentialsStoredContext.Provider>
                       </ShowAccountSwitcherContext.Provider>
                     </OpenAppContext.Provider>

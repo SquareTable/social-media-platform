@@ -606,7 +606,8 @@ export const ProfileBadgeIcons = styled.Image`
     width: 25px;
     height: 25px;
     margin-horizontal: 3px;
-    margin-vertical: 6px;
+    margin-top: 6px;
+    margin-bottom: 12px;
 `;
 
 export const ProfileHorizontalView = styled.View`
@@ -2124,4 +2125,17 @@ export const ListItem = styled.Text`
     font-size: 20px;
     font-weight: bold;
     margin-vertical: 8px;
+`;
+
+export const ProfileBadgeItemUnderline = styled.View`
+    width: 25px;
+    height: 25px;
+    transform: rotateX(75deg);
+    margin-horizontal: 3px;
+    margin-vertical: 6px;
+    border-radius: 25px;
+    background-color: ${tertiary};
+    position: absolute;
+    bottom: -13px;
+    z-index: 20;
 `;

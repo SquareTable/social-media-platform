@@ -54,6 +54,7 @@ import SocialSquareLogo_B64_png from '../assets/SocialSquareLogo_Base64_png.js';
 import { ProfilePictureURIContext } from '../components/ProfilePictureURIContext.js';
 
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import { ServerUrlContext } from '../components/ServerUrlContext.js';
 
 
 const Signup = ({navigation, route}) => {
@@ -65,6 +66,8 @@ const Signup = ({navigation, route}) => {
     const [webBrowserResult, setWebBrowserResult] = useState(null);
     const {allCredentialsStoredList, setAllCredentialsStoredList} = useContext(AllCredentialsStoredContext);
     const {profilePictureUri, setProfilePictureUri} = useContext(ProfilePictureURIContext);
+
+    const {serverUrl, setServerUrl} = useContext(ServerUrlContext);
 
     const goToLink = async (linkToGoTo) => {
         let result = await WebBrowser.openBrowserAsync(linkToGoTo);
@@ -84,7 +87,7 @@ const Signup = ({navigation, route}) => {
 
     const handleSignup = (credentials, setSubmitting) => {
         handleMessage(null);
-        const url = "https://nameless-dawn-41038.herokuapp.com/user/signup";
+        const url = serverUrl + '/user/signup';
 
         axios.post(url, credentials).then((response) => { 
             const result = response.data;
@@ -128,10 +131,14 @@ const Signup = ({navigation, route}) => {
             temp.push(credentialsToUse);
             AsyncStorage.setItem('socialSquare_AllCredentialsList', JSON.stringify(temp)).then(() => {
                 setAllCredentialsStoredList(temp);
-                navigation.reset({
-                    index: 0,
-                    routes: [{ name: 'Tabs' }],
-                });
+                if (Modal_NoCredentials) {
+                    navigation.pop(2);
+                } else {
+                    navigation.reset({
+                        index: 0,
+                        routes: [{ name: 'Tabs' }],
+                    });
+                }
             })
         })
         .catch((error) => {
@@ -252,10 +259,12 @@ const Signup = ({navigation, route}) => {
                                         <TextLinkContent style={{color: colors.brand, fontSize: 20, top: 5}}>Login</TextLinkContent>
                                     </TextLink>
                                 </ExtraView>
-                                <TouchableOpacity onPress={() => {modal == true ? navigation.pop(2) : navigation.reset({index: 0, routes:[{name: 'Tabs'}]})}} style={{justifyContent: 'center', alignItems: 'center', flexDirection: 'row'}}>
-                                    <ButtonText style={{color: colors.tertiary, fontSize: 20}}>Continue without an account</ButtonText>
-                                    <AntDesign name="arrowright" size={40} color={colors.tertiary} style={{marginLeft: 5}}/>
-                                </TouchableOpacity>
+                                {!storedCredentials &&
+                                    <TouchableOpacity onPress={() => {modal == true ? navigation.pop(2) : navigation.reset({index: 0, routes:[{name: 'Tabs'}]})}} style={{justifyContent: 'center', alignItems: 'center', flexDirection: 'row'}}>
+                                        <ButtonText style={{color: colors.tertiary, fontSize: 20}}>Continue without an account</ButtonText>
+                                        <AntDesign name="arrowright" size={40} color={colors.tertiary} style={{marginLeft: 5}}/>
+                                    </TouchableOpacity>
+                                }
                                 <Text style={{textAlign: 'center', color: colors.tertiary, marginTop: 20}}>By signing up, you agree to our </Text>
                                 <TextLink onPress={() => {goToLink('https://squaretable.github.io/social-media-platform/TermsAndConditions')}}>
                                     <TextLinkContent style={{color: colors.brand}}>Terms of Service</TextLinkContent>

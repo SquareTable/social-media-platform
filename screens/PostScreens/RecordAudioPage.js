@@ -66,6 +66,7 @@ import * as Haptics from 'expo-haptics';
 import { convertCompilerOptionsFromJson } from 'typescript';
 import Constants from 'expo-constants'
 import * as Linking from 'expo-linking';
+import 'expo-intent-launcher'
 
 
 
@@ -148,21 +149,17 @@ const RecordAudioPage = ({navigation}) => {
                                 if (Platform.OS === 'ios') {
                                     Linking.openURL('app-settings:')
                                 } else if (Platform.OS === 'android') {
-                                    import ('expo-intent-launcher').then(IntentLauncher => {
-                                        IntentLauncher.startActivityAsync(
-                                            IntentLauncher.ACTION_APPLICATION_DETAILS_SETTINGS,
-                                            { data: 'package:' + pkg },
-                                        )
-                                    })
-                                } else if (Platform.OS == 'web') {
-                                    window.open('app-settings:'/*, '_system'*/)
+                                    IntentLauncher.startActivityAsync(
+                                        IntentLauncher.ACTION_APPLICATION_DETAILS_SETTINGS,
+                                        { data: 'package:' + pkg },
+                                    )
                                 } else {
-                                    alert('Platform not supported yet.')
+                                    alert('Platform not supported')
                                 }
-                            }
                           },
-                        ]
-                      );
+                        },
+                      ],
+                    );
                 }
                 setRecordButtonDisabled(false);
                 setRecordingStatus(false)

@@ -10,7 +10,6 @@ import ProfileScreen from "../screens/ProfileScreen";
 import VisitingProfileScreen from "../screens/VisitingProfileScreen.js";
 import SettingsScreen from "../screens/SettingsScreen";
 import HomeScreen from "../screens/HomeScreen";
-import BadgesScreen from "../screens/BadgesScreen";
 import LoginScreen from "../screens/LoginScreen";
 import AccountSettings from "../screens/AccountSettings";
 import Signup from "../screens/Signup.js";
@@ -63,6 +62,9 @@ import EditSimpleStyle from "../screens/SimpleStylingScreens/EditSimpleStyle.js"
 import Simple_ColorPickerScreen from "../screens/SimpleStylingScreens/ColorPicker.js";
 import BuiltInStylingMenu from "../screens/BuiltInStylingMenu.js";
 import LoginAttempts from "../screens/SecuritySettingsScreens/LoginAttempts.js";
+import AdvancedSettingsScreen from "../screens/AdvancedSettingsScreen.js";
+import SwitchServerScreen from "../screens/AdvancedSettingsScreens/SwitchServerScreen.js";
+import BadgeInfo from "../screens/BadgeInfo.js";
 
 
 const Stack = createStackNavigator();
@@ -118,8 +120,6 @@ const RootStack = () => {
     >
       <Stack.Screen name="Welcome" component={ProfileScreen}/>
       <Stack.Screen name="SettingsScreen" component={SettingsScreen}/>
-      <Stack.Screen name="BadgesScreen" component={BadgesScreen}/>
-      <Stack.Screen name="AccountBadges" component={AccountBadges}/>
       <Stack.Screen name="ChangeDisplayNamePage" component={ChangeDisplayNamePage}/>
       <Stack.Screen name="ChangeUsernamePage" component={ChangeUsernamePage}/>
       <Stack.Screen name="ChangeEmailPage" component={ChangeEmailPage}/>
@@ -146,6 +146,7 @@ const RootStack = () => {
         }}
       >
         <Stack.Screen name="AppStyling" component={AppStyling}/>
+        <Stack.Screen name="BadgeInfo" component={BadgeInfo}/>
         <Stack.Screen name="GDPRCompliance" component={GDPRCompliance}/>
         <Stack.Screen name="SecuritySettingsScreen" component={SecuritySettingsScreen}/>
         <Stack.Screen name="LoginActivity" component={LoginActivity}/>
@@ -159,6 +160,9 @@ const RootStack = () => {
         <Stack.Screen name="BuiltInStylingMenu" component={BuiltInStylingMenu}/>
         <Stack.Screen name="LoginAttempts" component={LoginAttempts}/>
         <Stack.Screen name="AccountSettings" component={AccountSettings}/>
+        <Stack.Screen name="AdvancedSettingsScreen" component={AdvancedSettingsScreen}/>
+        <Stack.Screen name="SwitchServerScreen" component={SwitchServerScreen}/>
+        <Stack.Screen name="AccountBadges" component={AccountBadges}/>
       </Stack.Group>
     </Stack.Navigator>
   );

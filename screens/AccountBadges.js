@@ -1,10 +1,19 @@
 import React, { Component, useContext ,useState } from 'react';
 
-import { AppRegistry, StyleSheet, FlatList, Text, View, Alert, Platform, ScrollView } from 'react-native';
+import { AppRegistry, StyleSheet, FlatList, Text, View, Alert, Platform, ScrollView, Animated, TouchableOpacity, Image } from 'react-native';
 
 import imagesArray from './../assets/badgeimages/imageDir';
 
 import { StatusBar } from 'expo-status-bar';
+
+import { useTheme } from '@react-navigation/native';
+
+import Constants from 'expo-constants';
+
+import EvilIcons from 'react-native-vector-icons/EvilIcons';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 import {
     WelcomeContainer,
@@ -21,7 +30,7 @@ import {
     BadgeGridViewBlockStyle,
     GridViewInsideTextItemStyle,
     BadgeGridViewImage
-} from '../screens/screenStylings/styling.js';
+} from './screenStylings/styling.js';
 
 
 
@@ -31,11 +40,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 //credentials context
 import { CredentialsContext } from '../components/CredentialsContext';
 import { set } from 'react-native-reanimated';
-import { useTheme } from '@react-navigation/native';
+import { ProfilePictureURIContext } from '../components/ProfilePictureURIContext';
 
-const AccountBadges = () => {
+const AccountBadges = ({navigation}) => {
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
-    const {name, email, photoUrl, badges} = storedCredentials;
+    if (storedCredentials) {var {name, email, photoUrl, badges, displayName} = storedCredentials;}
     const AvatarImg = photoUrl ? {uri: photoUrl} : require('./../assets/img/Logo.png');
     const [logoutViewState, setLogoutViewState] = useState("false")
     const [badgeValue, setBadgeValue] = useState("")
@@ -43,13 +52,15 @@ const AccountBadges = () => {
     const [rarity, setRarity] = useState("")
     const [badgeText, setBadgeText] = useState("")
     const [badgeDescription, setBadgeDescription] = useState("")
-    const {colors, dark} = useTheme()
+    const {colors, dark} = useTheme();
+    const StatusBarHeight = Constants.statusBarHeight;
+    const {profilePictureUri, setProfilePictureUri} = useContext(ProfilePictureURIContext);
 
     const changeBadgeValue = (badgeName) => {
         if (badgeName == "onSignUpBadge") {
             if (badgeDebounce !== "onSignUpBadge") {
                 console.log("User Has On Sign Up Badge")
-                setBadgeText("Welcome To Hell")
+                setBadgeText("Joined SocialSquare")
                 setBadgeDescription("Made an account")
                 setRarity("Bronze")
                 setBadgeValue(imagesArray.onSignupBadge)
@@ -58,35 +69,74 @@ const AccountBadges = () => {
         }
     }
 
-    return(
-            <> 
-                <StatusBar style={colors.StatusBarColor}/>   
-                <WelcomeContainer style={{backgroundColor: colors.primary}}>                
-                    <PageTitle badges={true}>{name} Badges</PageTitle>
-                    <BadgeGridLayout>
-                        <React.Fragment>
-                            <ScrollView>  
-                                <BadgeGridViewBlockStyle>
-                                    {badges.map((badge) => (
-                                            
-                                            <React.Fragment>
+    const SeperationLine = () => {
+        return(
+            <View style={{width: '100%', height: 1, backgroundColor: colors.tertiary}}/>
+        )
+    }
 
-                                                <GridViewInsideTextItemStyle key={rarity} onload={changeBadgeValue(badge)} rarityForTextColor={rarity}>{rarity}</GridViewInsideTextItemStyle>
-                                                <BadgeGridViewImage key={imagesArray} source={badgeValue}/>
-                                                <GridViewInsideTextItemStyle key={badge} badgeTitle={true}>{badgeText}</GridViewInsideTextItemStyle>
-                                                <GridViewInsideTextItemStyle key={badgeDescription} bottomText={true}>{badgeDescription}</GridViewInsideTextItemStyle>
-                                                
-                                            </React.Fragment>
-                                    
-                                        
-                                    ))}
-                                </BadgeGridViewBlockStyle>
-                            </ScrollView>
-                        </React.Fragment>
-                </BadgeGridLayout>
-            </WelcomeContainer>
+    return(
+        <> 
+            <StatusBar style={colors.StatusBarColor}/>   
+            <View style={{paddingTop: StatusBarHeight - 10, backgroundColor: colors.primary, borderColor: colors.borderColor, borderBottomWidth: 0, alignItems: 'center', width: '100%'}}>
+                <>
+                    <View style={{position: 'absolute', top: StatusBarHeight, left: 10}}>
+                        <TouchableOpacity style={{marginRight: '75.5%'}} onPress={() => {navigation.goBack()}}>
+                            <Image
+                                source={require('../assets/app_icons/back_arrow.png')}
+                                style={{ width: 40, height: 40, tintColor: colors.tertiary}}
+                                resizeMode="contain"
+                                resizeMethod="resize"
+                            />
+                        </TouchableOpacity>
+                    </View>
+                    <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+                        <PageTitle style={{fontSize: 18}} welcome={true}>{(displayName || name || "Couldn't get name") + ' badges'}</PageTitle>
+                        <Avatar style={{width: 35, height: 35}} resizeMode="cover" source={{uri: profilePictureUri}}/>
+                    </View>
+                </>
+            </View>
+            <ScrollView style={{width: '90%', alignSelf: 'center'}}>
+                <View style={{minHeight: 30}}/>
+                <Text style={{fontSize: 14, color: colors.tertiary, marginLeft: 10}}>GENERAL</Text>
+                <SeperationLine/>
+                <TouchableOpacity style={badges.includes('onSignUpBadge') ? {opacity: 1} : {opacity: 0.3}} onPress={() => {navigation.navigate('BadgeInfo', {badgeName: 'Joined SocialSquare', badgeUnlocked: badges.includes('onSignUpBadge')})}}>
+                    <EvilIcons name="trophy" size={75} color={colors.tertiary} style={{marginLeft: -10}}/>
+                </TouchableOpacity>
+                <View style={{minHeight: 50}}/>
+                <Text style={{fontSize: 14, color: colors.tertiary, marginLeft: 10}}>TEXTS</Text>
+                <SeperationLine/>
+                <TouchableOpacity style={badges.includes('sentTenTexts') ? {opacity: 1} : {opacity: 0.3}} onPress={() => {navigation.navigate('BadgeInfo', {badgeName: 'Sent 10 texts', badgeUnlocked: badges.includes('sentTenTexts')})}}>
+                    <AntDesign name="message1" size={50} color={colors.tertiary} style={{marginLeft: 5, marginTop: 10}}/>
+                </TouchableOpacity>
+                <View style={{minHeight: 50}}/>
+                <Text style={{fontSize: 14, color: colors.tertiary, marginLeft: 10}}>CALLS</Text>
+                <SeperationLine/>
+                <TouchableOpacity style={badges.includes('totalCallTimeTenMinutes') ? {opacity: 1} : {opacity: 0.3}} onPress={() => {navigation.navigate('BadgeInfo', {badgeName: '10 Minutes of Call Time', badgeUnlocked: badges.includes('totalCallTimeTenMinutes')})}}>
+                    <AntDesign name="phone" size={60} color={colors.tertiary} style={{marginTop: 10}}/>
+                </TouchableOpacity>
+                <View style={{minHeight: 50}}/>
+                <Text style={{fontSize: 14, color: colors.tertiary, marginLeft: 10}}>POSTS</Text>
+                <SeperationLine/>
+                <TouchableOpacity style={badges.includes('uploadFirstPost') ? {opacity: 1} : {opacity: 0.3}} onPress={() => {navigation.navigate('BadgeInfo', {badgeName: 'Upload 1 Post', badgeUnlocked: badges.includes('uploadFirstPost')})}}>
+                    <Ionicons name="cloud-upload-outline" size={65} color={colors.tertiary}/>
+                </TouchableOpacity>
+                <View style={{minHeight: 50}}/>
+                <Text style={{fontSize: 14, color: colors.tertiary, marginLeft: 10}}>COMMENTS</Text>
+                <SeperationLine/>
+                <TouchableOpacity style={badges.includes('postFirstComment') ? {opacity: 1} : {opacity: 0.3}} onPress={() => {navigation.navigate('BadgeInfo', {badgeName: 'Post 1 Comment', badgeUnlocked: badges.includes('postFirstComment')})}}>
+                    <FontAwesome name="comments" size={65} color={colors.tertiary}/>
+                </TouchableOpacity>
+            </ScrollView>
         </>
     );
 }
 
 export default AccountBadges
+
+/*
+<GridViewInsideTextItemStyle key={rarity} onload={changeBadgeValue(badge)} rarityForTextColor={rarity}>{rarity}</GridViewInsideTextItemStyle>
+<BadgeGridViewImage key={imagesArray} source={badgeValue}/>
+<GridViewInsideTextItemStyle key={badge} badgeTitle={true}>{badgeText}</GridViewInsideTextItemStyle>
+<GridViewInsideTextItemStyle key={badgeDescription} bottomText={true}>{badgeDescription}</GridViewInsideTextItemStyle>
+*/

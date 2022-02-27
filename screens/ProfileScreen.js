@@ -3,6 +3,10 @@ import { StatusBar } from 'expo-status-bar';
 import * as Haptics from 'expo-haptics';
 import Icon from 'react-native-vector-icons/Feather';
 import FontAwesomeFive from 'react-native-vector-icons/FontAwesome5';
+import EvilIcons from 'react-native-vector-icons/EvilIcons';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import ActionSheet from 'react-native-actionsheet';
+import * as MediaLibrary from 'expo-media-library';
 
 import {
     InnerContainer,
@@ -69,7 +73,8 @@ import {
     SearchSubTitle,
     ConfirmLogoutButtons,
     ConfirmLogoutButtonText,
-    ViewHider
+    ViewHider,
+    ProfileBadgeItemUnderline
 } from '../screens/screenStylings/styling.js';
 
 
@@ -87,8 +92,7 @@ import * as ImagePicker from 'expo-image-picker';
 
 //credentials context
 import { CredentialsContext } from '../components/CredentialsContext';
-import { ImageBackground, ScrollView, SectionList, Image, View, ActivityIndicator, Touchable, RefreshControl, SafeAreaView, Text, Animated, useWindowDimensions, Platform } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { ImageBackground, ScrollView, SectionList, Image, View, ActivityIndicator, Touchable, RefreshControl, SafeAreaView, Text, Animated, useWindowDimensions, Platform, PermissionsAndroid, TouchableOpacity } from 'react-native';
 
 import {useTheme, useIsFocused} from "@react-navigation/native"
 
@@ -97,6 +101,7 @@ import SocialSquareLogo_B64_png from '../assets/SocialSquareLogo_Base64_png.js';
 import { ProfilePictureURIContext } from '../components/ProfilePictureURIContext.js';
 import { ShowAccountSwitcherContext } from '../components/ShowAccountSwitcherContext.js';
 import { AllCredentialsStoredContext } from '../components/AllCredentialsStoredContext.js';
+import { ServerUrlContext } from '../components/ServerUrlContext.js';
 
 const Welcome = ({navigation, route}) => {
     const StatusBarHeight = Constants.statusBarHeight;
@@ -120,7 +125,7 @@ const Welcome = ({navigation, route}) => {
      //context
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
     const {profilePictureUri, setProfilePictureUri} = useContext(ProfilePictureURIContext);
-    if (storedCredentials) {var {_id, name, displayName, email, photoUrl, followers, following} = storedCredentials}
+    if (storedCredentials) {var {_id, name, displayName, email, photoUrl, followers, following, badges} = storedCredentials}
     const [gridViewState, setGridViewState] = useState("flex")
     const [featuredViewState, setFeaturedViewState] = useState("none")
     const [selectedPostFormat, setSelectedPostFormat] = useState("One")
@@ -243,8 +248,20 @@ const Welcome = ({navigation, route}) => {
     const {allCredentialsStoredList, setAllCredentialsStoredList} = useContext(AllCredentialsStoredContext);
     // Top profile bar
     const TopProfileBarFadeAnim = useRef(new Animated.Value(0)).current;
-    // Change profile picture menu opacity
-    const ChangePfpMenuOpacity = useRef(new Animated.Value(0)).current;
+    // ActionSheet menus
+    let PfpSaveActionMenu = useRef();
+    const PfpSaveActionMenuOptions = [
+        'Save to Camera Roll',
+        'Cancel'
+    ];
+    let PfpPickerActionMenu = useRef();
+    const PfpPickerActionMenuOptions = [
+        'Take Photo',
+        'Choose from Photo Library',
+        'Cancel'
+    ];
+    // Server URL
+    const {serverUrl, setServerUrl} = useContext(ServerUrlContext)
 
 
     const openDeletePrompt = (postId, creatorName) => {
@@ -255,7 +272,7 @@ const Welcome = ({navigation, route}) => {
 
     const confirmDeletePrompt = (postId, postNum) => {
         if (selectedPostFormat == "One") {
-            const url = "https://nameless-dawn-41038.herokuapp.com/user/deleteimage";
+            const url = serverUrl + '/user/deleteimage';
             var toSend = {userId: _id, imageKey: postId}
             console.log(toSend)
             axios.post(url, toSend).then((response) => { 
@@ -276,7 +293,7 @@ const Welcome = ({navigation, route}) => {
         } else if (selectedPostFormat == "Two") {
 
         } else if (selectedPostFormat == "Three") {
-            const url = "https://nameless-dawn-41038.herokuapp.com/user/deletepoll";
+            const url = serverUrl + '/user/deletepoll';
             var toSend = {userId: _id, pollId: postId}
             console.log(toSend)
             axios.post(url, toSend).then((response) => { 
@@ -295,7 +312,7 @@ const Welcome = ({navigation, route}) => {
                 handleMessage("An error occured. Try checking your network connection and retry.", 'FAILED', postNum);
             })
         } else if (selectedPostFormat == "Four") {
-            const url = "https://nameless-dawn-41038.herokuapp.com/user/deletethread";
+            const url = serverUrl + '/user/deletethread';
             var toSend = {userId: _id, threadId: postId}
             console.log(toSend)
             axios.post(url, toSend).then((response) => { 
@@ -370,7 +387,7 @@ const Welcome = ({navigation, route}) => {
                 setChangingVotedImages(changingVotedImagesArray)
                 //Do rest
                 handleMessage(null, null, null);
-                const url = "https://nameless-dawn-41038.herokuapp.com/user/upvoteimage";
+                const url = serverUrl + '/user/upvoteimage';
 
                 var toSend = {userId: _id, imageId: imageId}
 
@@ -507,7 +524,7 @@ const Welcome = ({navigation, route}) => {
                 setChangingVotedImages(changingVotedImagesArray)
                 //Do rest
                 handleMessage(null, null, null);
-                const url = "https://nameless-dawn-41038.herokuapp.com/user/downvoteimage";
+                const url = serverUrl + '/user/downvoteimage';
 
                 var toSend = {userId: _id, imageId: imageId}
 
@@ -645,7 +662,7 @@ const Welcome = ({navigation, route}) => {
                 setChangingVotedPolls(changingVotedPollsArray)
                 //Do rest
                 handleMessage(null, null, null);
-                const url = "https://nameless-dawn-41038.herokuapp.com/user/upvotepoll";
+                const url = serverUrl + '/user/upvotepoll';
 
                 var toSend = {userId: _id, pollId: pollId}
 
@@ -783,7 +800,7 @@ const Welcome = ({navigation, route}) => {
                 setChangingVotedPolls(changingVotedPollsArray)
                 //Do rest
                 handleMessage(null, null, null);
-                const url = "https://nameless-dawn-41038.herokuapp.com/user/downvotepoll";
+                const url = serverUrl + '/user/downvotepoll';
 
                 var toSend = {userId: _id, pollId: pollId}
 
@@ -921,7 +938,7 @@ const Welcome = ({navigation, route}) => {
                 setChangingVotedThreads(changingVotedThreadsArray)
                 //Do rest
                 handleMessage(null, null, null);
-                const url = "https://nameless-dawn-41038.herokuapp.com/user/upvotethread";
+                const url = serverUrl + '/user/upvotethread';
 
                 var toSend = {userId: _id, threadId: threadId}
 
@@ -1060,7 +1077,7 @@ const Welcome = ({navigation, route}) => {
                 setChangingVotedThreads(changingVotedThreadsArray)
                 //Do rest
                 handleMessage(null, null, null);
-                const url = "https://nameless-dawn-41038.herokuapp.com/user/downvotethread";
+                const url = serverUrl + '/user/downvotethread';
 
                 var toSend = {userId: _id, threadId: threadId}
 
@@ -1686,7 +1703,7 @@ const Welcome = ({navigation, route}) => {
 
     //get image of post
     async function getImageInPost(imageData, index) {
-        return axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${imageData[index].imageKey}`, { cancelToken: source.token})
+        return axios.get((serverUrl + '/getImage/' + imageData[index].imageKey), { cancelToken: source.token})
         .then(res => res.data).catch(error => {
             console.log(error);
             //setSubmitting(false);
@@ -1696,7 +1713,7 @@ const Welcome = ({navigation, route}) => {
     }
     //profile image of creator
     async function getImageInPfp(imageData, index) {
-        return axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${imageData[index].creatorPfpKey}`, { cancelToken: source.token})
+        return axios.get((serverUrl + '/getImage/' + imageData[index].creatorPfpKey), { cancelToken: source.token})
         .then(res => res.data).catch(error => {
             console.log(error);
             //setSubmitting(false);
@@ -1705,7 +1722,7 @@ const Welcome = ({navigation, route}) => {
         })
     }
     async function getImageInCategory(imageKey) {
-        return axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${imageKey}`, { cancelToken: cancelTokenPostFormatFive.token})
+        return axios.get((serverUrl + '/getImage/' + imageKey), { cancelToken: cancelTokenPostFormatFive.token})
         .then(res => res.data).catch(error => {
             console.log(error);
             //setSubmitting(false);
@@ -1715,7 +1732,7 @@ const Welcome = ({navigation, route}) => {
     }
     //any image honestly
     async function getImageWithKeyOne(imageKey) {
-            return axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${imageKey}`, { cancelToken: cancelTokenPostFormatOne.token})
+            return axios.get((serverUrl + '/getImage/' + imageKey), { cancelToken: cancelTokenPostFormatOne.token})
             .then(res => res.data).catch(error => {
                 console.log(error);
                 //setSubmitting(false);
@@ -1724,7 +1741,7 @@ const Welcome = ({navigation, route}) => {
             })
     }
     async function getImageWithKeyTwo(imageKey) {
-        return axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${imageKey}`, { cancelToken: cancelTokenPostFormatTwo.token})
+        return axios.get((serverUrl + '/getImage/' + imageKey), { cancelToken: cancelTokenPostFormatTwo.token})
         .then(res => res.data).catch(error => {
             console.log(error);
             //setSubmitting(false);
@@ -1733,7 +1750,7 @@ const Welcome = ({navigation, route}) => {
         })
     }
     async function getImageWithKeyThree(imageKey) {
-        return axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${imageKey}`, { cancelToken: cancelTokenPostFormatThree.token})
+        return axios.get((serverUrl + '/getImage/' + imageKey), { cancelToken: cancelTokenPostFormatThree.token})
         .then(res => res.data).catch(error => {
             console.log(error);
             //setSubmitting(false);
@@ -1742,7 +1759,7 @@ const Welcome = ({navigation, route}) => {
         })
     }
     async function getImageWithKeyFour(imageKey) {
-        return axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${imageKey}`, { cancelToken: cancelTokenPostFormatFour.token})
+        return axios.get((serverUrl + '/getImage/' + imageKey), { cancelToken: cancelTokenPostFormatFour.token})
         .then(res => res.data).catch(error => {
             console.log(error);
             //setSubmitting(false);
@@ -1751,7 +1768,7 @@ const Welcome = ({navigation, route}) => {
         })
     }
     async function getImageWithKeyFive(imageKey) {
-        return axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${imageKey}`, { cancelToken: cancelTokenPostFormatFive.token})
+        return axios.get((serverUrl + '/getImage/' + imageKey), { cancelToken: cancelTokenPostFormatFive.token})
         .then(res => res.data).catch(error => {
             console.log(error);
             //setSubmitting(false);
@@ -1843,7 +1860,7 @@ const Welcome = ({navigation, route}) => {
                 });
             }
 
-            const url = "https://nameless-dawn-41038.herokuapp.com/user/getImagesFromProfile";
+            const url = serverUrl + '/user/getImagesFromProfile';
 
             setLoadingPostsImage(true)
             axios.post(url, toSendProfileName).then((response) => {
@@ -2050,7 +2067,7 @@ const Welcome = ({navigation, route}) => {
                 });
             }
 
-            const url = "https://nameless-dawn-41038.herokuapp.com/user/searchforpollposts";
+            const url = serverUrl + '/user/searchforpollposts';
 
             setLoadingPostsPoll(true)
             axios.post(url, toSendProfileName).then((response) => {
@@ -2196,7 +2213,7 @@ const Welcome = ({navigation, route}) => {
                 });
             }
 
-            const url = `https://nameless-dawn-41038.herokuapp.com/user/getthreadsfromprofilewithid/${_id}`;
+            const url = serverUrl + '/user/getthreadsfromprofilewithid/' + _id;
 
             setLoadingPostsThread(true)
             axios.get(url).then((response) => {
@@ -2274,7 +2291,7 @@ const Welcome = ({navigation, route}) => {
             }
 
             handleMessage(null);
-            const url = `https://nameless-dawn-41038.herokuapp.com/user/findcategorywithuserid/${_id}`;
+            const url = serverUrl + '/user/findcategorywithuserid/' + _id;
             setLoadingPostsCategory(true)
             axios.get(url).then((response) => {
                 const result = response.data;
@@ -2302,7 +2319,7 @@ const Welcome = ({navigation, route}) => {
     }
 
     const getProfilePicture = () => {
-        const url = `https://nameless-dawn-41038.herokuapp.com/user/getProfilePic/${storedCredentials.name}`;
+        const url = serverUrl + '/user/getProfilePic/' + storedCredentials.name;
 
         axios.get(url).then((response) => {
             const result = response.data;
@@ -2372,7 +2389,7 @@ const Welcome = ({navigation, route}) => {
         })
         formData.append("userId", _id)
 
-        const url = "https://nameless-dawn-41038.herokuapp.com/user/postProfileImage";
+        const url = serverUrl + '/user/postProfileImage';
         setChangingPfp(true)
         axios.post(url, formData, {
             headers: {
@@ -2425,11 +2442,6 @@ const Welcome = ({navigation, route}) => {
                 pickImage()
             }
         }
-        Animated.timing(ChangePfpMenuOpacity, {
-            toValue: 0,
-            duration: 1,
-            useNativeDriver: 'true'
-        }).start()
     }
 
     const [refreshing, setRefreshing] = useState(false)
@@ -2461,11 +2473,6 @@ const Welcome = ({navigation, route}) => {
     }
 
     const checkForCameraPermissions = async () => {
-        Animated.timing(ChangePfpMenuOpacity, {
-            toValue: 0,
-            duration: 1,
-            useNativeDriver: 'true'
-        }).start()
         navigation.navigate('TakeImage_Camera', {locationToGoTo: 'Welcome'})
     }
 
@@ -2479,42 +2486,87 @@ const Welcome = ({navigation, route}) => {
     })
 
     const ChangePfp = () => {
-        setPageElementsState(true)
-        Animated.timing(ChangePfpMenuOpacity, {
-            toValue: 1,
-            duration: 1,
-            useNativeDriver: 'true'
-        }).start()
+        PfpPickerActionMenu.current.show();
+    }
+
+    async function savePicture(imageTag) {
+        if (await MediaLibrary.isAvailableAsync() == true) {
+            if (await MediaLibrary.getPermissionsAsync == 'all' || 'limited') {
+                MediaLibrary.saveToLibraryAsync(imageTag)
+            } else {
+                if (await MediaLibrary.requestPermissionsAsync() == 'granted') {
+                    if (Platform.OS == 'ios') {
+                        MediaLibrary.saveToLibraryAsync(imageTag)
+                    } else {
+                        alert('Android saving images is coming soon')
+                    }
+                } else {
+                    alert('Photo library write permissions have not been enabled. Please enable them in your settings to use this feature.')
+                }
+            }
+        } else {
+            alert('This device cannot save images to the photo library')
+        }
+    };
+
+    const GetBadgeIcon = (badge) => {
+        return (
+            <View style={{width: 25, height: 25, marginHorizontal: 3, marginTop: 6, marginBottom: 12}}>
+                {badge == 'onSignUpBadge' ?
+                    <EvilIcons name="trophy" size={35} color={colors.tertiary} style={{marginLeft: -5, marginTop: -1}}/>
+                :
+                    <AntDesign name="questioncircleo" size={25} color={colors.tertiary}/>
+                }
+            </View>
+        )
     }
     return(
         <>
             <StatusBar style={colors.StatusBarColor}/>
             {storedCredentials ?
                 <>
-                    <Animated.View style={{backgroundColor: colors.borderColor, opacity: ChangePfpMenuOpacity, position: 'absolute', top: StatusBarHeight + 100, height: 300, width: '80%', zIndex: ChangePfpMenuOpacity.interpolate({inputRange: [0,1], outputRange: [-10, 11]}), alignSelf: 'center', borderColor: colors.borderColor, borderWidth: 1, borderRadius: 20}}>
-                        <Text style={{color: colors.tertiary, fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>Change profile picture</Text>
-                        <View style={{height: 220}}>
-                            <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
-                                <StyledButton style={{backgroundColor: dark ? colors.slightlyLighterPrimary : colors.borderColor, borderColor: colors.tertiary}} postImage={true} onPress={OpenImgLibrary}>
-                                    <ButtonText style={{color: colors.tertiary}} postImage={true}>
-                                        +
-                                    </ButtonText>
-                                </StyledButton>
-                                <View style={{width: 20}}/>
-                                <StyledButton style={{backgroundColor: dark ? colors.slightlyLighterPrimary : colors.borderColor, borderColor: colors.tertiary}} postImage={true} onPress={checkForCameraPermissions}>
-                                    <Image
-                                        source={require('../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/016-camera.png')}
-                                        style={{height: 30, width: 30, tintColor: colors.tertiary}}
-                                        resizeMode="contain"
-                                        resizeMethod="resize"
-                                    />
-                                </StyledButton>
-                            </View>
-                        </View>
-                        <TouchableOpacity style={{borderColor: colors.errorColor, borderWidth: 3, borderRadius: 10, padding: 10, alignItems: 'center', justifyContent: 'center'}} onPress={() => {Animated.timing(ChangePfpMenuOpacity, {toValue: 0, duration: 1, useNativeDriver: true}).start()}}>
-                            <Text style={{color: colors.errorColor, fontSize: 20, fontWeight: 'bold'}}>Cancel</Text>
-                        </TouchableOpacity>
-                    </Animated.View>
+                    <>
+                        <ActionSheet
+                            ref={PfpSaveActionMenu}
+                            title={'Profile Picture Options'}
+                            options={PfpSaveActionMenuOptions}
+                            // Define cancel button index in the option array
+                            // This will take the cancel option in bottom
+                            // and will highlight it
+                            cancelButtonIndex={1}
+                            // Highlight any specific option
+                            //destructiveButtonIndex={2}
+                            onPress={(index) => {
+                                if (index == 0) {
+                                    savePicture(profilePictureUri)
+                                } else if (index == 1) {
+                                    console.log('Closing profile picture picker menu')
+                                }
+                            }}
+                        />
+                    </>
+                    <>
+                        <ActionSheet
+                            ref={PfpPickerActionMenu}
+                            title={'How would you like to choose your profile picture?'}
+                            options={PfpPickerActionMenuOptions}
+                            // Define cancel button index in the option array
+                            // This will take the cancel option in bottom
+                            // and will highlight it
+                            cancelButtonIndex={2}
+                            // Highlight any specific option
+                            //destructiveButtonIndex={2}
+                            onPress={(index) => {
+                                if (index == 0) {
+                                    checkForCameraPermissions()
+                                } else if (index == 1) {
+                                    OpenImgLibrary()
+                                } else if (index == 2) {
+                                    console.log('Closing action picker')
+                                }
+                            }}
+                        />
+                    </>
                     <Animated.View style={{paddingTop: StatusBarHeight - 10, backgroundColor: colors.primary, borderColor: colors.borderColor, borderBottomWidth: 1, alignItems: 'center', opacity: TopProfileBarFadeAnim, zIndex: TopProfileBarFadeAnim.interpolate({inputRange: [0, 1], outputRange: [-10, 100]}), position: 'absolute', top: 0, width: '100%', flexDirection: 'column'}}>
                         <>
                             {backButtonHidden == false &&
@@ -2590,7 +2642,9 @@ const Welcome = ({navigation, route}) => {
                             <ProfInfoAreaImage>
                                 {loadingPfp == false && (
                                     <View style={{alignSelf: 'center', alignContent: 'center'}}>
-                                        <Avatar resizeMode="cover" source={{uri: profilePictureUri}}/>
+                                        <TouchableOpacity onLongPress={() => {PfpSaveActionMenu.current.show()}}>
+                                            <Avatar resizeMode="cover" source={{uri: profilePictureUri}}/>
+                                        </TouchableOpacity>
                                         {changingPfp == false && (
                                             <TouchableOpacity onPress={() => {ChangePfp()}}>
                                                 <SubTitle style={{marginBottom: 0, color: darkestBlue, textAlign: 'center'}}>Change</SubTitle>
@@ -2612,13 +2666,18 @@ const Welcome = ({navigation, route}) => {
                                 </TouchableOpacity>
                                 <SubTitle style={{color: colors.tertiary}}>{"@"+name}</SubTitle>
                                 <ProfileBadgesView onPress={() => navigation.navigate("AccountBadges")}>
-                                    <ProfileBadgeIcons source={require('./../assets/img/TempProfIcons.jpg')}/>
-                                    <ProfileBadgeIcons source={require('./../assets/img/BgImage1.png')}/>
-                                    <ProfileBadgeIcons source={require('./../assets/img/TempProfIcons.jpg')}/>
-                                    <ProfileBadgeIcons source={require('./../assets/img/Toga.jpg')}/>
-                                    <ProfileBadgeIcons source={require('./../assets/img/TempProfIcons.jpg')}/>
+                                    <ProfileBadgeItemUnderline style={{backgroundColor: colors.tertiary}}/>
+                                    {GetBadgeIcon(badges[0])}
+                                    <ProfileBadgeItemUnderline style={{backgroundColor: colors.tertiary, left: 31}}/>
+                                    {GetBadgeIcon(badges[1])}
+                                    <ProfileBadgeItemUnderline style={{backgroundColor: colors.tertiary, left: 62}}/>
+                                    {GetBadgeIcon(badges[2])}
+                                    <ProfileBadgeItemUnderline style={{backgroundColor: colors.tertiary, left: 93}}/>
+                                    {GetBadgeIcon(badges[3])}
+                                    <ProfileBadgeItemUnderline style={{backgroundColor: colors.tertiary, left: 124}}/>
+                                    {GetBadgeIcon(badges[4])}
                                 </ProfileBadgesView>
-                                <SubTitle style={{color: colors.tertiary}} bioText={true} > Bio </SubTitle>
+                                <SubTitle style={{color: colors.tertiary}} bioText={true} > Bio will go here </SubTitle>
                             </ProfInfoAreaImage>
                             <ProfileHorizontalView>
                                 <ProfileHorizontalViewItem profLeftIcon={true}>

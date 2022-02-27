@@ -55,6 +55,7 @@ import { CredentialsContext } from '../components/CredentialsContext';
 //Image picker
 import * as ImagePicker from 'expo-image-picker';
 import { useTheme } from '@react-navigation/native';
+import ActionSheet from 'react-native-actionsheet';
 
 const CategoryCreationPage = ({navigation, route}) => {
     const {colors, dark} = useTheme()
@@ -67,6 +68,14 @@ const CategoryCreationPage = ({navigation, route}) => {
     const [selectFormat, setSelectFormat] = useState("Text");
     const [submitting, setSubmitting] = useState(false)
     const {imageFromRoute} = route.params;
+    // Logo picker
+    let LogoPickerActionSheet = useRef();
+    let LogoPickerActionSheetOptions = [
+        'Choose from Photo Library',
+        'Take a Photo',
+        'Reset to Default',
+        'Cancel',
+    ];
 
     //context
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
@@ -157,6 +166,28 @@ const CategoryCreationPage = ({navigation, route}) => {
 
     return(
         <>
+            <ActionSheet
+                ref={LogoPickerActionSheet}
+                title={'Profile Picture Options'}
+                options={LogoPickerActionSheetOptions}
+                // Define cancel button index in the option array
+                // This will take the cancel option in bottom
+                // and will highlight it
+                cancelButtonIndex={3}
+                // Highlight any specific option
+                destructiveButtonIndex={2}
+                onPress={(index) => {
+                    if (index == 0) {
+                        OpenImgLibrary()
+                    } else if (index == 1) {
+                        checkForCameraPermissions()
+                    } else if (index == 2) {
+                        navigation.setParams({imageFromRoute: null})
+                    } else if (index == 3) {
+                        console.log("Cancelled")
+                    }
+                }}
+            />
             <KeyboardAvoidingWrapper>
                 <StyledContainer style={{backgroundColor: colors.primary}}>
                         <StatusBar style={colors.StatusBarColor}/>
@@ -220,25 +251,9 @@ const CategoryCreationPage = ({navigation, route}) => {
                                         {!image && (
                                             <Avatar resizeMode="cover" source={require("./../assets/img/Logo.png")}/>
                                         )}
-                                        <View style={{height: 180}}>
-                                            <Text style={{color: colors.tertiary, fontSize: 25, fontWeight: 'bold', textAlign: 'center', marginTop: 10}}>Change Icon</Text>
-                                            <View style={{flex: 1, flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
-                                                <StyledButton style={{backgroundColor: dark ? colors.slightlyLighterPrimary : colors.borderColor, borderColor: colors.tertiary}} postImage={true} onPress={OpenImgLibrary}>
-                                                    <ButtonText style={{color: colors.tertiary}} postImage={true}>
-                                                        +
-                                                    </ButtonText>
-                                                </StyledButton>
-                                                <View style={{width: 20}}/>
-                                                <StyledButton style={{backgroundColor: dark ? colors.slightlyLighterPrimary : colors.borderColor, borderColor: colors.tertiary}} postImage={true} onPress={checkForCameraPermissions}>
-                                                    <Image
-                                                        source={require('../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/016-camera.png')}
-                                                        style={{height: 30, width: 30, tintColor: colors.tertiary}}
-                                                        resizeMode="contain"
-                                                        resizeMethod="resize"
-                                                    />
-                                                </StyledButton>
-                                            </View>
-                                        </View>
+                                        <StyledButton signUpButton={true} onPress={() => {LogoPickerActionSheet.current.show()}}>
+                                            <ButtonText signUpButton={true} style={{top: -9.5}}>Change logo</ButtonText>
+                                        </StyledButton>
                                         <PostHorizontalView centerAlign={true}>
                                             <CheckBoxForPosts style={{borderWidth: dark ? 3 : 5}} selectedState={postIsNSFW} onPress={() => {
                                                 if (values.categoryNSFW == true) {

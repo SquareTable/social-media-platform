@@ -53,6 +53,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 
 import { useTheme } from '@react-navigation/native';
 import SocialSquareLogo_B64_png from '../assets/SocialSquareLogo_Base64_png.js';
+import { ServerUrlContext } from '../components/ServerUrlContext.js';
 
 const FindScreen = ({navigation}) => {
     const {colors, dark} = useTheme();
@@ -72,7 +73,7 @@ const FindScreen = ({navigation}) => {
     var userLoadMax = 10;
     let cancelTokenPostFormatOne = axios.CancelToken.source();
     let cancelTokenPostFormatTwo = axios.CancelToken.source();
-
+    const {serverUrl, setServerurl} = useContext(ServerUrlContext);
     const UserItem = ({name, displayName, following, followers, totalLikes, profileKey, index}) => (
         colors.searchScreenType == 'Regular' ?
             <SearchFrame onPress={() => navigation.navigate("ProfilePages", {profilesName: name, profilesDisplayName: displayName, following: following, followers: followers, totalLikes: totalLikes, profileKey: profileKey != null ? `data:image/jpg;base64,${profileKey}` : SocialSquareLogo_B64_png})}>
@@ -169,7 +170,7 @@ const FindScreen = ({navigation}) => {
 
     //any image honestly
     async function getImageWithKeyOne(imageKey) {
-        return axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${imageKey}`, { cancelToken: cancelTokenPostFormatOne.token})
+        return axios.get((serverUrl + '/getImage/' + imageKey), { cancelToken: cancelTokenPostFormatOne.token})
         .then(res => res.data).catch(error => {
             console.log(error);
             //setSubmitting(false);
@@ -227,7 +228,7 @@ const FindScreen = ({navigation}) => {
 
             setLoadingOne(true)
             handleMessage(null);
-            const url = `https://nameless-dawn-41038.herokuapp.com/user/searchpageusersearch/${val}`;
+            const url = serverUrl + '/user/searchpageusersearch/' + val;
             submitting = true;
             axios.get(url).then((response) => {
                 const result = response.data;
@@ -257,7 +258,7 @@ const FindScreen = ({navigation}) => {
     }
 
     async function getImageInCategory(imageKey) {
-        return axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${imageKey}`, { cancelToken: cancelTokenPostFormatTwo.token})
+        return axios.get(('/getImage/' + imageKey), { cancelToken: cancelTokenPostFormatTwo.token})
         .then(res => res.data);
     }
 
@@ -303,7 +304,7 @@ const FindScreen = ({navigation}) => {
 
             setLoadingTwo(true)
             handleMessage(null);
-            const url = `https://nameless-dawn-41038.herokuapp.com/user/searchpagesearchcategories/${val}`;
+            const url = serverUrl + '/user/searchpagesearchcategories/' + val
             submitting = true;
             axios.get(url).then((response) => {
                 const result = response.data;
