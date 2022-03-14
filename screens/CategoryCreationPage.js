@@ -56,6 +56,7 @@ import { CredentialsContext } from '../components/CredentialsContext';
 import * as ImagePicker from 'expo-image-picker';
 import { useTheme } from '@react-navigation/native';
 import ActionSheet from 'react-native-actionsheet';
+import SocialSquareLogo_B64_png from '../assets/SocialSquareLogo_Base64_png';
 
 const CategoryCreationPage = ({navigation, route}) => {
     const {colors, dark} = useTheme()
@@ -249,7 +250,7 @@ const CategoryCreationPage = ({navigation, route}) => {
                                             <Avatar resizeMode="cover" source={image}/>
                                         )}
                                         {!image && (
-                                            <Avatar resizeMode="cover" source={require("./../assets/img/Logo.png")}/>
+                                            <Avatar resizeMode="cover" source={{uri: SocialSquareLogo_B64_png}}/>
                                         )}
                                         <StyledButton signUpButton={true} onPress={() => {LogoPickerActionSheet.current.show()}}>
                                             <ButtonText signUpButton={true} style={{top: -9.5}}>Change logo</ButtonText>
@@ -295,12 +296,8 @@ const CategoryCreationPage = ({navigation, route}) => {
                                         </StyledButton>)}
 
                                         {submitting && (<StyledButton disabled={true}>
-                                            <ActivityIndicator size="large" color={primary} />
+                                            <ActivityIndicator size="large" color={colors.primary} />
                                         </StyledButton>)}
-                                        
-                                        <StyledButton style={{backgroundColor: colors.primary}} signUpButton={true} onPress={() => navigation.navigate("AccountSettings")}>
-                                                <ButtonText signUpButton={true} style={{top: -9.5}}> Back </ButtonText>
-                                        </StyledButton>
                                     </StyledFormArea>)}
                             </Formik>
                         </InnerContainer>

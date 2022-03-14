@@ -1,5 +1,6 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import { StatusBar } from 'expo-status-bar';
+import Constants from 'expo-constants';
 
 import {
     InnerContainer,
@@ -59,7 +60,8 @@ import {
     PostsIconFrame,
     MsgBox,
     ImagePostTextFrame,
-    CategoriesTopBtns
+    CategoriesTopBtns,
+    Navigator_BackButton
 } from '../screens/screenStylings/styling';
 
 // Colors
@@ -75,6 +77,7 @@ import axios from 'axios';
 import { CredentialsContext } from '../components/CredentialsContext';
 import { ImageBackground, ScrollView, SectionList, View, Image, TouchableOpacity, ActivityIndicator, Text } from 'react-native';
 import { useTheme } from '@react-navigation/native';
+import SocialSquareLogo_B64_png from '../assets/SocialSquareLogo_Base64_png';
 
 const CategoryViewPage = ({route, navigation}) => {
     const {colors, dark} = useTheme()
@@ -135,6 +138,9 @@ const CategoryViewPage = ({route, navigation}) => {
     const [datePosted, setDatePosted] = useState();
     const [inCategory, setInCategory] = useState("Finding");
     const [initialInCategory, setInitialInCategory] = useState();
+
+    // Status Bar Height
+    const StatusBarHeight = Constants.statusBarHeight;
 
     const handleMessage = (message, type = 'FAILED', postNum) => {
         setMessage(message);
@@ -555,7 +561,7 @@ const CategoryViewPage = ({route, navigation}) => {
     }
 
     const ThreadItems = ({postNum, threadId, threadComments, threadType, threadUpVotes, threadTitle, threadSubtitle, threadTags, threadCategory, threadBody, threadImageKey, threadImageDescription, threadNSFW, threadNSFL, datePosted, threadUpVoted, threadDownVoted, creatorDisplayName, creatorName, creatorImageB64, imageInThreadB64})  => (
-        <TouchableOpacity style={{backgroundColor: slightlyLighterPrimary, borderRadius: 15, marginBottom: 10}} onPress={() => navigation.navigate("ThreadViewPage", {threadId: threadId})}>
+        <TouchableOpacity style={{backgroundColor: slightlyLighterPrimary, borderRadius: 15, marginBottom: 10}} onPress={() => navigation.navigate("ThreadViewPage", {threadId: threadId, creatorPfpB64: `data:image/jpg;base64,${creatorImageB64}`})}>
                 {threadNSFW === true && (
                     <SubTitle style={{fontSize: 10, color: red, marginBottom: 0}}>(NSFW)</SubTitle>
                 )}
@@ -586,7 +592,7 @@ const CategoryViewPage = ({route, navigation}) => {
                         </PostsHorizontalView>
                     </TouchableOpacity>
                 </PostsHorizontalView>
-                <TouchableOpacity onPress={() => navigation.navigate("ThreadViewPage", {threadId: threadId})}>
+                <TouchableOpacity onPress={() => navigation.navigate("ThreadViewPage", {threadId: threadId, creatorPfpB64: `data:image/jpg;base64,${creatorImageB64}`})}>
                     <ImagePostTextFrame style={{textAlign: 'left', alignItems: 'baseline'}}>
                         <TouchableOpacity>
                             <SubTitle style={{fontSize: 10, color: brand, marginBottom: 0}}>Category: {threadCategory}</SubTitle>
@@ -619,7 +625,7 @@ const CategoryViewPage = ({route, navigation}) => {
                 <PostHorizontalView style={{marginLeft: '5%', width: '90%', paddingVertical: 10, flex: 1, flexDirection: 'row'}}>
                     
                     {upVotes.includes(threadId) && (<PostsIconFrame onPress={() => {UpVoteThread(threadId, postNum)}}>
-                        <PostsIcons style={{flex: 1}} tintColor={brand} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
+                        <PostsIcons style={{flex: 1, tintColor: colors.brand}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
                     </PostsIconFrame>)}
                     {neitherVotes.includes(threadId) && (<PostsIconFrame onPress={() => {UpVoteThread(threadId, postNum)}}>
                         <PostsIcons style={{flex: 1}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
@@ -664,11 +670,11 @@ const CategoryViewPage = ({route, navigation}) => {
                         )}
                     </PostsIconFrame>)}
                     {changingVotedThreads.includes(threadId) && (<PostsIconFrame>
-                        <ActivityIndicator size="small" color={brand} />                
+                        <ActivityIndicator size="small" color={colors.brand} />                
                     </PostsIconFrame>)}
 
                     {downVotes.includes(threadId) && (<PostsIconFrame onPress={() => {DownVoteThread(threadId, postNum)}}>
-                        <PostsIcons style={{flex: 1}} tintColor={brand} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
+                        <PostsIcons style={{flex: 1, tintColor: colors.brand}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
                     </PostsIconFrame>)}
                     {neitherVotes.includes(threadId) && (<PostsIconFrame onPress={() => {DownVoteThread(threadId, postNum)}}>
                         <PostsIcons style={{flex: 1}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
@@ -679,7 +685,7 @@ const CategoryViewPage = ({route, navigation}) => {
                     {changingVotedThreads.includes(threadId) && (<PostsIconFrame></PostsIconFrame>)}
                     <PostsIconFrame>
                     </PostsIconFrame>
-                    <PostsIconFrame onPress={() => navigation.navigate("ThreadViewPage", {threadId: threadId})}>
+                    <PostsIconFrame onPress={() => navigation.navigate("ThreadViewPage", {threadId: threadId, creatorPfpB64: `data:image/jpg;base64,${creatorImageB64}`})}>
                         <PostsIcons style={{flex: 1}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/113-bubbles4.png')}/>
                     </PostsIconFrame>
                     <PostsIconFrame>
@@ -691,7 +697,7 @@ const CategoryViewPage = ({route, navigation}) => {
                 </PostHorizontalView>
                 {postNumForMsg == postNum && (<MsgBox type={messageType}>{message}</MsgBox>)}
                 <SubTitle style={{flex: 1, alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{datePosted}</SubTitle>
-                <TouchableOpacity onPress={() => navigation.navigate("ThreadViewPage", {threadId: threadId})}>
+                <TouchableOpacity onPress={() => navigation.navigate("ThreadViewPage", {threadId: threadId, creatorPfpB64: `data:image/jpg;base64,${creatorImageB64}`})}>
                     <SubTitle style={{flex: 1, alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{threadComments} comments</SubTitle>
                 </TouchableOpacity>
         </TouchableOpacity>
@@ -952,24 +958,38 @@ const CategoryViewPage = ({route, navigation}) => {
         setChangeSections()
     }
 
+    useEffect(() => {
+        changeToOne()
+    }, [])
+
     return(
         <>    
             <StatusBar style="dark"/>
+            <View style={{paddingTop: StatusBarHeight - 15, color: colors.primary, flexDirection: 'row', justifyContent: 'center'}}>
+                <Navigator_BackButton onPress={() => {navigation.goBack()}}>
+                    <Image
+                        source={require('../assets/app_icons/back_arrow.png')}
+                        style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2, tintColor: colors.tertiary, top: -11}}
+                        resizeMode="contain"
+                        resizeMethod="resize"
+                    />
+                </Navigator_BackButton>
+                {NSFW == true && (
+                    <SubTitle style={{color: red, marginBottom: 0, marginTop: 15}}>(NSFW)</SubTitle>
+                )}
+                {NSFL == true && (
+                    <SubTitle style={{color: red, marginBottom: 0, marginTop: 15}}>(NSFL)</SubTitle>
+                )}
+                <PageTitle style={{fontSize: 26}} welcome={true}>{categoryTitle || "Couldn't get name"}</PageTitle>
+            </View>
             <ScrollView style={{backgroundColor: colors.primary}}>
-                <WelcomeContainer style={{backgroundColor: colors.primary}}>
-                    <PageTitle welcome={true}>{categoryTitle || "Couldn't get name"}</PageTitle>
-                    {NSFW == true && (
-                        <SubTitle style={{color: red, marginBottom: 0}}>(NSFW)</SubTitle>
-                    )}
-                    {NSFL == true && (
-                        <SubTitle style={{color: red, marginBottom: 0}}>(NSFL)</SubTitle>
-                    )}
+                <WelcomeContainer style={{backgroundColor: colors.primary, marginTop: -60}}>
                     <ProfInfoAreaImage style={{flexDirection: 'row', width: '100%'}}>
                         {AvatarImg !== null && (
                             <Avatar resizeMode="cover" style={{width: '40%', marginLeft: '5%', marginRight: '5%', aspectRatio: 1/1}} source={{uri: AvatarImg}} />
                         )}
                         {AvatarImg == null && (
-                            <Avatar resizeMode="cover" style={{width: '40%', marginLeft: '5%', marginRight: '5%', aspectRatio: 1/1}} source={require('./../assets/img/Logo.png')} />
+                            <Avatar resizeMode="cover" style={{width: '40%', marginLeft: '5%', marginRight: '5%', aspectRatio: 1/1}} source={{uri: SocialSquareLogo_B64_png}} />
                         )}
                         <ProfInfoAreaImage style={{width: '40%',  marginLeft: '5%', marginRight: '5%'}}>
                             <SubTitle style={{color: colors.tertiary}}>{categoryDescription}</SubTitle>
@@ -1023,7 +1043,7 @@ const CategoryViewPage = ({route, navigation}) => {
                             <SubTitle welcome={true} style={{width: '80%', textAlign: 'center', color: colors.tertiary}}> {datePosted} </SubTitle>
                         </ProfileHorizontalViewItem>
                     </ProfileHorizontalView>
-                    <StyledButton style={{backgroundColor: colors.primary}} postCategory={true} onPress={() => {storedCredentials ? navigation.navigate("ThreadUploadPage", {threadFormat: null, threadTitle: null, threadSubtitle: null, threadTags: null, categoryTitle: categoryTitle, threadBody: null, threadImage: null, threadImageDescription: null, threadNSFW: null, threadNSFL: null, goBackAfterPost: true}) : navigation.navigate('ModalLoginScreen', {modal: true})}}>
+                    <StyledButton style={{backgroundColor: colors.primary}} postCategory={true} onPress={() => {storedCredentials ? navigation.navigate("ThreadUploadPage_FromCategory_FindStack", {threadFormat: null, threadTitle: null, threadSubtitle: null, threadTags: null, categoryTitle: categoryTitle, threadBody: null, threadImage: null, threadImageDescription: null, threadNSFW: null, threadNSFL: null, goBackAfterPost: true, goBackLocation: 'ThreadUploadPage_FromCategory_FindStack'}) : navigation.navigate('ModalLoginScreen', {modal: true})}}>
                         <ButtonText style={{color: colors.tertiary}} postCategory={true}>Post Thread</ButtonText>
                     </StyledButton>
                     <ProfileSelectMediaTypeHorizontalView>

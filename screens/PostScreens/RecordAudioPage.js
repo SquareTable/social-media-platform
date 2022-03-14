@@ -317,48 +317,98 @@ const RecordAudioPage = ({navigation}) => {
         }
     }
 
-    const goBack_Navigation = () => {
-        if (recordingStatus == true && recording) {
-            alert("Stop the recording before leaving this screen");
-            return;
-        } else if (playbackStatus && isAudioPlaying == true) {
-            alert("Stop the audio from playing before leaving this screen");
-            return;
-        } else if (timeSpentRecording && recording_uri) {
-            Alert.alert(
-                "You are trying to leave this screen with a recording still in memory",
-                "If you leave this screen, the recording will be deleted and you will not be able to get it back. Are you sure you want to continue?",
-                [
-                  {
-                    text: "Yes, delete my recording and go back",
-                    onPress: () => {navigation.goBack()}
-                  },
-                  {
-                    text: "No, keep my recording",
-                    onPress: () => {return},
-                    style: "cancel"
-                  },
-                ]
-            );
-        } else {
-            navigation.goBack();
-        }
-    }
+    useEffect(() =>
+        navigation.addListener('beforeRemove', (e) => {
+            if (recordingStatus != true && !recording && !playbackStatus && isAudioPlaying != true && !timeSpentRecording && !recording_uri) {
+                // If we don't have unsaved changes, then we don't need to do anything
+                return;
+            }
+    
+            // Prevent default behavior of leaving the screen
+            e.preventDefault();
+
+            if (recordingStatus == true && recording) {
+                Alert.alert(
+                    'Audio is still being recorded',
+                    'Audio is still being recorded. What do you want to do?',
+                    [
+                      { text: "Don't leave and stay recording", style: 'cancel', onPress: () => {} },
+                      {
+                        text: 'Stop recording and discard audio',
+                        style: 'destructive',
+                        // If the user confirmed, then we dispatch the action we blocked earlier
+                        // This will continue the action that had triggered the removal of the screen
+                        onPress: () => {
+                            changeRecordingStatus();
+                            navigation.dispatch(e.data.action);
+                        },
+                      },
+                      {
+                        text: 'Stay recording and leave screen (Coming Soon)',
+                        // If the user confirmed, then we dispatch the action we blocked earlier
+                        // This will continue the action that had triggered the removal of the screen
+                        onPress: () => alert('Coming soon'),
+                      },
+                    ]
+                );
+            } else if (playbackStatus && isAudioPlaying == true) {
+                Alert.alert(
+                    'Audio is still playing',
+                    'Audio is still playing. What do you want to do?',
+                    [
+                      { text: "Don't leave and stop playing", style: 'cancel', onPress: () => {} },
+                      {
+                        text: 'Stop playing and discard audio',
+                        style: 'destructive',
+                        // If the user confirmed, then we dispatch the action we blocked earlier
+                        // This will continue the action that had triggered the removal of the screen
+                        onPress: () => {
+                            pauseAudio();
+                            navigation.dispatch(e.data.action);
+                        },
+                      },
+                      {
+                        text: 'Stay playing and leave screen (Coming Soon)',
+                        // If the user confirmed, then we dispatch the action we blocked earlier
+                        // This will continue the action that had triggered the removal of the screen
+                        onPress: () => alert('Coming soon'),
+                      },
+                    ]
+                );
+            } else if (timeSpentRecording && recording_uri) {
+                Alert.alert(
+                    'Audio is still in memory',
+                    'Audio is still in memory. What do you want to do?',
+                    [
+                        { text: "Don't leave and keep audio", style: 'cancel', onPress: () => {} },
+                        {
+                            text: 'Delete audio and go back',
+                            style: 'destructive',
+                            // If the user confirmed, then we dispatch the action we blocked earlier
+                            // This will continue the action that had triggered the removal of the screen
+                            onPress: () => {
+                                navigation.dispatch(e.data.action);
+                            }
+                        },
+                    ]
+                );
+            }
+        }),
+        [navigation, recordingStatus, recording, playbackStatus, isAudioPlaying, timeSpentRecording, recording_uri]
+    );
     return(
         <>    
             <StatusBar style={colors.StatusBarColor}/>
                 <BackgroundDarkColor style={{backgroundColor: colors.primary}}>
                     <ChatScreen_Title style={{backgroundColor: colors.primary, borderWidth: 0}}>
-                        {!recordingStatus && !recording &&
-                            <Navigator_BackButton onPress={goBack_Navigation}>
-                                <Image
-                                source={require('../../assets/app_icons/back_arrow.png')}
-                                style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2, tintColor: colors.tertiary}}
-                                resizeMode="contain"
-                                resizeMethod="resize"
-                                />
-                            </Navigator_BackButton>
-                        }
+                        <Navigator_BackButton onPress={() => {navigation.goBack()}}>
+                            <Image
+                            source={require('../../assets/app_icons/back_arrow.png')}
+                            style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2, tintColor: colors.tertiary}}
+                            resizeMode="contain"
+                            resizeMethod="resize"
+                            />
+                        </Navigator_BackButton>
                         <TestText style={{textAlign: 'center', color: colors.tertiary}}>Record Audio</TestText>
                     </ChatScreen_Title>
                         <View>

@@ -501,7 +501,7 @@ const ViewImagePostPage = ({route, navigation}) => {
                         <PostHorizontalView style={{marginLeft: '5%', width: '90%', paddingVertical: 10, flex: 1, flexDirection: 'row'}}>
                             
                             {imageUpOrDownVoted == "UpVoted" && (<PostsIconFrame onPress={() => {UpVoteImage()}}>
-                                <PostsIcons style={{flex: 1}} tintColor={brand} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
+                                <PostsIcons style={{flex: 1, tintColor: colors.brand}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
                             </PostsIconFrame>)}
                             {imageUpOrDownVoted == "Neither" && (<PostsIconFrame onPress={() => {UpVoteImage()}}>
                                 <PostsIcons style={{flex: 1}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
@@ -552,7 +552,7 @@ const ViewImagePostPage = ({route, navigation}) => {
                             </PostsIconFrame>)}
                             
                             {imageUpOrDownVoted == "DownVoted" && (<PostsIconFrame onPress={() => {DownVoteImage()}}>
-                                <PostsIcons style={{flex: 1}} tintColor={brand} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
+                                <PostsIcons style={{flex: 1, tintColor: colors.brand}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
                             </PostsIconFrame>)}
                             {imageUpOrDownVoted == "Neither" && (<PostsIconFrame onPress={() => {DownVoteImage()}}>
                                 <PostsIcons style={{flex: 1}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
@@ -631,7 +631,7 @@ const ViewImagePostPage = ({route, navigation}) => {
                                                     </StyledButton>)}
                                                     <MsgBox type={messageType}>{message}</MsgBox>
                                                     {isSubmitting && (<StyledButton disabled={true}>
-                                                        <ActivityIndicator size="large" color={primary} />
+                                                        <ActivityIndicator size="large" color={colors.primary} />
                                                     </StyledButton>)}
                                                 </CommentsVerticalView>
                                             </CommentsHorizontalView>

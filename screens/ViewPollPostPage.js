@@ -1218,7 +1218,7 @@ const ViewPollPostPage = ({route, navigation}) => {
                             <PostHorizontalView style={{marginLeft: '5%', width: '90%', paddingVertical: 10, flex: 1, flexDirection: 'row'}}>
                             
                                 {pollUpOrDownVoted == "UpVoted" && (<PostsIconFrame onPress={() => {UpVotePoll()}}>
-                                    <PostsIcons style={{flex: 1}} tintColor={brand} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
+                                    <PostsIcons style={{flex: 1, tintColor: colors.brand}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
                                 </PostsIconFrame>)}
                                 {pollUpOrDownVoted == "Neither" && (<PostsIconFrame onPress={() => {UpVotePoll()}}>
                                     <PostsIcons style={{flex: 1}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
@@ -1269,7 +1269,7 @@ const ViewPollPostPage = ({route, navigation}) => {
                                 </PostsIconFrame>)}
                                 
                                 {pollUpOrDownVoted == "DownVoted" && (<PostsIconFrame onPress={() => {DownVotePoll()}}>
-                                    <PostsIcons style={{flex: 1}} tintColor={brand} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
+                                    <PostsIcons style={{flex: 1, tintColor: colors.brand}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
                                 </PostsIconFrame>)}
                                 {pollUpOrDownVoted == "Neither" && (<PostsIconFrame onPress={() => {DownVotePoll()}}>
                                     <PostsIcons style={{flex: 1}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
@@ -1350,7 +1350,7 @@ const ViewPollPostPage = ({route, navigation}) => {
                                                         </StyledButton>)}
                                                         <MsgBox type={messageType}>{message}</MsgBox>
                                                         {isSubmitting && (<StyledButton disabled={true}>
-                                                            <ActivityIndicator size="large" color={primary} />
+                                                            <ActivityIndicator size="large" color={colors.primary} />
                                                         </StyledButton>)}
                                                     </CommentsVerticalView>
                                                 </CommentsHorizontalView>

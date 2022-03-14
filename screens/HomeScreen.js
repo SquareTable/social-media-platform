@@ -1,5 +1,5 @@
 import React, { useState, useContext, useRef, useEffect, useCallback, memo } from 'react';
-import { StyleSheet, Text, View, Button, Image, TouchableOpacity, SafeAreaView, ScrollView, FlatList, Alert, useWindowDimensions, Animated, ActivityIndicator} from 'react-native';
+import { StyleSheet, Text, View, Button, Image, TouchableOpacity, SafeAreaView, ScrollView, FlatList, Alert, useWindowDimensions, Animated, ActivityIndicator, TouchableWithoutFeedback} from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import styled from "styled-components";
 import Images from "../posts/images.js";
@@ -143,6 +143,9 @@ const HomeScreen = ({navigation, route}) => {
     const [optionSixesBarLength, setOptionSixesBarLength] = useState(0);
     if (storedCredentials) {var {name, displayName, email, photoUrl, _id} = storedCredentials}
     const {serverUrl, setServerUrl} = useContext(ServerUrlContext);
+
+    //Easter egg - Logo Press
+    const logoPressedTimes = useRef(0);
 
     // Uploading posts code
     const postMultiMedia = (postData) => { // Creating multimedia post
@@ -805,6 +808,7 @@ const HomeScreen = ({navigation, route}) => {
         }
 
         const isFocused = useIsFocused()
+        isFocused ? null : logoPressedTimes.current = 0
         isFocused ? null : playRecording ? unloadAudio() : null
 
 
@@ -883,6 +887,10 @@ const HomeScreen = ({navigation, route}) => {
         checkToShowUpdateSimpleStylesWarning()
     }, [])
 
+    const logoPressEasterEgg = () => {
+        alert('Easter egg has been triggered')
+    }
+
     const HTMLRenderers = {
         iframe: IframeRenderer
       };
@@ -895,22 +903,40 @@ const HomeScreen = ({navigation, route}) => {
          style={{flex: 1, backgroundColor: colors.primary, paddingTop: StatusBarHeight}}
          >
             <StatusBar color={colors.StatusBarColor}/>
-            <View style={{flexDirection:'row'}}>
-                <Text style={{fontSize: 28, fontWeight: 'bold', textAlign: 'center', color: colors.tertiary, marginLeft: 3}}>SocialSquare BETA</Text>
-                <TouchableOpacity style={{position: 'absolute', right: 90}} disabled={!FlatListElementsEnabledState} onPress={() => {alert('Notifications Tab coming soon. This button may be moved to some other place in the app at a later point in time so if this button disappears it has most likely just moved somewhere else. Please consult in SocialSquare dev testing gc if you cannot find this button.')}}>
+            <View style={{flexDirection:'row', justifyContent: 'space-around'}}>
+                <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={() => {navigation.navigate('NotificationsScreen')}}>
                     <Icon name="notifications" size={32} color={colors.tertiary}/>
                 </TouchableOpacity>
-                <TouchableOpacity style={{position: 'absolute', right: 49}} disabled={!FlatListElementsEnabledState} onPress={changeHomeScreenSettingsMenuView}>
+                {/*<Text style={{fontSize: 26, fontWeight: 'bold', textAlign: 'center', color: colors.tertiary, marginRight: 3}}>SocialSquare</Text>*/}
+                <TouchableWithoutFeedback onPress={() => {
+                    logoPressedTimes.current < 49 ? logoPressedTimes.current += 1 : logoPressEasterEgg()
+                    console.log('Logo pressed times = ' + logoPressedTimes.current)
+                }}>
                     <Image
-                        source={require('../assets/app_icons/settings.png')}
-                        style={{ width: 32, height: 32, tintColor: colors.tertiary}}
-                        resizeMode="contain"
-                        resizeMethod="resize"
+                        source={require('../assets/NewLogo.png')}
+                        resizeMode = 'contain'
+                        style={{
+                            width: 35,
+                            height: 35,
+                            tintColor: colors.tertiary
+                        }}
+                    />
+                </TouchableWithoutFeedback>
+                <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={() => {navigation.navigate('ChatScreenNavigator')}}>
+                    <Image
+                        source={require('../assets/app_icons/chat.png')}
+                        resizeMode = 'contain'
+                        style={{
+                            width: 35,
+                            height: 35,
+                            tintColor: colors.tertiary
+                        }}
                     />
                 </TouchableOpacity>
-                <TouchableOpacity style={{position: 'absolute', right: 10}} disabled={!FlatListElementsEnabledState} onPress={changeFilterView}>
-                    <Image source={require('../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/348-filter.png')} style={{width: 30, height: 30, tintColor: colors.tertiary}}/>
-                </TouchableOpacity>
+            </View>
+            <View style={{flexDirection: 'row', justifyContent: 'space-evenly', position: 'absolute', top: StatusBarHeight + 40, width: '100%', zIndex: 2}}>
+                <Text style={{fontSize: 18, fontWeight: 'bold', textAlign: 'center', color: colors.brand, marginRight: 3}}>For You</Text>
+                <Text style={{fontSize: 18, fontWeight: 'bold', textAlign: 'center', color: colors.tertiary, marginRight: 3}}>Following</Text>
             </View>
             <ProfileOptionsView style={{backgroundColor: colors.primary}} viewHidden={updateSimpleStylesWarningHidden}>
                 <ScrollView style={{marginHorizontal: 10}}>
@@ -1248,16 +1274,6 @@ const HomeScreen = ({navigation, route}) => {
             <FlatList
                 data={Posts}
                 scrollEnabled={FlatListElementsEnabledState}
-                ListEmptyComponent={
-                    <>
-                        {(!postData || !postType) &&
-                            <View style={{width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center'}}>
-                                <Text style={{color: colors.tertiary, fontSize: 20, textAlign: 'center', marginVertical: 20}}>If you post something, it will show up here like it does on Instagram or TikTok</Text>
-                                <Text style={{color: colors.tertiary, fontSize: 20}}>Feed will be coming soon though :)</Text>
-                            </View>
-                        }
-                    </>
-                }
                 ListHeaderComponent={postData != undefined ?
                     postType == 'multimedia' ?
                     <>

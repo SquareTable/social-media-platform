@@ -221,10 +221,10 @@ const PollUploadPage = ({navigation}) => {
 
     return(
         <KeyboardAvoidingWrapper_NoScrollview style={{backgroundColor: colors.primary}}>
-            <ScrollView ref={scrollViewRef} onScroll={onScroll} scrollEventThrottle={200}>
+            <ScrollView style={{backgroundColor: colors.primary}} ref={scrollViewRef} onScroll={onScroll} scrollEventThrottle={200}>
                 <StyledContainer style={{backgroundColor: colors.primary}}>
                         <StatusBar style={dark ? 'light' : 'dark'}/>
-                        <InnerContainer>
+                        <InnerContainer style={{backgroundColor: colors.primary}}>
                             <PageLogo style={{tintColor: colors.tertiary}} source={require('./../../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/157-stats-bars.png')} />
                             
                             <PageTitle>Create Poll</PageTitle>
@@ -826,17 +826,13 @@ const PollUploadPage = ({navigation}) => {
                                             </TouchableOpacity>
                                         </View>
                                         <MsgBox type={messageType}>{message}</MsgBox>
-                                        {!isSubmitting && (<StyledButton onPress={handleSubmit}>
+                                        {!isSubmitting && (<StyledButton style={{backgroundColor: colors.brand}} onPress={handleSubmit}>
                                             <ButtonText> Submit </ButtonText>
                                         </StyledButton>)}
 
                                         {isSubmitting && (<StyledButton disabled={true}>
-                                            <ActivityIndicator size="large" color={primary} />
+                                            <ActivityIndicator size="large" color={colors.primary} />
                                         </StyledButton>)}
-                                        
-                                        <StyledButton style={{backgroundColor: colors.primary}} signUpButton={true} onPress={() => navigation.navigate("PostScreen")}>
-                                                <ButtonText signUpButton={true} style={{top: -9.5}}> Back </ButtonText>
-                                        </StyledButton>
                                     </StyledFormArea>)}
                             </Formik>
                         </InnerContainer>

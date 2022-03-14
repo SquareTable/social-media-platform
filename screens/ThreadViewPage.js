@@ -91,6 +91,7 @@ import { CredentialsContext } from '../components/CredentialsContext';
 import { ImageBackground, ScrollView, SectionList, View, Image, TouchableOpacity, ActivityIndicator, Text } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { ProfilePictureURIContext } from '../components/ProfilePictureURIContext';
+import SocialSquareLogo_B64_png from '../assets/SocialSquareLogo_Base64_png';
 
 const ThreadViewPage = ({route, navigation}) => {
     const {colors, dark} = useTheme()
@@ -727,7 +728,7 @@ const ThreadViewPage = ({route, navigation}) => {
                     </TouchableOpacity>
                     <TouchableOpacity onPress={()=>{UpVoteComment(commentId)}}>
                         {upVotes.includes(commentId) && (
-                            <CommentIcons tintColor={brand} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
+                            <CommentIcons style={{tintColor: colors.brand}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
                         )}
                         {downVotes.includes(commentId) && (
                             <CommentIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
@@ -782,7 +783,7 @@ const ThreadViewPage = ({route, navigation}) => {
                             <CommentIcons downVoteButton={true} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
                         )}
                         {downVotes.includes(commentId) && (
-                            <CommentIcons tintColor={brand} downVoteButton={true} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
+                            <CommentIcons style={{tintColor: colors.brand}} downVoteButton={true} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
                         )}
                         {neitherVotes.includes(commentId) && (
                             <CommentIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
@@ -909,16 +910,18 @@ const ThreadViewPage = ({route, navigation}) => {
         }
     }
 
+    console.log('Creator pfp: ' + creatorPfpB64)
+
     return(
         <>    
-            <StatusBar style="dark"/>
+            <StatusBar style={colors.StatusBarColor}/>
             <ScrollView style={{backgroundColor: colors.primary}}>
-                <StyledContainer style={{width: '100%', backgroundColor: dark ? darkest : greyish, alignItems: 'center', paddingBottom: 2}}>
+                <StyledContainer style={{width: '100%', backgroundColor: dark ? colors.darkest : colors.greyish, alignItems: 'center', paddingBottom: 2}}>
                     {categoryImageB64 == "Finding" && (
-                        <Avatar style={{height: 70, width: 70, marginBottom: 0}} source={require('./../assets/img/Logo.png')}/>
+                        <Avatar style={{height: 70, width: 70, marginBottom: 0}} source={{uri: SocialSquareLogo_B64_png}}/>
                     )}
                     {categoryImageB64 == null && (
-                        <Avatar style={{height: 70, width: 70, marginBottom: 0}} source={require('./../assets/img/Logo.png')}/>
+                        <Avatar style={{height: 70, width: 70, marginBottom: 0}} source={{uri: SocialSquareLogo_B64_png}}/>
                     )}
                     {categoryImageB64 !== null && (
                         <View>
@@ -970,14 +973,17 @@ const ThreadViewPage = ({route, navigation}) => {
                             <View style={{textAlign: 'left', alignItems: 'baseline', marginLeft: '5%', marginRight: '5%', width: '90%'}}>
                                 {threadType == "Images" && (
                                     <View>
-                                        <View style={{height: 200, width: 200}}>
                                         {imageInThreadB64 !== null && (
+                                            <View style={{height: 200, width: 200}}>
                                                 <Image style={{height: '100%', width: 'auto', resizeMode: 'contain'}} source={{uri: `data:image/jpg;base64,${imageInThreadB64}`}}/>
-                                            )}
-                                            {imageInThreadB64 == null && (
-                                                <Image style={{height: '100%', width: 'auto', resizeMode: 'contain'}} source={require('./../assets/img/Logo.png')}/>
-                                            )}
-                                        </View>
+                                            </View>
+                                        )}
+                                        {imageInThreadB64 == null && (
+                                            /*<Image style={{height: '100%', width: 'auto', resizeMode: 'contain'}} source={{uri: SocialSquareLogo_B64_png}}/>*/
+                                            <View style={{height: 200, width: 200, justifyContent: 'center', alignItems: 'center'}}>
+                                                <ActivityIndicator size="large" color={colors.brand}/>
+                                            </View>
+                                        )}
                                         <SubTitle style={{fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{threadImageDescription}</SubTitle>
                                     </View>
                                 )}
@@ -985,7 +991,7 @@ const ThreadViewPage = ({route, navigation}) => {
                             <PostHorizontalView style={{marginLeft: '5%', width: '90%', paddingVertical: 10, flex: 1, flexDirection: 'row'}}>
                                 
                                 {threadUpOrDownVoted == "UpVoted" && (<PostsIconFrame onPress={() => {UpVoteThread(threadId)}}>
-                                    <PostsIcons style={{flex: 1}} tintColor={brand} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
+                                    <PostsIcons style={{flex: 1, tintColor: colors.brand}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
                                 </PostsIconFrame>)}
                                 {threadUpOrDownVoted == "Neither" && (<PostsIconFrame onPress={() => {UpVoteThread(threadId)}}>
                                     <PostsIcons style={{flex: 1}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
@@ -1030,11 +1036,11 @@ const ThreadViewPage = ({route, navigation}) => {
                                     )}
                                 </PostsIconFrame>)}
                                 {threadUpOrDownVoted == "Changing" && (<PostsIconFrame>
-                                    <ActivityIndicator size="small" color={brand} />                
+                                    <ActivityIndicator size="small" color={colors.brand} />                
                                 </PostsIconFrame>)}
 
                                 {threadUpOrDownVoted == "DownVoted" && (<PostsIconFrame onPress={() => {DownVoteThread(threadId)}}>
-                                    <PostsIcons style={{flex: 1}} tintColor={brand} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
+                                    <PostsIcons style={{flex: 1, tintColor: colors.brand}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
                                 </PostsIconFrame>)}
                                 {threadUpOrDownVoted == "Neither" && (<PostsIconFrame onPress={() => {DownVoteThread(threadId)}}>
                                     <PostsIcons style={{flex: 1}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
@@ -1116,7 +1122,7 @@ const ThreadViewPage = ({route, navigation}) => {
                                                     </StyledButton>)}
                                                     <MsgBox type={messageType}>{message}</MsgBox>
                                                     {isSubmitting && (<StyledButton disabled={true}>
-                                                        <ActivityIndicator size="large" color={primary} />
+                                                        <ActivityIndicator size="large" color={colors.primary} />
                                                     </StyledButton>)}
                                                 </CommentsVerticalView>
                                             </CommentsHorizontalView>

@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useContext, useState, useEffect} from 'react';
 import { StatusBar } from 'expo-status-bar';
 
 import {
@@ -40,7 +40,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 //credentials context
 import { CredentialsContext } from '../components/CredentialsContext';
-import { ImageBackground, ScrollView, View, SectionList } from 'react-native';
+import { View, SectionList, SafeAreaView, Image, TouchableOpacity, Text, ActivityIndicator, Keyboard, TouchableWithoutFeedback } from 'react-native';
 
 // formik
 import {Formik} from 'formik';
@@ -49,7 +49,6 @@ import background from "./../assets/img/Toga.jpg";
 
 //axios
 import axios from 'axios';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useTheme } from '@react-navigation/native';
 
 const SelectCategorySearchScreen = ({route, navigation}) => {
@@ -64,7 +63,10 @@ const SelectCategorySearchScreen = ({route, navigation}) => {
     const [messageType, setMessageType] = useState();
     const [foundAmount, setFoundAmount] = useState();
     const [debounce, setDebounce] = useState(false);
-    const [changeSections, setChangeSections] = useState()
+    const [changeSections, setChangeSections] = useState();
+    const [noResults, setNoResults] = useState(false);
+    const [loadingResults, setLoadingResults] = useState(false);
+    const [errorMessage, setErrorMessage] = useState();
     var userLoadMax = 10;
 
     const CategoryItem = ({categoryTitle, categoryDescription, members, categoryTags, image, NSFW, NSFL, datePosted}) => (
@@ -140,6 +142,7 @@ const SelectCategorySearchScreen = ({route, navigation}) => {
                                 tempSections.push(tempSectionsTemp)
                                 itemsProcessed++;
                                 if(itemsProcessed === allData.length) {
+                                    setLoadingResults(false)
                                     setChangeSections(tempSections)
                                 }
                             }
@@ -151,6 +154,7 @@ const SelectCategorySearchScreen = ({route, navigation}) => {
                             tempSections.push(tempSectionsTemp)
                             itemsProcessed++;
                             if(itemsProcessed === allData.length) {
+                                setLoadingResults(false)
                                 setChangeSections(tempSections)
                             }
                         }
@@ -161,16 +165,27 @@ const SelectCategorySearchScreen = ({route, navigation}) => {
             handleMessage(null);
             const url = `https://nameless-dawn-41038.herokuapp.com/user/searchpagesearchcategories/${val}`;
             submitting = true;
+            setLoadingResults(true);
             axios.get(url).then((response) => {
                 const result = response.data;
                 const {message, status, data} = result;
 
                 if (status !== 'SUCCESS') {
-                    handleMessage(message, status);
+                    if (message === 'No results') {
+                        setNoResults(true)
+                        setLoadingResults(false)
+                        setErrorMessage()
+                        return
+                    }
+                    setErrorMessage(message);
+                    setNoResults(false)
+                    setLoadingResults(false)
                 } else {
                     console.log(data)
                     layoutCategoriesFound(data)
-                    handleMessage("Search Complete", "SUCCESS");
+                    console.log('Search complete.')
+                    setNoResults(false)
+                    setErrorMessage()
                     //persistLogin({...data[0]}, message, status);
                 }
                 submitting = false;
@@ -178,11 +193,16 @@ const SelectCategorySearchScreen = ({route, navigation}) => {
             }).catch(error => {
                 console.log(error);
                 submitting = false;
-                handleMessage("An error occured. Try checking your network connection and retry.");
+                setErrorMessage("An error occured. Try checking your network connection and retry.");
+                setNoResults(false)
+                setLoadingResults(false)
             })
         } else {
-            handleMessage("Empty search");
+            console.log('Empty search')
+            setNoResults(false)
+            setLoadingResults(false)
             setChangeSections()
+            setErrorMessage()
         }
     }
 
@@ -200,27 +220,39 @@ const SelectCategorySearchScreen = ({route, navigation}) => {
 
     return(
         <>    
-            <StatusBar style="dark"/>
-            <View style={{'width': '100%', 'height': '100%'}}>
-                <SectionList
-                    ListHeaderComponent={
-                        <WelcomeContainer style={{backgroundColor: colors.primary}} postScreen={true}>
-                            <PageTitle>Select A Category</PageTitle>
-                            <SubTitle style={{color: colors.tertiary}}>{message}</SubTitle>
-                            <SearchBarArea>
-                                <UserTextInput
-                                    placeholder="Search"
-                                    placeholderTextColor={darkLight}
-                                    onChangeText={(val) => handleChange(val)}
-                                    style={{backgroundColor: colors.primary, borderColor: colors.tertiary, color: colors.tertiary}}
-                                />
-                            </SearchBarArea>
-                        </WelcomeContainer>
-                    }
-                    sections={changeSections}
-                    keyExtractor={(item, index) => item + index}
-                    renderItem={({ item }) => <CategoryItem categoryTitle={item.categoryTitle} categoryDescription={item.categoryDescription} members={item.members} categoryTags={item.categoryTags} image={item.image} NSFW={item.NSFW} NSFL={item.NSFL} datePosted={item.datePosted}/>}
-                />
+            <StatusBar style={colors.StatusBarColor}/>
+            <TouchableWithoutFeedback onPress={() => {Keyboard.dismiss()}}>
+                <SafeAreaView style={{alignItems: 'center', marginBottom: -30, flexDirection: 'row'}}>
+                    <TouchableOpacity onPress={() => {navigation.goBack()}}>
+                        <Image
+                            source={require('../assets/app_icons/back_arrow.png')}
+                            style={{minHeight: 45, minWidth: 45, width: 45, height: 45, maxWidth: 45, maxHeight: 45, tintColor: colors.tertiary, marginBottom: 15}}
+                        />
+                    </TouchableOpacity>
+                    <SearchBarArea>
+                        <UserTextInput
+                            placeholder="Search"
+                            placeholderTextColor={darkLight}
+                            onChangeText={(val) => handleChange(val)}
+                            style={{backgroundColor: colors.primary, borderColor: colors.tertiary, color: colors.tertiary}}
+                        />
+                    </SearchBarArea>
+                </SafeAreaView>
+            </TouchableWithoutFeedback>
+            <View>
+                {errorMessage ?
+                    <Text style={{color: colors.errorColor, fontSize: 20, fontWeight: 'bold', textAlign: 'center', marginTop: 10}}>{errorMessage}</Text>
+                :
+                    noResults == false ?
+                        <SectionList
+                            sections={changeSections}
+                            keyExtractor={(item, index) => item + index}
+                            renderItem={({ item }) => <CategoryItem categoryTitle={item.categoryTitle} categoryDescription={item.categoryDescription} members={item.members} categoryTags={item.categoryTags} image={item.image} NSFW={item.NSFW} NSFL={item.NSFL} datePosted={item.datePosted}/>}
+                            ListFooterComponent={loadingResults ? <ActivityIndicator color={colors.brand} size="large" style={{marginTop: 10}}/> : <View style={{marginBottom: 110}}/>}
+                        />
+                    :
+                        <Text style={{color: colors.tertiary, fontSize: 20, fontWeight: 'bold', textAlign: 'center', marginTop: 10}}>No results</Text>
+                }
             </View>
 
         </>

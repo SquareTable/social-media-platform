@@ -64,7 +64,7 @@ const ThreadUploadPage = ({route, navigation}) => {
     const [postIsNSFW, setPostIsNSFW] = useState(false);
     const [postIsNSFL, setPostIsNSFL] = useState(false);
     const [selectFormat, setSelectFormat] = useState("Text");
-    const {threadFormat, threadTitle, threadSubtitle, threadTags, categoryTitle, threadBody, imageFromRoute, threadImageDescription, threadNSFW, threadNSFL, goBackAfterPost} = route.params;
+    const {threadFormat, threadTitle, threadSubtitle, threadTags, categoryTitle, threadBody, imageFromRoute, threadImageDescription, threadNSFW, threadNSFL, goBackAfterPost, goBackLocation} = route.params;
     const [selectedTitle, setSelectedTitle] = useState("")
     const [selectedSubTitle, setSelectedSubTitle] = useState("")
     const [selectedTags, setSelectedTags] = useState("")
@@ -238,7 +238,7 @@ const ThreadUploadPage = ({route, navigation}) => {
     }
 
     const checkForCameraPermissions = async () => {
-        navigation.navigate('TakeImage_Camera', {locationToGoTo: 'ThreadUploadPage'})
+        navigation.navigate('TakeImage_Camera', {locationToGoTo: goBackLocation})
     }
 
     return(
@@ -251,11 +251,12 @@ const ThreadUploadPage = ({route, navigation}) => {
                         <PageTitle>Create Thread</PageTitle>
                         <Formik
                             initialValues={{threadFormat: selectFormat, threadTitle: selectedTitle, threadSubtitle: selectedSubTitle, threadTags: selectedTags, threadCategory: selectedCategory, threadBody: selectedBody, threadImageDescription: selectedThreadImageDescription, threadNSFW: selectedThreadNSFW, threadNSFL: selectedThreadNSFL}}
-                            onSubmit={(values) => {
+                            onSubmit={(values, {setSubmitting}) => {
                                 console.log("Submitting")
                                 if (values.threadFormat == "Text") {
                                     if (values.threadTitle == "" || selectedCategory == null || values.threadBody == "") {
                                         handleMessage('Please fill all the fields.');
+                                        setSubmitting(false)
                                     } else {
                                         let tempValues = values;
                                         tempValues.selectedCategory = selectedCategory;
@@ -269,6 +270,7 @@ const ThreadUploadPage = ({route, navigation}) => {
                                     }
                                 } else if (values.threadFormat == "Images") {
                                     if (values.threadTitle == "" || selectedCategory == null || image == null) {
+                                        setSubmitting(false)
                                         handleMessage('Please fill all the fields.');
                                     } else {
                                         let tempValues = values;
@@ -442,12 +444,8 @@ const ThreadUploadPage = ({route, navigation}) => {
                                     </StyledButton>)}
 
                                     {isSubmitting && (<StyledButton disabled={true}>
-                                        <ActivityIndicator size="large" color={primary} />
+                                        <ActivityIndicator size="large" color={colors.primary} />
                                     </StyledButton>)}
-                                    
-                                    <StyledButton style={{backgroundColor: colors.primary}} signUpButton={true} onPress={() => navigation.goBack()}>
-                                            <ButtonText style={{top: -9}} signUpButton={true}> Back </ButtonText>
-                                    </StyledButton>
                                 </StyledFormArea>)}
                         </Formik>
                     </InnerContainer>

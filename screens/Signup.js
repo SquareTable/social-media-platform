@@ -168,6 +168,7 @@ const Signup = ({navigation, route}) => {
             <StyledContainer style={{backgroundColor: colors.primary}}>
                 <StatusBar style={colors.StatusBarColor}/>
                 <InnerContainer style={{backgroundColor: colors.primary}}>
+                    <PageLogo source={require('../assets/NewLogo.png')} style={{tintColor: colors.tertiary}}/>
                     <PageTitle style={{color: colors.tertiary}}>SocialSquare</PageTitle>
                     <SubTitle style={{color: colors.tertiary}}>Signup Page</SubTitle>
 

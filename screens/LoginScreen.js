@@ -195,6 +195,7 @@ const LoginScreen = ({navigation, route}) => {
             let message = profilePictureData[1];
             let status = profilePictureData[2];
             let credentialsToUse = profilePictureData[3];
+            console.log(credentialsToUse)
             let temp = allCredentialsStoredList;
             let tempStoredCreds = storedCredentials;
             setProfilePictureUri(profilePictureUriData);
@@ -257,7 +258,7 @@ const LoginScreen = ({navigation, route}) => {
                 <StyledContainer style={{backgroundColor: colors.primary}}>
                     <StatusBar style={colors.StatusBarColor}/>
                     <InnerContainer style={{backgroundColor: colors.primary}}>
-                        <PageLogo source={require('./../assets/img/Logo.png')} />
+                    <PageLogo source={require('../assets/NewLogo.png')} style={{tintColor: colors.tertiary}}/>
                         <PageTitle style={{color: colors.tertiary}}>SocialSquare</PageTitle>
                         <SubTitle style={{color: colors.tertiary}}>Login Page</SubTitle>
 

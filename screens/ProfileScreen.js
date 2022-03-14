@@ -252,6 +252,7 @@ const Welcome = ({navigation, route}) => {
     let PfpSaveActionMenu = useRef();
     const PfpSaveActionMenuOptions = [
         'Save to Camera Roll',
+        'Change Profile Picture',
         'Cancel'
     ];
     let PfpPickerActionMenu = useRef();
@@ -1259,7 +1260,7 @@ const Welcome = ({navigation, route}) => {
                 </PostsIconFrame>)}
 
                 {downVotesImages.includes(imageKey) && (<PostsIconFrame onPress={() => {DownVoteImage(imageKey, postNum)}}>
-                    <PostsIcons style={{flex: 1}} tintColor={colors.brand} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
+                    <PostsIcons style={{flex: 1, tintColor: colors.brand}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
                 </PostsIconFrame>)}
                 {neitherVotesImages.includes(imageKey) && (<PostsIconFrame onPress={() => {DownVoteImage(imageKey, postNum)}}>
                     <PostsIcons style={{flex: 1}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
@@ -2472,7 +2473,7 @@ const Welcome = ({navigation, route}) => {
         }
     }
 
-    const checkForCameraPermissions = async () => {
+    const checkForCameraPermissions = () => {
         navigation.navigate('TakeImage_Camera', {locationToGoTo: 'Welcome'})
     }
 
@@ -2484,10 +2485,6 @@ const Welcome = ({navigation, route}) => {
             navigation.setParams({imageFromRoute: null})
         }
     })
-
-    const ChangePfp = () => {
-        PfpPickerActionMenu.current.show();
-    }
 
     async function savePicture(imageTag) {
         if (await MediaLibrary.isAvailableAsync() == true) {
@@ -2520,6 +2517,63 @@ const Welcome = ({navigation, route}) => {
             </View>
         )
     }
+
+    const BadgesArea = (badges) => {
+        if (badges.length > 0) {
+            return (
+                <ProfileBadgesView onPress={() => navigation.navigate("AccountBadges", {name: name, displayName: displayName, badgesObject: badges, profilePictureUri: profilePictureUri})} style={{borderColor: colors.primary}}>
+                    {badges.length == 1 ?
+                        <>
+                            <ProfileBadgeItemUnderline style={{backgroundColor: colors.tertiary}}/>
+                            {GetBadgeIcon(badges[0])}
+                        </>
+                    : badges.length == 2 ?
+                        <>
+                            <ProfileBadgeItemUnderline style={{backgroundColor: colors.tertiary}}/>
+                            {GetBadgeIcon(badges[0])}
+                            <ProfileBadgeItemUnderline style={{backgroundColor: colors.tertiary, left: 31}}/>
+                            {GetBadgeIcon(badges[1])}
+                        </>
+                    : badges.length == 3 ?
+                        <>
+                            <ProfileBadgeItemUnderline style={{backgroundColor: colors.tertiary}}/>
+                            {GetBadgeIcon(badges[0])}
+                            <ProfileBadgeItemUnderline style={{backgroundColor: colors.tertiary, left: 31}}/>
+                            {GetBadgeIcon(badges[1])}
+                            <ProfileBadgeItemUnderline style={{backgroundColor: colors.tertiary, left: 62}}/>
+                            {GetBadgeIcon(badges[2])}
+                        </>
+                    : badges.length == 4 ?
+                        <>
+                            <ProfileBadgeItemUnderline style={{backgroundColor: colors.tertiary}}/>
+                            {GetBadgeIcon(badges[0])}
+                            <ProfileBadgeItemUnderline style={{backgroundColor: colors.tertiary, left: 31}}/>
+                            {GetBadgeIcon(badges[1])}
+                            <ProfileBadgeItemUnderline style={{backgroundColor: colors.tertiary, left: 62}}/>
+                            {GetBadgeIcon(badges[2])}
+                            <ProfileBadgeItemUnderline style={{backgroundColor: colors.tertiary, left: 93}}/>
+                            {GetBadgeIcon(badges[3])}
+                        </>
+                    :
+                        <>
+                            <ProfileBadgeItemUnderline style={{backgroundColor: colors.tertiary}}/>
+                            {GetBadgeIcon(badges[0])}
+                            <ProfileBadgeItemUnderline style={{backgroundColor: colors.tertiary, left: 31}}/>
+                            {GetBadgeIcon(badges[1])}
+                            <ProfileBadgeItemUnderline style={{backgroundColor: colors.tertiary, left: 62}}/>
+                            {GetBadgeIcon(badges[2])}
+                            <ProfileBadgeItemUnderline style={{backgroundColor: colors.tertiary, left: 93}}/>
+                            {GetBadgeIcon(badges[3])}
+                            <ProfileBadgeItemUnderline style={{backgroundColor: colors.tertiary, left: 124}}/>
+                            {GetBadgeIcon(badges[4])}
+                        </>
+                    }
+                </ProfileBadgesView>
+            )
+        } else {
+            return null
+        }
+    }
     return(
         <>
             <StatusBar style={colors.StatusBarColor}/>
@@ -2533,14 +2587,16 @@ const Welcome = ({navigation, route}) => {
                             // Define cancel button index in the option array
                             // This will take the cancel option in bottom
                             // and will highlight it
-                            cancelButtonIndex={1}
+                            cancelButtonIndex={2}
                             // Highlight any specific option
                             //destructiveButtonIndex={2}
                             onPress={(index) => {
                                 if (index == 0) {
                                     savePicture(profilePictureUri)
                                 } else if (index == 1) {
-                                    console.log('Closing profile picture picker menu')
+                                    PfpPickerActionMenu.current.show();
+                                } else if (index == 2) {
+                                    console.log('Cancelling')
                                 }
                             }}
                         />
@@ -2567,6 +2623,9 @@ const Welcome = ({navigation, route}) => {
                             }}
                         />
                     </>
+                    <TouchableOpacity onPress={() => {setShowAccountSwitcher(true)}} style={{backgroundColor: colors.primary, paddingTop: StatusBarHeight, paddingBottom: 10}}>
+                        <SubTitle style={{color: colors.tertiary, marginBottom: 0, textAlign: 'center'}}>{"@"+name}</SubTitle>
+                    </TouchableOpacity>
                     <Animated.View style={{paddingTop: StatusBarHeight - 10, backgroundColor: colors.primary, borderColor: colors.borderColor, borderBottomWidth: 1, alignItems: 'center', opacity: TopProfileBarFadeAnim, zIndex: TopProfileBarFadeAnim.interpolate({inputRange: [0, 1], outputRange: [-10, 100]}), position: 'absolute', top: 0, width: '100%', flexDirection: 'column'}}>
                         <>
                             {backButtonHidden == false &&
@@ -2587,6 +2646,7 @@ const Welcome = ({navigation, route}) => {
                                 </TouchableOpacity>
                                 <Avatar style={{width: 40, height: 40}} resizeMode="cover" source={{uri: profilePictureUri}}/>
                             </View>
+                            {/*
                             <View style={{position: 'absolute', right: 10, top: StatusBarHeight}}>
                                 <TouchableOpacity disabled={PageElementsState} onPress={goToSettingsScreen}>
                                     <Image
@@ -2597,6 +2657,7 @@ const Welcome = ({navigation, route}) => {
                                     />
                                 </TouchableOpacity>
                             </View>
+                            */}
                         </>
                         <ProfilePostsSelectionView style={{height: 50, borderBottomWidth: 0}}>
                             <ProfilePostsSelectionBtns onPress={changeToGrid}>
@@ -2616,40 +2677,21 @@ const Welcome = ({navigation, route}) => {
                         nestedScrollEnabled={true}
                     >
                         <WelcomeContainer style={{backgroundColor: colors.primary}}>
-                            <ProfileHorizontalView topItems={true}>
-                                <ViewHider viewHidden={backButtonHidden}>
-                                    <TouchableOpacity style={{marginRight: '65%'}} disabled={PageElementsState} onPress={() => {navigation.goBack()}}>
-                                        <Image
-                                            source={require('../assets/app_icons/back_arrow.png')}
-                                            style={{ width: 40, height: 40, tintColor: colors.tertiary}}
-                                            resizeMode="contain"
-                                            resizeMethod="resize"
-                                        />
-                                    </TouchableOpacity>
-                                </ViewHider>
-                                <ViewHider viewHidden={!backButtonHidden}>
-                                    <View style={{minWidth: 40, marginRight: '65%'}}/>
-                                </ViewHider>
-                                <TouchableOpacity disabled={PageElementsState} onPress={goToSettingsScreen}>
-                                    <Image
-                                        source={require('../assets/app_icons/settings.png')}
-                                        style={{ width: 40, height: 40, tintColor: colors.tertiary}}
-                                        resizeMode="contain"
-                                        resizeMethod="resize"
-                                    />
-                                </TouchableOpacity>
-                            </ProfileHorizontalView>
-                            <ProfInfoAreaImage>
+                            <ProfInfoAreaImage style={{marginTop: -65}}>
                                 {loadingPfp == false && (
                                     <View style={{alignSelf: 'center', alignContent: 'center'}}>
                                         <TouchableOpacity onLongPress={() => {PfpSaveActionMenu.current.show()}}>
-                                            <Avatar resizeMode="cover" source={{uri: profilePictureUri}}/>
+                                            {displayName != '' ?
+                                                <Avatar resizeMode="cover" source={{uri: profilePictureUri}} />
+                                            :
+                                                <Avatar resizeMode="cover" source={{uri: profilePictureUri}} style={{marginBottom: 0}} />
+                                            }
                                         </TouchableOpacity>
-                                        {changingPfp == false && (
+                                        {/*changingPfp == false && (
                                             <TouchableOpacity onPress={() => {ChangePfp()}}>
                                                 <SubTitle style={{marginBottom: 0, color: darkestBlue, textAlign: 'center'}}>Change</SubTitle>
                                             </TouchableOpacity>
-                                        )}
+                                        )*/}
                                         {changingPfp == true && (
                                             <ActivityIndicator size="large" color={brand} style={{marginBottom: 20}} />  
                                         )}
@@ -2661,22 +2703,10 @@ const Welcome = ({navigation, route}) => {
                                         <SubTitle style={{marginBottom: 0, color: darkestBlue, textAlign: 'center'}}></SubTitle>
                                     </View>
                                 )}
-                                <TouchableOpacity onPress={() => {setShowAccountSwitcher(true)}}>
-                                    <PageTitle welcome={true}>{displayName || name || "Couldn't get name"}</PageTitle>
-                                </TouchableOpacity>
-                                <SubTitle style={{color: colors.tertiary}}>{"@"+name}</SubTitle>
-                                <ProfileBadgesView onPress={() => navigation.navigate("AccountBadges")}>
-                                    <ProfileBadgeItemUnderline style={{backgroundColor: colors.tertiary}}/>
-                                    {GetBadgeIcon(badges[0])}
-                                    <ProfileBadgeItemUnderline style={{backgroundColor: colors.tertiary, left: 31}}/>
-                                    {GetBadgeIcon(badges[1])}
-                                    <ProfileBadgeItemUnderline style={{backgroundColor: colors.tertiary, left: 62}}/>
-                                    {GetBadgeIcon(badges[2])}
-                                    <ProfileBadgeItemUnderline style={{backgroundColor: colors.tertiary, left: 93}}/>
-                                    {GetBadgeIcon(badges[3])}
-                                    <ProfileBadgeItemUnderline style={{backgroundColor: colors.tertiary, left: 124}}/>
-                                    {GetBadgeIcon(badges[4])}
-                                </ProfileBadgesView>
+                                {displayName != '' &&
+                                    <PageTitle style={{marginTop: -15, marginBottom: -15}} welcome={true}>{displayName || name || "Couldn't get name"}</PageTitle>
+                                }
+                                {BadgesArea(badges)}
                                 <SubTitle style={{color: colors.tertiary}} bioText={true} > Bio will go here </SubTitle>
                             </ProfInfoAreaImage>
                             <ProfileHorizontalView>
@@ -2790,9 +2820,6 @@ const Welcome = ({navigation, route}) => {
                     </StyledButton>
                     <StyledButton style={{backgroundColor: colors.primary, color: colors.tertiary}} signUpButton={true} onPress={() => navigation.navigate('ModalSignupScreen', {modal: true, Modal_NoCredentials: true})}>
                             <ButtonText signUpButton={true} style={{color: colors.tertiary, top: -9.5}}> Signup </ButtonText>
-                    </StyledButton>
-                    <StyledButton style={{backgroundColor: colors.primary, color: colors.tertiary}} signUpButton={true} onPress={goToSettingsScreen}>
-                            <ButtonText signUpButton={true} style={{color: colors.tertiary, top: -9.5}}> Settings </ButtonText>
                     </StyledButton>
                 </View>
             }

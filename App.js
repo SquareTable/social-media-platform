@@ -258,7 +258,6 @@ const App = () => {
       slightlyLighterPrimary: '#424a5c',
       descTextColor: '#abafb8',
       errorColor: '#FF0000', //red
-      searchScreenType: 'Regular',
     },
   };
   const AppLightTheme = {
@@ -288,7 +287,6 @@ const App = () => {
       slightlyLighterPrimary: '#424a5c',
       descTextColor: '#abafb8',
       errorColor: '#FF0000', //red
-      searchScreenType: 'Regular',
     }
   };
   const AppPureDarkTheme = {
@@ -318,7 +316,6 @@ const App = () => {
       slightlyLighterPrimary: '#424a5c',
       descTextColor: '#abafb8',
       errorColor: '#FF0000', //red
-      searchScreenType: 'Regular',
     }
   };
   const AppPureLightTheme = {
@@ -348,7 +345,6 @@ const App = () => {
       slightlyLighterPrimary: '#424a5c',
       descTextColor: '#abafb8',
       errorColor: '#FF0000', //red
-      searchScreenType: 'Regular',
     }
   };
 
@@ -904,6 +900,12 @@ const App = () => {
         require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/015-images.png'),
         require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/115-users.png'),
         require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/219-heart.png'),
+        require('./assets/NewLogo.png'),
+        require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/084-calendar.png'),
+        require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/020-film.png'),
+        require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/277-exit.png'),
+        require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/207-eye.png'),
+        require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/265-notification.png')
       ];
 
       const LockSocialSquareValue = await AsyncStorage.getItem('LockSocialSquare')
@@ -991,18 +993,18 @@ const App = () => {
                               <NavigationContainer ref={navigationRef} theme={AppStylingContextState == 'Default' ? scheme === 'dark' ? AppDarkTheme : AppLightTheme : AppStylingContextState == 'Dark' ? AppDarkTheme : AppStylingContextState == 'Light' ? AppLightTheme : AppStylingContextState == 'PureDark' ? AppPureDarkTheme : AppStylingContextState == 'PureLight' ? AppPureLightTheme : currentSimpleStylingData} onStateChange={() => {console.log('Screen changed')}}>
                                 {lockSocialSquare == false ?
                                   showPlaceholderScreen == true && (appStateVisible == 'background' || appStateVisible == 'inactive') &&
-                                      <Image source={require('./assets/Splash_Screen.png')} resizeMode="contain" style={{width: '100%', height: '100%', position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, zIndex: 100, backgroundColor: '#3B4252', borderWidth: 0}}/>
+                                      <Image source={require('./assets/Splash_Screen.png')} resizeMode="cover" style={{width: '100%', height: '100%', position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, zIndex: 100, backgroundColor: '#3B4252', borderWidth: 0}}/>
                                   :
                                     showSocialSquareLockedWarning == false ?
                                       previousAppStateVisible == 'inactive' || previousAppStateVisible == 'background' ?
                                         biometricsCanBeUsed == false ? null :
                                           openApp == false ?
-                                              <Image source={require('./assets/Splash_Screen.png')} resizeMode="contain" style={{width: '100%', height: '100%', position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, zIndex: 100, backgroundColor: '#3B4252', borderWidth: 0}}/>
+                                              <Image source={require('./assets/Splash_Screen.png')} resizeMode="cover" style={{width: '100%', height: '100%', position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, zIndex: 100, backgroundColor: '#3B4252', borderWidth: 0}}/>
                                           : null
                                       : appStateVisible == 'inactive' || appStateVisible == 'background' ?
-                                            <Image source={require('./assets/Splash_Screen.png')} resizeMode="contain" style={{width: '100%', height: '100%', position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, zIndex: 100, backgroundColor: '#3B4252', borderWidth: 0}}/>
+                                            <Image source={require('./assets/Splash_Screen.png')} resizeMode="cover" style={{width: '100%', height: '100%', position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, zIndex: 100, backgroundColor: '#3B4252', borderWidth: 0}}/>
                                         : openApp == false ? biometricsCanBeUsed == false ? null :
-                                            <Image source={require('./assets/Splash_Screen.png')} resizeMode="contain" style={{width: '100%', height: '100%', position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, zIndex: 100, backgroundColor: '#3B4252', borderWidth: 0}}/>
+                                            <Image source={require('./assets/Splash_Screen.png')} resizeMode="cover" style={{width: '100%', height: '100%', position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, zIndex: 100, backgroundColor: '#3B4252', borderWidth: 0}}/>
                                         : null
                                     :
                                       <View style={{position: 'absolute', height: '100%', width: '100%', top: 0, right: 0, backgroundColor: '#3B4252', zIndex: 1000}}>

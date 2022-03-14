@@ -3,10 +3,11 @@ import { StyleSheet, Text, View, Image, TouchableOpacity, TouchableWithoutFeedba
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useTheme } from '@react-navigation/native';
 
-import {ChatScreen_Stack, ProfileScreenToSettings_StackNavigation, RootStack, SettingsToBadges_StackNavigation, FindScreen_Stack, post_screen_navigator, home_screen_post_to_profile_screen} from '../navigation/StackNavigator.js'
+import {ChatScreen_Stack, ProfileScreenToSettings_StackNavigation, RootStack, SettingsToBadges_StackNavigation, FindScreen_Stack, post_screen_navigator, home_screen_post_to_profile_screen, SettingsStack} from '../navigation/StackNavigator.js'
 import * as Haptics from 'expo-haptics';
 import { ProfilePictureURIContext } from '../components/ProfilePictureURIContext';
 import { ShowAccountSwitcherContext } from '../components/ShowAccountSwitcherContext.js';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 
 
 const Tab = createBottomTabNavigator();
@@ -69,15 +70,15 @@ const Tabs = ({navigation}) => {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
         setCurrentTab('Post')
     }
-    const onChatScreenNavigate = () => {
-        if (currentTab == 'Chat') {
-            navigation.navigate('Chat');
+    const onSettingsScreenNavigate = () => {
+        if (currentTab == 'Settings') {
+            navigation.navigate('Settings');
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            console.log('Chat screen is already focused')
+            console.log('Settings screen is already focused')
         } else {
-            navigation.navigate('Chat');
+            navigation.navigate('Settings');
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-            setCurrentTab('Chat')
+            setCurrentTab('Settings')
         }
     }
     const onProfileScreenNavigate = () => {
@@ -123,7 +124,7 @@ const Tabs = ({navigation}) => {
                                     tintColor: focused ? colors.navFocusedColor : colors.navNonFocusedColor
                                 }}
                             />
-                            <Text style={{color: focused ? colors.navFocusedColor : colors.navNonFocusedColor, fontSize: 10}}>HOME</Text>
+                            {/*<Text style={{color: focused ? colors.navFocusedColor : colors.navNonFocusedColor, fontSize: 10}}>HOME</Text>*/}
                         </View>
                     </TouchableWithoutFeedback>
                 ),
@@ -141,7 +142,7 @@ const Tabs = ({navigation}) => {
                                     tintColor: focused ? colors.navFocusedColor : colors.navNonFocusedColor
                                 }}
                             />
-                            <Text style={{color: focused ? colors.navFocusedColor : colors.navNonFocusedColor, fontSize: 10}}>FIND</Text>
+                            {/*<Text style={{color: focused ? colors.navFocusedColor : colors.navNonFocusedColor, fontSize: 10}}>FIND</Text>*/}
                         </View>
                     </TouchableWithoutFeedback>
                 ),
@@ -150,27 +151,23 @@ const Tabs = ({navigation}) => {
             options={{
                 tabBarIcon: ({focused}) => (
                     <TouchableWithoutFeedback onPress={() => {onPostScreenNavigate()}}>
-                        <Image 
-                            source={require('../assets/app_icons/test3.png')}
-                            resizeMode="contain"
-                            style={{
-                                width: 50,
-                                height: 50,
-                                borderRadius: 50/2
-                            }}
-                        />
+                        {focused ?
+                            <AntDesign name="pluscircle" size={40} color={colors.navFocusedColor}/>
+                        :
+                            <AntDesign name="pluscircleo" size={40} color={colors.navNonFocusedColor}/>
+                        }
                     </TouchableWithoutFeedback>
                 ),
                 tabBarButton: (props) => (
                     <CustomTabBarButton {...props} />
                 )
             }}/>
-            <Tab.Screen name="Chat" component={ChatScreen_Stack} options={{
+            <Tab.Screen name="Settings" component={SettingsStack} options={{
                 tabBarIcon: ({focused}) => (
-                    <TouchableWithoutFeedback style={{backgroundColor: colors.primary, width: 'auto', height: 75, marginTop: 30}} onPress={() => {onChatScreenNavigate()}}>
+                    <TouchableWithoutFeedback style={{backgroundColor: colors.primary, width: 'auto', height: 75, marginTop: 30}} onPress={() => {onSettingsScreenNavigate()}}>
                         <View style={{alignItems: 'center', justifyContent: 'center', top: 10}}>
                             <Image
-                                source={require('../assets/app_icons/chat.png')}
+                                source={require('../assets/app_icons/settings.png')}
                                 resizeMode = 'contain'
                                 style={{
                                     width: 35,
@@ -178,7 +175,7 @@ const Tabs = ({navigation}) => {
                                     tintColor: focused ? colors.navFocusedColor : colors.navNonFocusedColor
                                 }}
                             />
-                            <Text style={{color: focused ? colors.navFocusedColor : colors.navNonFocusedColor, fontSize: 10}}>CHAT</Text>
+                            {/*<Text style={{color: focused ? colors.navFocusedColor : colors.navNonFocusedColor, fontSize: 10}}>SETTINGS</Text>*/}
                         </View>
                     </TouchableWithoutFeedback>
                 ),
@@ -198,7 +195,7 @@ const Tabs = ({navigation}) => {
                                     borderRadius: 40/2
                                 }}
                             />
-                            <Text style={{color: focused ? colors.navFocusedColor : colors.navNonFocusedColor, fontSize: 10}}>PROFILE</Text>
+                            {/*<Text style={{color: focused ? colors.navFocusedColor : colors.navNonFocusedColor, fontSize: 10}}>PROFILE</Text>*/}
                         </View>
                     </TouchableWithoutFeedback>
                 ),

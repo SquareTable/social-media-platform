@@ -55,7 +55,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 //credentials context
 import { CredentialsContext } from '../../components/CredentialsContext';
-import { ImageBackground, ScrollView, Image, View, TouchableOpacity, Text, Touchable } from 'react-native';
+import { ImageBackground, ScrollView, Image, View, TouchableOpacity, Text } from 'react-native';
 
 //Image picker
 import * as ImagePicker from 'expo-image-picker';
@@ -211,10 +211,6 @@ const MultiMediaUploadPage = ({navigation, route}) => {
                                 <MsgBox type={messageType}>{message}</MsgBox>
                                 <StyledButton onPress={handleSubmit}>
                                     <ButtonText> Continue </ButtonText>
-                                </StyledButton>
-                                
-                                <StyledButton style={{backgroundColor: colors.primary}} signUpButton={true} onPress={() => navigation.navigate("PostScreen")}>
-                                        <ButtonText style={{top: -9}} signUpButton={true}> Cancel </ButtonText>
                                 </StyledButton>
                             </StyledFormArea>)}
                     </Formik>

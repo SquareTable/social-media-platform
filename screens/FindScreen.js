@@ -1,5 +1,6 @@
-import React, {useContext, useEffect, useState, memo} from 'react';
+import React, {useContext, useEffect, useState, useRef} from 'react';
 import { StatusBar } from 'expo-status-bar';
+import Constants from 'expo-constants';
 
 import {
     InnerContainer,
@@ -40,7 +41,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 //credentials context
 import { CredentialsContext } from '../components/CredentialsContext';
-import { ImageBackground, ScrollView, View, SectionList, ActivityIndicator, Text } from 'react-native';
+import { ImageBackground, ScrollView, View, SectionList, ActivityIndicator, Text, SafeAreaView } from 'react-native';
 
 // formik
 import {Formik} from 'formik';
@@ -70,13 +71,16 @@ const FindScreen = ({navigation}) => {
     const [changeSectionsTwo, setChangeSectionsTwo] = useState()
     const [loadingOne, setLoadingOne] = useState(false)
     const [loadingTwo, setLoadingTwo] = useState(false)
+    const [noResults, setNoResults] = useState(false);
+    const searchValue = useRef(null);
     var userLoadMax = 10;
     let cancelTokenPostFormatOne = axios.CancelToken.source();
     let cancelTokenPostFormatTwo = axios.CancelToken.source();
     const {serverUrl, setServerurl} = useContext(ServerUrlContext);
-    const UserItem = ({name, displayName, following, followers, totalLikes, profileKey, index}) => (
-        colors.searchScreenType == 'Regular' ?
-            <SearchFrame onPress={() => navigation.navigate("ProfilePages", {profilesName: name, profilesDisplayName: displayName, following: following, followers: followers, totalLikes: totalLikes, profileKey: profileKey != null ? `data:image/jpg;base64,${profileKey}` : SocialSquareLogo_B64_png})}>
+    const StatusBarHeight = Constants.statusBarHeight;
+    const UserItem = ({name, displayName, following, followers, totalLikes, profileKey, badges, index}) => (
+        /* OLD DESIGN
+            <SearchFrame onPress={() => navigation.navigate("ProfilePages", {profilesName: name, profilesDisplayName: displayName, following: following, followers: followers, totalLikes: totalLikes, profileKey: profileKey != null ? `data:image/jpg;base64,${profileKey}` : SocialSquareLogo_B64_png, badges: badges})}>
                 {profileKey !== null && (
                     <Avatar resizeMode="cover" searchPage={true} source={{uri: `data:image/jpg;base64,${profileKey}`}} />
                 )}
@@ -105,14 +109,14 @@ const FindScreen = ({navigation}) => {
                     </SearchHorizontalViewItem>
                 </SearchHorizontalView>
             </SearchFrame>
-        :
-            <TouchableOpacity onPress={() => navigation.navigate("ProfilePages", {profilesName: name, profilesDisplayName: displayName, following: following, followers: followers, totalLikes: totalLikes, profileKey: profileKey != null ? `data:image/jpg;base64,${profileKey}` : SocialSquareLogo_B64_png})} style={{borderBottomWidth: 2, borderColor: colors.darkLight, flexDirection: 'row', width: '100%', padding: 5}}>
+        */
+            <TouchableOpacity onPress={() => navigation.navigate("ProfilePages", {profilesName: name, profilesDisplayName: displayName, following: following, followers: followers, totalLikes: totalLikes, profileKey: profileKey != null ? `data:image/jpg;base64,${profileKey}` : SocialSquareLogo_B64_png, badges: badges})} style={{borderColor: colors.darkLight, flexDirection: 'row', width: '100%', padding: 5}}>
                 <View style={{alignItems: 'flex-start', justifyContent: 'center', flexDirection: 'row'}}>
                     {profileKey !== null && (
                         <Avatar style={{width: 60, height: 60, marginBottom: 5, marginTop: 5}} resizeMode="cover" searchPage={true} source={{uri: `data:image/jpg;base64,${profileKey}`}} />
                     )}
                     {profileKey == null && (
-                        <Avatar style={{width: 60, height: 60, marginBottom: 5, marginTop: 5}} resizeMode="cover" searchPage={true} source={require('./../assets/img/Logo.png')} />
+                        <Avatar style={{width: 60, height: 60, marginBottom: 5, marginTop: 5}} resizeMode="cover" searchPage={true} source={{uri: SocialSquareLogo_B64_png}} />
                     )}
                     <SubTitle style={{color: colors.tertiary, marginTop: 24, marginLeft: 10}} searchResTitle={true}>{name}</SubTitle>
                 </View>
@@ -125,7 +129,7 @@ const FindScreen = ({navigation}) => {
                 <Avatar resizeMode="cover" searchPage={true} source={{uri: `data:image/jpg;base64,${image}`}} />
             )}
             {image == null && (
-                <Avatar resizeMode="cover" searchPage={true} source={require('./../assets/img/Logo.png')} />
+                <Avatar resizeMode="cover" searchPage={true} source={{uri: SocialSquareLogo_B64_png}} />
             )}
             {NSFW == false && (
                 <View>
@@ -146,7 +150,7 @@ const FindScreen = ({navigation}) => {
                     <SubTitle style={{color: colors.tertiary}} searchResTitle={true}>{categoryTitle}</SubTitle>
                 </View>
             )}
-            <SubTitle style={{color: colors.tertiary}} searchResTitleDisplayName={true}>{categoryDescription}</SubTitle>
+            <SubTitle style={{color: colors.tertiary, textAlign: 'center'}} searchResTitleDisplayName={true}>{categoryDescription}</SubTitle>
             <SubTitle searchResTitleDisplayName={true} style={{color: brand}}>{categoryTags}</SubTitle>
             <SearchHorizontalView>
                 <SearchHorizontalViewItemCenter style={{height: '100%', justifyContent: 'center', alignItems: 'center', textAlign: 'center'}}>
@@ -198,7 +202,7 @@ const FindScreen = ({navigation}) => {
                                 }
                                 const imageInPfp = await getImageWithKeyOne(allData[index].profileKey)
                                 const imageInPfpB64 = imageInPfp.data
-                                var tempSectionsTemp = {data: [{name: allData[index].name, displayName: displayName, followers: allData[index].followers, following: allData[index].following, totalLikes: allData[index].totalLikes, profileKey: imageInPfpB64}]}
+                                var tempSectionsTemp = {data: [{name: allData[index].name, displayName: displayName, followers: allData[index].followers, following: allData[index].following, totalLikes: allData[index].totalLikes, profileKey: imageInPfpB64, badges: allData[index].badges}]}
                                 tempSections.push(tempSectionsTemp)
                                 itemsProcessed++;
                                 if(itemsProcessed === allData.length) {
@@ -214,7 +218,7 @@ const FindScreen = ({navigation}) => {
                             if (displayName == "") {
                                 displayName = allData[index].name
                             }
-                            var tempSectionsTemp = {data: [{name: allData[index].name, displayName: displayName, followers: allData[index].followers, following: allData[index].following, totalLikes: allData[index].totalLikes, profileKey: null}]}
+                            var tempSectionsTemp = {data: [{name: allData[index].name, displayName: displayName, followers: allData[index].followers, following: allData[index].following, totalLikes: allData[index].totalLikes, profileKey: null, badges: allData[index].badges}]}
                             tempSections.push(tempSectionsTemp)
                             itemsProcessed++;
                             if(itemsProcessed === allData.length) {
@@ -235,12 +239,19 @@ const FindScreen = ({navigation}) => {
                 const {message, status, data} = result;
 
                 if (status !== 'SUCCESS') {
+                    if (message === 'No results') {
+                        setNoResults(true)
+                        setLoadingOne(false)
+                        return
+                    }
                     handleMessage(message, status);
                     setLoadingOne(false)
+                    setNoResults(false)
                 } else {
                     console.log(data)
                     layoutUsersFound(data)
-                    handleMessage("Search Complete", "SUCCESS");
+                    console.log('Search complete.')
+                    setNoResults(false)
                     //persistLogin({...data[0]}, message, status);
                 }
                 submitting = false;
@@ -250,15 +261,17 @@ const FindScreen = ({navigation}) => {
                 submitting = false;
                 setLoadingOne(false)
                 handleMessage("An error occured. Try checking your network connection and retry.");
+                setNoResults(false)
             })
         } else {
-            handleMessage("Empty search");
+            console.log('Empty search')
+            setNoResults(false)
             setChangeSectionsOne()
         }
     }
 
     async function getImageInCategory(imageKey) {
-        return axios.get(('/getImage/' + imageKey), { cancelToken: cancelTokenPostFormatTwo.token})
+        return axios.get((serverUrl + '/getImage/' + imageKey), { cancelToken: cancelTokenPostFormatTwo.token})
         .then(res => res.data);
     }
 
@@ -311,12 +324,19 @@ const FindScreen = ({navigation}) => {
                 const {message, status, data} = result;
 
                 if (status !== 'SUCCESS') {
+                    if (message === 'No results') {
+                        setNoResults(true)
+                        setLoadingTwo(false)
+                        return
+                    }
                     handleMessage(message, status);
                     setLoadingTwo(false)
+                    setNoResults(false)
                 } else {
                     console.log(data)
+                    setNoResults(false)
                     layoutCategoriesFound(data)
-                    handleMessage("Search Complete", "SUCCESS");
+                    console.log('Category search was a success')
                     //persistLogin({...data[0]}, message, status);
                 }
                 submitting = false;
@@ -325,10 +345,12 @@ const FindScreen = ({navigation}) => {
                 console.log(error);
                 submitting = false;
                 setLoadingTwo(false)
+                setNoResults(false)
                 handleMessage("An error occured. Try checking your network connection and retry.");
             })
         } else {
-            handleMessage("Empty search");
+            console.log('Empty category search')
+            setNoResults(false)
             setChangeSectionsTwo()
         }
     }
@@ -339,6 +361,7 @@ const FindScreen = ({navigation}) => {
     }
 
     const handleChange = (val) => {
+        searchValue.current = val;
         if (submitting == false) {
             if (filterFormatSearch == "Users") {
                 console.log(val)
@@ -350,50 +373,139 @@ const FindScreen = ({navigation}) => {
         }
     }
 
+    useEffect(() => {
+        if (message) {
+            alert(message + '. This message is only being shown while we transition SocialSquare over to the new design. Once we have fully transitioned this alert will go away.');
+        }
+    }, [message])
+
+    useEffect(() => {
+        if (searchValue.current !== "" && searchValue.current !== null) {
+            setNoResults(false)
+            if (filterFormatSearch == "Users") {
+                handleUserSearch(searchValue.current)
+            } else if (filterFormatSearch == "Categories") {
+                handleCategorySearch(searchValue.current)
+            }
+        }
+    }, [filterFormatSearch])
     return(
         <>    
-            <StatusBar style={dark ? 'light' : 'dark'}/>
-            {filterFormatSearch == "Users" && (
-                <View style={{width: '100%', height: '100%'}}>
-                    <>
-                        <SectionList
-                            sections={changeSectionsOne}
-                            ListHeaderComponent={<SearchScreenHeader colors={colors} message={message} filterFormatSearch={filterFormatSearch} setFilterFormatSearch={setFilterFormatSearch} dark={dark} cancelTokenPostFormatOne={cancelTokenPostFormatOne} cancelTokenPostFormatTwo={cancelTokenPostFormatTwo} setChangeSectionsOne={setChangeSectionsOne} setChangeSectionsTwo={setChangeSectionsTwo} handleChange={handleChange}/>}
-                            keyExtractor={(item, index) => item + index}
-                            renderItem={({ item, index }) => <UserItem name={item.name} displayName={item.displayName} followers={item.followers}  following={item.following} totalLikes={item.totalLikes} profileKey={item.profileKey} index={index}/>}
-                            ListFooterComponent={
-                                <>
-                                    <View style={{marginTop: 20}}>
-                                        {loadingOne == true && (
-                                            <ActivityIndicator size="large" color={brand} />     
-                                        )}
-                                    </View>
-                                </>
-                            }
-                        />
-                    </>
+            <StatusBar style={colors.StatusBarColor}/>
+            <View style={{paddingTop: StatusBarHeight - 15, borderColor: colors.borderColor, borderBottomWidth: 1, paddingBottom: 5}}>
+                <SearchBarArea style={{alignSelf: 'center'}}>
+                    <UserTextInput
+                        placeholder="Search"
+                        placeholderTextColor={darkLight}
+                        onChangeText={(val) => handleChange(val)}
+                        colors={colors}
+                    />
+                </SearchBarArea>
+                <View style={{alignItems: 'center', flexDirection: 'row', justifyContent: 'space-around', marginTop: -20}}>
+                    <View style={{flexDirection: 'column', alignItems: 'center'}}>
+                        <SubTitle style={{marginBottom: 0, fontSize: 15, fontWeight: 'normal', color: colors.tertiary}}>Users</SubTitle>
+                        {filterFormatSearch == "Users" && (
+                            <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: brand, borderWidth: 3, padding: 10, backgroundColor: dark? darkLight : colors.borderColor, alignItems: 'center', justifyContent: 'center'}}>
+                                <PostIcons style={{width: '100%', height: '100%', resizeMode: 'contain'}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/035-file-text.png')}/>
+                            </TouchableOpacity>
+                        )}
+                        {filterFormatSearch !== "Users" && (
+                            <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: slightlyLighterGrey, borderWidth: 3, padding: 10, backgroundColor: dark? darkLight : colors.borderColor, alignItems: 'center', justifyContent: 'center'}} onPress={() => {
+                                cancelTokenPostFormatTwo.cancel()
+                                setChangeSectionsOne()
+                                setFilterFormatSearch("Users")  
+                            }}>
+                                <PostIcons style={{width: '100%', height: '100%', resizeMode: 'contain'}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/035-file-text.png')}/>
+                            </TouchableOpacity>
+                        )}
+                    </View>
+                    <View style={{flexDirection: 'column', alignItems: 'center'}}>
+                        <SubTitle style={{marginBottom: 0, fontSize: 15, fontWeight: 'normal', color: colors.tertiary}}>Categories</SubTitle>
+                        {filterFormatSearch == "Categories" && (
+                            <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: brand, borderWidth: 3, padding: 10, backgroundColor: dark? darkLight : colors.borderColor, alignItems: 'center', justifyContent: 'center'}}>
+                                <PostIcons style={{width: '100%', height: '100%', resizeMode: 'contain'}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/093-drawer.png')}/>
+                            </TouchableOpacity>
+                        )}
+                        {filterFormatSearch !== "Categories" && (
+                            <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: slightlyLighterGrey, borderWidth: 3, padding: 10, backgroundColor: dark? darkLight : colors.borderColor, alignItems: 'center', justifyContent: 'center'}} onPress={() => {
+                                cancelTokenPostFormatOne.cancel()
+                                setChangeSectionsTwo()
+                                setFilterFormatSearch("Categories")
+                            }}>
+                                <PostIcons style={{width: '100%', height: '100%', resizeMode: 'contain'}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/093-drawer.png')}/>
+                            </TouchableOpacity>
+                        )}
+                    </View>
+                    <View style={{flexDirection: 'column', alignItems: 'center'}}>
+                        <SubTitle style={{marginBottom: 0, fontSize: 15, fontWeight: 'normal', color: colors.tertiary}}>Images</SubTitle>
+                        {filterFormatSearch == "Images" && (
+                            <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: brand, borderWidth: 3, padding: 10, backgroundColor: dark? darkLight : colors.borderColor, alignItems: 'center', justifyContent: 'center'}}>
+                                <PostIcons style={{width: '100%', height: '100%', resizeMode: 'contain'}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/015-images.png')}/>
+                            </TouchableOpacity>
+                        )}
+                        {filterFormatSearch !== "Images" && (
+                            <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: slightlyLighterGrey, borderWidth: 3, padding: 10, backgroundColor: dark? darkLight : colors.borderColor, alignItems: 'center', justifyContent: 'center'}} onPress={() => {
+                                //cancelTokenPostFormatOne.cancel()
+                                //cancelTokenPostFormatTwo.cancel()
+                                //setChangeSections()
+                                //setFilterFormatSearch("Images")
+                                alert('This feature is coming soon')
+                            }}>
+                                <PostIcons style={{width: '100%', height: '100%', resizeMode: 'contain'}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/015-images.png')}/>
+                            </TouchableOpacity>
+                        )}
+                    </View>
                 </View>
+            </View>
+            {filterFormatSearch == "Users" && (
+                <SectionList
+                    sections={changeSectionsOne}
+                    keyExtractor={(item, index) => item + index}
+                    renderItem={({ item, index }) => <UserItem name={item.name} displayName={item.displayName} followers={item.followers}  following={item.following} totalLikes={item.totalLikes} profileKey={item.profileKey} badges={item.badges} index={index}/>}
+                    ListFooterComponent={
+                        <>
+                            <View style={{marginTop: 20}}>
+                                {loadingOne == true && (
+                                    <ActivityIndicator size="large" color={brand} />     
+                                )}
+                            </View>
+                        </>
+                    }
+                    ListHeaderComponent={
+                        <>
+                            {noResults == true && (
+                                <View style={{marginTop: 20}}>
+                                    <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.tertiary, textAlign: 'center'}}>No results found</Text>
+                                </View>
+                            )}
+                        </>
+                    }
+                />
             )}
             {filterFormatSearch == "Categories" && (
-                <View style={{width: '100%', height: '100%'}}>
-                    <>
-                        <SectionList
-                            sections={changeSectionsTwo}
-                            ListHeaderComponent={<SearchScreenHeader colors={colors} message={message} filterFormatSearch={filterFormatSearch} setFilterFormatSearch={setFilterFormatSearch} dark={dark} cancelTokenPostFormatOne={cancelTokenPostFormatOne} cancelTokenPostFormatTwo={cancelTokenPostFormatTwo} setChangeSectionsOne={setChangeSectionsOne} setChangeSectionsTwo={setChangeSectionsTwo} handleChange={handleChange}/>}
-                            keyExtractor={(item, index) => item + index}
-                            renderItem={({ item }) => <CategoryItem categoryTitle={item.categoryTitle} categoryDescription={item.categoryDescription} members={item.members} categoryTags={item.categoryTags} image={item.image} NSFW={item.NSFW} NSFL={item.NSFL} datePosted={item.datePosted}/>}
-                            ListFooterComponent={
-                                <>
-                                    <View style={{marginTop: 20}}>
-                                        {loadingTwo == true && (
-                                            <ActivityIndicator size="large" color={brand} />     
-                                        )}
-                                    </View>
-                                </>
-                            }
-                        />
-                    </>
-                </View>
+                <SectionList
+                    sections={changeSectionsTwo}
+                    keyExtractor={(item, index) => item + index}
+                    renderItem={({ item }) => <CategoryItem categoryTitle={item.categoryTitle} categoryDescription={item.categoryDescription} members={item.members} categoryTags={item.categoryTags} image={item.image} NSFW={item.NSFW} NSFL={item.NSFL} datePosted={item.datePosted}/>}
+                    ListFooterComponent={
+                        <>
+                            <View style={{marginTop: 20}}>
+                                {loadingTwo == true && (
+                                    <ActivityIndicator size="large" color={brand} />     
+                                )}
+                            </View>
+                        </>
+                    }
+                    ListHeaderComponent={
+                        <>
+                            {noResults == true && (
+                                <View style={{marginTop: 20}}>
+                                    <Text style={{fontSize: 16, fontWeight: 'bold', color: colors.tertiary, textAlign: 'center'}}>No results found</Text>
+                                </View>
+                            )}
+                        </>
+                    }
+                />
             )}
             {filterFormatSearch == "Images" && (
                 <View style={{alignSelf: 'center', textAlign: 'center'}}>
@@ -414,81 +526,6 @@ const UserTextInput = ({label, icon, isPassword, colors, ...props}) => {
             <StyledTextInput style={{backgroundColor: colors.primary, color: colors.tertiary, borderColor: colors.borderColor}} searchPage={true} {...props}/>
         </SearchBarArea>
     )
-}
-
-const SearchScreenHeader = ({colors, message, filterFormatSearch, setFilterFormatSearch, dark, cancelTokenPostFormatOne, cancelTokenPostFormatTwo, setChangeSectionsOne, setChangeSectionsTwo, handleChange}) => {
-    return (
-        <>
-            <WelcomeContainer style={{backgroundColor: colors.primary}} postScreen={true}>
-                <PageTitle>Search Screen</PageTitle>
-                <SubTitle style={{color: colors.tertiary}}>Select a format</SubTitle>
-                <SubTitle style={{color: colors.tertiary}}>{message}</SubTitle>
-                <SearchBarArea>
-                    <UserTextInput
-                        placeholder="Search"
-                        placeholderTextColor={darkLight}
-                        onChangeText={(val) => handleChange(val)}
-                        colors={colors}
-                    />
-                </SearchBarArea>
-            </WelcomeContainer>
-            <View style={{'alignItems': 'center', flexDirection: 'row', flex: 1}}>
-                <View style={{flex: 1, flexDirection: 'column', alignItems: 'center'}}>
-                    <SubTitle style={{marginBottom: 0, fontSize: 15, fontWeight: 'normal', color: colors.tertiary}}>Users</SubTitle>
-                    {filterFormatSearch == "Users" && (
-                        <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: brand, borderWidth: 3, padding: 10, backgroundColor: dark? darkLight : colors.borderColor, alignItems: 'center', justifyContent: 'center'}}>
-                            <PostIcons style={{width: '100%', height: '100%', resizeMode: 'contain'}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/035-file-text.png')}/>
-                        </TouchableOpacity>
-                    )}
-                    {filterFormatSearch !== "Users" && (
-                        <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: slightlyLighterGrey, borderWidth: 3, padding: 10, backgroundColor: dark? darkLight : colors.borderColor, alignItems: 'center', justifyContent: 'center'}} onPress={() => {
-                            cancelTokenPostFormatTwo.cancel()
-                            setChangeSectionsOne()
-                            setFilterFormatSearch("Users")  
-                        }}>
-                            <PostIcons style={{width: '100%', height: '100%', resizeMode: 'contain'}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/035-file-text.png')}/>
-                        </TouchableOpacity>
-                    )}
-                </View>
-                <View style={{flex: 1, flexDirection: 'column', alignItems: 'center'}}>
-                    <SubTitle style={{marginBottom: 0, fontSize: 15, fontWeight: 'normal', color: colors.tertiary}}>Categories</SubTitle>
-                    {filterFormatSearch == "Categories" && (
-                        <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: brand, borderWidth: 3, padding: 10, backgroundColor: dark? darkLight : colors.borderColor, alignItems: 'center', justifyContent: 'center'}}>
-                            <PostIcons style={{width: '100%', height: '100%', resizeMode: 'contain'}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/093-drawer.png')}/>
-                        </TouchableOpacity>
-                    )}
-                    {filterFormatSearch !== "Categories" && (
-                        <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: slightlyLighterGrey, borderWidth: 3, padding: 10, backgroundColor: dark? darkLight : colors.borderColor, alignItems: 'center', justifyContent: 'center'}} onPress={() => {
-                            cancelTokenPostFormatOne.cancel()
-                            setChangeSectionsTwo()
-                            setFilterFormatSearch("Categories")
-                        }}>
-                            <PostIcons style={{width: '100%', height: '100%', resizeMode: 'contain'}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/093-drawer.png')}/>
-                        </TouchableOpacity>
-                    )}
-                </View>
-                <View style={{flex: 1, flexDirection: 'column', alignItems: 'center'}}>
-                    <SubTitle style={{marginBottom: 0, fontSize: 15, fontWeight: 'normal', color: colors.tertiary}}>Images</SubTitle>
-                    {filterFormatSearch == "Images" && (
-                        <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: brand, borderWidth: 3, padding: 10, backgroundColor: dark? darkLight : colors.borderColor, alignItems: 'center', justifyContent: 'center'}}>
-                            <PostIcons style={{width: '100%', height: '100%', resizeMode: 'contain'}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/015-images.png')}/>
-                        </TouchableOpacity>
-                    )}
-                    {filterFormatSearch !== "Images" && (
-                        <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: slightlyLighterGrey, borderWidth: 3, padding: 10, backgroundColor: dark? darkLight : colors.borderColor, alignItems: 'center', justifyContent: 'center'}} onPress={() => {
-                            //cancelTokenPostFormatOne.cancel()
-                            //cancelTokenPostFormatTwo.cancel()
-                            //setChangeSections()
-                            //setFilterFormatSearch("Images")
-                            alert('This feature is coming soon')
-                        }}>
-                            <PostIcons style={{width: '100%', height: '100%', resizeMode: 'contain'}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/015-images.png')}/>
-                        </TouchableOpacity>
-                    )}
-                </View>
-            </View> 
-        </>
-    );
 }
 
 export default FindScreen;

@@ -89,7 +89,9 @@ import axios from 'axios';
 //credentials context
 import { CredentialsContext } from '../components/CredentialsContext';
 import { ImageBackground, ScrollView, SectionList, View, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
-import { useTheme } from 'styled-components';
+import { useTheme } from '@react-navigation/native';
+import SocialSquareLogo_B64_png from '../assets/SocialSquareLogo_Base64_png';
+import { ProfilePictureURIContext } from '../components/ProfilePictureURIContext';
 
 const CommentViewPage = ({route, navigation}) => {
      //context
@@ -144,9 +146,10 @@ const CommentViewPage = ({route, navigation}) => {
     //
     var findingVotedCommentsArray = []
     const [findingVotedComments, setFindingVotedComments] = useState([])
-    //PFP
-    const [pfpB64, setpfpB64] = useState('./../assets/img/Logo.png')
-    const [getPfp, setGetPfp] = useState(false)
+    // Theme
+    const {colors, dark} = useTheme();
+    // PFP
+    const {profilePictureUri, setProfilePictureUri} = useContext(ProfilePictureURIContext)
 
     //get image of post
     async function getImageInPost(imageData, index) {
@@ -167,55 +170,6 @@ const CommentViewPage = ({route, navigation}) => {
     async function getImageWithKey(imageKey) {
         return axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${imageKey}`)
         .then(res => res.data);
-    }
-
-    //Get PFP
-    const getProfilePicture = () => {
-        const url = `https://nameless-dawn-41038.herokuapp.com/user/getProfilePic/${name}`;
-
-        axios.get(url).then((response) => {
-            const result = response.data;
-            const {message, status, data} = result;
-
-            if (status !== 'SUCCESS') {
-                handleMessage(message, status);
-                console.log(status)
-                console.log(message)
-            } else {
-                console.log(status)
-                console.log(message)
-                axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${data}`)
-                .then((response) => {
-                    const result = response.data;
-                    const {message, status, data} = result;
-                    console.log(status)
-                    console.log(message)
-                    //set image
-                    if (data) {
-                        //convert back to image
-                        var base64Icon = `data:image/jpg;base64,${data}`
-                        setpfpB64(base64Icon)
-                    } else {
-                        setpfpB64("./../assets/img/Logo.png")
-                    }
-                })
-                .catch(function (error) {
-                    console.log("Image not recieved")
-                    console.log(error);
-                });
-            }
-            //setSubmitting(false);
-
-        }).catch(error => {
-            console.log(error);
-            //setSubmitting(false);
-            handleMessage("An error occured. Try checking your network connection and retry.");
-        })
-    }
-
-    if (getPfp !== true) {
-        getProfilePicture()
-        setGetPfp(true)
     }
 
     const handleMessage = (message, type = 'FAILED') => {
@@ -738,7 +692,7 @@ const CommentViewPage = ({route, navigation}) => {
                     </TouchableOpacity>
                     <TouchableOpacity onPress={()=>{UpVoteComment(commentId)}}>
                         {upVotes.includes(commentId) && (
-                            <CommentIcons tintColor={brand} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
+                            <CommentIcons style={{tintColor: colors.brand}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
                         )}
                         {downVotes.includes(commentId) && (
                             <CommentIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
@@ -753,39 +707,39 @@ const CommentViewPage = ({route, navigation}) => {
                     <TouchableOpacity>
                         {upVotes.includes(commentId) && (<View style={{textAlign: 'center'}}>
                             {initialUpVotes.includes(commentId) && (
-                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: descTextColor}}>{commentUpVotes}</VoteText>
+                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: colors.descTextColor}}>{commentUpVotes}</VoteText>
                             )}
                             {initialNeitherVotes.includes(commentId) && (
-                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: descTextColor}}>{commentUpVotes+1}</VoteText>
+                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: colors.descTextColor}}>{commentUpVotes+1}</VoteText>
                             )}
                             {initialDownVotes.includes(commentId) && (
-                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: descTextColor}}>{commentUpVotes+2}</VoteText>
+                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: colors.descTextColor}}>{commentUpVotes+2}</VoteText>
                             )}
                         </View>)}
                         {neitherVotes.includes(commentId) && (<View style={{textAlign: 'center'}}>
                             {initialNeitherVotes.includes(commentId) && (
-                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: descTextColor}}>{commentUpVotes}</VoteText>
+                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: colors.descTextColor}}>{commentUpVotes}</VoteText>
                             )}
                             {initialUpVotes.includes(commentId) && (
-                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: descTextColor}}>{commentUpVotes-1}</VoteText>
+                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: colors.descTextColor}}>{commentUpVotes-1}</VoteText>
                             )}
                             {initialDownVotes.includes(commentId) && (
-                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: descTextColor}}>{commentUpVotes+1}</VoteText>
+                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: colors.descTextColor}}>{commentUpVotes+1}</VoteText>
                             )}
                         </View>)}
                         {downVotes.includes(commentId) && (<View style={{textAlign: 'center'}}>
                             {initialDownVotes.includes(commentId) && (
-                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: descTextColor}}>{commentUpVotes}</VoteText>
+                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: colors.descTextColor}}>{commentUpVotes}</VoteText>
                             )}
                             {initialNeitherVotes.includes(commentId) && (
-                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: descTextColor}}>{commentUpVotes-1}</VoteText>
+                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: colors.descTextColor}}>{commentUpVotes-1}</VoteText>
                             )}
                             {initialUpVotes.includes(commentId)&& (
-                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: descTextColor}}>{commentUpVotes-2}</VoteText>
+                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: colors.descTextColor}}>{commentUpVotes-2}</VoteText>
                             )}
                         </View>)}
                         {changingVotedComments.includes(commentId) && (<View>
-                            <ActivityIndicator size="small" color={brand} />                
+                            <ActivityIndicator size="small" color={colors.brand} />                
                         </View>)}
                     </TouchableOpacity>
                     <TouchableOpacity onPress={()=>{DownVoteComment(commentId)}}>
@@ -793,7 +747,7 @@ const CommentViewPage = ({route, navigation}) => {
                             <CommentIcons downVoteButton={true} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
                         )}
                         {downVotes.includes(commentId) && (
-                            <CommentIcons tintColor={brand} downVoteButton={true} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
+                            <CommentIcons style={{tintColor: colors.brand}} downVoteButton={true} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
                         )}
                         {neitherVotes.includes(commentId) && (
                             <CommentIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
@@ -805,10 +759,10 @@ const CommentViewPage = ({route, navigation}) => {
                 </CommentsVerticalView>
                 <CommentsVerticalView>
                     <TouchableOpacity>
-                        <CommenterName displayName={true}>{commenterDisplayName}</CommenterName>
-                        <CommenterName>@{commenterName}</CommenterName>
+                        <CommenterName style={{color: colors.tertiary}} displayName={true}>{commenterDisplayName}</CommenterName>
+                        <CommenterName style={{color: colors.brand}}>@{commenterName}</CommenterName>
                     </TouchableOpacity>
-                    <CommentText>{commentsText}</CommentText>
+                    <CommentText style={{color: colors.tertiary}}>{commentsText}</CommentText>
                 </CommentsVerticalView>
             </CommentsHorizontalView>
             <CommentsHorizontalView bottomIcons={true}>
@@ -818,7 +772,7 @@ const CommentViewPage = ({route, navigation}) => {
                     </TouchableOpacity>
                 </CommentsVerticalView>
                 <CommentsVerticalView datePosted={true}>
-                    <VoteText>
+                    <VoteText style={{color: colors.tertiary}}>
                         {datePosted}
                     </VoteText>
                 </CommentsVerticalView>
@@ -833,10 +787,10 @@ const CommentViewPage = ({route, navigation}) => {
 
     return(
         <>    
-            <StatusBar style="dark"/>
-            <ScrollView style={{backgroundColor: primary}}>
-                <WelcomeContainer>
-                    <WelcomeContainer>
+            <StatusBar style={colors.StatusBarColor}/>
+            <ScrollView style={{backgroundColor: colors.primary}}>
+                <WelcomeContainer style={{backgroundColor: colors.primary}}>
+                    <WelcomeContainer style={{backgroundColor: colors.primary}}>
                         <CommentsContainer>
                             <CommentsHorizontalView>
                                 <CommentsVerticalView alongLeft={true}>
@@ -845,12 +799,12 @@ const CommentViewPage = ({route, navigation}) => {
                                             <CommenterIcon source={{uri: `data:image/jpg;base64,${commenterImageB64}`}}/>
                                         )}
                                         {commenterImageB64 == null && (
-                                            <CommenterIcon source={require('./../assets/img/Logo.png')}/>
+                                            <CommenterIcon source={{uri: SocialSquareLogo_B64_png}}/>
                                         )}
                                     </TouchableOpacity>
                                     <TouchableOpacity onPress={()=>{UpVoteComment(commentId)}}>
                                         {commentUpOrDownVoted == "UpVoted" && (
-                                            <CommentIcons tintColor={brand} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
+                                            <CommentIcons style={{tintColor: colors.brand}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
                                         )}
                                         {commentUpOrDownVoted == "DownVoted" && (
                                             <CommentIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
@@ -868,10 +822,10 @@ const CommentViewPage = ({route, navigation}) => {
                                     <TouchableOpacity>
                                         {commentUpOrDownVoted == "UpVoted" && (<View style={{textAlign: 'center'}}>
                                             {initialCommentUpOrDownVoted == "UpVoted" && (
-                                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: descTextColor}}>{mainCommentUpVotes}</VoteText>
+                                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: colors.descTextColor}}>{mainCommentUpVotes}</VoteText>
                                             )}
                                             {initialCommentUpOrDownVoted == "Neither" && (
-                                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: descTextColor}}>{mainCommentUpVotes+1}</VoteText>
+                                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: colors.descTextColor}}>{mainCommentUpVotes+1}</VoteText>
                                             )}
                                             {initialCommentUpOrDownVoted == "DownVoted" && (
                                                 <VoteText style={{alignSelf: 'center', fontSize: 12, color: descTextColor}}>{mainCommentUpVotes+2}</VoteText>
@@ -879,31 +833,31 @@ const CommentViewPage = ({route, navigation}) => {
                                         </View>)}
                                         {commentUpOrDownVoted == "Neither" && (<View style={{textAlign: 'center'}}>
                                             {initialCommentUpOrDownVoted == "Neither" && (
-                                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: descTextColor}}>{mainCommentUpVotes}</VoteText>
+                                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: colors.descTextColor}}>{mainCommentUpVotes}</VoteText>
                                             )}
                                             {initialCommentUpOrDownVoted == "UpVoted" && (
-                                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: descTextColor}}>{mainCommentUpVotes-1}</VoteText>
+                                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: colors.descTextColor}}>{mainCommentUpVotes-1}</VoteText>
                                             )}
                                             {initialCommentUpOrDownVoted == "DownVoted" && (
-                                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: descTextColor}}>{mainCommentUpVotes+1}</VoteText>
+                                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: colors.descTextColor}}>{mainCommentUpVotes+1}</VoteText>
                                             )}
                                         </View>)}
                                         {commentUpOrDownVoted == "DownVoted" && (<View style={{textAlign: 'center'}}>
                                             {initialCommentUpOrDownVoted == "DownVoted" && (
-                                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: descTextColor}}>{mainCommentUpVotes}</VoteText>
+                                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: colors.descTextColor}}>{mainCommentUpVotes}</VoteText>
                                             )}
                                             {initialCommentUpOrDownVoted == "Neither" && (
-                                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: descTextColor}}>{mainCommentUpVotes-1}</VoteText>
+                                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: colors.descTextColor}}>{mainCommentUpVotes-1}</VoteText>
                                             )}
                                             {initialCommentUpOrDownVoted == "UpVoted" && (
-                                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: descTextColor}}>{mainCommentUpVotes-2}</VoteText>
+                                                <VoteText style={{alignSelf: 'center', fontSize: 12, color: colors.descTextColor}}>{mainCommentUpVotes-2}</VoteText>
                                             )}
                                         </View>)}
                                         {mainCommentChanging == true && (<View>
-                                            <ActivityIndicator size="small" color={brand} />                
+                                            <ActivityIndicator size="small" color={colors.brand} />                
                                         </View>)}
                                         {mainCommentFinding == true && (
-                                            <ActivityIndicator size="small" color={brand} /> 
+                                            <ActivityIndicator size="small" color={colors.brand} /> 
                                         )}
                                     </TouchableOpacity>
                                     <TouchableOpacity onPress={()=>{DownVoteComment(commentId)}}>
@@ -911,7 +865,7 @@ const CommentViewPage = ({route, navigation}) => {
                                             <CommentIcons downVoteButton={true} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
                                         )}
                                         {commentUpOrDownVoted == "DownVoted" && (
-                                            <CommentIcons tintColor={brand} downVoteButton={true} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
+                                            <CommentIcons style={{tintColor: colors.brand}} downVoteButton={true} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
                                         )}
                                         {commentUpOrDownVoted == "Neither" && (
                                             <CommentIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
@@ -926,10 +880,10 @@ const CommentViewPage = ({route, navigation}) => {
                                 </CommentsVerticalView>
                                 <CommentsVerticalView>
                                     <TouchableOpacity>
-                                        <CommenterName displayName={true}>{mainCommenterDisplayName}</CommenterName>
-                                        <CommenterName>@{mainCommenterName}</CommenterName>
+                                        <CommenterName displayName={true} style={{color: colors.tertiary}}>{mainCommenterDisplayName}</CommenterName>
+                                        <CommenterName style={{color: colors.brand}}>@{mainCommenterName}</CommenterName>
                                     </TouchableOpacity>
-                                    <CommentText>{mainCommentsText}</CommentText>
+                                    <CommentText style={{color: colors.tertiary}}>{mainCommentsText}</CommentText>
                                 </CommentsVerticalView>
                             </CommentsHorizontalView>
                             <CommentsHorizontalView bottomIcons={true}>
@@ -939,11 +893,11 @@ const CommentViewPage = ({route, navigation}) => {
                                     </TouchableOpacity>
                                 </CommentsVerticalView>
                                 <CommentsVerticalView datePosted={true}>
-                                    <VoteText>
+                                    <VoteText style={{color: colors.tertiary}}>
                                         {datePosted}
                                     </VoteText>
                                     <TouchableOpacity>
-                                        <VoteText style={{color: brand}}>
+                                        <VoteText style={{color: colors.brand}}>
                                             {mainCommentReplies.length} replies
                                         </VoteText>
                                     </TouchableOpacity>
@@ -956,7 +910,7 @@ const CommentViewPage = ({route, navigation}) => {
                             </CommentsHorizontalView>
                         </CommentsContainer>
                         <ViewScreenPollPostCommentsFrame style={{width: '100%', marginLeft: 0, marginRight: 0}}>
-                                <PollPostTitle commentsTitle={true}>Comments</PollPostTitle>
+                                <PollPostTitle style={{color: colors.brand}} commentsTitle={true}>Comments</PollPostTitle>
                                 <CommentsHorizontalView writeCommentArea={true}>
                                     <Formik
                                         initialValues={{comment: '', userName: name, userId: _id, postId: postId, commentId: commentId}}
@@ -974,18 +928,18 @@ const CommentViewPage = ({route, navigation}) => {
                                             <View>
                                                 <CommentsHorizontalView>
                                                     <CommentsHorizontalViewItem>
-                                                        <CommenterName>Img/GIF</CommenterName>
+                                                        <CommenterName style={{color: colors.brand}}>Img/GIF</CommenterName>
                                                     </CommentsHorizontalViewItem>
                                                     <CommentsHorizontalViewItem>
-                                                        <CommenterName>Text</CommenterName>
+                                                        <CommenterName style={{color: colors.brand}}>Text</CommenterName>
                                                     </CommentsHorizontalViewItem>
                                                     <CommentsHorizontalViewItem>
-                                                        <CommenterName>Short Video</CommenterName>
+                                                        <CommenterName style={{color: colors.brand}}>Short Video</CommenterName>
                                                     </CommentsHorizontalViewItem>
                                                 </CommentsHorizontalView>
                                                 <CommentsHorizontalView writeCommentArea={true}>
                                                     <CommentsVerticalView alongLeft={true}>
-                                                        <CommenterIcon source={{uri: pfpB64}}/>
+                                                        <CommenterIcon source={{uri: profilePictureUri}}/>
                                                     </CommentsVerticalView>
                                                     <CommentsVerticalView>
                                                         <UserTextInput
@@ -995,17 +949,18 @@ const CommentViewPage = ({route, navigation}) => {
                                                             onBlur={handleBlur('comment')}
                                                             value={values.comment}
                                                             multiline={true}
+                                                            style={{backgroundColor: colors.borderColor, color: colors.descTextColor, borderColor: colors.tertiary}}
                                                         />
                                                     </CommentsVerticalView>
                                                 </CommentsHorizontalView>
                                                 <CommentsHorizontalView belowWriteCommentArea={true}>
                                                     <CommentsVerticalView postComment={true}>
-                                                        {!isSubmitting && (<StyledButton postComment={true} onPress={handleSubmit}>
-                                                            <ButtonText postComment={true}> Post </ButtonText>
+                                                        {!isSubmitting && (<StyledButton style={{backgroundColor: colors.primary}} postComment={true} onPress={handleSubmit}>
+                                                            <ButtonText style={{color: colors.brand}} postComment={true}> Post </ButtonText>
                                                         </StyledButton>)}
-                                                        <MsgBox type={messageType}>{message}</MsgBox>
+                                                        <MsgBox style={{color: colors.errorColor}} type={messageType}>{message}</MsgBox>
                                                         {isSubmitting && (<StyledButton disabled={true}>
-                                                            <ActivityIndicator size="large" color={primary} />
+                                                            <ActivityIndicator size="large" color={colors.primary} />
                                                         </StyledButton>)}
                                                     </CommentsVerticalView>
                                                 </CommentsHorizontalView>
@@ -1013,14 +968,14 @@ const CommentViewPage = ({route, navigation}) => {
                                             )}
                                     </Formik>
                                 </CommentsHorizontalView>
-                                <PollPostSubTitle>{ifCommentText}</PollPostSubTitle>
+                                <PollPostSubTitle style={{color: colors.tertiary}}>{ifCommentText}</PollPostSubTitle>
                                 <SectionList
-                                    sections={changeSections}
+                                    data={changeSections}
                                     keyExtractor={(item, index) => item + index}
                                     renderItem={({ item }) => <Item commentId={item.commentId} commenterName={item.commenterName} commenterDisplayName={item.commenterDisplayName} commentsText={item.commentsText}  commentUpVotes={item.commentUpVotes} datePosted={item.datePosted} commenterImageB64={item.commenterImageB64}/>}
                                 />
                                 {loadingMoreComments == true && (
-                                    <ActivityIndicator size="small" color={brand} />  
+                                    <ActivityIndicator size="small" color={colors.brand} />  
                                 )}
                             </ViewScreenPollPostCommentsFrame>
                     </WelcomeContainer>

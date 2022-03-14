@@ -77,6 +77,7 @@ import {
     ReportProfileOptionsViewButtonsText,
     ReportProfileOptionsViewSubtitleText,
     ReportProfileOptionsViewText,
+    ProfileBadgeItemUnderline
 } from './screenStylings/styling';
 
 
@@ -99,13 +100,15 @@ import Constants from "expo-constants";
 import SocialSquareLogo_B64_png from '../assets/SocialSquareLogo_Base64_png';
 import * as Haptics from 'expo-haptics';
 
+import EvilIcons from 'react-native-vector-icons/EvilIcons';
+
 const ProfilePages = ({ route, navigation }) => {
     const StatusBarHeight = Constants.statusBarHeight;
     var backButtonHidden = false
     const [PageElementsState, setPageElementsState] = useState(false)
     const { colors, dark } = useTheme();
     //context
-    const { profilesName, profilesDisplayName, following, followers, totalLikes, profileKey } = route.params;
+    const { profilesName, profilesDisplayName, following, followers, totalLikes, profileKey, badges } = route.params;
     const { storedCredentials, setStoredCredentials } = useContext(CredentialsContext);
     if (storedCredentials) {var { _id } = storedCredentials} else {var _id = "SSGUEST"}
     const [gridViewState, setGridViewState] = useState("flex")
@@ -1138,7 +1141,7 @@ const ProfilePages = ({ route, navigation }) => {
             <PostHorizontalView style={{ marginLeft: '5%', width: '90%', paddingVertical: 10, flex: 1, flexDirection: 'row' }}>
 
                 {upVotesImages.includes(imageKey) && (<PostsIconFrame onPress={() => { UpVoteImage(imageKey, postNum) }}>
-                    <PostsIcons style={{ flex: 1 }} tintColor={brand} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')} />
+                    <PostsIcons style={{ flex: 1, tintColor: colors.brand }} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')} />
                 </PostsIconFrame>)}
                 {neitherVotesImages.includes(imageKey) && (<PostsIconFrame onPress={() => { UpVoteImage(imageKey, postNum) }}>
                     <PostsIcons style={{ flex: 1 }} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')} />
@@ -1187,7 +1190,7 @@ const ProfilePages = ({ route, navigation }) => {
                 </PostsIconFrame>)}
 
                 {downVotesImages.includes(imageKey) && (<PostsIconFrame onPress={() => { DownVoteImage(imageKey, postNum) }}>
-                    <PostsIcons style={{ flex: 1 }} tintColor={brand} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')} />
+                    <PostsIcons style={{ flex: 1, tintColor: colors.brand }} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')} />
                 </PostsIconFrame>)}
                 {neitherVotesImages.includes(imageKey) && (<PostsIconFrame onPress={() => { DownVoteImage(imageKey, postNum) }}>
                     <PostsIcons style={{ flex: 1 }} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')} />
@@ -1307,7 +1310,7 @@ const ProfilePages = ({ route, navigation }) => {
             </PollPostHorizontalView>
             <PostHorizontalView style={{ marginLeft: '5%', width: '90%', paddingVertical: 10, flex: 1, flexDirection: 'row', borderTopWidth: 3, borderColor: darkest }}>
                 {upVotesPolls.includes(pollId) && (<PostsIconFrame onPress={() => { UpVotePoll(pollId, postNum) }}>
-                    <PostsIcons style={{ flex: 1 }} tintColor={brand} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')} />
+                    <PostsIcons style={{ flex: 1, tintColor: colors.brand }} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')} />
                 </PostsIconFrame>)}
                 {neitherVotesPolls.includes(pollId) && (<PostsIconFrame onPress={() => { UpVotePoll(pollId, postNum) }}>
                     <PostsIcons style={{ flex: 1 }} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')} />
@@ -1356,7 +1359,7 @@ const ProfilePages = ({ route, navigation }) => {
                 </PostsIconFrame>)}
 
                 {downVotesPolls.includes(pollId) && (<PostsIconFrame onPress={() => { DownVotePoll(pollId, postNum) }}>
-                    <PostsIcons style={{ flex: 1 }} tintColor={brand} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')} />
+                    <PostsIcons style={{ flex: 1, tintColor: colors.brand }} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')} />
                 </PostsIconFrame>)}
                 {neitherVotesPolls.includes(pollId) && (<PostsIconFrame onPress={() => { DownVotePoll(pollId, postNum) }}>
                     <PostsIcons style={{ flex: 1 }} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')} />
@@ -1492,7 +1495,7 @@ const ProfilePages = ({ route, navigation }) => {
             <PostHorizontalView style={{ marginLeft: '5%', width: '90%', paddingVertical: 10, flex: 1, flexDirection: 'row' }}>
 
                 {upVotesThreads.includes(threadId) && (<PostsIconFrame onPress={() => { UpVoteThread(threadId, postNum) }}>
-                    <PostsIcons style={{ flex: 1 }} tintColor={brand} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')} />
+                    <PostsIcons style={{ flex: 1, tintColor: colors.brand }} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')} />
                 </PostsIconFrame>)}
                 {neitherVotesThreads.includes(threadId) && (<PostsIconFrame onPress={() => { UpVoteThread(threadId, postNum) }}>
                     <PostsIcons style={{ flex: 1 }} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')} />
@@ -1541,7 +1544,7 @@ const ProfilePages = ({ route, navigation }) => {
                 </PostsIconFrame>)}
 
                 {downVotesThreads.includes(threadId) && (<PostsIconFrame onPress={() => { DownVoteThread(threadId, postNum) }}>
-                    <PostsIcons style={{ flex: 1 }} tintColor={brand} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')} />
+                    <PostsIcons style={{ flex: 1, tintColor: colors.brand }} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')} />
                 </PostsIconFrame>)}
                 {neitherVotesThreads.includes(threadId) && (<PostsIconFrame onPress={() => { DownVoteThread(threadId, postNum) }}>
                     <PostsIcons style={{ flex: 1 }} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')} />
@@ -2514,6 +2517,75 @@ const ProfilePages = ({ route, navigation }) => {
         ]).start()
     }
 
+    const GetBadgeIcon = (badge) => {
+        return (
+            <View style={{width: 25, height: 25, marginHorizontal: 3, marginTop: 6, marginBottom: 12}}>
+                {badge == 'onSignUpBadge' ?
+                    <EvilIcons name="trophy" size={35} color={colors.tertiary} style={{marginLeft: -5, marginTop: -1}}/>
+                :
+                    <AntDesign name="questioncircleo" size={25} color={colors.tertiary}/>
+                }
+            </View>
+        )
+    }
+
+    const BadgesArea = (badges) => {
+        if (badges.length > 0) {
+            return (
+                <ProfileBadgesView onPress={() => navigation.navigate("AccountBadges", {name: profilesName, displayName: profilesDisplayName, badgesObject: badges, profilePictureUri: profileKey})} style={{borderColor: colors.primary}}>
+                    {badges.length == 1 ?
+                        <>
+                            <ProfileBadgeItemUnderline style={{backgroundColor: colors.tertiary}}/>
+                            {GetBadgeIcon(badges[0])}
+                        </>
+                    : badges.length == 2 ?
+                        <>
+                            <ProfileBadgeItemUnderline style={{backgroundColor: colors.tertiary}}/>
+                            {GetBadgeIcon(badges[0])}
+                            <ProfileBadgeItemUnderline style={{backgroundColor: colors.tertiary, left: 31}}/>
+                            {GetBadgeIcon(badges[1])}
+                        </>
+                    : badges.length == 3 ?
+                        <>
+                            <ProfileBadgeItemUnderline style={{backgroundColor: colors.tertiary}}/>
+                            {GetBadgeIcon(badges[0])}
+                            <ProfileBadgeItemUnderline style={{backgroundColor: colors.tertiary, left: 31}}/>
+                            {GetBadgeIcon(badges[1])}
+                            <ProfileBadgeItemUnderline style={{backgroundColor: colors.tertiary, left: 62}}/>
+                            {GetBadgeIcon(badges[2])}
+                        </>
+                    : badges.length == 4 ?
+                        <>
+                            <ProfileBadgeItemUnderline style={{backgroundColor: colors.tertiary}}/>
+                            {GetBadgeIcon(badges[0])}
+                            <ProfileBadgeItemUnderline style={{backgroundColor: colors.tertiary, left: 31}}/>
+                            {GetBadgeIcon(badges[1])}
+                            <ProfileBadgeItemUnderline style={{backgroundColor: colors.tertiary, left: 62}}/>
+                            {GetBadgeIcon(badges[2])}
+                            <ProfileBadgeItemUnderline style={{backgroundColor: colors.tertiary, left: 93}}/>
+                            {GetBadgeIcon(badges[3])}
+                        </>
+                    :
+                        <>
+                            <ProfileBadgeItemUnderline style={{backgroundColor: colors.tertiary}}/>
+                            {GetBadgeIcon(badges[0])}
+                            <ProfileBadgeItemUnderline style={{backgroundColor: colors.tertiary, left: 31}}/>
+                            {GetBadgeIcon(badges[1])}
+                            <ProfileBadgeItemUnderline style={{backgroundColor: colors.tertiary, left: 62}}/>
+                            {GetBadgeIcon(badges[2])}
+                            <ProfileBadgeItemUnderline style={{backgroundColor: colors.tertiary, left: 93}}/>
+                            {GetBadgeIcon(badges[3])}
+                            <ProfileBadgeItemUnderline style={{backgroundColor: colors.tertiary, left: 124}}/>
+                            {GetBadgeIcon(badges[4])}
+                        </>
+                    }
+                </ProfileBadgesView>
+            )
+        } else {
+            return null
+        }
+    }
+
     return (
         <>
             <StatusBar style={colors.StatusBarColor} />
@@ -2698,15 +2770,9 @@ const ProfilePages = ({ route, navigation }) => {
                     <ProfInfoAreaImage style={{marginTop: 1}}>
                         <Avatar resizeMode="cover" source={{uri: profileKey}} />
                         <PageTitle welcome={true}>{profilesDisplayName || profilesName || "Couldn't get name"}</PageTitle>
-                        <SubTitle style={{color: colors.tertiary}}>{"@" + profilesDisplayName}</SubTitle>
-                        <ProfileBadgesView onPress={() => navigation.navigate("AccountBadges")}>
-                            <ProfileBadgeIcons source={require('./../assets/img/TempProfIcons.jpg')} />
-                            <ProfileBadgeIcons source={require('./../assets/img/BgImage1.png')} />
-                            <ProfileBadgeIcons source={require('./../assets/img/TempProfIcons.jpg')} />
-                            <ProfileBadgeIcons source={require('./../assets/img/Toga.jpg')} />
-                            <ProfileBadgeIcons source={require('./../assets/img/TempProfIcons.jpg')} />
-                        </ProfileBadgesView>
-                        <SubTitle style={{color: colors.tertiary}} bioText={true} > Bio </SubTitle>
+                        <SubTitle style={{color: colors.tertiary, marginBottom: 0}}>{"@" + profilesDisplayName}</SubTitle>
+                        {BadgesArea(badges)}
+                        <SubTitle style={{color: colors.tertiary}} bioText={true} > Bio will go here </SubTitle>
                     </ProfInfoAreaImage>
                     <ProfileHorizontalView>
                         <ProfileHorizontalViewItem profLeftIcon={true}>

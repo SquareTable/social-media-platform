@@ -28,8 +28,9 @@ import {
     ExtraText,
     TextLink,
     TextLinkContent,
+    Navigator_BackButton
 } from '../screens/screenStylings/styling.js';
-import {View, ActivityIndicator, ImageBackground, StyleSheet, useColorScheme} from 'react-native';
+import {View, ActivityIndicator, ImageBackground, StyleSheet, Image} from 'react-native';
 
 // Colors
 const {brand, primary, tertiary} = Colors;
@@ -106,70 +107,79 @@ const ChangeEmailPage = ({navigation}) => {
     const {colors} = useTheme();
 
     return(
-        <KeyboardAvoidingWrapper>
-            <StyledContainer style={{backgroundColor: colors.primary}}>
-                
-                    <StatusBar style={colors.StatusBarColor}/>
-                    <InnerContainer style={{backgroundColor: colors.primary}}>
-                        <PageLogo source={require('./../assets/img/Logo.png')} />
-                        <PageTitle>SocialSquare</PageTitle>
-                        <SubTitle style={{color: colors.tertiary}}>Change Email</SubTitle>
+        <>
+            <Navigator_BackButton onPress={() => {navigation.goBack()}}>
+                <Image
+                source={require('../assets/app_icons/back_arrow.png')}
+                style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2, tintColor: colors.tertiary}}
+                resizeMode="contain"
+                resizeMethod="resize"
+                />
+            </Navigator_BackButton>
+            <KeyboardAvoidingWrapper>
+                <StyledContainer style={{backgroundColor: colors.primary}}>
+                        <StatusBar style={colors.StatusBarColor}/>
+                        <InnerContainer style={{backgroundColor: colors.primary}}>
+                            <PageLogo source={require('./../assets/img/Logo.png')} />
+                            <PageTitle>SocialSquare</PageTitle>
+                            <SubTitle style={{color: colors.tertiary}}>Change Email</SubTitle>
 
-                        <Formik
-                            initialValues={{password: '', userEmail: email, desiredEmail: ''}}
-                            onSubmit={(values, {setSubmitting}) => {
-                                console.log("Submitting")
-                                if (values.desiredEmail == "" || values.password == "") {
-                                    hanadleMessage('Please fill all the fields.');
-                                    setSubmitting(false);
-                                } else {
-                                    handleChangeDisplayName(values, setSubmitting);
-                                }
-                            }}
-                        >
-                            {({handleChange, handleBlur, handleSubmit, values, isSubmitting}) => (
-                                <StyledFormArea>
-                                    <UserTextInput
-                                        icon="person"
-                                        placeholder="Desired Email"
-                                        placeholderTextColor={colors.tertiary}
-                                        onChangeText={handleChange('desiredEmail')}
-                                        onBlur={handleBlur('desiredEmail')}
-                                        value={values.desiredEmail}
-                                        style={{backgroundColor: colors.primary, color: colors.tertiary}}
-                                    />
-                                    <UserTextInput
-                                        icon="lock"
-                                        placeholder="Confirm Password"
-                                        placeholderTextColor={colors.tertiary}
-                                        onChangeText={handleChange('password')}
-                                        onBlur={handleBlur('password')}
-                                        value={values.password}
-                                        secureTextEntry={hidePassword}
-                                        isPassword={true}
-                                        hidePassword={hidePassword}
-                                        setHidePassword={setHidePassword}
-                                        style={{backgroundColor: colors.primary, color: colors.tertiary}}
-                                    />
-                                    <MsgBox type={messageType}>{message}</MsgBox>
-                                    {!isSubmitting && (<StyledButton onPress={handleSubmit}>
-                                        <ButtonText> Submit </ButtonText>
-                                    </StyledButton>)}
+                            <Formik
+                                initialValues={{password: '', userEmail: email, desiredEmail: ''}}
+                                onSubmit={(values, {setSubmitting}) => {
+                                    console.log("Submitting")
+                                    if (values.desiredEmail == "" || values.password == "") {
+                                        hanadleMessage('Please fill all the fields.');
+                                        setSubmitting(false);
+                                    } else {
+                                        handleChangeDisplayName(values, setSubmitting);
+                                    }
+                                }}
+                            >
+                                {({handleChange, handleBlur, handleSubmit, values, isSubmitting}) => (
+                                    <StyledFormArea>
+                                        <UserTextInput
+                                            icon="person"
+                                            placeholder="Desired Email"
+                                            placeholderTextColor={colors.tertiary}
+                                            onChangeText={handleChange('desiredEmail')}
+                                            onBlur={handleBlur('desiredEmail')}
+                                            value={values.desiredEmail}
+                                            style={{backgroundColor: colors.primary, color: colors.tertiary}}
+                                        />
+                                        <UserTextInput
+                                            icon="lock"
+                                            placeholder="Confirm Password"
+                                            placeholderTextColor={colors.tertiary}
+                                            onChangeText={handleChange('password')}
+                                            onBlur={handleBlur('password')}
+                                            value={values.password}
+                                            secureTextEntry={hidePassword}
+                                            isPassword={true}
+                                            hidePassword={hidePassword}
+                                            setHidePassword={setHidePassword}
+                                            style={{backgroundColor: colors.primary, color: colors.tertiary}}
+                                        />
+                                        <MsgBox type={messageType}>{message}</MsgBox>
+                                        {!isSubmitting && (<StyledButton onPress={handleSubmit}>
+                                            <ButtonText> Submit </ButtonText>
+                                        </StyledButton>)}
 
-                                    {isSubmitting && (<StyledButton disabled={true}>
-                                        <ActivityIndicator size="large" color={primary} />
-                                    </StyledButton>)}
-                                    
-                                    <StyledButton style={{backgroundColor: colors.primary}} signUpButton={true} onPress={() => navigation.navigate("AccountSettings")}>
-                                            <ButtonText style={{color: colors.tertiary, top: -9.5}} signUpButton={true}> Back </ButtonText>
-                                    </StyledButton>
-                                    <SubTitle disclaimerText={true}>You may have to re-login to view your changes</SubTitle>
-                                </StyledFormArea>)}
-                        </Formik>
-                    </InnerContainer>
+                                        {isSubmitting && (<StyledButton disabled={true}>
+                                            <ActivityIndicator size="large" color={primary} />
+                                        </StyledButton>)}
+                                        
+                                        <StyledButton style={{backgroundColor: colors.primary}} signUpButton={true} onPress={() => navigation.navigate("AccountSettings")}>
+                                                <ButtonText style={{color: colors.tertiary, top: -9.5}} signUpButton={true}> Back </ButtonText>
+                                        </StyledButton>
+                                        <SubTitle disclaimerText={true}>You may have to re-login to view your changes</SubTitle>
+                                    </StyledFormArea>)}
+                            </Formik>
+                        </InnerContainer>
 
-            </StyledContainer>
-        </KeyboardAvoidingWrapper>
+                </StyledContainer>
+            </KeyboardAvoidingWrapper>
+        </>
     );
 }
 

@@ -65,6 +65,11 @@ import LoginAttempts from "../screens/SecuritySettingsScreens/LoginAttempts.js";
 import AdvancedSettingsScreen from "../screens/AdvancedSettingsScreen.js";
 import SwitchServerScreen from "../screens/AdvancedSettingsScreens/SwitchServerScreen.js";
 import BadgeInfo from "../screens/BadgeInfo.js";
+import NotificationsScreen from "../screens/NotificationsScreen.js";
+import HomeScreenSettings from "../screens/HomeScreenSettings.js";
+import Filter_HomeScreenSettings from "../screens/HomeScreenSettings/Filter_HomeScreenSettings.js";
+import Algorithm_HomeScreenSettings from "../screens/HomeScreenSettings/Algorithm_HomeScreenSettings.js";
+import HomeChatNotificationsMaterialTopTabNavigator from "./MaterialTopTabsNavigator.js";
 
 
 const Stack = createStackNavigator();
@@ -120,9 +125,6 @@ const RootStack = () => {
     >
       <Stack.Screen name="Welcome" component={ProfileScreen}/>
       <Stack.Screen name="SettingsScreen" component={SettingsScreen}/>
-      <Stack.Screen name="ChangeDisplayNamePage" component={ChangeDisplayNamePage}/>
-      <Stack.Screen name="ChangeUsernamePage" component={ChangeUsernamePage}/>
-      <Stack.Screen name="ChangeEmailPage" component={ChangeEmailPage}/>
       <Stack.Screen name="CategoryViewPage" component={CategoryViewPage}/>
       <Stack.Screen name="CommentViewPage" component={CommentViewPage}/>
       <Stack.Screen name="ThreadViewPage" component={ThreadViewPage}/>
@@ -145,23 +147,8 @@ const RootStack = () => {
           headerLeft: null
         }}
       >
-        <Stack.Screen name="AppStyling" component={AppStyling}/>
         <Stack.Screen name="BadgeInfo" component={BadgeInfo}/>
-        <Stack.Screen name="GDPRCompliance" component={GDPRCompliance}/>
-        <Stack.Screen name="SecuritySettingsScreen" component={SecuritySettingsScreen}/>
-        <Stack.Screen name="LoginActivity" component={LoginActivity}/>
-        <Stack.Screen name="2FA" component={TwoFA}/>
-        <Stack.Screen name="WhatIsStoredOnOurServers" component={WhatIsStoredOnOurServers}/>
-        <Stack.Screen name="NotificationsSettingsScreen" component={NotificationsSettingsScreen}/>
         <Stack.Screen name="ProfileStats" component={ProfileStats}/>
-        <Stack.Screen name="SimpleStylingMenu" component={SimpleStylingMenu}/>
-        <Stack.Screen name="EditSimpleStyle" component={EditSimpleStyle}options={{gestureEnabled: false}}/>
-        <Stack.Screen name="Simple_ColorPickerScreen" component={Simple_ColorPickerScreen}/>
-        <Stack.Screen name="BuiltInStylingMenu" component={BuiltInStylingMenu}/>
-        <Stack.Screen name="LoginAttempts" component={LoginAttempts}/>
-        <Stack.Screen name="AccountSettings" component={AccountSettings}/>
-        <Stack.Screen name="AdvancedSettingsScreen" component={AdvancedSettingsScreen}/>
-        <Stack.Screen name="SwitchServerScreen" component={SwitchServerScreen}/>
         <Stack.Screen name="AccountBadges" component={AccountBadges}/>
       </Stack.Group>
     </Stack.Navigator>
@@ -192,14 +179,19 @@ const FindScreen_Stack = () => {
         <Stack.Screen name="ProfilePages" component={ProfilePages}/>
         <Stack.Screen name="Post_FullScreen" component={Post_FullScreen}/>
         <Stack.Screen name="ProfileStats" component={ProfileStats}/>
+        <Stack.Screen name="AccountBadges" component={AccountBadges}/>
+        <Stack.Screen name="BadgeInfo" component={BadgeInfo}/>
+        <Stack.Screen name="CategoryViewPage" component={CategoryViewPage}/>
+        <Stack.Screen name="SelectCategorySearchScreen" component={SelectCategorySearchScreen}/>
       </Stack.Group>
       <Stack.Screen name="ProfileScreen_FromFindScreenPost" component={ProfileScreen}/>
-      <Stack.Screen name="CategoryViewPage" component={CategoryViewPage}/>
       <Stack.Screen name="CommentviewPage" component={CommentViewPage}/>
       <Stack.Screen name="ThreadViewPage" component={ThreadViewPage}/>
       <Stack.Screen name="ViewImagePostPage" component={ViewImagePostPage}/>
       <Stack.Screen name="ViewPollPostPage" component={ViewPollPostPage}/>
-      <Stack.Screen name="ThreadUploadPage" component={ThreadUploadPage}/>
+      <Stack.Screen name="ThreadUploadPage_FromCategory_FindStack" component={ThreadUploadPage}/>
+      <Stack.Screen name="CommentViewPage" component={CommentViewPage}/>
+      <Stack.Screen name="TakeImage_Camera" component={TakeImage_Camera}/>
     </Stack.Navigator>
   );
 };
@@ -219,9 +211,7 @@ const home_screen_post_to_profile_screen = () => {
           paddingLeft: 20,
       },
     }}>
-      <Stack.Screen name="HomeScreen" component={HomeScreen}/>
-      <Stack.Screen name="Welcome" component={ProfileScreen}/>
-      <Stack.Screen name="VisitingProfileScreen" component={VisitingProfileScreen}/>
+      <Stack.Screen name="HomeChatNotificationsMaterialTopTabNavigator" component={HomeChatNotificationsMaterialTopTabNavigator}/>
     </Stack.Navigator>
   )
 }
@@ -245,16 +235,55 @@ const post_screen_navigator = () => {
       <Stack.Screen name="ThreadUploadPage" component={ThreadUploadPage}/>
       <Stack.Screen name="PollUploadPage" component={PollUploadPage}/>
       <Stack.Screen name="AudioUploadPage" component={AudioUploadPage}/>
-      <Stack.Group screenOptions={{headerLeft: null, gestureEnabled: false}}>
-        <Stack.Screen name="RecordAudioPage" component={RecordAudioPage}/>
-      </Stack.Group>
       <Stack.Group screenOptions={{headerLeft: null}}>
         <Stack.Screen name="SendAudioPage" component={SendAudioPage}/>
+        <Stack.Screen name="RecordAudioPage" component={RecordAudioPage}/>
+        <Stack.Screen name="SelectCategorySearchScreen" component={SelectCategorySearchScreen}/>
       </Stack.Group>
       <Stack.Screen name="MultiMediaUploadPreview" component={MultiMediaUploadPreview}/>
-      <Stack.Screen name="SelectCategorySearchScreen" component={SelectCategorySearchScreen}/>
       <Stack.Screen name="TakeImage_Camera" component={TakeImage_Camera}/>
       <Stack.Screen name="CategoryCreationPage" component={CategoryCreationPage}/>
+    </Stack.Navigator>
+  )
+}
+
+const SettingsStack = () => {
+  const {colors} = useTheme();
+  return(
+    <Stack.Navigator screenOptions={{
+      headerStyle: {
+        backgroundColor: 'transparent',
+      },
+      headerTintColor: colors.tertiary,
+      headerTransparent: true,
+      title: '',
+      headerLeftContainerStyle: {
+          paddingLeft: 20,
+      },
+      headerLeft: null
+    }}>
+      <Stack.Screen name="SettingsScreen" component={SettingsScreen}/>
+      <Stack.Screen name="ChangeDisplayNamePage" component={ChangeDisplayNamePage}/>
+      <Stack.Screen name="ChangeUsernamePage" component={ChangeUsernamePage}/>
+      <Stack.Screen name="ChangeEmailPage" component={ChangeEmailPage}/>
+      <Stack.Screen name="AppStyling" component={AppStyling}/>
+      <Stack.Screen name="GDPRCompliance" component={GDPRCompliance}/>
+      <Stack.Screen name="SecuritySettingsScreen" component={SecuritySettingsScreen}/>
+      <Stack.Screen name="LoginActivity" component={LoginActivity}/>
+      <Stack.Screen name="2FA" component={TwoFA}/>
+      <Stack.Screen name="WhatIsStoredOnOurServers" component={WhatIsStoredOnOurServers}/>
+      <Stack.Screen name="NotificationsSettingsScreen" component={NotificationsSettingsScreen}/>
+      <Stack.Screen name="SimpleStylingMenu" component={SimpleStylingMenu}/>
+      <Stack.Screen name="EditSimpleStyle" component={EditSimpleStyle}options={{gestureEnabled: false}}/>
+      <Stack.Screen name="Simple_ColorPickerScreen" component={Simple_ColorPickerScreen}/>
+      <Stack.Screen name="BuiltInStylingMenu" component={BuiltInStylingMenu}/>
+      <Stack.Screen name="LoginAttempts" component={LoginAttempts}/>
+      <Stack.Screen name="AccountSettings" component={AccountSettings}/>
+      <Stack.Screen name="AdvancedSettingsScreen" component={AdvancedSettingsScreen}/>
+      <Stack.Screen name="SwitchServerScreen" component={SwitchServerScreen}/>
+      <Stack.Screen name="HomeScreenSettings" component={HomeScreenSettings}/>
+      <Stack.Screen name="Filter_HomeScreenSettings" component={Filter_HomeScreenSettings}/>
+      <Stack.Screen name="Algorithm_HomeScreenSettings" component={Algorithm_HomeScreenSettings}/>
     </Stack.Navigator>
   )
 }
@@ -268,4 +297,5 @@ export {
   FindScreen_Stack, 
   home_screen_post_to_profile_screen, 
   post_screen_navigator,
+  SettingsStack,
 };

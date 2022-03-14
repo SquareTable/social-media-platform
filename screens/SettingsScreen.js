@@ -157,6 +157,10 @@ const SettingsPage = ({navigation}) => {
                             <SettingsItemImage style={{tintColor: colors.tertiary}} source={require('./../assets/app_icons/settings.png')}/>
                             <SettingsItemText style={{color: colors.tertiary}}>Advanced Settings</SettingsItemText>
                         </SettingsPageItemTouchableOpacity>
+                        <SettingsPageItemTouchableOpacity disabled={!logoutViewState} style={{borderColor: colors.borderColor}} onPress={() => navigation.navigate("HomeScreenSettings")}>
+                            <SettingsItemImage style={{tintColor: colors.tertiary}} source={require('./../assets/app_icons/home.png')}/>
+                            <SettingsItemText style={{color: colors.tertiary}}>Home Screen Settings</SettingsItemText>
+                        </SettingsPageItemTouchableOpacity>
                         <SettingsPageItemTouchableOpacity disabled={!logoutViewState} style={{borderColor: colors.borderColor}} onPress={() => {storedCredentials ? changeLogoutView() : navigation.navigate('ModalLoginScreen', {modal: true})}}>
                             {storedCredentials ?
                                 <SettingsItemImage style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/277-exit.png')}/>
