@@ -63,22 +63,22 @@ const IntroScreen = ({navigation}) => {
           key: 'one',
           title: 'Introduction',
           text: "Welcome to SocialSquare!\n\nThe Social Media Platform that doesn't collect, harvest, or sell your data and is privacy-focused!",
-          image: require('../../assets/favicon.png'),
+          image: require('../../assets/NewLogo_WithBackground.png'),
           backgroundColor: '#59b2ab',
           comingSoon: false
         },
         {
           key: 'two',
           title: 'Security',
-          text: 'Security and Privacy is our top priority at SocialSquare.\n\nAll chats within SocialSquare use 4096-bit end-to-end encryption, making sure that only you can read your messages and no one else. Even SocialSquare cannot read them.',
+          text: 'Security and Privacy is our top priority at SocialSquare.\n\nAll chats within SocialSquare use 256-bit end-to-end encryption, making sure that only you can read your messages and no one else. Not even SocialSquare can read them.',
           image: require('../../assets/favicon.png'),
           backgroundColor: '#febe29',
-          comingSoon: true
+          comingSoon: false
         },
         {
           key: 'three',
-          title: 'Tracking',
-          text: "SocialSquare is completely transparent with it's business practices, and we do not gather any personal information or data from our users.\n\nWe only gather the essentials to run the service, such as who follows you, who likes your posts, etc.\n\nFor more information please visit our ",
+          title: 'Data Collection',
+          text: "SocialSquare is completely transparent with it's business practices, and we do not mine user data.\n\nWe only gather the essentials to run the service, such as who follows you, who likes your posts, etc.\n\nFor more information please visit our ",
           image: require('../../assets/favicon.png'),
           backgroundColor: '#22bcb5',
           comingSoon: false
