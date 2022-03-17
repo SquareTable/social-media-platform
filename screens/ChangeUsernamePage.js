@@ -121,7 +121,7 @@ const ChangeUsernamePage = ({navigation}) => {
                     
                         <StatusBar style={colors.StatusBarColor}/>
                         <InnerContainer style={{backgroundColor: colors.primary}}>
-                            <PageLogo source={require('./../assets/img/Logo.png')} />
+                            <PageLogo source={require('./../assets/NewLogo_WithBackground.png')} />
                             <PageTitle>SocialSquare</PageTitle>
                             <SubTitle style={{color: colors.tertiary}}>Change User Name</SubTitle>
 

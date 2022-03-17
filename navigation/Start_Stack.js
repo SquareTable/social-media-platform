@@ -17,7 +17,6 @@ import Tabs from "./tabs.js";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import IntroScreen from "../screens/IntroductionScreens/IntroScreen.js";
 import DestroyingLocalDataScreen from "../screens/DestroyingLocalDataScreen.js";
-import ChatScreenNavigator from "../screens/ChatScreenNavigator.js";
 
 const Stack = createStackNavigator();
 

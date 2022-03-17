@@ -1,0 +1,331 @@
+import React, {useState, useContext, useEffect} from 'react';
+
+import { StatusBar } from 'expo-status-bar';
+
+global.Buffer = global.Buffer || require('buffer').Buffer
+
+import nacl from 'tweet-nacl-react-native-expo'
+
+// formik
+import {Formik} from 'formik';
+
+// icons
+import {Octicons, Ionicons, Fontisto} from '@expo/vector-icons';
+
+import {
+    StyledContainer,
+    InnerContainer,
+    PageLogo,
+    PageTitle,
+    SubTitle,
+    StyledFormArea,
+    LeftIcon,
+    RightIcon,
+    StyledInputLabel,
+    StyledTextInput,
+    StyledButton,
+    ButtonText,
+    Colors,
+    MsgBox,
+    Line,
+    ExtraView,
+    ExtraText,
+    TextLink,
+    TextLinkContent,
+    AboveButtonText,
+    PostHorizontalView,
+    CheckBoxForPosts,
+    PostIcons,
+    MultiMediaPostFrame,
+    Avatar,
+    ChatScreen_Title,
+    Navigator_BackButton,
+    TestText
+} from './screenStylings/styling.js';
+const {brand, primary, tertiary, darkLight, slightlyLighterGrey, midWhite, slightlyLighterPrimary, descTextColor} = Colors;
+
+//From react native
+import {View, Image, ActivityIndicator, ImageBackground, StyleSheet, ScrollView, TouchableOpacity} from 'react-native';
+
+// axios
+import axios from 'axios';
+
+// keyboard avoiding view
+import KeyboardAvoidingWrapper from '../components/KeyboardAvoidingWrapper';
+
+// async-storage
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+//credentials context
+import { CredentialsContext } from '../components/CredentialsContext';
+
+//Image picker
+import * as ImagePicker from 'expo-image-picker';
+
+import { useIsFocused } from '@react-navigation/native';
+
+import { useTheme } from '@react-navigation/native';
+
+const ConversationCreationPage = ({route, navigation}) => {
+    const isFocused = useIsFocused();
+    const [hidePassword, setHidePassword] = useState(true);
+    const {conversationTitle, conversationDescription, sentConversationMembers, sentConversationNSFW, sentConversationNSFL} = route.params;
+    const [message, setMessage] = useState();
+    const [messageType, setMessageType] = useState();
+    const [conversationIsNSFW, setConversationIsNSFW] = useState(false);
+    const [conversationIsNSFL, setConversationIsNSFL] = useState(false);
+    const [selectFormat, setSelectFormat] = useState("Text");
+    const [submitting, setSubmitting] = useState(false)
+    const [selectedTitle, setSelectedTitle] = useState("")
+    const [selectedDescription, setSelectedDescription] = useState("")
+    const [selectedNSFW, setSelectedNSFW] = useState(false)
+    const [initialUsersState, setInitialUsersState] = useState(null)
+    const [selectedNSFL, setSelectedNSFL] = useState(false)
+    const [membersInChat, setMembersInChat] = useState([])
+    const [changeOnce, setChangeOnce] = useState(false)
+    const {colors, dark} = useTheme();
+
+    function reloadMembers () {
+        if (sentConversationMembers !== null) {
+            if (membersInChat !== sentConversationMembers) {
+                setMembersInChat(null)
+                setMembersInChat(sentConversationMembers)
+                console.log("Changed conversation members")
+            }
+        } else {
+            console.log("Null convo-members")
+        }
+    }
+
+    if (sentConversationMembers !== null) {
+        if (membersInChat !== sentConversationMembers) {
+            setMembersInChat(null)
+            setMembersInChat(sentConversationMembers)
+            console.log("Changed conversation members")
+        }
+    } else {
+        console.log("Null convo-members")
+    }
+
+
+    if (changeOnce == false) {
+        if (conversationTitle !== null) {
+            if (selectedTitle !== conversationTitle) {
+                setSelectedTitle()
+                setSelectedTitle(conversationTitle)
+            }
+        }
+        if (conversationDescription !== null) {
+            if (selectedDescription !== conversationDescription) {
+                setSelectedDescription()
+                setSelectedDescription(conversationDescription)
+            }
+        }
+        if (sentConversationNSFW !== null) {
+            if (selectedNSFW !== sentConversationNSFW) {
+                setSelectedNSFW()
+                setSelectedNSFW(sentConversationNSFW)
+            }
+        }
+        if (sentConversationNSFL !== null) {
+            if (selectedNSFL !== sentConversationNSFL) {
+                setSelectedNSFL()
+                setSelectedNSFL(sentConversationNSFL)
+            }
+        }
+        setChangeOnce(true)
+    }
+
+    //context
+    const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
+    const {_id} = storedCredentials;
+
+    const handleCreateConversation = async (credentials) => {
+        handleMessage(null);
+        if (membersInChat !== null) {
+            
+            const nonce = await nacl.randomBytes(24)
+
+            const url = "https://nameless-dawn-41038.herokuapp.com/conversations/create";
+            const toSend = {creatorId: _id, conversationTitle: credentials.conversationTitle, conversationDescription: credentials.conversationDescription, conversationMembers: membersInChat, conversationNSFW: credentials.conversationNSFW, conversationNSFL: credentials.conversationNSFL, cryptographicNonce: nonce}
+            axios.post(url, toSend).then((response) => {
+                const result = response.data;
+                const {message, status, data} = result;
+
+                if (status !== 'SUCCESS') {
+                    handleMessage(message,status);
+                    setSubmitting(false);
+                } else {
+                    handleMessage(message,status);
+                    setSubmitting(false);
+                    navigation.navigate("Conversations")
+                }
+
+            }).catch(error => {
+                console.log(error);
+                setSubmitting(false);
+                handleMessage("An error occured. Try checking your network connection and retry.");
+            })
+        }
+    }
+
+    const handleMessage = (message, type = 'FAILED') => {
+        setMessage(message);
+        setMessageType(type);
+    }
+
+    useEffect(() => {
+        console.log("Reload Page")
+        reloadMembers()
+    },[isFocused]);
+
+    return(
+        <>
+            <ChatScreen_Title style={{backgroundColor: colors.primary, borderWidth: 0}}>
+                <Navigator_BackButton onPress={() => {navigation.goBack()}}>
+                    <Image
+                    source={require('../assets/app_icons/back_arrow.png')}
+                    style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2, tintColor: colors.tertiary}}
+                    resizeMode="contain"
+                    resizeMethod="resize"
+                    />
+                </Navigator_BackButton>
+                <TestText style={{textAlign: 'center', color: colors.tertiary}}>Create a Conversation</TestText>
+            </ChatScreen_Title>
+            <KeyboardAvoidingWrapper>
+                <StyledContainer>
+                        <StatusBar style={colors.StatusBarColor}/>
+                        <InnerContainer>
+                            <Formik
+                                initialValues={{conversationTitle: selectedTitle, conversationDescription: selectedDescription, conversationMembers: membersInChat, conversationNSFW: selectedNSFW, conversationNSFL: selectedNSFL}}
+                                onSubmit={(values, {setSubmitting}) => {
+                                    console.log("Submitting")
+                                    if (values.conversationTitle == "") {
+                                        handleMessage('Please add a title.');
+                                        setSubmitting(false);
+                                    } else {
+                                        if (membersInChat.length <= 1) {
+                                            handleMessage("A conversation needs at least 3 members")
+                                        } else {
+                                            handleCreateConversation(values);
+                                        }
+                                    }
+                                }}
+                            >
+                                {({handleChange, handleBlur, handleSubmit, values, isSubmitting}) => (
+                                    <StyledFormArea theOutline={true}>
+                                        <UserTextInput
+                                            label="Title"
+                                            icon="note"
+                                            placeholder=""
+                                            placeholderTextColor={tertiary}
+                                            onChangeText={handleChange('conversationTitle')}
+                                            onBlur={handleBlur('conversationTitle')}
+                                            value={values.conversationTitle}
+                                        />
+                                        <UserTextInput
+                                            label="Description"
+                                            icon="note"
+                                            placeholder=""
+                                            placeholderTextColor={tertiary}
+                                            onChangeText={handleChange('conversationDescription')}
+                                            onBlur={handleBlur('conversationDescription')}
+                                            value={values.conversationDescription}
+                                        />
+                                        <View style={{flexDirection: 'row', alignItems: 'center', alignSelf: 'center', marginBottom: 10}}>
+                                            <PostIcons tintColor={brand} style={{width: 30, height: 30}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/114-user.png')}/>
+                                            <SubTitle style={{marginBottom: 0, fontWeight: 'normal'}}>{membersInChat.length + 1}/14</SubTitle>
+                                        </View>
+                                        <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center', alignSelf: 'center'}} onPress={() => {
+                                                console.log(sentConversationMembers)
+                                                navigation.navigate("ConversationUserFind", {conversationTitle: values.conversationTitle, conversationDescription: values.conversationDescription, initialUsers: membersInChat, conversationNSFW: false, conversationNSFL: false})
+                                            }}>
+                                            <SubTitle style={{borderRadius: 1000, backgroundColor: slightlyLighterPrimary, width: 30, height: 30, textAlign: 'center', fontWeight: 'normal', marginRight: 8}}>+</SubTitle>
+                                            <SubTitle>Add/Remove Users</SubTitle>
+                                        </TouchableOpacity>
+                                        <PostHorizontalView centerAlign={true}>
+                                            <CheckBoxForPosts selectedState={conversationIsNSFW} onPress={() => {
+                                                if (values.conversationNSFW == true) {
+                                                    setConversationIsNSFL(false)
+                                                    values.conversationNSFL = false
+                                                    setConversationIsNSFW(false)
+                                                    values.conversationNSFW = false
+                                                } else {
+                                                    setConversationIsNSFL(false)
+                                                    values.conversationNSFL = false
+                                                    setConversationIsNSFW(true)
+                                                    values.conversationNSFW = true
+                                                }
+                                            }}/>
+                                            <AboveButtonText byCheckBox={true}>Mark as NSFW</AboveButtonText>
+                                        </PostHorizontalView>
+                                        <PostHorizontalView centerAlign={true}>
+                                            <CheckBoxForPosts selectedState={conversationIsNSFL} onPress={() => {
+                                                if (values.conversationNSFL == true) {
+                                                    setConversationIsNSFL(false)
+                                                    values.conversationNSFL = false
+                                                    setConversationIsNSFW(false)
+                                                    values.conversationNSFW = false
+                                                } else {
+                                                    setConversationIsNSFL(true)
+                                                    values.conversationNSFL = true
+                                                    setConversationIsNSFW(false)
+                                                    values.conversationNSFW = false
+                                                }
+                                            }}/>
+                                            <AboveButtonText byCheckBox={true}>Mark as NSFL</AboveButtonText>
+                                        </PostHorizontalView>
+                                        <MsgBox type={messageType}>{message}</MsgBox>
+                                        {!submitting && (<StyledButton onPress={() => {
+                                            setSubmitting(true)
+                                            handleSubmit()
+                                        }}>
+                                            <ButtonText> Submit </ButtonText>
+                                        </StyledButton>)}
+
+                                        {submitting && (<StyledButton disabled={true}>
+                                            <ActivityIndicator size="large" color={primary} />
+                                        </StyledButton>)}
+                                        
+                                        <StyledButton signUpButton={true} onPress={() => navigation.navigate("Conversations")}>
+                                                <ButtonText signUpButton={true}> Back </ButtonText>
+                                        </StyledButton>
+                                    </StyledFormArea>)}
+                            </Formik>
+                        </InnerContainer>
+
+                </StyledContainer>
+            </KeyboardAvoidingWrapper>
+        </>
+    );
+}
+
+const styles = StyleSheet.create({
+    image: {
+      flex: 1,
+      justifyContent: "center"
+    }
+})
+
+const UserTextInput = ({label, icon, body, ...props}) => {
+    if (body == true) {
+        return(
+            <View>
+                <LeftIcon searchIcon={true}>
+                    <Octicons name={icon} size={30} color={brand} />
+                </LeftIcon>
+                <StyledInputLabel>{label}</StyledInputLabel>
+                <StyledTextInput searchPage={true} style={{borderColor: midWhite, borderRadius: 10}} {...props}/>
+            </View>
+        )
+    } else {
+        return(
+            <View>
+                <StyledInputLabel>{label}</StyledInputLabel>
+                <StyledTextInput searchPage={true} style={{borderColor: slightlyLighterGrey, borderRightWidth: 0, borderTopWidth: 0, borderRadius: 2, backgroundColor: primary, paddingLeft: 10}} {...props}/>
+            </View>
+        )
+    }
+}
+
+export default ConversationCreationPage;

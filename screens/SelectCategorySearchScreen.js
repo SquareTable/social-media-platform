@@ -239,21 +239,22 @@ const SelectCategorySearchScreen = ({route, navigation}) => {
                     </SearchBarArea>
                 </SafeAreaView>
             </TouchableWithoutFeedback>
-            <View>
-                {errorMessage ?
-                    <Text style={{color: colors.errorColor, fontSize: 20, fontWeight: 'bold', textAlign: 'center', marginTop: 10}}>{errorMessage}</Text>
-                :
-                    noResults == false ?
-                        <SectionList
-                            sections={changeSections}
-                            keyExtractor={(item, index) => item + index}
-                            renderItem={({ item }) => <CategoryItem categoryTitle={item.categoryTitle} categoryDescription={item.categoryDescription} members={item.members} categoryTags={item.categoryTags} image={item.image} NSFW={item.NSFW} NSFL={item.NSFL} datePosted={item.datePosted}/>}
-                            ListFooterComponent={loadingResults ? <ActivityIndicator color={colors.brand} size="large" style={{marginTop: 10}}/> : <View style={{marginBottom: 110}}/>}
-                        />
-                    :
+            <SectionList
+                sections={changeSections}
+                keyExtractor={(item, index) => item + index}
+                renderItem={({ item }) => <CategoryItem categoryTitle={item.categoryTitle} categoryDescription={item.categoryDescription} members={item.members} categoryTags={item.categoryTags} image={item.image} NSFW={item.NSFW} NSFL={item.NSFL} datePosted={item.datePosted}/>}
+                ListFooterComponent={
+                    loadingResults ? 
+                        <ActivityIndicator color={colors.brand} size="large" style={{marginTop: 10}}/> 
+                    : errorMessage ?
+                        <Text style={{color: colors.errorColor, fontSize: 20, fontWeight: 'bold', textAlign: 'center', marginTop: 10}}>{errorMessage}</Text>
+                    : noResults ?
                         <Text style={{color: colors.tertiary, fontSize: 20, fontWeight: 'bold', textAlign: 'center', marginTop: 10}}>No results</Text>
+                    :
+                        <View style={{marginBottom: 110}}/>
                 }
-            </View>
+                style={{height: '100%', width: '100%'}}
+            />
 
         </>
     );

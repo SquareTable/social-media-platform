@@ -22,6 +22,8 @@ import {
     TestText
 } from '../screens/screenStylings/styling.js';
 
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+
 import {Image, View, Text, TouchableOpacity} from 'react-native';
 
 
@@ -52,6 +54,10 @@ const HomeScreenSettings = ({navigation}) => {
                 <SettingsPageItemTouchableOpacity style={{borderColor: colors.borderColor}} onPress={() => navigation.navigate("Algorithm_HomeScreenSettings")}>
                     <SettingsItemImage style={{tintColor: colors.tertiary}} source={require('./../assets/app_icons/settings.png')}/>
                     <SettingsItemText style={{color: colors.tertiary}}>Algorithm</SettingsItemText>
+                </SettingsPageItemTouchableOpacity>
+                <SettingsPageItemTouchableOpacity style={{borderColor: colors.borderColor}} onPress={() => navigation.navigate("Audio_HomeScreenSettings")}>
+                    <FontAwesome name="music" size={60} color={colors.tertiary}/>
+                    <SettingsItemText style={{color: colors.tertiary}}>Audio</SettingsItemText>
                 </SettingsPageItemTouchableOpacity>
                 <Text style={{color: colors.tertiary, fontSize: 24, textAlign: 'center'}}>© SquareTable 2022</Text>
                 <Text style={{color: colors.tertiary, fontSize: 24, textAlign: 'center', marginBottom: 10}}>All Rights Reserved</Text>

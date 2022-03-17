@@ -36,7 +36,7 @@ import ChangeDisplayNamePage from "../screens/ChangeDisplayNamePage";
 import ChangeUsernamePage from "../screens/ChangeUsernamePage";
 import ChangeEmailPage from "../screens/ChangeEmailPage";
 
-import ChatScreenNavigator from "../screens/ChatScreenNavigator.js";
+import Conversations from "../screens/Conversations.js";
 import RecordAudioPage from "../screens/PostScreens/RecordAudioPage.js";
 import SendAudioPage from "../screens/PostScreens/SendAudioPage.js";
 
@@ -70,6 +70,9 @@ import HomeScreenSettings from "../screens/HomeScreenSettings.js";
 import Filter_HomeScreenSettings from "../screens/HomeScreenSettings/Filter_HomeScreenSettings.js";
 import Algorithm_HomeScreenSettings from "../screens/HomeScreenSettings/Algorithm_HomeScreenSettings.js";
 import HomeChatNotificationsMaterialTopTabNavigator from "./MaterialTopTabsNavigator.js";
+import Audio_HomeScreenSettings from "../screens/HomeScreenSettings/Audio_HomeScreenSettings.js";
+import CreateConversationSelection from "../screens/CreateConversationSelection.js";
+import ConversationCreationPage from "../screens/CreateConversation.js";
 
 
 const Stack = createStackNavigator();
@@ -80,31 +83,6 @@ const screenOptionStyle = {
   },
   headerTintColor: "white",
   headerBackTitle: "Back",
-};
-
-
-
-const ChatScreen_Stack = () => {
-  const { colors } = useTheme();
-  return (
-    <Stack.Navigator screenOptions={{
-        headerStyle: {
-          backgroundColor: 'transparent',
-        },
-        headerTintColor: colors.tertiary,
-        headerTransparent: true,
-        title: '',
-        headerLeftContainerStyle: {
-            paddingLeft: 20,
-        },
-        headerLeft: null
-      }}
-    >
-      <Stack.Screen name="ChatScreenNavigator" component={ChatScreenNavigator}/>
-      <Stack.Screen name="Welcome" component={ProfileScreen}/>
-      <Stack.Screen name="VisitingProfileScreen" component={VisitingProfileScreen}/>
-    </Stack.Navigator>
-  );
 };
 
 const RootStack = () => {
@@ -284,6 +262,7 @@ const SettingsStack = () => {
       <Stack.Screen name="HomeScreenSettings" component={HomeScreenSettings}/>
       <Stack.Screen name="Filter_HomeScreenSettings" component={Filter_HomeScreenSettings}/>
       <Stack.Screen name="Algorithm_HomeScreenSettings" component={Algorithm_HomeScreenSettings}/>
+      <Stack.Screen name="Audio_HomeScreenSettings" component={Audio_HomeScreenSettings}/>
     </Stack.Navigator>
   )
 }
@@ -291,8 +270,7 @@ const SettingsStack = () => {
 
 
 
-export { 
-  ChatScreen_Stack,
+export {
   RootStack, 
   FindScreen_Stack, 
   home_screen_post_to_profile_screen, 

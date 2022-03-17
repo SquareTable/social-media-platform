@@ -25,6 +25,8 @@
     "@react-navigation/stack": "^6.0.11",
     "@skele/components": "^1.0.0-alpha.40",
     "@types/react-native": "^0.66.10",
+    "@unimodules/core": "^7.1.2",
+    "@unimodules/react-native-adapter": "^6.3.9",
     "apisauce": "^2.1.1",
     "axios": "^0.21.4",
     "browserslist": "^4.16.6",
@@ -68,6 +70,7 @@
     "react-native-inviewport": "^1.1.0",
     "react-native-lightbox-v2": "^0.8.8",
     "react-native-material-dropdown": "^0.11.1",
+    "react-native-pager-view": "5.4.9",
     "react-native-paper": "^4.9.2",
     "react-native-reanimated": "~2.3.1",
     "react-native-render-html": "^6.3.1",
@@ -85,9 +88,10 @@
     "react-refresh-webpack-plugin": "^0.1.0",
     "react-scripts": "^4.0.3",
     "styled-components": "^5.3.0",
+    "tweet-nacl-react-native-expo": "^1.0.3",
     "typescript": "~4.3.5",
     "uglify-es": "^3.3.9",
-    "react-native-pager-view": "5.4.9"
+    "expo-random": "~12.1.1"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
