@@ -21,8 +21,13 @@ import { SimpleStylingVersion } from './components/StylingVersionsFile.js';
 import SocialSquareLogo_B64_png from './assets/SocialSquareLogo_Base64_png.js';
 import { PanGestureHandler, State } from 'react-native-gesture-handler';
 import * as Device from 'expo-device';
+import * as SecureStore from 'expo-secure-store';
+import { v4 as uuidv4 } from 'uuid';
+import { io } from 'socket.io-client';
 import { 
-  Avatar 
+  Avatar,
+  ButtonText
+
 } from './screens/screenStylings/styling.js';
 import { ProfilePictureURIContext } from './components/ProfilePictureURIContext.js';
 import NetInfo from "@react-native-community/netinfo";
@@ -41,6 +46,7 @@ import { BadgeEarntNotificationContext } from './components/BadgeEarntNotificati
 import { OnlineContext } from './components/conversationOnlineHandler.js';
 import { SocketContext } from './components/socketHandler.js';
 import { ReconnectPromptContext } from './components/reconnectPrompt.js';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 const Stack = createStackNavigator();
 
 
@@ -88,6 +94,306 @@ const App = () => {
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [socket, setSocket] = useState('');
   const [reconnectPrompt, setReconnectPrompt] = useState(false);
+  const [storedCredentials, setStoredCredentials] = useState('');
+  const [expoPushToken, setExpoPushToken] = useState('');
+  const [notification, setNotification] = useState(false);
+  const notificationListener = useRef();
+  const responseListener = useRef();
+  const [checkingConnectionPopUp, setCheckingConnectionPopUp] = useState(false)
+  const socketRefForEventListeners = useRef(socket)
+  const onlineUsersRef = useRef(onlineUsers)
+  const [timeOutId, setTimeOutId] = useState(null)
+  const [limitReconnect, setLimitReconnect] = useState(false)
+  const [popUpForCoversations, setPopUpForCoversations] = useState(null)
+  const [isReady, setIsReady] = useState(false);
+  const scheme = useColorScheme();
+  let DisconnectedFromInternetBoxY = useRef(new Animated.Value(0)).current;
+  let AccountSwitcherY = useRef(new Animated.Value(500)).current;
+  let AccountSwitchedBoxY = useRef(new Animated.Value(0)).current;
+  let BadgeEarntBoxY = useRef(new Animated.Value(StatusBarHeight - 200)).current;
+  const popUpTimeoutLength = useRef(new Animated.Value(Dimensions.get('window').width * 0.9)).current;
+
+  //Encryption Stuff
+    
+  async function saveDeviceUUID(key, value) {
+    await SecureStore.setItemAsync(key, value);
+}
+  
+async function getDeviceUUID(key) {
+    let result = await SecureStore.getItemAsync(key);
+    if (result) {
+        return result;
+    } else {
+        return null
+    }
+}
+
+const checkAndCreateDeviceUUID = (callback) => {
+    async function forAsync() {
+        const checkingDeviceUUID = await getDeviceUUID("device-uuid")
+        if (checkingDeviceUUID == null) {
+            let uuid = uuidv4();
+            saveDeviceUUID("device-uuid", JSON.stringify(uuid))
+            console.log(`device uuid ${uuid}`)
+            return callback(uuid);
+        } else {
+            console.log(`found device uuid ${checkingDeviceUUID}`)
+            return callback(checkingDeviceUUID);
+        }
+    }
+    forAsync()
+}
+
+useEffect(() => {
+
+  return () => {
+      if (typeof notificationListener.current == "undefined" || notificationListener.current == undefined) {
+        //Undefined
+      } else {
+        Notifications.removeNotificationSubscription(notificationListener.current);
+      }
+
+      if (typeof responseListener.current == "undefined" || responseListener.current == undefined) {
+        //Undefined
+      } else {
+        Notifications.removeNotificationSubscription(responseListener.current)
+      }
+  }
+}, []);
+
+useEffect(() => {
+  if (storedCredentials == '' || storedCredentials == null) {
+      //no credentials
+  } else {
+      if (socket == '') {
+          const forAsync = async () => {
+              checkAndCreateDeviceUUID(function(uuidOfDevice) {
+                  if (uuidOfDevice == "" || uuidOfDevice == null || uuidOfDevice == undefined || typeof uuidOfDevice == "undefined") {
+                      console.log(`Error with uuid (${uuidOfDevice}) of device.`)
+                  } else {
+                      const uuidWithOutDouble = uuidOfDevice.replace(/(^"|"$)/g, '')
+                      console.log(`UUID sent with socket ${uuidOfDevice}`)
+                      setSocket(io("https://nameless-dawn-41038.herokuapp.com/", { query: { idSentOnConnect: storedCredentials._id, uuidOfDevice: uuidWithOutDouble }}))
+                  }
+              })
+          }
+          forAsync()
+      }
+      AsyncStorage.getItem('deviceNotificationKey').then((result) => {
+          if (result !== null) {
+              setExpoPushToken(result);
+              console.log('deviceNotificationKey: ' + result);
+
+              // This listener is fired whenever a notification is received while the app is foregrounded
+              notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+                setNotification(notification);
+                console.log(notification)
+              });
+
+              // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
+              responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+                console.log(response);
+              });
+          } else {
+              registerForPushNotificationsAsync().then(token => {
+                  const url = "https://nameless-dawn-41038.herokuapp.com/user/sendnotificationkey";
+                  axios.post(url, {idSent: storedCredentials._id, keySent: token}).then((response) => {
+                      const result = response.data;
+                      const {message, status, data} = result;
+
+                      if (status !== 'SUCCESS') {
+                          console.log(`${status}: ${message}`)
+                      } else {
+                          setExpoPushToken(token)
+                          AsyncStorage.setItem('deviceNotificationKey', token)
+                          .then(() => {
+                              setExpoPushToken(token);
+                              console.log('deviceNotificationKey: ' + token);
+                              // This listener is fired whenever a notification is received while the app is foregrounded
+                              notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+                                setNotification(notification);
+                                console.log(notification)
+                              });
+
+                              // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
+                              responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+                                console.log(response);
+                              });
+                          })
+                          .catch((error) => {
+                              console.log(error);
+                              console.log('Error Setting Notification Key');
+                          })
+                      }
+                  }).catch(error => {
+                      console.log(`Error while sending push notif key ${error}`);
+                  })
+              });
+          }
+      }).catch((error) => console.log(error));
+  }
+}, [storedCredentials])
+
+useEffect(() => {
+  if (notification !== false) {
+      popUpTimeoutLength.stopAnimation()
+      if (timeOutId !== null) {
+          clearTimeout(timeOutId)
+          setTimeOutId(null)
+      }
+      popUpTimeoutLength.setValue(Dimensions.get('window').width * 0.9)
+      Animated.timing(popUpTimeoutLength, {
+          toValue: 0,
+          duration: 4000,
+          useNativeDriver: false
+      }).start()
+      var tempTimeOutId = setTimeout(() => {
+          setNotification(false)
+      },4000)
+      setTimeOutId(tempTimeOutId)
+  }
+}, [notification])
+
+useEffect(() => {
+  if (socket == '') {
+      if (storedCredentials == '' || storedCredentials == null) {
+          //no credentials
+      } else {
+          const forAsync = async () => {
+              checkAndCreateDeviceUUID(function(uuidOfDevice) {
+                  if (uuidOfDevice == "" || uuidOfDevice == null || uuidOfDevice == undefined || typeof uuidOfDevice == "undefined") {
+                      console.log(`Error with uuid (${uuidOfDevice}) of device.`)
+                  } else {
+                      const uuidWithOutDouble = uuidOfDevice.replace(/(^"|"$)/g, '')
+                      console.log(`UUID sent with socket ${uuidOfDevice}`)
+                      setSocket(io("https://nameless-dawn-41038.herokuapp.com/", { query: { idSentOnConnect: storedCredentials._id, uuidOfDevice: uuidWithOutDouble }}))
+                  }
+              })
+          }
+          forAsync()
+      }
+  } else {
+      socketRefForEventListeners.current = socket
+
+      console.log("Change in socket")
+      socket.on("client-connected", () => {
+          setReconnectPrompt(false)
+          setLimitReconnect(false)
+          setCheckingConnectionPopUp(false)
+          console.log("Connected to socket")
+      });
+
+      socket.on("fully-set-online", () => {
+          console.log("Fully set online")
+      })
+      
+      socket.on("fully-set-offline", () => {
+          console.log("Fully set offline")
+      })
+
+      socket.on("error-setting-online-status", () => {
+          console.log("Error setting online status")
+      })
+
+      socket.on("error-setting-offline-status", () => {
+          console.log("Error setting offline status")
+      })
+
+      socket.on("sent-to-users-out-of-convo", () => {
+          console.log("Sent to users out of convo")
+      })
+
+      socket.on('timed-out-from-app-state', () => {
+          //setReconnectPrompt(true) Already does in disconnect
+      })
+
+      socket.on("disconnect", (reason) => {
+          setLimitReconnect(false)
+          setReconnectPrompt(true)
+          console.log(`Disconnected ${reason}`)
+      });
+  }
+}, [socket])
+
+var socketAutoReconnectInterval = null
+
+useEffect(() => {
+  if (reconnectPrompt != false) {
+    console.log('Reconnect prompt is true')
+    Animated.timing(DisconnectedFromInternetBoxY, {
+      toValue: 0,
+      duration: 100,
+      useNativeDriver: true
+    }).start();
+    if (AppState.currentState == 'active' || AppState.currentState == 'unknown') {
+      tryReconnect()
+    }
+    socketAutoReconnectInterval = setInterval(tryReconnect, 10000)
+  } else {
+    console.log('Reconnect prompt is false')
+    clearInterval(socketAutoReconnectInterval)
+    Animated.timing(DisconnectedFromInternetBoxY, {
+      toValue: 250,
+      duration: 100,
+      useNativeDriver: true
+    }).start();
+  }
+}, [reconnectPrompt, limitReconnect])
+
+useEffect(() => {
+  if (socket !== '') {
+      //can change when following is implemented
+      socket.on("user-in-conversation-online", (userThatCameOnlinePubId) => {
+          console.log(`${storedCredentials.secondId}: ${userThatCameOnlinePubId} came online.`)
+          //console.log(`onlineUsers: ${onlineUsers}, user that came online ${userThatCameOnlinePubId}`)
+          try {
+              var upToDateOU;
+              setOnlineUsers(currentState => { // Do not change the state by getting the updated state
+                  upToDateOU = currentState;
+                  return currentState;
+              })
+              if (upToDateOU.includes(userThatCameOnlinePubId)) {
+                  console.log("usersPubId already found in upToDateOU")
+              } else {
+                  setOnlineUsers((prev) => [...prev, userThatCameOnlinePubId])
+              }
+          } catch (err) {
+              console.log(`Error with setting convo user online: ${err}`)
+          }
+      })
+
+      socket.on("user-in-conversation-offline", (userThatWentOfflinePubId) => {
+          console.log("A user went offline")
+          console.log(`${storedCredentials.secondId}: ${userThatWentOfflinePubId} went offline.`)
+          try {
+              var upToDateOU;
+              setOnlineUsers(currentState => { // Do not change the state by getting the updated state
+                  upToDateOU = currentState;
+                  return currentState;
+              })
+              var indexIfFound = upToDateOU.findIndex(x => x == userThatWentOfflinePubId)
+              if (indexIfFound !== -1) {
+                  toChange = upToDateOU.slice()
+                  toChange.splice(indexIfFound, 1)
+                  console.log("toChange upToDateOU spliced:")
+                  console.log(toChange)
+                  setOnlineUsers(toChange)
+              } else {
+                  console.log("User to set offline already not in online users.")
+              }
+          } catch (err) {
+              console.log(`Error with setting convo user online: ${err}`)
+          }
+      })
+  } else {
+      if (storedCredentials == '' || storedCredentials == null) {
+          //No credentials
+      } else {
+          setCheckingConnectionPopUp(true)
+      }
+  }
+}, [socket])
+
 
   useEffect(() => {
       AppState.addEventListener("change", _handleAppStateChange);
@@ -109,7 +415,7 @@ const App = () => {
     }
   }, [showAccountSwitcher])
 
-  useEffect(() => {
+  /*useEffect(() => {  --- No longer needed as disconnected warning shows up when socket is disconnected ---
     const unsubscribe = NetInfo.addEventListener(state => {
       console.log("Connection type", state.type);
       console.log("Is connected?", state.isConnected);
@@ -129,7 +435,7 @@ const App = () => {
     });
 
     return unsubscribe;
-  }, []);
+  }, []);*/
 
   const _handleAppStateChange = (nextAppState) => {
       if (
@@ -145,99 +451,57 @@ const App = () => {
       appState.current = nextAppState;
       setAppStateVisible(appState.current)
       console.log("AppState", appState.current);
+
+      if (appState == 'active') {
+        if (socketRefForEventListeners.current !== '') {
+            try {
+                socketRefForEventListeners.current.emit('app-state-active')
+                console.log(`Emitted app state change active`)
+            } catch (err) {
+                console.log(err)
+            }
+        }
+    } else {
+        console.log("This")
+        console.log(`socket: ${socketRefForEventListeners}`)
+        if (socketRefForEventListeners.current !== '') {
+            console.log("This Two")
+            try {
+                console.log("This Three")
+                socketRefForEventListeners.current.emit('app-state-not-active')
+                console.log(`Emitted app state not active.`)
+            } catch (err) {
+                console.log(`Emitting app state change socket err: ${err}`)
+            }
+        }
+    }
   };
   //End of check app state code
 
-  const [storedCredentials, setStoredCredentials] = useState('');
-  const clearAsyncStorageOnLogin = false;
-  if (clearAsyncStorageOnLogin === true) {
-    AsyncStorage.clear();
-  }
-  async function registerForPushNotificationsAsync() {
-    let token;
-    if (Constants.isDevice) {
-      const { status: existingStatus } = await Notifications.getPermissionsAsync();
-      let finalStatus = existingStatus;
-      if (existingStatus !== 'granted') {
-        const { status } = await Notifications.requestPermissionsAsync({
-          ios: {
-            allowAlert: true,
-            allowBadge: true,
-            allowSound: true,
-            allowAnnouncements: true,
-          }
+  function tryReconnect() {
+    if (AppState.currentState == 'active' || AppState.currentState == 'unknown') {
+      console.log('Trying to reconnect to socket')
+      if (socket.disconnected == false) {
+        clearInterval(socketAutoReconnectInterval)
+        console.log('Clearing auto reconnect to socket interval')
+        console.log('Socket is already connected and SocialSquare is trying to reconnect to the socket')
+      } else {
+        console.log('Socket is disconnected and SocialSquare is connecting back to socket')
+        if (limitReconnect == false) {
+            setLimitReconnect(true)
+            try {
+                if (socket.disconnected == true) {
+                    socket.connect()
+                }
+            } catch (err) {
+                setLimitReconnect(false)
+                console.log(err)
+            }
         }
-      );
-        finalStatus = status;
       }
-      if (finalStatus !== 'granted') {
-        console.log('Failed to get push token for push notification!');
-        return;
-      }
-      token = (await Notifications.getExpoPushTokenAsync()).data;
-      console.log(token);
-    } else {
-      console.log('Must use physical device for Push Notifications');
     }
-  
-    if (Platform.OS === 'android') {
-      Notifications.setNotificationChannelAsync('default', {
-        name: 'default',
-        importance: Notifications.AndroidImportance.MAX,
-        vibrationPattern: [0, 250, 250, 250],
-        lightColor: '#FF231F7C',
-      });
-    }
-  
-    return token;
   }
 
-  const [expoPushToken, setExpoPushToken] = useState('');
-  const [notification, setNotification] = useState(false);
-  const notificationListener = useRef();
-  const responseListener = useRef();
-
-  useEffect(() => {
-    registerForPushNotificationsAsync().then(token => setExpoPushToken(token));
-
-    // This listener is fired whenever a notification is received while the app is foregrounded
-    notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-      setNotification(notification);
-      console.log(notification)
-    });
-
-    // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
-    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-      console.log(response);
-    });
-
-    return () => {
-      Notifications.removeNotificationSubscription(notificationListener.current);
-      Notifications.removeNotificationSubscription(responseListener.current);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (notification != false) {
-      Vibration.vibrate()
-      Animated.sequence([
-        Animated.timing(GoDownByY, {
-          toValue: StatusBarHeight - 40,
-          duration: 100,
-          useNativeDriver: true
-        }),
-        Animated.delay(5000),
-        Animated.timing(GoDownByY, {
-          toValue: StatusBarHeight - 200,
-          duration: 300,
-          useNativeDriver: true
-        }),
-      ]).start();
-    }
-  }, [notification])
-
-  const [isReady, setIsReady] = useState(false);
-  const scheme = useColorScheme();
   console.log(scheme + " from App.js");
   const AppDarkTheme = {
     dark: true,
@@ -265,7 +529,8 @@ const App = () => {
       midWhite: '#E5E9F0',
       slightlyLighterPrimary: '#424a5c',
       descTextColor: '#abafb8',
-      errorColor: '#FF0000', //red
+      errorColor: '#FF0000', //red,
+      darkerPrimary: '#252f42'
     },
   };
   const AppLightTheme = {
@@ -294,7 +559,8 @@ const App = () => {
       midWhite: '#E5E9F0',
       slightlyLighterPrimary: '#424a5c',
       descTextColor: '#abafb8',
-      errorColor: '#FF0000', //red
+      errorColor: '#FF0000', //red,
+      darkerPrimary: '#DFE2E7'
     }
   };
   const AppPureDarkTheme = {
@@ -323,7 +589,8 @@ const App = () => {
       midWhite: '#E5E9F0',
       slightlyLighterPrimary: '#424a5c',
       descTextColor: '#abafb8',
-      errorColor: '#FF0000', //red
+      errorColor: '#FF0000', //red,
+      darkerPrimary: '4D4D4D'
     }
   };
   const AppPureLightTheme = {
@@ -352,7 +619,8 @@ const App = () => {
       midWhite: '#E5E9F0',
       slightlyLighterPrimary: '#424a5c',
       descTextColor: '#abafb8',
-      errorColor: '#FF0000', //red
+      errorColor: '#FF0000', //red,
+      darkerPrimary: 'D9D9D9'
     }
   };
 
@@ -387,8 +655,34 @@ const App = () => {
     try {
       for (let i = 0; i < simpleStylingData.length; i++) {
         if (simpleStylingData[i].indexNum == parseInt(SimpleAppStyleIndexNum)) {
-            setCurrentSimpleStylingData(simpleStylingData[i])
-            console.log(simpleStylingData[i])
+            let dataToUse = simpleStylingData[i]
+            const hexToRgb = hex =>
+              hex.replace(/^#?([a-f\d])([a-f\d])([a-f\d])$/i
+                        ,(m, r, g, b) => '#' + r + r + g + g + b + b)
+                .substring(1).match(/.{2}/g)
+                .map(x => parseInt(x, 16))
+            const darkerPrimaryBeforeDarken = hexToRgb(dataToUse.colors.primary)
+            const shadeFactor = 0.3 //Will darken RGB by 30%
+            const darkR = darkerPrimaryBeforeDarken[0] * (1 - shadeFactor)
+            const darkG = darkerPrimaryBeforeDarken[1] * (1 - shadeFactor)
+            const darkB = darkerPrimaryBeforeDarken[2] * (1 - shadeFactor)
+            function RGBToHex(r,g,b) {
+              r = r.toString(16);
+              g = g.toString(16);
+              b = b.toString(16);
+            
+              if (r.length == 1)
+                r = "0" + r;
+              if (g.length == 1)
+                g = "0" + g;
+              if (b.length == 1)
+                b = "0" + b;
+            
+              return "#" + r + g + b;
+            }
+            dataToUse.colors.darkerPrimary = RGBToHex(Math.round(darkR), Math.round(darkG), Math.round(darkB))
+            setCurrentSimpleStylingData(dataToUse)
+            console.log(dataToUse)
             previousStylingState.current = SimpleAppStyleIndexNum
         }
       }
@@ -412,71 +706,43 @@ const App = () => {
     getAsyncSimpleStyling()
     setCurrentSimpleStylingDataToStyle(AppStylingContextState)
   }
-  
-  let GoDownByY = useRef(new Animated.Value(StatusBarHeight - 200)).current;
-  let DisconnectedFromInternetBoxY = useRef(new Animated.Value(0)).current;
-  let AccountSwitcherY = useRef(new Animated.Value(500)).current;
-  let AccountSwitchedBoxY = useRef(new Animated.Value(0)).current;
-  let BadgeEarntBoxY = useRef(new Animated.Value(StatusBarHeight - 200)).current;
+
+  var appTheme = AppStylingContextState == 'Default' ? scheme === 'dark' ? AppDarkTheme : AppLightTheme : AppStylingContextState == 'Dark' ? AppDarkTheme : AppStylingContextState == 'Light' ? AppLightTheme : AppStylingContextState == 'PureDark' ? AppPureDarkTheme : AppStylingContextState == 'PureLight' ? AppPureLightTheme : currentSimpleStylingData;
 
   const NotificationBox = () => {
-    const onPanGestureEvent = Animated.event(
-      [
-        {
-          nativeEvent: {
-            translationY: GoDownByY,
-          },
-        },
-      ],
-      { useNativeDriver: true }
-    );
-    const NotificationPressed = () => {
-      Animated.timing(GoDownByY, {
-        toValue: -100,
-        duration: 250,
-        useNativeDriver: true
-      }).start();
-    }
-    const onHandlerStateChange = event => {
-      if (event.nativeEvent.oldState === State.ACTIVE) {
-        if (event.nativeEvent.absoluteY < StatusBarHeight) {
-          Animated.timing(GoDownByY, {
-            toValue: -100,
-            duration: 100,
-            useNativeDriver: true
-          }).start();
-        } else {
-          Animated.sequence([
-            Animated.timing(GoDownByY, {
-              toValue: StatusBarHeight - 40,
-              duration: 100,
-              useNativeDriver: true
-            }),
-            Animated.delay(3000),
-            Animated.timing(GoDownByY, {
-              toValue: -100,
-              duration: 100,
-              useNativeDriver: true
-            })
-          ]).start();
-        }
-      }
-    }
-    return(
-      <PanGestureHandler onGestureEvent={onPanGestureEvent} onHandlerStateChange={onHandlerStateChange}>
-        <Animated.View style={{backgroundColor: 'rgba(0, 0, 0, 0.8)', height: 60, width: '90%', position: 'absolute', zIndex: 1000, top: 40, marginHorizontal: '5%', flexDirection: 'row', borderColor: 'black', borderRadius: 15, borderWidth: 1, transform: [{translateY: GoDownByY.interpolate({inputRange: [0, 10], outputRange: [0, 10]})}]}}>
-          <TouchableOpacity onPress={NotificationPressed} style={{flexDirection: 'row'}}>
-            <View style={{width: '20%', minWidth: '20%', maxWidth: '20%', justifyContent: 'center', alignItems: 'center'}}>
-              <Avatar style={{width: 40, height: 40}} resizeMode="cover" source={{uri: notification != false ? notification.request.content.data.profilePicture ? notification.request.content.data.profilePicture : SocialSquareLogo_B64_png : SocialSquareLogo_B64_png}}/>
+    if (notification !== false && notification?.request?.content?.title && notification?.request?.content?.body) {
+      return (
+        <View style={{position: 'absolute', opacity: 0.9, backgroundColor: appTheme.colors.darkerPrimary, top: Dimensions.get('window').height * 0.05, zIndex: 110, width: Dimensions.get('window').width * 0.9, alignSelf: 'center', alignItems: 'center', justifyContent: 'center'}}>
+            <Animated.View style={{width: popUpTimeoutLength, backgroundColor: appTheme.colors.brand, height: 3 }}>
+            </Animated.View>
+            <View style={{flexDirection: 'row', alignItems: 'center', width: Dimensions.get('window').width * 0.9, paddingVertical: 10}}>
+                <TouchableOpacity style={{width: '85%', flexDirection: 'row'}}>
+                    <View style={{marginLeft: 10, marginRight: 5, width: '20%', aspectRatio: 1/1, justifyContent: 'center', alignContent: 'center'}}>
+                        <Image style={{width: '100%', height: '100%', borderRadius: 500, borderWidth: 2, borderColor: appTheme.colors.secondary}} source={{uri: SocialSquareLogo_B64_png}}/>
+                    </View>
+                    <View style={{width: '72%'}}>
+                        {notification.request.content.title !== "" && (
+                            <Text numberOfLines={1} ellipsizeMode='tail' style={{color: appTheme.colors.tertiary, textAlignVertical: 'center', flex: 1, textAlign: 'left', fontSize: 14, lineHeight: 20}}>{notification.request.content.title}</Text>
+                        )}
+                        {notification.request.content.body !== "" && (
+                            <Text numberOfLines={2} ellipsizeMode='tail' style={{color: appTheme.colors.tertiary, textAlignVertical: 'center', flex: 1, textAlign: 'left', fontSize: 18, lineHeight: 20}}>{notification.request.content.body}</Text>
+                        )}
+                    </View>
+                </TouchableOpacity>
+                <TouchableOpacity style={{width: '8%', aspectRatio: 1/1, marginRight: 10, marginLeft: 5, justifyContent: 'center', alignContent: 'center'}} onPress={() => {
+                    console.log("Closing Pop Up")
+                    setNotification(false)
+                }}>
+                    <Image style={{width: '100%', height: '100%', tintColor: appTheme.colors.tertiary}} source={require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/270-cancel-circle.png')}/>
+                </TouchableOpacity>
             </View>
-            <View style={{width: '80%', minWidth: '80%', maxWidth: '80%'}}>
-              <Text numberOfLines={1} style={{color: 'white', fontSize: 16, fontWeight: 'bold', marginRight: 15}}>{notification != false ? notification.request.content.title : 'No Notification Data'}</Text>
-              <Text numberOfLines={2} style={{color: 'white', fontSize: 14, marginTop: 2, marginRight: 15}}>{notification != false ? notification.request.content.body : 'No Notification Data'}</Text>
-            </View>
-          </TouchableOpacity>
-        </Animated.View>
-      </PanGestureHandler>
-    )
+            <Animated.View style={{width: popUpTimeoutLength, backgroundColor: appTheme.colors.brand, height: 3 }}>
+            </Animated.View>            
+        </View>
+      )
+    } else {
+      return null
+    }
   }
 
   const DisconnectedFromInternetBox = () => {
@@ -518,7 +784,7 @@ const App = () => {
       <PanGestureHandler onGestureEvent={onPanGestureEvent} onHandlerStateChange={onHandlerStateChange}>
         <Animated.View style={{backgroundColor: 'rgba(255, 0, 0, 0.7)', height: 60, width: '90%', position: 'absolute', zIndex: 999, top: appHeight - 140, marginHorizontal: '5%', flexDirection: 'row', borderColor: 'black', borderRadius: 15, borderWidth: 1, transform: [{translateY: DisconnectedFromInternetBoxY}], justifyContent: 'center', alignItems: 'center'}}>
           <TouchableOpacity onPress={onBoxPress}>
-            <Text style={{color: 'white', fontSize: 20, fontWeight: 'bold'}}>No internet connection</Text>
+            <Text style={{color: 'white', fontSize: 20, fontWeight: 'bold'}}>Lost connection</Text>
           </TouchableOpacity>
         </Animated.View>
       </PanGestureHandler>
@@ -573,6 +839,7 @@ const App = () => {
     const goToAccount = (account) => {
       setProfilePictureUri(account.profilePictureUri);
       setStoredCredentials(account);
+      AsyncStorage.setItem('socialSquareCredentials', JSON.stringify(account));
       Animated.timing(DismissAccountSwitcherBoxActivated, { toValue: 0, duration: 1, useNativeDriver: true }).start();
       Animated.timing(AccountSwitcherY, {
         toValue: 250,
@@ -796,19 +1063,54 @@ const App = () => {
     }
     return(
       <PanGestureHandler onGestureEvent={onPanGestureEvent} onHandlerStateChange={onHandlerStateChange}>
-        <Animated.View style={{backgroundColor: 'rgba(0, 0, 0, 0.8)', height: 60, width: '90%', position: 'absolute', zIndex: 1000, top: 40, marginHorizontal: '5%', flexDirection: 'row', borderColor: 'black', borderRadius: 15, borderWidth: 1, transform: [{translateY: GoDownByY.interpolate({inputRange: [0, 10], outputRange: [0, 10]})}]}}>
+        <Animated.View style={{backgroundColor: 'rgba(0, 0, 0, 0.8)', height: 60, width: '90%', position: 'absolute', zIndex: 1000, top: 40, marginHorizontal: '5%', flexDirection: 'row', borderColor: 'black', borderRadius: 15, borderWidth: 1, transform: [{translateY: BadgeEarntBoxY.interpolate({inputRange: [0, 10], outputRange: [0, 10]})}]}}>
           <TouchableOpacity onPress={BoxPressed} style={{flexDirection: 'row'}}>
             <View style={{width: '20%', minWidth: '20%', maxWidth: '20%', justifyContent: 'center', alignItems: 'center'}}>
-              <Avatar style={{width: 40, height: 40}} resizeMode="cover" source={{uri: notification != false ? notification.request.content.data.profilePicture ? notification.request.content.data.profilePicture : SocialSquareLogo_B64_png : SocialSquareLogo_B64_png}}/>
+              {getBadgeEarntNotificationIcon(badgeEarntNotification)}
             </View>
             <View style={{width: '80%', minWidth: '80%', maxWidth: '80%'}}>
               <Text numberOfLines={1} style={{color: 'white', fontSize: 16, fontWeight: 'bold', marginRight: 15}}>Badge Earnt!</Text>
-              <Text numberOfLines={2} style={{color: 'white', fontSize: 14, marginTop: 2, marginRight: 15}}>{badgeEarntNotification}</Text>
+              <Text numberOfLines={2} style={{color: 'white', fontSize: 14, marginTop: 2, marginRight: 15}}>{getBadgeEarntNotificationDescription(badgeEarntNotification)}</Text>
             </View>
           </TouchableOpacity>
         </Animated.View>
       </PanGestureHandler>
     )
+  }
+
+  useEffect(() => {
+    if (badgeEarntNotification != '') {
+      Vibration.vibrate(500)
+      Animated.sequence([
+        Animated.timing(BadgeEarntBoxY, {
+          toValue: StatusBarHeight - 40,
+          duration: 100,
+          useNativeDriver: true
+        }),
+        Animated.delay(3000),
+        Animated.timing(BadgeEarntBoxY, {
+          toValue: -100,
+          duration: 100,
+          useNativeDriver: true
+        })
+      ]).start();
+    }
+  }, [badgeEarntNotification])
+
+  const getBadgeEarntNotificationIcon = (badge) => {
+    if (badge == 'HomeScreenLogoEasterEgg') {
+      return (
+        <MaterialCommunityIcons name="egg-easter" size={65} color={'white'} style={{marginTop: -3}}/>
+      )
+    }
+  }
+
+  const getBadgeEarntNotificationDescription = (badge) => {
+    if (badge == 'HomeScreenLogoEasterEgg') {
+      return (
+        'Congratulations! You have found the Home Screen Easter Egg!'
+      )
+    }
   }
 
   if (isReady == false) {
@@ -974,7 +1276,8 @@ const App = () => {
         require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/020-film.png'),
         require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/277-exit.png'),
         require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/207-eye.png'),
-        require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/265-notification.png')
+        require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/265-notification.png'),
+        require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/113-bubbles4.png')
       ];
 
       const LockSocialSquareValue = await AsyncStorage.getItem('LockSocialSquare')
@@ -1063,7 +1366,7 @@ const App = () => {
                                   <ReconnectPromptContext.Provider value={{reconnectPrompt, setReconnectPrompt}}>
                                     {AppStylingContextState != 'Default' && AppStylingContextState != 'Light' && AppStylingContextState != 'Dark' && AppStylingContextState != 'PureDark' && AppStylingContextState != 'PureLight' ? previousStylingState.current != AppStylingContextState ? setCurrentSimpleStylingDataToStyle(AppStylingContextState) : null : null}
                                     <AppearanceProvider>
-                                      <NavigationContainer ref={navigationRef} theme={AppStylingContextState == 'Default' ? scheme === 'dark' ? AppDarkTheme : AppLightTheme : AppStylingContextState == 'Dark' ? AppDarkTheme : AppStylingContextState == 'Light' ? AppLightTheme : AppStylingContextState == 'PureDark' ? AppPureDarkTheme : AppStylingContextState == 'PureLight' ? AppPureLightTheme : currentSimpleStylingData} onStateChange={() => {console.log('Screen changed')}}>
+                                      <NavigationContainer ref={navigationRef} theme={appTheme} onStateChange={() => {console.log('Screen changed')}}>
                                         {lockSocialSquare == false ?
                                           showPlaceholderScreen == true && (appStateVisible == 'background' || appStateVisible == 'inactive') &&
                                               <Image source={require('./assets/Splash_Screen.png')} resizeMode="cover" style={{width: '100%', height: '100%', position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, zIndex: 100, backgroundColor: '#3B4252', borderWidth: 0}}/>
@@ -1088,6 +1391,7 @@ const App = () => {
                                                 </TouchableOpacity>
                                               </View>
                                         }
+                                        <BadgeEarntBox/>
                                         <NotificationBox/>
                                         <Animated.View style={{position: 'absolute', height: '100%', width: '100%', top: 0, right: 0, zIndex: DismissAccountSwitcherBoxActivated.interpolate({inputRange: [0, 1], outputRange: [-10, 997]})}}>
                                           <TouchableOpacity style={{height: '100%', width: '100%'}} onPress={() => {
@@ -1097,6 +1401,31 @@ const App = () => {
                                             }}
                                           />
                                         </Animated.View>
+                                        {checkingConnectionPopUp !== false && (
+                                            <View style={{zIndex: 10, position: 'absolute', height: Dimensions.get('window').height, width: Dimensions.get('window').width}}>
+                                                <View style={{width: Dimensions.get('window').width * 0.8, top: Dimensions.get('window').height * 0.5, marginTop: Dimensions.get('window').height * -0.1, backgroundColor: appTheme.colors.primary, alignSelf: 'center', justifyContent: 'center', borderRadius: 30, borderWidth: 3, borderColor: appTheme.colors.tertiary}}>
+                                                    <ButtonText style={{marginTop: 25, textAlign: 'center', color: appTheme.colors.tertiary, fontWeight: 'bold'}}> Checking Connection </ButtonText>
+                                                    <View style={{width: Dimensions.get('window').width * 0.6, marginLeft: Dimensions.get('window').width * 0.1}}>
+                                                        <ActivityIndicator size={30} color={appTheme.colors.brand} style={{marginBottom: 25}}/>
+                                                    </View>
+                                                </View>
+                                            </View>
+                                        )}
+                                        {/*reconnectPrompt !== false && (
+                                            <View style={{zIndex: 10, position: 'absolute', height: Dimensions.get('window').height, width: Dimensions.get('window').width}}>
+                                                <View style={{width: Dimensions.get('window').width * 0.8, top: Dimensions.get('window').height * 0.5, marginTop: Dimensions.get('window').height * -0.2, backgroundColor: appTheme.colors.primary, alignSelf: 'center', justifyContent: 'center', borderRadius: 30, borderWidth: 3, borderColor: appTheme.colors.tertiary}}>
+                                                    <ButtonText style={{marginTop: 25, textAlign: 'center', color: appTheme.colors.tertiary, fontWeight: 'bold'}}> You got disconnected{"\n"}   from inactivity :( </ButtonText>
+                                                    <View style={{width: Dimensions.get('window').width * 0.6, aspectRatio: 1/1, marginLeft: Dimensions.get('window').width * 0.1}}>
+                                                        <Image style={{width: '100%', height: '100%'}} source={require('./assets/img/DidulaUpsideDown.jpg')}/>
+                                                    </View>
+                                                    <TouchableOpacity style={{marginVertical: '2%', backgroundColor: appTheme.colors.brand, marginBottom: 25, width: '80%', paddingVertical: 20, alignContent: 'center', justifyContent: 'center', alignSelf: 'center', borderRadius: 30}} onPress={() => {
+                                                        tryReconnect()
+                                                    }}>
+                                                        <ButtonText style={{textAlign: 'center'}}> Reconnect </ButtonText>
+                                                    </TouchableOpacity>
+                                                </View>
+                                            </View>
+                                          )*/}
                                         <DisconnectedFromInternetBox/>
                                         <AccountSwitcher/>
                                         <AccountSwitchedBox/>
@@ -1124,4 +1453,43 @@ const App = () => {
 };
 
 export default App;
+
+async function registerForPushNotificationsAsync() {
+  let token;
+  if (Constants.isDevice) {
+    const { status: existingStatus } = await Notifications.getPermissionsAsync();
+    let finalStatus = existingStatus;
+    if (existingStatus !== 'granted') {
+      const { status } = await Notifications.requestPermissionsAsync({
+        ios: {
+          allowAlert: true,
+          allowBadge: true,
+          allowSound: true,
+          allowAnnouncements: true,
+        }
+      }
+    );
+      finalStatus = status;
+    }
+    if (finalStatus !== 'granted') {
+      console.log('Failed to get push token for push notification!');
+      return;
+    }
+    token = (await Notifications.getExpoPushTokenAsync()).data;
+    console.log(token);
+  } else {
+    console.log('Must use physical device for Push Notifications');
+  }
+
+  if (Platform.OS === 'android') {
+    Notifications.setNotificationChannelAsync('default', {
+      name: 'default',
+      importance: Notifications.AndroidImportance.MAX,
+      vibrationPattern: [0, 250, 250, 250],
+      lightColor: '#FF231F7C',
+    });
+  }
+
+  return token;
+}
 

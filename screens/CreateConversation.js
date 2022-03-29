@@ -192,10 +192,10 @@ const ConversationCreationPage = ({route, navigation}) => {
                 </Navigator_BackButton>
                 <TestText style={{textAlign: 'center', color: colors.tertiary}}>Create a Conversation</TestText>
             </ChatScreen_Title>
-            <KeyboardAvoidingWrapper>
-                <StyledContainer>
+            <KeyboardAvoidingWrapper style={{backgroundColor: colors.primary}}>
+                <StyledContainer style={{backgroundColor: colors.primary}}>
                         <StatusBar style={colors.StatusBarColor}/>
-                        <InnerContainer>
+                        <InnerContainer style={{backgroundColor: colors.primary}}>
                             <Formik
                                 initialValues={{conversationTitle: selectedTitle, conversationDescription: selectedDescription, conversationMembers: membersInChat, conversationNSFW: selectedNSFW, conversationNSFL: selectedNSFL}}
                                 onSubmit={(values, {setSubmitting}) => {
@@ -218,10 +218,11 @@ const ConversationCreationPage = ({route, navigation}) => {
                                             label="Title"
                                             icon="note"
                                             placeholder=""
-                                            placeholderTextColor={tertiary}
+                                            placeholderTextColor={colors.tertiary}
                                             onChangeText={handleChange('conversationTitle')}
                                             onBlur={handleBlur('conversationTitle')}
                                             value={values.conversationTitle}
+                                            colors={colors}
                                         />
                                         <UserTextInput
                                             label="Description"
@@ -231,17 +232,18 @@ const ConversationCreationPage = ({route, navigation}) => {
                                             onChangeText={handleChange('conversationDescription')}
                                             onBlur={handleBlur('conversationDescription')}
                                             value={values.conversationDescription}
+                                            colors={colors}
                                         />
                                         <View style={{flexDirection: 'row', alignItems: 'center', alignSelf: 'center', marginBottom: 10}}>
-                                            <PostIcons tintColor={brand} style={{width: 30, height: 30}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/114-user.png')}/>
-                                            <SubTitle style={{marginBottom: 0, fontWeight: 'normal'}}>{membersInChat.length + 1}/14</SubTitle>
+                                            <PostIcons style={{width: 30, height: 30, tintColor: colors.brand}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/114-user.png')}/>
+                                            <SubTitle style={{marginBottom: 0, fontWeight: 'normal', color: colors.tertiary}}>{membersInChat.length + 1}/14</SubTitle>
                                         </View>
                                         <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center', alignSelf: 'center'}} onPress={() => {
                                                 console.log(sentConversationMembers)
                                                 navigation.navigate("ConversationUserFind", {conversationTitle: values.conversationTitle, conversationDescription: values.conversationDescription, initialUsers: membersInChat, conversationNSFW: false, conversationNSFL: false})
                                             }}>
-                                            <SubTitle style={{borderRadius: 1000, backgroundColor: slightlyLighterPrimary, width: 30, height: 30, textAlign: 'center', fontWeight: 'normal', marginRight: 8}}>+</SubTitle>
-                                            <SubTitle>Add/Remove Users</SubTitle>
+                                            <SubTitle style={{borderRadius: 1000, width: 30, height: 32.5, textAlign: 'center', fontWeight: 'normal', marginRight: 8, color: colors.tertiary, fontSize: 24}}>+</SubTitle>
+                                            <SubTitle style={{color: colors.tertiary}}>Add/Remove Users</SubTitle>
                                         </TouchableOpacity>
                                         <PostHorizontalView centerAlign={true}>
                                             <CheckBoxForPosts selectedState={conversationIsNSFW} onPress={() => {
@@ -257,7 +259,7 @@ const ConversationCreationPage = ({route, navigation}) => {
                                                     values.conversationNSFW = true
                                                 }
                                             }}/>
-                                            <AboveButtonText byCheckBox={true}>Mark as NSFW</AboveButtonText>
+                                            <AboveButtonText byCheckBox={true} style={{color: colors.tertiary}}>Mark as NSFW</AboveButtonText>
                                         </PostHorizontalView>
                                         <PostHorizontalView centerAlign={true}>
                                             <CheckBoxForPosts selectedState={conversationIsNSFL} onPress={() => {
@@ -273,23 +275,18 @@ const ConversationCreationPage = ({route, navigation}) => {
                                                     values.conversationNSFW = false
                                                 }
                                             }}/>
-                                            <AboveButtonText byCheckBox={true}>Mark as NSFL</AboveButtonText>
+                                            <AboveButtonText byCheckBox={true} style={{color: colors.tertiary}}>Mark as NSFL</AboveButtonText>
                                         </PostHorizontalView>
                                         <MsgBox type={messageType}>{message}</MsgBox>
-                                        {!submitting && (<StyledButton onPress={() => {
+                                        {!submitting && (<StyledButton style={{backgroundColor: colors.brand}} onPress={() => {
                                             setSubmitting(true)
                                             handleSubmit()
                                         }}>
                                             <ButtonText> Submit </ButtonText>
                                         </StyledButton>)}
 
-                                        {submitting && (<StyledButton disabled={true}>
-                                            <ActivityIndicator size="large" color={primary} />
-                                        </StyledButton>)}
+                                        {submitting && (<ActivityIndicator size="large" color={colors.brand} />)}
                                         
-                                        <StyledButton signUpButton={true} onPress={() => navigation.navigate("Conversations")}>
-                                                <ButtonText signUpButton={true}> Back </ButtonText>
-                                        </StyledButton>
                                     </StyledFormArea>)}
                             </Formik>
                         </InnerContainer>
@@ -307,22 +304,22 @@ const styles = StyleSheet.create({
     }
 })
 
-const UserTextInput = ({label, icon, body, ...props}) => {
+const UserTextInput = ({label, icon, body, colors, ...props}) => {
     if (body == true) {
         return(
             <View>
                 <LeftIcon searchIcon={true}>
-                    <Octicons name={icon} size={30} color={brand} />
+                    <Octicons name={icon} size={30} color={colors.brand} />
                 </LeftIcon>
-                <StyledInputLabel>{label}</StyledInputLabel>
-                <StyledTextInput searchPage={true} style={{borderColor: midWhite, borderRadius: 10}} {...props}/>
+                <StyledInputLabel style={{color: colors.tertiary}}>{label}</StyledInputLabel>
+                <StyledTextInput searchPage={true} style={{borderColor: colors.borderColor, borderRadius: 10, color: colors.tertiary}} {...props}/>
             </View>
         )
     } else {
         return(
             <View>
-                <StyledInputLabel>{label}</StyledInputLabel>
-                <StyledTextInput searchPage={true} style={{borderColor: slightlyLighterGrey, borderRightWidth: 0, borderTopWidth: 0, borderRadius: 2, backgroundColor: primary, paddingLeft: 10}} {...props}/>
+                <StyledInputLabel style={{color: colors.tertiary}}>{label}</StyledInputLabel>
+                <StyledTextInput searchPage={true} style={{borderColor: colors.borderColor, borderRightWidth: 0, borderTopWidth: 0, borderRadius: 2, backgroundColor: colors.primary, paddingLeft: 10, color: colors.tertiary}} {...props}/>
             </View>
         )
     }

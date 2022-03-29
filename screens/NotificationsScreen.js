@@ -18,23 +18,20 @@ const NotificationsScreen = ({navigation}) => {
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
     return(
         <>
+            <ChatScreen_Title style={{backgroundColor: colors.primary, borderWidth: 0}}>
+                <TouchableOpacity style={{top: StatusBarHeight + 2, right: 10, position: 'absolute', zIndex: 2}} onPress={() => {navigation.navigate('HomeScreen')}}>
+                    <AntDesign size={40} color={colors.tertiary} name="arrowright"/>
+                </TouchableOpacity>
+                <TestText style={{textAlign: 'center', color: colors.tertiary}}>Notifications</TestText>
+            </ChatScreen_Title>
             {storedCredentials ?
                 <>
-                    <ChatScreen_Title style={{backgroundColor: colors.primary, borderWidth: 0}}>
-                        <TouchableOpacity style={{top: StatusBarHeight + 2, right: 10, position: 'absolute', zIndex: 2}} onPress={() => {navigation.navigate('HomeScreen')}}>
-                            <AntDesign size={40} color={colors.tertiary} name="arrowright"/>
-                        </TouchableOpacity>
-                        <TestText style={{textAlign: 'center', color: colors.tertiary}}>Notifications</TestText>
-                    </ChatScreen_Title>
                     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
                         <Text style={{color: colors.tertiary, fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>Needs backend implementation; coming soon</Text>
                     </View>
                 </>
             :
                 <View style={{flex: 1, justifyContent: 'center', marginHorizontal: '2%'}}>
-                    <TouchableOpacity style={{top: StatusBarHeight + 2, right: 10, position: 'absolute', zIndex: 2}} onPress={() => {navigation.navigate('HomeScreen')}}>
-                        <AntDesign size={40} color={colors.tertiary} name="arrowright"/>
-                    </TouchableOpacity>
                     <Text style={{color: colors.tertiary, fontSize: 20, textAlign: 'center', marginBottom: 20}}>Please login to see notifications</Text>
                     <StyledButton onPress={() => {navigation.navigate('ModalLoginScreen', {modal: true})}}>
                         <ButtonText> Login </ButtonText>

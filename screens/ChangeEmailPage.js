@@ -57,7 +57,7 @@ const ChangeEmailPage = ({navigation}) => {
 
     //context
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
-    const {email} = storedCredentials;
+    if (storedCredentials) {var {email} = storedCredentials}
 
     const handleChangeDisplayName = (credentials, setSubmitting) => {
         handleMessage(null);

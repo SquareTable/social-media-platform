@@ -7,6 +7,7 @@ import ConversationCreationPage from "../screens/CreateConversation";
 import ConversationUserFind from "../screens/ConversationUserFind";
 import ConversationDMUserFind from "../screens/ConversationDMUserFind";
 import CreateDMConversation from "../screens/CreateDMConversation";
+import Chat from "../screens/Chat";
 
 const Stack = createStackNavigator();
 
@@ -32,6 +33,7 @@ const ChatScreen_Stack = () => {
         <Stack.Screen name="ConversationUserFind" component={ConversationUserFind}/>
         <Stack.Screen name="ConversationDMUserFind" component={ConversationDMUserFind}/>
         <Stack.Screen name="CreateDMConversation" component={CreateDMConversation}/>
+        <Stack.Screen name="Chat" component={Chat}/>
       </Stack.Navigator>
     );
   };

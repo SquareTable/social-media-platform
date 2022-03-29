@@ -69,7 +69,6 @@ import NotificationsScreen from "../screens/NotificationsScreen.js";
 import HomeScreenSettings from "../screens/HomeScreenSettings.js";
 import Filter_HomeScreenSettings from "../screens/HomeScreenSettings/Filter_HomeScreenSettings.js";
 import Algorithm_HomeScreenSettings from "../screens/HomeScreenSettings/Algorithm_HomeScreenSettings.js";
-import HomeChatNotificationsMaterialTopTabNavigator from "./MaterialTopTabsNavigator.js";
 import Audio_HomeScreenSettings from "../screens/HomeScreenSettings/Audio_HomeScreenSettings.js";
 import CreateConversationSelection from "../screens/CreateConversationSelection.js";
 import ConversationCreationPage from "../screens/CreateConversation.js";
@@ -189,7 +188,8 @@ const home_screen_post_to_profile_screen = () => {
           paddingLeft: 20,
       },
     }}>
-      <Stack.Screen name="HomeChatNotificationsMaterialTopTabNavigator" component={HomeChatNotificationsMaterialTopTabNavigator}/>
+      <Stack.Screen name="HomeScreen" component={HomeScreen} />
+      <Stack.Screen name="NotificationsScreen" component={NotificationsScreen} options={{gestureDirection: 'horizontal-inverted'}}/>
     </Stack.Navigator>
   )
 }

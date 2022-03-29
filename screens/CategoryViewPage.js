@@ -86,7 +86,7 @@ const CategoryViewPage = ({route, navigation}) => {
      //context
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
     if (storedCredentials) {var {_id} = storedCredentials} else {var _id = 'SSGUEST'}
-    const {categoryTitle, NSFW, NSFL} = route.params;
+    const {categoryTitle, NSFW, NSFL, allowScreenShots} = route.params;
     const [AvatarImg, setAvatarImage] = useState(null)
     const [gridViewState, setGridViewState] = useState("flex")
     const [featuredViewState, setFeaturedViewState] = useState("none")
@@ -1008,12 +1008,12 @@ const CategoryViewPage = ({route, navigation}) => {
                                     <Avatar resizeMode="cover" style={{width: '40%', marginLeft: '5%', marginRight: '5%', aspectRatio: 1/1}} source={{uri: SocialSquareLogo_B64_png}} />
                                 )}
                                 <ProfInfoAreaImage style={{width: '40%',  marginLeft: '5%', marginRight: '5%'}}>
-                                    <SubTitle style={{color: colors.tertiary}}>{categoryDescription}</SubTitle>
+                                    <Text style={{color: colors.tertiary, fontSize: 20, textAlign: 'center', fontWeight: 'bold'}}>{categoryDescription}</Text>
                                 </ProfInfoAreaImage>
                             </ProfInfoAreaImage>
-                            {categoryTags && (
-                                <SubTitle style={{color: brand, marginBottom: 0}} > {categoryTags} </SubTitle>
-                            )}
+                            {categoryTags ? (
+                                <SubTitle style={{color: colors.brand, marginBottom: 0}} > {categoryTags} </SubTitle>
+                            ) : null}
                             <ProfileHorizontalView>
                                 <ProfileHorizontalViewItem profLeftIcon={true}>
                                     <SubTitle style={{color: colors.tertiary}} welcome={true}> Members </SubTitle>
@@ -1038,19 +1038,16 @@ const CategoryViewPage = ({route, navigation}) => {
                                             )}
                                         </View>
                                     )}
-                                    <StyledButton style={{height: 10, width: '80%', backgroundColor: dark ? darkLight : colors.borderColor}} onPress={() => {JoinCategory()}}>
-                                        {inCategory == false && (
+                                    <StyledButton style={{height: 10, width: '80%', backgroundColor: dark ? colors.darkLight : colors.borderColor}} onPress={() => {JoinCategory()}}>
+                                        {inCategory == false ? (
                                             <ButtonText style={{color: colors.tertiary}}>Join</ButtonText>
-                                        )}
-                                        {inCategory == true && (
+                                        ) : inCategory == true ? (
                                             <ButtonText style={{color: colors.tertiary}}>Leave</ButtonText>
-                                        )}
-                                        {inCategory == "Finding" && (
-                                            <ActivityIndicator size="small" color={brand} />   
-                                        )}
-                                        {inCategory == "Changing" && (
-                                            <ActivityIndicator size="small" color={brand} />   
-                                        )}
+                                        ) : inCategory == "Finding" ? (
+                                            <ActivityIndicator size="small" color={colors.brand} />
+                                        ) : inCategory == "Changing" ? (
+                                            <ActivityIndicator size="small" color={colors.brand} />
+                                        ) : null}
                                     </StyledButton>
                                 </ProfileHorizontalViewItem>
                                 <ProfileHorizontalViewItem profCenterIcon={true}>
@@ -1059,7 +1056,7 @@ const CategoryViewPage = ({route, navigation}) => {
                                     <SubTitle welcome={true} style={{width: '80%', textAlign: 'center', color: colors.tertiary}}> {datePosted} </SubTitle>
                                 </ProfileHorizontalViewItem>
                             </ProfileHorizontalView>
-                            <StyledButton style={{backgroundColor: colors.primary}} postCategory={true} onPress={() => {storedCredentials ? navigation.navigate("ThreadUploadPage_FromCategory_FindStack", {threadFormat: null, threadTitle: null, threadSubtitle: null, threadTags: null, categoryTitle: categoryTitle, threadBody: null, threadImage: null, threadImageDescription: null, threadNSFW: null, threadNSFL: null, goBackAfterPost: true, goBackLocation: 'ThreadUploadPage_FromCategory_FindStack'}) : navigation.navigate('ModalLoginScreen', {modal: true})}}>
+                            <StyledButton style={{backgroundColor: colors.primary}} postCategory={true} onPress={() => {storedCredentials ? navigation.navigate("ThreadUploadPage_FromCategory_FindStack", {threadFormat: null, threadTitle: null, threadSubtitle: null, threadTags: null, categoryTitle: categoryTitle, threadBody: null, threadImage: null, threadImageDescription: null, threadNSFW: null, threadNSFL: null, goBackAfterPost: true, goBackLocation: 'ThreadUploadPage_FromCategory_FindStack', allowScreenShots: allowScreenShots}) : navigation.navigate('ModalLoginScreen', {modal: true})}}>
                                 <ButtonText style={{color: colors.tertiary}} postCategory={true}>Post Thread</ButtonText>
                             </StyledButton>
                             <ProfileSelectMediaTypeHorizontalView>

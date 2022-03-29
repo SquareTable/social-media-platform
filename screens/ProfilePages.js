@@ -1,7 +1,11 @@
-import React, { useContext, useState, useRef } from 'react';
+import React, { useContext, useState, useRef, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import Icon from 'react-native-vector-icons/Feather';
 import FontAwesomeFive from 'react-native-vector-icons/FontAwesome5';
+
+global.Buffer = global.Buffer || require('buffer').Buffer
+
+import nacl from 'tweet-nacl-react-native-expo'
 
 import {
     InnerContainer,
@@ -108,9 +112,9 @@ const ProfilePages = ({ route, navigation }) => {
     const [PageElementsState, setPageElementsState] = useState(false)
     const { colors, dark } = useTheme();
     //context
-    const { profilesName, profilesDisplayName, following, followers, totalLikes, profileKey, badges } = route.params;
+    const { profilesName, profilesDisplayName, following, followers, totalLikes, profileKey, badges, pubId } = route.params;
     const { storedCredentials, setStoredCredentials } = useContext(CredentialsContext);
-    if (storedCredentials) {var { _id } = storedCredentials} else {var _id = "SSGUEST"}
+    if (storedCredentials) {var { _id, secondId } = storedCredentials} else {var {_id, secondId} = {_id: "SSGUEST", secondId: "SSGUEST"}}
     const [gridViewState, setGridViewState] = useState("flex")
     const [featuredViewState, setFeaturedViewState] = useState("none")
     const [selectedPostFormat, setSelectedPostFormat] = useState("One")
@@ -244,6 +248,54 @@ const ProfilePages = ({ route, navigation }) => {
     // Grid or Tagged grids showing
     const GridOrTagLineTranslateX = useRef(new Animated.Value(0)).current;
     const deviceDimensions = useWindowDimensions();
+    // Followers setup
+    const [loadingFollowers, setLoadingFollowers] = useState(true);
+    const [initiallyFollowed, setInitiallyFollowed] = useState()
+    const [userIsFollowed, setUserIsFollowed] = useState()
+    const [togglingFollow, setTogglingFollow] = useState(false)
+    // Chat setup
+    const [settingUpChat, setSettingUpChat] = useState(false);
+    const [settingUpChatErrorMessage, setSettingUpChatErrorMessage] = useState(null);
+    const [settingUpChatErrorOrigin, setSettingUpChatErrorOrigin] = useState(null);
+
+    const getFollowersEtc = () => {
+        const url = `https://nameless-dawn-41038.herokuapp.com/user/reloadUsersDetails/${pubId}/${secondId}`;
+        changeToOne()
+        
+        axios.get(url).then((response) => {
+            const result = response.data;
+            const { message, status, data } = result;
+
+            if (status !== 'SUCCESS') {
+                handleMessage(message, status);
+                console.log(status)
+                console.log(message)
+                setLoadingFollowers('Error')
+            } else {
+                console.log(status)
+                console.log(message)
+                /*setProfilesName(data.name)
+                setProfilesDisplayName(data.displayName)
+                setFollowers(data.followers)
+                setFollowing(data.following)*/
+                setInitiallyFollowed(data.userIsFollowing)
+                setUserIsFollowed(data.userIsFollowing)
+                //setTotalLikes(data.totalLikes)
+                setLoadingFollowers(false)
+            }
+            //setSubmitting(false);
+
+        }).catch(error => {
+            console.log(error);
+            //setSubmitting(false);
+            handleMessage("An error occured. Try checking your network connection and retry.");
+            setLoadingFollowers('Error')
+        })
+    }
+
+    useEffect(() => {
+        getFollowersEtc()
+    }, [])
 
     const handleMessage = (message, type = 'FAILED', postNum) => {
         setMessage(message);
@@ -1389,14 +1441,14 @@ const ProfilePages = ({ route, navigation }) => {
     );
 
     const CategoryItem = ({ categoryTitle, categoryDescription, members, categoryTags, image, NSFW, NSFL, datePosted }) => (
-        <SearchFrame onPress={() => navigation.navigate("CategoryViewPage", { categoryTitle: categoryTitle })}>
+        <SearchFrame onPress={() => navigation.navigate("CategoryViewPage", { categoryTitle: categoryTitle, NSFW: NSFW, NSFL: NSFL })}>
             <View style={{ paddingHorizontal: '50%' }}>
             </View>
             {image !== null && (
                 <Avatar resizeMode="cover" searchPage={true} source={{ uri: `data:image/jpg;base64,${image}` }} />
             )}
             {image == null && (
-                <Avatar resizeMode="cover" searchPage={true} source={require('./../assets/img/Logo.png')} />
+                <Avatar resizeMode="cover" searchPage={true} source={{uri: SocialSquareLogo_B64_png}} />
             )}
             {NSFW == false && (
                 <View>
@@ -1574,7 +1626,7 @@ const ProfilePages = ({ route, navigation }) => {
     );
 
     //main
-    const toSendProfileName = { profileName: profilesName, userId: _id }
+    const toSendProfileName = { pubId: pubId, userId: _id };
 
     const clearLogin = () => {
         AsyncStorage.removeItem('socialSquareCredentials').then(() => {
@@ -1795,11 +1847,6 @@ const ProfilePages = ({ route, navigation }) => {
             setSelectedPostFormat("One")
             setFormatOneText("Users Image Posts:")
         }
-    }
-
-    if (getImagesOnLoad == false) {
-        changeToOne()
-        setGetImagesOnLoad(true)
     }
 
     const changeToTwo = () => {
@@ -2117,7 +2164,7 @@ const ProfilePages = ({ route, navigation }) => {
                 });
             }
 
-            const url = `https://nameless-dawn-41038.herokuapp.com/user/getthreadsfromprofile/${profilesName}/${_id}`;
+            const url = `https://nameless-dawn-41038.herokuapp.com/user/getthreadsfromprofile/${pubId}/${_id}`;
 
             setLoadingPostsThread(true)
             axios.get(url).then((response) => {
@@ -2195,7 +2242,7 @@ const ProfilePages = ({ route, navigation }) => {
             }
 
             handleMessage(null);
-            const url = `https://nameless-dawn-41038.herokuapp.com/user/findcategoryfromprofile/${profilesName}/${_id}`;
+            const url = `https://nameless-dawn-41038.herokuapp.com/user/findcategoryfromprofile/${pubId}/${_id}`;
             setLoadingPostsCategory(true)
             axios.get(url).then((response) => {
                 const result = response.data;
@@ -2302,8 +2349,75 @@ const ProfilePages = ({ route, navigation }) => {
     }
 
     const ProfileOptionsViewMessageButtonOnPress = () => {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-        alert("Coming soon");
+        if (storedCredentials) {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+            if (settingUpChat == false) {
+                const forAsync = async () => {
+                    setSettingUpChat(true)
+                    setSettingUpChatErrorMessage(null)
+                    
+                    const nonce = await nacl.randomBytes(24)
+
+                    console.log("Attempting to create a DM")
+                    const url = "https://nameless-dawn-41038.herokuapp.com/conversations/createDirectMessage";
+                    const toSend = {creatorId: _id, recipientName: profilesName, cryptographicNonce: nonce}
+                    axios.post(url, toSend).then((response) => {
+                        const result = response.data;
+                        const {message, status, data} = result;
+
+                        if (status !== 'SUCCESS') {
+                            if (message == "Direct Message Exists") {
+                                setSettingUpChat(false);
+                                navigateToChatScreen()
+                            } else {
+                                setSettingUpChat(false);
+                                setSettingUpChatErrorMessage(message)
+                                setSettingUpChatErrorOrigin('creating the DM')
+                            }
+                        } else {
+                            setSettingUpChat(false);
+                            navigateToChatScreen()
+                        }
+
+                    }).catch(error => {
+                        console.log(error);
+                        setSettingUpChat(false);
+                        setSettingUpChatErrorMessage("Network Error.");
+                        setSettingUpChatErrorOrigin('creating the DM')
+                    })
+                }
+                forAsync()
+            }
+        } else {
+            navigation.navigate('ModalSignupScreen', {modal: true, Modal_NoCredentials: true})
+        }
+    }
+
+    const navigateToChatScreen = () => {
+        const url = `https://nameless-dawn-41038.herokuapp.com/conversations/singleDmWithName/${profilesName}/${_id}`;
+        axios.get(url).then((response) => {
+            const result = response.data;
+            const { message, status, data } = result;
+
+            if (status !== 'SUCCESS') {
+                setSettingUpChat(false)
+                setSettingUpChatErrorMessage(message)
+                setSettingUpChatErrorOrigin('getting the chat info from ID')
+            } else {
+                console.log(data)
+                setSettingUpChat(false)
+                setSettingUpChatErrorMessage(null)
+                setSettingUpChatErrorOrigin(null)
+                navigation.navigate('ChatScreenStack', {screen: 'Chat', params: {conversationId: data.conversationId, isDirectMessage: data.isDirectMessage, members: data.members, conversationImageB64: data.conversationImageB64, conversationTitleSent: data.conversationTitle, conversationNSFW: data.conversationNSFW, conversationNSFL: data.conversationNSFL, dateCreated: data.dateCreated, lastMessage: data.lastMessage, lastMessageDate: data.lastMessageDate, cryptographicNonce: data.cryptographicNonce, conversationDescription: data.conversationDescription, unreadsMessages: data.unreadsMessages}});
+                changeProfilesOptionsView()
+            }
+
+        }).catch(error => {
+            console.log(error);
+            setSettingUpChat(false)
+            setSettingUpChatErrorMessage("Network Error.");
+            setSettingUpChatErrorOrigin('getting the chat info from ID')
+        })
     }
 
     const ProfileOptionsViewReportButtonOnPress = () => {
@@ -2586,27 +2700,81 @@ const ProfilePages = ({ route, navigation }) => {
         }
     }
 
+    const toggleFollowOfAUser = () => {
+        if (storedCredentials) {
+            setTogglingFollow(true)
+            const url = `https://nameless-dawn-41038.herokuapp.com/user/toggleFollowOfAUser`;
+            axios.post(url, {userId: _id, userToFollowPubId: pubId}).then((response) => {
+                const result = response.data;
+                const { message, status, data } = result;
+
+                if (status !== "SUCCESS") {
+                    console.log(status + message)
+                    handleMessage(message)
+                } else {
+                    console.log(status + message)
+                    if (message == "Followed User") {
+                        //Followed
+                        setUserIsFollowed(true)
+                        setTogglingFollow(false)
+                    } else {
+                        //Unfollowed
+                        setUserIsFollowed(false)
+                        setTogglingFollow(false)
+                    }
+                }
+            }).catch(error => {
+                console.log(error);
+                setTogglingFollow(false)
+                handleMessage("An error occured. Try checking your network connection and retry.");
+            })
+        } else {
+            navigation.navigate('ModalLoginScreen', {modal: true})
+        }
+    }
+
     return (
         <>
             <StatusBar style={colors.StatusBarColor} />
             <Animated.View style={{opacity: ProfileOptionsViewOpacity, zIndex: ProfileOptionsViewOpacity.interpolate({inputRange: [0, 1], outputRange: [-10, 3]})}}>
-                <ProfileOptionsView style={{backgroundColor: colors.primary}} viewHidden={false}>
-                    <ProfileOptionsViewText style={{color: colors.tertiary}}>{profilesDisplayName || "Couldn't get profile display name"}</ProfileOptionsViewText>
-                    <ProfileOptionsViewSubtitleText style={{color: colors.tertiary}}>Options</ProfileOptionsViewSubtitleText>
-                    <ProfileOptionsViewButtons greyButton={true} onPress={changeProfilesOptionsView}>
-                        <ProfileOptionsViewButtonsText greyButton={true}>Cancel</ProfileOptionsViewButtonsText>
-                    </ProfileOptionsViewButtons> 
-                    <ProfileOptionsViewButtons greyButton={true} onPress={ProfileOptionsViewMessageButtonOnPress}>
-                        <ProfileOptionsViewButtonsText greyButton={true}>Message</ProfileOptionsViewButtonsText>
-                    </ProfileOptionsViewButtons>
-                    <ProfileOptionsViewButtons redButton={true} onPress={ProfileOptionsViewReportButtonOnPress}>
-                        <ProfileOptionsViewButtonsText redButton={true}>Report</ProfileOptionsViewButtonsText>
-                    </ProfileOptionsViewButtons> 
-                </ProfileOptionsView>
+                {settingUpChatErrorMessage ?
+                    <ProfileOptionsView style={{backgroundColor: colors.primary, justifyContent: 'center', alignItems: 'center'}} viewHidden={false}>
+                        <Text style={{color: colors.errorColor, fontSize: 20, fontWeight: 'bold', textAlign: 'center', marginBottom: 10}}>An error occured while {settingUpChatErrorOrigin}</Text>
+                        <Text style={{color: colors.errorColor, fontSize: 20, fontWeight: 'bold', textAlign: 'center', marginBottom: 20}}>{settingUpChatErrorMessage}</Text>
+                        <ProfileOptionsViewButtons 
+                            greyButton={true} 
+                            onPress={() => {
+                                setSettingUpChat(false)
+                                setSettingUpChatErrorMessage(null)
+                            }}
+                        >
+                            <ProfileOptionsViewButtonsText>Go back</ProfileOptionsViewButtonsText>
+                        </ProfileOptionsViewButtons>
+                    </ProfileOptionsView>
+                : settingUpChat ?
+                    <ProfileOptionsView style={{backgroundColor: colors.primary, justifyContent: 'center', alignItems: 'center'}} viewHidden={false}>
+                        <Text style={{color: colors.tertiary, fontSize: 24, fontWeight: 'bold', marginBottom: 20}}>Loading...</Text>
+                        <ActivityIndicator size="large" color={colors.tertiary} />
+                    </ProfileOptionsView>
+                :
+                    <ProfileOptionsView style={{backgroundColor: colors.primary}} viewHidden={false}>
+                        <ProfileOptionsViewText style={{color: colors.tertiary}}>{profilesDisplayName || "Couldn't get profile display name"}</ProfileOptionsViewText>
+                        <ProfileOptionsViewSubtitleText style={{color: colors.tertiary}}>Options</ProfileOptionsViewSubtitleText>
+                        <ProfileOptionsViewButtons greyButton={true} onPress={changeProfilesOptionsView}>
+                            <ProfileOptionsViewButtonsText greyButton={true}>Cancel</ProfileOptionsViewButtonsText>
+                        </ProfileOptionsViewButtons> 
+                        <ProfileOptionsViewButtons greyButton={true} onPress={ProfileOptionsViewMessageButtonOnPress}>
+                            <ProfileOptionsViewButtonsText greyButton={true}>Message</ProfileOptionsViewButtonsText>
+                        </ProfileOptionsViewButtons>
+                        <ProfileOptionsViewButtons redButton={true} onPress={ProfileOptionsViewReportButtonOnPress}>
+                            <ProfileOptionsViewButtonsText redButton={true}>Report</ProfileOptionsViewButtonsText>
+                        </ProfileOptionsViewButtons> 
+                    </ProfileOptionsView>
+                }
             </Animated.View>
             <Animated.View style={{opacity: ReportProfileOptionsOpacity, zIndex: ReportProfileOptionsOpacity.interpolate({inputRange: [0, 1], outputRange: [-10, 4]})}}>
                 <ReportProfileOptionsView style={{backgroundColor: colors.primary}} viewHidden={false}>
-                    <ReportProfileOptionsViewText style={{color: colors.tertiary}}>{"Report", profilesDisplayName || "Report profile"}</ReportProfileOptionsViewText>
+                    <ReportProfileOptionsViewText style={{color: colors.tertiary}}>{profilesDisplayName ? ("Report " + profilesDisplayName) : "Report profile"}</ReportProfileOptionsViewText>
                     <ReportProfileOptionsViewSubtitleText style={{color: colors.tertiary}}>Use this page to report this profile. If anyone is in danger immediately call emergency services. Do Not Wait.</ReportProfileOptionsViewSubtitleText>
                     <ReportProfileOptionsViewButtons greyButton={true} onPress={changeReportProfilesOptionsView}>
                         <ReportProfileOptionsViewButtonsText greyButton={true}>Cancel</ReportProfileOptionsViewButtonsText>
@@ -2624,7 +2792,7 @@ const ProfilePages = ({ route, navigation }) => {
             </Animated.View>
             <Animated.View style={{opacity: ReportProfile_ContentThatShouldNotBePosted_Opacity, zIndex: ReportProfile_ContentThatShouldNotBePosted_Opacity.interpolate({inputRange: [0, 1], outputRange: [-10, 5]})}}>
                 <ReportProfileOptionsView style={{backgroundColor: colors.primary}} viewHidden={false}>
-                    <ReportProfileOptionsViewText style={{color: colors.tertiary}}>{"Report", profilesDisplayName || "Report profile"}</ReportProfileOptionsViewText>
+                    <ReportProfileOptionsViewText style={{color: colors.tertiary}}>{profilesDisplayName ? ("Report " + profilesDisplayName) : "Report profile"}</ReportProfileOptionsViewText>
                     <ReportProfileOptionsViewSubtitleText style={{color: colors.tertiary}}>What content are you trying to report?</ReportProfileOptionsViewSubtitleText>
                     <ReportProfileOptionsViewButtons padding={true} paddingAmount={'100px'}greyButton={true} onPress={changeReportProfiles_ContentThatShouldNotBePosted_OptionsView}>
                         <ReportProfileOptionsViewButtonsText greyButton={true}>Back</ReportProfileOptionsViewButtonsText>
@@ -2668,7 +2836,7 @@ const ProfilePages = ({ route, navigation }) => {
             </Animated.View>
             <Animated.View style={{opacity: ReportProfile_MayBeUnder13_Opacity, zIndex: ReportProfile_MayBeUnder13_Opacity.interpolate({inputRange: [0, 1], outputRange: [-10, 5]})}}>
                 <ReportProfileOptionsView style={{backgroundColor: colors.primary}} viewHidden={false}>
-                    <ReportProfileOptionsViewText style={{color: colors.tertiary}}>{"Report", profilesDisplayName || "Report profile"}</ReportProfileOptionsViewText>
+                    <ReportProfileOptionsViewText style={{color: colors.tertiary}}>{profilesDisplayName ? ("Report " + profilesDisplayName) : "Report profile"}</ReportProfileOptionsViewText>
                     <ReportProfileOptionsViewSubtitleText style={{color: colors.tertiary}}>User May Be Under 13</ReportProfileOptionsViewSubtitleText>
                     <ReportProfileOptionsViewButtons greyButton={true} onPress={changeReportProfiles_MayBeUnder13_OptionsView}>
                         <ReportProfileOptionsViewButtonsText greyButton={true}>Back</ReportProfileOptionsViewButtonsText>
@@ -2681,7 +2849,7 @@ const ProfilePages = ({ route, navigation }) => {
             </Animated.View>
             <Animated.View style={{opacity: ReportProfile_PretendingToBeSomeoneElse_Opacity, zIndex: ReportProfile_PretendingToBeSomeoneElse_Opacity.interpolate({inputRange: [0, 1], outputRange: [-10, 5]})}}>
                 <ReportProfileOptionsView style={{backgroundColor: colors.primary}} viewHidden={false}>
-                    <ReportProfileOptionsViewText style={{color: colors.tertiary}}>{"Report", profilesDisplayName || "Report profile"}</ReportProfileOptionsViewText>
+                    <ReportProfileOptionsViewText style={{color: colors.tertiary}}>{profilesDisplayName ? ("Report " + profilesDisplayName) : "Report profile"}</ReportProfileOptionsViewText>
                     <ReportProfileOptionsViewSubtitleText style={{color: colors.tertiary}}>User Is Pretending To Be Someone Else</ReportProfileOptionsViewSubtitleText>
                     <ReportProfileOptionsViewButtons greyButton={true} onPress={changeReportProfiles_PretendingToBeSomeoneElse_OptionsView}>
                         <ReportProfileOptionsViewButtonsText greyButton={true}>Back</ReportProfileOptionsViewButtonsText>
@@ -2776,23 +2944,79 @@ const ProfilePages = ({ route, navigation }) => {
                     </ProfInfoAreaImage>
                     <ProfileHorizontalView>
                         <ProfileHorizontalViewItem profLeftIcon={true}>
-                            <TouchableOpacity onPress={() => {navigation.navigate('ProfileStats', {name: profilesName, followers: followers, type: 'Followers'})}} style={{alignItems: 'center'}}>
-                                <SubTitle style={{color: colors.tertiary}} welcome={true}> Followers </SubTitle>
-                                <ProfIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/114-user.png')} />
-                                <SubTitle style={{color: colors.tertiary}} welcome={true}> {followers.length} </SubTitle>
-                            </TouchableOpacity>
+                            {loadingFollowers == true ?
+                                <>
+                                    <ProfIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/114-user.png')} />
+                                    <SubTitle welcome={true} style={{color: colors.tertiary}}> Followers </SubTitle> 
+                                    <ActivityIndicator size="large" color={colors.tertiary} />
+                                </>
+                            : loadingFollowers == 'Error' ?
+                                <>
+                                    <ProfIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/114-user.png')} />
+                                    <SubTitle welcome={true} style={{color: colors.tertiary}}> Followers </SubTitle> 
+                                    <SubTitle welcome={true} style={{color: colors.tertiary}}> Error </SubTitle> 
+                                </>
+                            :
+                                <TouchableOpacity onPress={() => {navigation.navigate('ProfileStats', {name: profilesName, followers: followers, type: 'Followers'})}} style={{alignItems: 'center'}}>
+                                    <ProfIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/114-user.png')} />
+                                    {initiallyFollowed == false && (
+                                        <View>
+                                            {userIsFollowed == true && (
+                                                <SubTitle welcome={true} style={{color: colors.tertiary}}> {followers + 1} </SubTitle> 
+                                            )}
+                                            {userIsFollowed == false && (
+                                                <SubTitle welcome={true} style={{color: colors.tertiary}}> {followers} </SubTitle> 
+                                            )}
+                                        </View>
+                                    )}
+                                    {initiallyFollowed == true && (
+                                        <View>
+                                            {userIsFollowed == true && (
+                                                <SubTitle welcome={true} style={{color: colors.tertiary}}> {followers} </SubTitle> 
+                                            )}
+                                            {userIsFollowed == false && (
+                                                <SubTitle welcome={true} style={{color: colors.tertiary}}> {followers - 1} </SubTitle> 
+                                            )}
+                                        </View>
+                                    )}
+                                    {togglingFollow == false && (
+                                        <View style={{width: '80%', borderRadius: 5, backgroundColor: colors.primary, borderColor: colors.borderColor, borderWidth: 3, paddingHorizontal: 10, paddingTop: 2}}>
+                                            {userIsFollowed == false && (
+                                                <TouchableOpacity onPress={() => toggleFollowOfAUser()}>
+                                                    <SubTitle welcome={true} style={{textAlign: 'center', color: colors.tertiary}}> Follow </SubTitle>
+                                                </TouchableOpacity>
+                                            )}
+                                            {userIsFollowed == true && (
+                                                <TouchableOpacity onPress={() => toggleFollowOfAUser()}>
+                                                    <SubTitle welcome={true} style={{textAlign: 'center', color: colors.tertiary}}> Unfollow </SubTitle>
+                                                </TouchableOpacity>
+                                            )}
+                                            {userIsFollowed !== true && (
+                                                <View>
+                                                    {userIsFollowed !== false && (
+                                                        <ActivityIndicator size={20} color={colors.brand} />
+                                                    )}
+                                                </View>
+                                            )}
+                                        </View>
+                                    )}
+                                    {togglingFollow == true && (
+                                        <ActivityIndicator size="large" color={colors.brand} />
+                                    )}
+                                </TouchableOpacity>
+                            }
                         </ProfileHorizontalViewItem>
                         <ProfileHorizontalViewItem profCenterIcon={true}>
                             <TouchableOpacity onPress={() => {navigation.navigate('ProfileStats', {name: profilesName, followers: following, type: 'Following'})}} style={{alignItems: 'center'}}>
                                 <SubTitle style={{color: colors.tertiary}} welcome={true}> Following </SubTitle>
                                 <ProfIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/115-users.png')} />
-                                <SubTitle style={{color: colors.tertiary}} welcome={true}> {following.length} </SubTitle>
+                                <SubTitle style={{color: colors.tertiary}} welcome={true}> {following} </SubTitle>
                             </TouchableOpacity>
                         </ProfileHorizontalViewItem>
                         <ProfileHorizontalViewItem profRightIcon={true}>
-                            <SubTitle style={{color: colors.tertiary}} welcome={true}> Likes </SubTitle>
-                            <ProfIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/219-heart.png')} />
-                            <SubTitle style={{color: colors.tertiary}} welcome={true}> {totalLikes} </SubTitle>
+                            <SubTitle style={{color: colors.tertiary}} welcome={true}> Upvotes </SubTitle>
+                            <ProfIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')} />
+                            <SubTitle style={{color: colors.tertiary}} welcome={true}> Coming soon{/*totalLikes*/} </SubTitle>
                         </ProfileHorizontalViewItem>
                     </ProfileHorizontalView>
                     <ProfilePostsSelectionView style={{borderBottomWidth: 0}}>

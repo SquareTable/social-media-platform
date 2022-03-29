@@ -64,7 +64,7 @@ const ThreadUploadPage = ({route, navigation}) => {
     const [postIsNSFW, setPostIsNSFW] = useState(false);
     const [postIsNSFL, setPostIsNSFL] = useState(false);
     const [selectFormat, setSelectFormat] = useState("Text");
-    const {threadFormat, threadTitle, threadSubtitle, threadTags, categoryTitle, threadBody, imageFromRoute, threadImageDescription, threadNSFW, threadNSFL, goBackAfterPost, goBackLocation} = route.params;
+    const {threadFormat, threadTitle, threadSubtitle, threadTags, categoryTitle, threadBody, imageFromRoute, threadImageDescription, threadNSFW, threadNSFL, goBackAfterPost, goBackLocation, allowScreenShots} = route.params;
     const [selectedTitle, setSelectedTitle] = useState("")
     const [selectedSubTitle, setSelectedSubTitle] = useState("")
     const [selectedTags, setSelectedTags] = useState("")
@@ -86,7 +86,7 @@ const ThreadUploadPage = ({route, navigation}) => {
         }
     })
     
-    console.log("Format:", threadFormat, "Title:", threadTitle, "Subtitle:", threadSubtitle, "Tags:", threadTags, "CategoryTitle:", categoryTitle, "Body:", threadBody, "ImageFromRoute:", imageFromRoute, "ThreadImageDescription:", threadImageDescription, "ThreadNSFW:", threadNSFW, "ThreadNSFL:", threadNSFL)
+    console.log("Format:", threadFormat, "Title:", threadTitle, "Subtitle:", threadSubtitle, "Tags:", threadTags, "CategoryTitle:", categoryTitle, "Body:", threadBody, "ImageFromRoute:", imageFromRoute, "ThreadImageDescription:", threadImageDescription, "ThreadNSFW:", threadNSFW, "ThreadNSFL:", threadNSFL, "allowScreenShots:", allowScreenShots)
     console.log("SelectedCategory:", selectedCategory)
     if (categoryTitle !== null) {
         if (selectedCategory !== categoryTitle) {
@@ -241,6 +241,12 @@ const ThreadUploadPage = ({route, navigation}) => {
         navigation.navigate('TakeImage_Camera', {locationToGoTo: goBackLocation})
     }
 
+    useEffect(() => {
+        if (allowScreenShots == false) {
+            setScreenshotsAllowed(false)
+        }
+    }, [allowScreenShots])
+
     return(
         <KeyboardAvoidingWrapper>
             <StyledContainer style={{backgroundColor: colors.primary}}>
@@ -260,7 +266,7 @@ const ThreadUploadPage = ({route, navigation}) => {
                                     } else {
                                         let tempValues = values;
                                         tempValues.selectedCategory = selectedCategory;
-                                        tempValues.screenshotsAllowed = screenshotsAllowed;
+                                        tempValues.sentAllowScreenShots = screenshotsAllowed;
                                         tempValues.threadNSFL = postIsNSFL;
                                         tempValues.threadNSFW = postIsNSFW;
                                         navigation.reset({
@@ -275,7 +281,7 @@ const ThreadUploadPage = ({route, navigation}) => {
                                     } else {
                                         let tempValues = values;
                                         tempValues.selectedCategory = selectedCategory;
-                                        tempValues.screenshotsAllowed = screenshotsAllowed;
+                                        tempValues.sentAllowScreenShots = screenshotsAllowed;
                                         tempValues.image = image;
                                         tempValues.threadNSFL = postIsNSFL;
                                         tempValues.threadNSFW = postIsNSFW;
@@ -433,12 +439,13 @@ const ThreadUploadPage = ({route, navigation}) => {
                                         <AboveButtonText style={{color: colors.tertiary, borderColor: dark ? 3 : 5}} byCheckBox={true}>Mark as NSFL</AboveButtonText>
                                     </PostHorizontalView>
                                     <MsgBox type={messageType}>{message}</MsgBox>
-                                    <View style={{flexDirection: 'row', justifyContent: 'center'}}>
+                                    <View style={{flexDirection: 'row', justifyContent: 'center', opacity: allowScreenShots ? 1 : 0.5}}>
                                         <Text style={{color: colors.tertiary, fontSize: 18, marginTop: 10, marginRight: 10}}>Allow screen capture</Text>
-                                        <TouchableOpacity onPress={() => {setScreenshotsAllowed(screenshotsAllowed => !screenshotsAllowed)}} style={{width: 40, height: 40, borderColor: colors.borderColor, borderWidth: 3, justifyContent: 'center', alignItems: 'center'}}>
+                                        <TouchableOpacity disabled={!allowScreenShots} onPress={() => {setScreenshotsAllowed(screenshotsAllowed => !screenshotsAllowed)}} style={{width: 40, height: 40, borderColor: colors.borderColor, borderWidth: 3, justifyContent: 'center', alignItems: 'center'}}>
                                             <Text style={{color: colors.tertiary, fontSize: 18, textAlign: 'center', textAlignVertical: 'center'}}>{screenshotsAllowed == false ? '✕' : '✓'}</Text>
                                         </TouchableOpacity>
                                     </View>
+                                    {allowScreenShots == false && <Text style={{color: colors.tertiary, fontSize: 14, marginTop: 10, textAlign: 'center'}}>Screen capture is disabled for all threads posted inside {selectedCategory} by the categories' owner</Text>}
                                     {!isSubmitting && (<StyledButton onPress={handleSubmit}>
                                         <ButtonText> Submit </ButtonText>
                                     </StyledButton>)}

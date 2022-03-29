@@ -87,25 +87,25 @@ const ConversationDMUserFind = ({route, navigation}) => {
             {profileKey == null && (
                 <Avatar resizeMode="cover" searchPage={true} source={{uri: SocialSquareLogo_B64_png}} />
             )}
-            <SubTitle searchResTitle={true}>{displayName}</SubTitle>
-            <SubTitle searchResTitleDisplayName={true} style={{color: brand}}>@{name}</SubTitle>
+            <SubTitle searchResTitle={true} style={{color: colors.tertiary}}>{displayName}</SubTitle>
+            <SubTitle searchResTitleDisplayName={true} style={{color: colors.brand}}>@{name}</SubTitle>
             <SearchHorizontalView>
                 <SearchHorizontalViewItem>
-                    <SearchSubTitle welcome={true}> Following </SearchSubTitle>
-                    <ProfIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/273-checkmark.png')}/>
-                    <SearchSubTitle welcome={true}> {following} </SearchSubTitle>
+                    <SearchSubTitle welcome={true} style={{color: colors.tertiary}}> Following </SearchSubTitle>
+                    <ProfIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/273-checkmark.png')}/>
+                    <SearchSubTitle style={{color: colors.tertiary}} welcome={true}> {following} </SearchSubTitle>
                 </SearchHorizontalViewItem>
 
                 <SearchHorizontalViewItemCenter>
-                    <SearchSubTitle welcome={true}> Followers </SearchSubTitle>
-                    <ProfIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/274-checkmark2.png')}/>
-                    <SearchSubTitle welcome={true}> {followers} </SearchSubTitle>
+                    <SearchSubTitle style={{color: colors.tertiary}} welcome={true}> Followers </SearchSubTitle>
+                    <ProfIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/274-checkmark2.png')}/>
+                    <SearchSubTitle style={{color: colors.tertiary}} welcome={true}> {followers} </SearchSubTitle>
                 </SearchHorizontalViewItemCenter>
 
                 <SearchHorizontalViewItem>
-                    <SearchSubTitle welcome={true}> Total Likes </SearchSubTitle>
-                    <ProfIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/273-checkmark.png')}/>
-                    <SearchSubTitle welcome={true}> {totalLikes} </SearchSubTitle>
+                    <SearchSubTitle style={{color: colors.tertiary}} welcome={true}> Total Likes </SearchSubTitle>
+                    <ProfIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/273-checkmark.png')}/>
+                    <SearchSubTitle style={{color: colors.tertiary}} welcome={true}> {totalLikes} </SearchSubTitle>
                 </SearchHorizontalViewItem>
             </SearchHorizontalView>
         </SearchFrame>
@@ -254,8 +254,9 @@ const ConversationDMUserFind = ({route, navigation}) => {
             <SearchBarArea style={{alignSelf: 'center'}}>
                 <UserTextInput
                     placeholder="Search"
-                    placeholderTextColor={darkLight}
+                    placeholderTextColor={colors.darkLight}
                     onChangeText={(val) => handleChange(val)}
+                    colors={colors}
                 />
             </SearchBarArea>
             <SectionList
@@ -277,14 +278,14 @@ const ConversationDMUserFind = ({route, navigation}) => {
     );
 }
 
-const UserTextInput = ({label, icon, isPassword, ...props}) => {
+const UserTextInput = ({label, icon, isPassword, colors, ...props}) => {
     return(
         <SearchBarArea>
             <LeftIcon searchIcon={true}>
-                <Octicons name={"search"} size={20} color={brand} />
+                <Octicons name={"search"} size={20} color={colors.brand} />
             </LeftIcon>
-            <StyledInputLabel>{label}</StyledInputLabel>
-            <StyledTextInput searchPage={true} {...props}/>
+            <StyledInputLabel style={{color: colors.tertiary}}>{label}</StyledInputLabel>
+            <StyledTextInput style={{backgroundColor: colors.primary, borderColor: colors.borderColor, color: colors.tertiary}} searchPage={true} {...props}/>
         </SearchBarArea>
     )
 }

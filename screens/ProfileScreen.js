@@ -125,7 +125,7 @@ const Welcome = ({navigation, route}) => {
      //context
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
     const {profilePictureUri, setProfilePictureUri} = useContext(ProfilePictureURIContext);
-    if (storedCredentials) {var {_id, name, displayName, email, photoUrl, followers, following, badges} = storedCredentials}
+    if (storedCredentials) {var {_id, name, displayName, email, photoUrl, followers, following, badges, secondId} = storedCredentials}
     const [gridViewState, setGridViewState] = useState("flex")
     const [featuredViewState, setFeaturedViewState] = useState("none")
     const [selectedPostFormat, setSelectedPostFormat] = useState("One")
@@ -1479,7 +1479,7 @@ const Welcome = ({navigation, route}) => {
                 <Avatar resizeMode="cover" searchPage={true} source={{uri: `data:image/jpg;base64,${image}`}} />
             )}
             {image == null && (
-                <Avatar resizeMode="cover" searchPage={true} source={require('./../assets/img/Logo.png')} />
+                <Avatar resizeMode="cover" searchPage={true} source={{uri: SocialSquareLogo_B64_png}} />
             )}
             {NSFW == false && (
                 <View>
@@ -1669,7 +1669,7 @@ const Welcome = ({navigation, route}) => {
     );
 
     //main
-    const toSendProfileName = {profileName: name, userId: _id}
+    const toSendProfileName = {pubId: secondId, userId: _id};
 
     const clearLogin = () => {
         AsyncStorage.removeItem('socialSquareCredentials').then(() => {
@@ -2214,7 +2214,7 @@ const Welcome = ({navigation, route}) => {
                 });
             }
 
-            const url = serverUrl + '/user/getthreadsfromprofilewithid/' + _id;
+            const url = serverUrl + '/user/getthreadsfromprofile/' + secondId + '/' + _id;
 
             setLoadingPostsThread(true)
             axios.get(url).then((response) => {
@@ -2714,20 +2714,20 @@ const Welcome = ({navigation, route}) => {
                                     <TouchableOpacity onPress={() => {navigation.navigate('ProfileStats', {name: name, followers: followers, type: 'Followers'})}} style={{alignItems: 'center'}}>
                                         <SubTitle style={{color: colors.tertiary}} welcome={true}> Followers </SubTitle>
                                         <ProfIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/114-user.png')}/>
-                                        <SubTitle style={{color: colors.tertiary}} welcome={true}> 0 </SubTitle>
+                                        <SubTitle style={{color: colors.tertiary}} welcome={true}> {followers.length} </SubTitle>
                                     </TouchableOpacity>
                                 </ProfileHorizontalViewItem>
                                 <ProfileHorizontalViewItem profCenterIcon={true}>
                                     <TouchableOpacity onPress={() => {navigation.navigate('ProfileStats', {name: name, followers: following, type: 'Following'})}} style={{alignItems: 'center'}}>
                                         <SubTitle style={{color: colors.tertiary}} welcome={true}> Following </SubTitle>
                                         <ProfIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/115-users.png')}/>
-                                        <SubTitle style={{color: colors.tertiary}} welcome={true}> 0 </SubTitle>
+                                        <SubTitle style={{color: colors.tertiary}} welcome={true}> {following.length} </SubTitle>
                                     </TouchableOpacity>
                                 </ProfileHorizontalViewItem>
                                 <ProfileHorizontalViewItem profRightIcon={true}>
-                                    <SubTitle style={{color: colors.tertiary}} welcome={true}> Likes </SubTitle>
-                                    <ProfIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/219-heart.png')}/>
-                                    <SubTitle style={{color: colors.tertiary}} welcome={true}> 0 </SubTitle>
+                                    <SubTitle style={{color: colors.tertiary}} welcome={true}> Upvotes </SubTitle>
+                                    <ProfIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
+                                    <SubTitle style={{color: colors.tertiary}} welcome={true}> Coming soon </SubTitle>
                                 </ProfileHorizontalViewItem>
                             </ProfileHorizontalView>
                             <ProfilePostsSelectionView style={{position: 'relative', borderBottomWidth: 0}}>

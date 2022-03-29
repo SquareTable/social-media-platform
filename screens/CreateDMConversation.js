@@ -42,7 +42,7 @@ import {
 const {brand, primary, tertiary, darkLight, slightlyLighterGrey, midWhite, slightlyLighterPrimary, descTextColor} = Colors;
 
 //From react native
-import {View, Image, ActivityIndicator, ImageBackground, StyleSheet, ScrollView, TouchableOpacity} from 'react-native';
+import {View, Image, ActivityIndicator, ImageBackground, StyleSheet, ScrollView, TouchableOpacity, Text} from 'react-native';
 
 // axios
 import axios from 'axios';
@@ -61,6 +61,10 @@ import * as ImagePicker from 'expo-image-picker';
 
 import { useIsFocused } from '@react-navigation/native';
 
+import { useTheme } from '@react-navigation/native';
+
+import * as Linking from 'expo-linking';
+
 const CreateDMConversation = ({route, navigation}) => {
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
     const {_id} = storedCredentials;
@@ -69,6 +73,9 @@ const CreateDMConversation = ({route, navigation}) => {
     const [messageType, setMessageType] = useState();
     const [happenOnce, setHappenOnce] = useState(false)
     const [submittingCreate, setSubmittingCreate] = useState(false)
+    const [allowCreationOfChat, setAllowCreationOfChat] = useState(true)
+    const [errorOrigin, setErrorOrigin] = useState('')
+    const {colors, dark} = useTheme();
 
     const handleMessage = (message, type = 'FAILED') => {
         setMessage(message);
@@ -76,91 +83,122 @@ const CreateDMConversation = ({route, navigation}) => {
     }
 
     useEffect(() => {
-        if (nameSent !== null) {
-            if (submittingCreate == false) {
-                const forAsync = async () => {
-                    setSubmittingCreate(true)
-                    
-                    const nonce = await nacl.randomBytes(24)
-
-                    console.log("Attempting to create a DM")
-                    const url = "https://nameless-dawn-41038.herokuapp.com/conversations/createDirectMessage";
-                    const toSend = {creatorId: _id, recipientName: nameSent, cryptographicNonce: nonce}
-                    axios.post(url, toSend).then((response) => {
-                        const result = response.data;
-                        const {message, status, data} = result;
-
-                        if (status !== 'SUCCESS') {
-                            handleMessage(message,status);
-                            if (message == "Direct Message Exists") {
-                                setSubmittingCreate(false);
-                                navigation.navigate("Conversations")
+        if (allowCreationOfChat == true) {
+            if (nameSent !== null) {
+                if (submittingCreate == false) {
+                    const forAsync = async () => {
+                        setSubmittingCreate(true)
+                        
+                        const nonce = await nacl.randomBytes(24)
+    
+                        console.log("Attempting to create a DM")
+                        const url = "https://nameless-dawn-41038.herokuapp.com/conversations/createDirectMessage";
+                        const toSend = {creatorId: _id, recipientName: nameSent, cryptographicNonce: nonce}
+                        axios.post(url, toSend).then((response) => {
+                            const result = response.data;
+                            const {message, status, data} = result;
+                            console.log(data)
+                            console.log(_id)
+    
+                            if (status !== 'SUCCESS') {
+                                if (message == "Direct Message Exists") {
+                                    navigateToChat(data)
+                                } else {
+                                    setSubmittingCreate(false);
+                                    handleMessage(message,status);
+                                    setErrorOrigin('creating the DM');
+                                    setAllowCreationOfChat(false)
+                                }
                             } else {
-                                setSubmittingCreate(false);
+                                forAsync();
                             }
-                        } else {
-                            handleMessage(message,status);
+    
+                        }).catch(error => {
+                            console.log(error);
                             setSubmittingCreate(false);
-                            navigation.navigate("Conversations")
-                        }
-
-                    }).catch(error => {
-                        console.log(error);
-                        setSubmittingCreate(false);
-                        handleMessage("An error occured. Try checking your network connection and retry.");
-                    })
+                            handleMessage(error + ' (network error)');
+                            setErrorOrigin('creating the DM');
+                            setAllowCreationOfChat(false)
+                        })
+                    }
+                    forAsync()
                 }
-                forAsync()
+            } else {
+                handleMessage("Error with recipient name sent over.");
+                setErrorOrigin('creating the DM');
+                setAllowCreationOfChat(false)
             }
-        } else {
-            handleMessage("Error with recipient name sent over.")
         }
-    })
+    }, [allowCreationOfChat])
+
+    const navigateToChat = (chatId) => {
+        const url = `https://nameless-dawn-41038.herokuapp.com/conversations/singleConvoWithId/${chatId}/${_id}`;
+        axios.get(url).then((response) => {
+            const result = response.data;
+            const {message, status, data} = result;
+            console.log(data)
+
+            if (status !== 'SUCCESS') {
+                handleMessage(message,status);
+                setSubmittingCreate(false);
+                setErrorOrigin('getting chat info from ID');
+                setAllowCreationOfChat(false)
+            } else {
+                setSubmittingCreate(false)
+                setAllowCreationOfChat(false)
+                navigation.pop(3)
+                navigation.navigate('Chat', {conversationId: data.conversationId, isDirectMessage: data.isDirectMessage, members: data.members, conversationImageB64: data.conversationImageB64, conversationTitleSent: data.conversationTitle, conversationNSFW: data.conversationNSFW, conversationNSFL: data.conversationNSFL, dateCreated: data.dateCreated, lastMessage: data.lastMessage, lastMessageDate: data.lastMessageDate, cryptographicNonce: data.cryptographicNonce, conversationDescription: data.conversationDescription, unreadsMessages: data.unreadsMessages});
+            }
+
+        }).catch(error => {
+            console.log(error);
+            setSubmittingCreate(false)
+            handleMessage(error + ' (network error)');
+            setErrorOrigin('getting chat info from ID');
+            setAllowCreationOfChat(false)
+        })
+    }
 
     return(
-        <KeyboardAvoidingWrapper>
-            <StyledContainer>
-                    <StatusBar style="dark"/>
-                    <InnerContainer>
-                        <PageLogo resizeMode={"contain"} tintColor={brand} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/113-bubbles4.png')}/>
-                        <PageTitle>Attempting to create conversation</PageTitle>
-                        {submittingCreate == true && (
-                            <ActivityIndicator size="large" color={brand} style={{marginBottom: 20}} />  
-                        )}
-                        <MsgBox type={messageType}>{message}</MsgBox>
-                    </InnerContainer>
+        <>
+            {allowCreationOfChat == true ?
+                <StyledContainer style={{backgroundColor: colors.primary}}>
+                        <StatusBar style={colors.StatusBarColor}/>
+                        <InnerContainer style={{backgroundColor: colors.primary}}>
+                            <PageLogo style={{tintColor: colors.tertiary, resizeMode: 'contain'}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/113-bubbles4.png')}/>
+                            <PageTitle style={{color: colors.tertiary}}>Attempting to create conversation</PageTitle>
+                            {submittingCreate == true && (
+                                <ActivityIndicator size="large" color={colors.brand} style={{marginBottom: 20}} />  
+                            )}
+                        </InnerContainer>
 
-            </StyledContainer>
-        </KeyboardAvoidingWrapper>
+                </StyledContainer>
+            : message === 'Error with recipient name sent over.' ?
+                <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.primary}}>
+                    <Text style={{color: colors.errorColor, fontSize: 20, textAlign: 'center', marginBottom: 20}}>There is an error with the recipient name sent over</Text>
+                    <Text style={{color: colors.errorColor, fontSize: 20, textAlign: 'center', marginBottom: 20}}>This is a fatal error and you cannot continue</Text>
+                    <StyledButton style={{marginBottom: 20}} onPress={() => {navigation.goBack()}}>
+                        <ButtonText>Go Back</ButtonText>
+                    </StyledButton>
+                    <StyledButton onPress={() => {Linking.openURL('https://github.com/SquareTable/social-media-platform/issues/new?assignees=&labels=&template=bug-report.md&title=Write+Bug+Title+here')}}>
+                        <ButtonText>Report Bug</ButtonText>
+                    </StyledButton>
+                </View>
+            :
+                <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                    <Text style={{color: colors.tertiary, fontSize: 20, fontWeight: 'bold', textAlign: 'center', marginBottom: 20}}>An error occured while {errorOrigin}.</Text>
+                    <Text style={{color: colors.tertiary, fontSize: 20, fontWeight: 'bold', textAlign: 'center', marginBottom: 20}}>Specifically the error was:</Text>
+                    <Text style={{color: colors.errorColor, fontSize: 20, textAlign: 'center', marginBottom: 20}}>{message}</Text>
+                    <StyledButton style={{marginBottom: 20}} onPress={() => {navigation.goBack()}}>
+                        <ButtonText>Go Back</ButtonText>
+                    </StyledButton>
+                    <StyledButton onPress={() => {setAllowCreationOfChat(true)}}>
+                        <ButtonText>Try Again</ButtonText>
+                    </StyledButton>
+                </View>
+            }
+        </>
     );
-}
-
-const styles = StyleSheet.create({
-    image: {
-      flex: 1,
-      justifyContent: "center"
-    }
-})
-
-const UserTextInput = ({label, icon, body, ...props}) => {
-    if (body == true) {
-        return(
-            <View>
-                <LeftIcon searchIcon={true}>
-                    <Octicons name={icon} size={30} color={brand} />
-                </LeftIcon>
-                <StyledInputLabel>{label}</StyledInputLabel>
-                <StyledTextInput searchPage={true} style={{borderColor: midWhite, borderRadius: 10}} {...props}/>
-            </View>
-        )
-    } else {
-        return(
-            <View>
-                <StyledInputLabel>{label}</StyledInputLabel>
-                <StyledTextInput searchPage={true} style={{borderColor: slightlyLighterGrey, borderRightWidth: 0, borderTopWidth: 0, borderRadius: 2, backgroundColor: primary, paddingLeft: 10}} {...props}/>
-            </View>
-        )
-    }
 }
 
 export default CreateDMConversation;

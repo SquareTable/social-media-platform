@@ -69,7 +69,7 @@ const PostScreen = ({navigation, route}) => {
             navigation.navigate("MultiMediaUploadPage", {imageFromRoute: null, titleFromRoute: '', descriptionFromRoute: ''})
         } else if (formatTwoSelected == true) {
             setMessageVisibility(false)
-            navigation.navigate("ThreadUploadPage", {threadFormat: null, threadTitle: null, threadSubtitle: null, threadTags: null, categoryTitle: null, threadBody: null, imageFromRoute: null, threadImageDescription: null, threadNSFW: null, threadNSFL: null, goBackAfterPost: false, goBackLocation: 'ThreadUploadPage_FromCategory_FindStack'})
+            navigation.navigate("ThreadUploadPage", {threadFormat: null, threadTitle: null, threadSubtitle: null, threadTags: null, categoryTitle: null, threadBody: null, imageFromRoute: null, threadImageDescription: null, threadNSFW: null, threadNSFL: null, goBackAfterPost: false, goBackLocation: 'ThreadUploadPage_FromCategory_FindStack', allowScreenShots: true})
         } else if (formatThreeSelected == true) {
             setMessageVisibility(false)
             navigation.navigate("PollUploadPage")

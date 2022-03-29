@@ -25,7 +25,10 @@ import {
     ProfIcons,
     SearchUserViewItemCenter,
     SearchFrame,
-    PostIcons
+    PostIcons,
+    ChatScreen_Title,
+    Navigator_BackButton,
+    TestText
 } from './screenStylings/styling.js';
 
 // Colors
@@ -39,7 +42,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 //credentials context
 import { CredentialsContext } from '../components/CredentialsContext';
-import { ImageBackground, ScrollView, View, SectionList, ActivityIndicator } from 'react-native';
+import { ImageBackground, ScrollView, View, SectionList, ActivityIndicator, Image, TouchableOpacity } from 'react-native';
 
 // formik
 import {Formik} from 'formik';
@@ -48,9 +51,10 @@ import background from "./../assets/img/Toga.jpg";
 
 //axios
 import axios from 'axios';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { set } from 'react-native-reanimated';
 import SocialSquareLogo_B64_png from '../assets/SocialSquareLogo_Base64_png.js';
+
+import { useTheme } from '@react-navigation/native';
 
 const ConversationUserFind = ({route, navigation}) => {
      //context
@@ -69,6 +73,7 @@ const ConversationUserFind = ({route, navigation}) => {
     const [conversationMembers, setConversationMembers] = useState(null)
     const [initialUsersState, setInitialUsersState] = useState(null)
     const [lastSearch, setLastSearch] = useState(null)
+    const {colors, dark} = useTheme()
     var userLoadMax = 10;
 
     if (initialUsersState == null) {
@@ -195,11 +200,11 @@ const ConversationUserFind = ({route, navigation}) => {
 
     const MemberItem = ({name}) => (
         <View>
-            <View style={{backgroundColor: darkest, borderRadius: 300, flexDirection: 'row', textAlign: 'center', alignItems: 'center', justifyContent: 'center', paddingHorizontal: 10, marginRight: 5}}>
+            <View style={{backgroundColor: colors.borderColor, borderRadius: 300, flexDirection: 'row', textAlign: 'center', alignItems: 'center', justifyContent: 'center', paddingHorizontal: 10, marginRight: 5}}>
                 <TouchableOpacity onPress={() => {removeMember(name)}}>
-                    <SubTitle style={{fontWeight: 'normal', marginBottom: 0, fontSize: 12, marginRight: 5, aspectRatio: 1/1, borderRadius: 300, backgroundColor: darkLight, textAlign: 'center', alignSelf: 'center'}}>X</SubTitle>
+                    <SubTitle style={{fontWeight: 'normal', marginBottom: 0, fontSize: 12, marginRight: 5, aspectRatio: 1/1, borderRadius: 300, backgroundColor: colors.borderColor, textAlign: 'center', alignSelf: 'center', color: colors.tertiary}}>X</SubTitle>
                 </TouchableOpacity>
-                <SubTitle style={{marginBottom: 0}}>{name}</SubTitle>
+                <SubTitle style={{marginBottom: 0, color: colors.tertiary}}>{name}</SubTitle>
             </View>
         </View>
     );
@@ -212,25 +217,25 @@ const ConversationUserFind = ({route, navigation}) => {
             {profileKey == null && (
                 <Avatar resizeMode="cover" searchPage={true} source={{uri: SocialSquareLogo_B64_png}} />
             )}
-            <SubTitle searchResTitle={true}>{displayName}</SubTitle>
-            <SubTitle searchResTitleDisplayName={true} style={{color: brand}}>@{name}</SubTitle>
+            <SubTitle searchResTitle={true} style={{color: colors.tertiary}}>{displayName}</SubTitle>
+            <SubTitle searchResTitleDisplayName={true} style={{color: colors.brand}}>@{name}</SubTitle>
             <SearchHorizontalView>
                 <SearchHorizontalViewItem>
-                    <SearchSubTitle welcome={true}> Following </SearchSubTitle>
-                    <ProfIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/273-checkmark.png')}/>
-                    <SearchSubTitle welcome={true}> {following} </SearchSubTitle>
+                    <SearchSubTitle style={{color: colors.tertiary}} welcome={true}> Following </SearchSubTitle>
+                    <ProfIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/273-checkmark.png')}/>
+                    <SearchSubTitle style={{color: colors.tertiary}} welcome={true}> {following} </SearchSubTitle>
                 </SearchHorizontalViewItem>
 
                 <SearchHorizontalViewItemCenter>
-                    <SearchSubTitle welcome={true}> Followers </SearchSubTitle>
-                    <ProfIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/274-checkmark2.png')}/>
-                    <SearchSubTitle welcome={true}> {followers} </SearchSubTitle>
+                    <SearchSubTitle style={{color: colors.tertiary}} welcome={true}> Followers </SearchSubTitle>
+                    <ProfIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/274-checkmark2.png')}/>
+                    <SearchSubTitle style={{color: colors.tertiary}} welcome={true}> {followers} </SearchSubTitle>
                 </SearchHorizontalViewItemCenter>
 
                 <SearchHorizontalViewItem>
-                    <SearchSubTitle welcome={true}> Total Likes </SearchSubTitle>
-                    <ProfIcons source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/273-checkmark.png')}/>
-                    <SearchSubTitle welcome={true}> {totalLikes} </SearchSubTitle>
+                    <SearchSubTitle style={{color: colors.tertiary}} welcome={true}> Total Likes </SearchSubTitle>
+                    <ProfIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/273-checkmark.png')}/>
+                    <SearchSubTitle style={{color: colors.tertiary}} welcome={true}> {totalLikes} </SearchSubTitle>
                 </SearchHorizontalViewItem>
             </SearchHorizontalView>
         </SearchFrame>
@@ -356,21 +361,31 @@ const ConversationUserFind = ({route, navigation}) => {
 
     return(
         <>    
-            <StatusBar style="dark"/>
-            <ScrollView style={{'backgroundColor': primary}}>
-                <WelcomeContainer postScreen={true}>
-                    <PageTitle>Select Users</PageTitle>
-                    <SubTitle>{message}</SubTitle>
+            <StatusBar style={colors.StatusBarColor}/>
+            <ChatScreen_Title style={{backgroundColor: colors.primary, borderWidth: 0}}>
+                <Navigator_BackButton onPress={() => {navigation.goBack()}}>
+                    <Image
+                    source={require('../assets/app_icons/back_arrow.png')}
+                    style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2, tintColor: colors.tertiary}}
+                    resizeMode="contain"
+                    resizeMethod="resize"
+                    />
+                </Navigator_BackButton>
+                <TestText style={{textAlign: 'center', color: colors.tertiary}}>Select Users</TestText>
+            </ChatScreen_Title>
+            <ScrollView style={{backgroundColor: colors.primary}}>
+                <WelcomeContainer style={{backgroundColor: colors.primary, marginTop: -50, marginBottom: -50}} postScreen={true}>
+                    <SubTitle style={{color: colors.tertiary}}>{message}</SubTitle>
                     <View style={{flexDirection: 'row', alignItems: 'center', alignSelf: 'center', marginBottom: 10}}>
-                        <PostIcons tintColor={brand} style={{width: 30, height: 30}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/114-user.png')}/>
+                        <PostIcons style={{width: 30, height: 30, tintColor: colors.brand}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/114-user.png')}/>
                         {conversationMembers !== null && (
-                            <SubTitle style={{marginBottom: 0, fontWeight: 'normal'}}>{conversationMembers.length + 1}/14</SubTitle>
+                            <SubTitle style={{marginBottom: 0, fontWeight: 'normal', color: colors.tertiary}}>{conversationMembers.length + 1}/14</SubTitle>
                         )}
                         {conversationMembers == null && (
-                            <SubTitle style={{marginBottom: 0, fontWeight: 'normal'}}>Loading</SubTitle>
+                            <SubTitle style={{marginBottom: 0, fontWeight: 'normal', color: colors.tertiary}}>Loading</SubTitle>
                         )}
                     </View>
-                    <View style={{width: '90%', padding: 10, borderTopWidth: 3, borderBottomWidth: 3, borderColor: slightlyLighterGrey, alignSelf: 'center', marginTop: 10}}>
+                    <View style={{width: '90%', padding: 10, borderTopWidth: 3, borderBottomWidth: 3, borderColor: colors.tertiary, alignSelf: 'center', marginTop: 10}}>
                         <SectionList
                             horizontal={true}
                             showsHorizontalScrollIndicator={false}
@@ -382,8 +397,9 @@ const ConversationUserFind = ({route, navigation}) => {
                     <SearchBarArea>
                         <UserTextInput
                             placeholder="Search"
-                            placeholderTextColor={darkLight}
+                            placeholderTextColor={colors.tertiary}
                             onChangeText={(val) => handleChange(val)}
+                            colors={colors}
                         />
                     </SearchBarArea>
                 </WelcomeContainer>
@@ -392,27 +408,30 @@ const ConversationUserFind = ({route, navigation}) => {
                         sections={changeSections}
                         keyExtractor={(item, index) => item + index}
                         renderItem={({ item }) => <UserItem name={item.name} displayName={item.displayName} followers={item.followers}  following={item.following} totalLikes={item.totalLikes} profileKey={item.profileKey}/>}
+                        ListFooterComponent={
+                            <View style={{height: 80}}/>
+                        }
                     />
                 </View>
                 {loadingOne == true && (
-                    <ActivityIndicator size="large" color={brand} style={{marginBottom: 20}} />  
+                    <ActivityIndicator size="large" color={colors.brand} style={{marginBottom: 20}} />  
                 )}
             </ScrollView>
-            <StyledButton signUpButton={true} style={{position: 'absolute', width: '80%', alignSelf: 'center', bottom: 20}} onPress={() => {navigation.navigate("CreateConversation", {conversationTitle: conversationTitle, conversationDescription: conversationDescription, sentConversationMembers: conversationMembers, sentConversationNSFW: conversationNSFW, sentConversationNSFL: conversationNSFL})}}>
-                    <ButtonText signUpButton={true}>Confirm</ButtonText>
+            <StyledButton style={{position: 'absolute', width: '80%', alignSelf: 'center', bottom: 20, backgroundColor: colors.brand}} onPress={() => {navigation.navigate("CreateConversation", {conversationTitle: conversationTitle, conversationDescription: conversationDescription, sentConversationMembers: conversationMembers, sentConversationNSFW: conversationNSFW, sentConversationNSFL: conversationNSFL})}}>
+                    <ButtonText>Confirm</ButtonText>
             </StyledButton>
         </>
     );
 }
 
-const UserTextInput = ({label, icon, isPassword, ...props}) => {
+const UserTextInput = ({label, icon, isPassword, colors, ...props}) => {
     return(
         <SearchBarArea>
             <LeftIcon searchIcon={true}>
-                <Octicons name={"search"} size={20} color={brand} />
+                <Octicons name={"search"} size={20} color={colors.brand} />
             </LeftIcon>
-            <StyledInputLabel>{label}</StyledInputLabel>
-            <StyledTextInput searchPage={true} {...props}/>
+            <StyledInputLabel style={{color: colors.tertiary}}>{label}</StyledInputLabel>
+            <StyledTextInput style={{color: colors.tertiary, backgroundColor: colors.primary, borderColor: colors.borderColor}} searchPage={true} {...props}/>
         </SearchBarArea>
     )
 }

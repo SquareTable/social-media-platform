@@ -69,6 +69,7 @@ const CategoryCreationPage = ({navigation, route}) => {
     const [selectFormat, setSelectFormat] = useState("Text");
     const [submitting, setSubmitting] = useState(false)
     const {imageFromRoute} = route.params;
+    const [screenshotsAllowed, setScreenshotsAllowed] = useState(false);
     // Logo picker
     let LogoPickerActionSheet = useRef();
     let LogoPickerActionSheetOptions = [
@@ -205,6 +206,7 @@ const CategoryCreationPage = ({navigation, route}) => {
                                     } else {
                                         let tempValues = values;
                                         tempValues.image = imageFromRoute;
+                                        tempValues.sentAllowScreenShots = screenshotsAllowed;
                                         navigation.reset({
                                             index: 0,
                                             routes: [{name: 'PostScreen', params: {postData: tempValues, postType: 'category', navigateToHomeScreen: true}}]
@@ -287,6 +289,12 @@ const CategoryCreationPage = ({navigation, route}) => {
                                             }}/>
                                             <AboveButtonText style={{color: colors.tertiary}} byCheckBox={true}>Mark as NSFL</AboveButtonText>
                                         </PostHorizontalView>
+                                        <View style={{flexDirection: 'row', justifyContent: 'center', marginTop: 15}}>
+                                            <Text style={{color: colors.tertiary, fontSize: 18, marginTop: 10, marginRight: 10}}>Allow screen capture</Text>
+                                            <TouchableOpacity onPress={() => {setScreenshotsAllowed(screenshotsAllowed => !screenshotsAllowed)}} style={{width: 40, height: 40, borderColor: colors.borderColor, borderWidth: 3, justifyContent: 'center', alignItems: 'center'}}>
+                                                <Text style={{color: colors.tertiary, fontSize: 18, textAlign: 'center', textAlignVertical: 'center'}}>{screenshotsAllowed == false ? '✕' : '✓'}</Text>
+                                            </TouchableOpacity>
+                                        </View>
                                         <MsgBox type={messageType}>{message}</MsgBox>
                                         {!submitting && (<StyledButton onPress={() => {
                                             setSubmitting(true)

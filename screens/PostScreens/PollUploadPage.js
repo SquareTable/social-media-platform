@@ -229,7 +229,7 @@ const PollUploadPage = ({navigation}) => {
                             
                             <PageTitle>Create Poll</PageTitle>
                             <Formik
-                                initialValues={{pollTitle: "", pollSubTitle: "", optionOne: "", optionOnesColor: "Not Specified", optionTwo: "", optionTwosColor: "Not Specified", optionThree: "", optionThreesColor: "Not Specified", optionFour: "", optionFoursColor: "Not Specified", optionFive: "", optionFivesColor: "Not Specified", optionSix: "", optionSixesColor: "Not Specified", totalNumberOfOptions: "Two", pollCreatorId: _id, screenshotsAllowed: false}}
+                                initialValues={{pollTitle: "", pollSubTitle: "", optionOne: "", optionOnesColor: "Not Specified", optionTwo: "", optionTwosColor: "Not Specified", optionThree: "", optionThreesColor: "Not Specified", optionFour: "", optionFoursColor: "Not Specified", optionFive: "", optionFivesColor: "Not Specified", optionSix: "", optionSixesColor: "Not Specified", totalNumberOfOptions: "Two", pollCreatorId: _id, sentAllowScreenShots: false}}
                                 onSubmit={(values, {setSubmitting}) => {
                                     if (values.pollTitle == "" || values.pollSubTitle == "" || values.optionOne == "" || values.optionTwo == "") {
                                         handleMessage('Please fill all the fields.');
@@ -817,8 +817,8 @@ const PollUploadPage = ({navigation}) => {
                                             <Text style={{color: colors.tertiary, fontSize: 18, marginTop: 10, marginRight: 10}}>Allow screen capture</Text>
                                             <TouchableOpacity 
                                                 onPress={() => {
-                                                    values.screenshotsAllowed == true ? values.screenshotsAllowed = false : values.screenshotsAllowed = true;
-                                                    setScreenshotsAllowed(values.screenshotsAllowed)
+                                                    values.sentAllowScreenShots == true ? values.sentAllowScreenShots = false : values.sentAllowScreenShots = true;
+                                                    setScreenshotsAllowed(values.sentAllowScreenShots)
                                                 }} 
                                                 style={{width: 40, height: 40, borderColor: colors.borderColor, borderWidth: 3, justifyContent: 'center', alignItems: 'center'}}
                                             >

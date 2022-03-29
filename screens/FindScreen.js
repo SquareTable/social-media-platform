@@ -78,7 +78,7 @@ const FindScreen = ({navigation}) => {
     let cancelTokenPostFormatTwo = axios.CancelToken.source();
     const {serverUrl, setServerurl} = useContext(ServerUrlContext);
     const StatusBarHeight = Constants.statusBarHeight;
-    const UserItem = ({name, displayName, following, followers, totalLikes, profileKey, badges, index}) => (
+    const UserItem = ({name, displayName, following, followers, totalLikes, profileKey, badges, index, pubId}) => (
         /* OLD DESIGN
             <SearchFrame onPress={() => navigation.navigate("ProfilePages", {profilesName: name, profilesDisplayName: displayName, following: following, followers: followers, totalLikes: totalLikes, profileKey: profileKey != null ? `data:image/jpg;base64,${profileKey}` : SocialSquareLogo_B64_png, badges: badges})}>
                 {profileKey !== null && (
@@ -110,7 +110,7 @@ const FindScreen = ({navigation}) => {
                 </SearchHorizontalView>
             </SearchFrame>
         */
-            <TouchableOpacity onPress={() => navigation.navigate("ProfilePages", {profilesName: name, profilesDisplayName: displayName, following: following, followers: followers, totalLikes: totalLikes, profileKey: profileKey != null ? `data:image/jpg;base64,${profileKey}` : SocialSquareLogo_B64_png, badges: badges})} style={{borderColor: colors.darkLight, flexDirection: 'row', width: '100%', padding: 5}}>
+            <TouchableOpacity onPress={() => navigation.navigate("ProfilePages", {profilesName: name, profilesDisplayName: displayName, following: following, followers: followers, totalLikes: totalLikes, profileKey: profileKey != null ? `data:image/jpg;base64,${profileKey}` : SocialSquareLogo_B64_png, badges: badges, pubId: pubId})} style={{borderColor: colors.darkLight, flexDirection: 'row', width: '100%', padding: 5}}>
                 <View style={{alignItems: 'flex-start', justifyContent: 'center', flexDirection: 'row'}}>
                     {profileKey !== null && (
                         <Avatar style={{width: 60, height: 60, marginBottom: 5, marginTop: 5}} resizeMode="cover" searchPage={true} source={{uri: `data:image/jpg;base64,${profileKey}`}} />
@@ -123,8 +123,8 @@ const FindScreen = ({navigation}) => {
             </TouchableOpacity>
     );
 
-    const CategoryItem = ({categoryTitle, categoryDescription, members, categoryTags, image, NSFW, NSFL, datePosted}) => (
-        <SearchFrame onPress={() => navigation.navigate("CategoryViewPage", {categoryTitle: categoryTitle, NSFL: NSFL, NSFW: NSFW})}>
+    const CategoryItem = ({categoryTitle, categoryDescription, members, categoryTags, image, NSFW, NSFL, datePosted, allowScreenShots}) => (
+        <SearchFrame onPress={() => navigation.navigate("CategoryViewPage", {categoryTitle: categoryTitle, NSFL: NSFL, NSFW: NSFW, allowScreenShots: (allowScreenShots != undefined ? allowScreenShots : true)})}>
             {image !== null && (
                 <Avatar resizeMode="cover" searchPage={true} source={{uri: `data:image/jpg;base64,${image}`}} />
             )}
@@ -202,7 +202,7 @@ const FindScreen = ({navigation}) => {
                                 }
                                 const imageInPfp = await getImageWithKeyOne(allData[index].profileKey)
                                 const imageInPfpB64 = imageInPfp.data
-                                var tempSectionsTemp = {data: [{name: allData[index].name, displayName: displayName, followers: allData[index].followers, following: allData[index].following, totalLikes: allData[index].totalLikes, profileKey: imageInPfpB64, badges: allData[index].badges}]}
+                                var tempSectionsTemp = {data: [{name: allData[index].name, displayName: displayName, followers: allData[index].followers, following: allData[index].following, totalLikes: allData[index].totalLikes, profileKey: imageInPfpB64, badges: allData[index].badges, pubId: allData[index].pubId}]}
                                 tempSections.push(tempSectionsTemp)
                                 itemsProcessed++;
                                 if(itemsProcessed === allData.length) {
@@ -218,7 +218,7 @@ const FindScreen = ({navigation}) => {
                             if (displayName == "") {
                                 displayName = allData[index].name
                             }
-                            var tempSectionsTemp = {data: [{name: allData[index].name, displayName: displayName, followers: allData[index].followers, following: allData[index].following, totalLikes: allData[index].totalLikes, profileKey: null, badges: allData[index].badges}]}
+                            var tempSectionsTemp = {data: [{name: allData[index].name, displayName: displayName, followers: allData[index].followers, following: allData[index].following, totalLikes: allData[index].totalLikes, profileKey: null, badges: allData[index].badges, pubId: allData[index].pubId}]}
                             tempSections.push(tempSectionsTemp)
                             itemsProcessed++;
                             if(itemsProcessed === allData.length) {
@@ -291,7 +291,7 @@ const FindScreen = ({navigation}) => {
                             async function asyncFunctionForImages() {
                                 const imageInCategory = await getImageInCategory(allData[index].imageKey)
                                 const imageB64 = imageInCategory.data
-                                var tempSectionsTemp = {data: [{categoryTitle: allData[index].categoryTitle, categoryDescription: allData[index].categoryDescription, members: allData[index].members, categoryTags: allData[index].categoryTags, image: imageB64, NSFW: allData[index].NSFW, NSFL: allData[index].NSFL, datePosted: allData[index].datePosted}]}
+                                var tempSectionsTemp = {data: [{categoryTitle: allData[index].categoryTitle, categoryDescription: allData[index].categoryDescription, members: allData[index].members, categoryTags: allData[index].categoryTags, image: imageB64, NSFW: allData[index].NSFW, NSFL: allData[index].NSFL, datePosted: allData[index].datePosted, allowScreenShots: allData[index].allowScreenShots}]}
                                 tempSections.push(tempSectionsTemp)
                                 itemsProcessed++;
                                 if(itemsProcessed === allData.length) {
@@ -303,7 +303,7 @@ const FindScreen = ({navigation}) => {
                         }
                     } else {
                         if (index+1 <= userLoadMax) {      
-                            var tempSectionsTemp = {data: [{categoryTitle: allData[index].categoryTitle, categoryDescription: allData[index].categoryDescription, members: allData[index].members, categoryTags: allData[index].categoryTags, image: null, NSFW: allData[index].NSFW, NSFL: allData[index].NSFL, datePosted: allData[index].datePosted}]}
+                            var tempSectionsTemp = {data: [{categoryTitle: allData[index].categoryTitle, categoryDescription: allData[index].categoryDescription, members: allData[index].members, categoryTags: allData[index].categoryTags, image: null, NSFW: allData[index].NSFW, NSFL: allData[index].NSFL, datePosted: allData[index].datePosted, allowScreenShots: allData[index].allowScreenShots}]}
                             tempSections.push(tempSectionsTemp)
                             itemsProcessed++;
                             if(itemsProcessed === allData.length) {
@@ -461,12 +461,12 @@ const FindScreen = ({navigation}) => {
                 <SectionList
                     sections={changeSectionsOne}
                     keyExtractor={(item, index) => item + index}
-                    renderItem={({ item, index }) => <UserItem name={item.name} displayName={item.displayName} followers={item.followers}  following={item.following} totalLikes={item.totalLikes} profileKey={item.profileKey} badges={item.badges} index={index}/>}
+                    renderItem={({ item, index }) => <UserItem name={item.name} displayName={item.displayName} followers={item.followers}  following={item.following} totalLikes={item.totalLikes} profileKey={item.profileKey} badges={item.badges} index={index} pubId={item.pubId}/>}
                     ListFooterComponent={
                         <>
                             <View style={{marginTop: 20}}>
                                 {loadingOne == true && (
-                                    <ActivityIndicator size="large" color={brand} />     
+                                    <ActivityIndicator size="large" color={colors.brand} />     
                                 )}
                             </View>
                         </>
@@ -486,12 +486,12 @@ const FindScreen = ({navigation}) => {
                 <SectionList
                     sections={changeSectionsTwo}
                     keyExtractor={(item, index) => item + index}
-                    renderItem={({ item }) => <CategoryItem categoryTitle={item.categoryTitle} categoryDescription={item.categoryDescription} members={item.members} categoryTags={item.categoryTags} image={item.image} NSFW={item.NSFW} NSFL={item.NSFL} datePosted={item.datePosted}/>}
+                    renderItem={({ item }) => <CategoryItem categoryTitle={item.categoryTitle} categoryDescription={item.categoryDescription} members={item.members} categoryTags={item.categoryTags} image={item.image} NSFW={item.NSFW} NSFL={item.NSFL} datePosted={item.datePosted} allowScreenShots={item.allowScreenShots}/>}
                     ListFooterComponent={
                         <>
                             <View style={{marginTop: 20}}>
                                 {loadingTwo == true && (
-                                    <ActivityIndicator size="large" color={brand} />     
+                                    <ActivityIndicator size="large" color={colors.brand} />     
                                 )}
                             </View>
                         </>

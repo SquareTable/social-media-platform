@@ -105,6 +105,8 @@ import WebView from 'react-native-webview';
 import axios from 'axios';
 import { ProfilePictureURIContext } from '../components/ProfilePictureURIContext.js';
 import { ServerUrlContext } from '../components/ServerUrlContext.js';
+import SocialSquareLogo_B64_png from '../assets/SocialSquareLogo_Base64_png.js';
+import { BadgeEarntNotificationContext } from '../components/BadgeEarntNotificationContext.js';
 
 const {brand, primary, tertiary, greyish, darkLight, darkestBlue, slightlyLighterPrimary, slightlyLighterGrey, descTextColor, darkest, red, orange, yellow, green, purple} = Colors;
 
@@ -143,6 +145,7 @@ const HomeScreen = ({navigation, route}) => {
     const [optionSixesBarLength, setOptionSixesBarLength] = useState(0);
     if (storedCredentials) {var {name, displayName, email, photoUrl, _id} = storedCredentials}
     const {serverUrl, setServerUrl} = useContext(ServerUrlContext);
+    const {badgeEarntNotification, setBadgeEarntNotification} = useContext(BadgeEarntNotificationContext);
 
     //Easter egg - Logo Press
     const logoPressedTimes = useRef(0);
@@ -158,7 +161,7 @@ const HomeScreen = ({navigation, route}) => {
         formData.append("title", postData.title)
         formData.append("description", postData.description)
         formData.append("creatorId", _id)
-        formData.append("screenshotsAllowed", postData.screenshotsAllowed)
+        formData.append("sentAllowScreenShots", postData.screenshotsAllowed)
         console.log(formData);
         console.log("Post pressed")
         setUploadingText('Uploading photo post...')
@@ -227,7 +230,8 @@ const HomeScreen = ({navigation, route}) => {
         if (selectFormat == "Text") {
             console.log("Text Format")
             const url = serverUrl + '/user/posttextthread';
-            var toSend = {creatorId: _id, threadTitle: credentials.threadTitle, threadSubtitle: credentials.threadSubtitle, threadTags: credentials.threadTags, threadCategory: credentials.selectedCategory, threadBody: credentials.threadBody, threadNSFW: credentials.threadNSFW, threadNSFL: credentials.threadNSFL, screenshotsAllowed: credentials.screenshotsAllowed}
+            var toSend = {creatorId: _id, threadTitle: credentials.threadTitle, threadSubtitle: credentials.threadSubtitle, threadTags: credentials.threadTags, threadCategory: credentials.selectedCategory, threadBody: credentials.threadBody, threadNSFW: credentials.threadNSFW, threadNSFL: credentials.threadNSFL, sentAllowScreenShots: credentials.sentAllowScreenShots}
+            console.log(toSend)
             axios.post(url, toSend).then((response) => {
                 const result = response.data;
                 const {message, status, data} = result;
@@ -265,7 +269,7 @@ const HomeScreen = ({navigation, route}) => {
             formData.append("threadImageDescription", credentials.threadImageDescription)
             formData.append("threadNSFW", credentials.threadNSFW)
             formData.append("threadNSFL", credentials.threadNSFL)
-            formData.append("screenshotsAllowed", credentials.screenshotsAllowed)
+            formData.append("sentAllowScreenShots", credentials.sentAllowScreenShots)
             console.log("FormData:")
             console.log(formData);
             
@@ -314,6 +318,7 @@ const HomeScreen = ({navigation, route}) => {
             formData.append("categoryTags", credentials.categoryTags)
             formData.append("categoryNSFW", credentials.categoryNSFW)
             formData.append("categoryNSFL", credentials.categoryNSFL)
+            formData.append("sentAllowScreenShots", credentials.sentAllowScreenShots)
             console.log(formData);
 
             const url = serverUrl + '/user/postcategorywithimage';
@@ -344,7 +349,8 @@ const HomeScreen = ({navigation, route}) => {
             })
         } else {
             const url = serverUrl + '/user/postcategorywithoutimage';
-            const toSend = {creatorId: _id, categoryTitle: credentials.categoryTitle, categoryDescription: credentials.categoryDescription, categoryTags: credentials.categoryTags, categoryNSFW: credentials.categoryNSFW, categoryNSFL: credentials.categoryNSFL}
+            const toSend = {creatorId: _id, categoryTitle: credentials.categoryTitle, categoryDescription: credentials.categoryDescription, categoryTags: credentials.categoryTags, categoryNSFW: credentials.categoryNSFW, categoryNSFL: credentials.categoryNSFL, sentAllowScreenShots: credentials.sentAllowScreenShots}
+            console.log(toSend)
             axios.post(url, toSend).then((response) => {
                 const result = response.data;
                 const {message, status, data} = result;
@@ -864,7 +870,7 @@ const HomeScreen = ({navigation, route}) => {
     }, [])
 
     const logoPressEasterEgg = () => {
-        alert('Easter egg has been triggered')
+        setBadgeEarntNotification('HomeScreenLogoEasterEgg')
     }
 
     const HTMLRenderers = {
@@ -1292,7 +1298,7 @@ const HomeScreen = ({navigation, route}) => {
                                         <Avatar resizeMode="cover" searchPage={true} source={{uri: postData.image.uri}} />
                                     )}
                                     {postData.image == null && (
-                                        <Avatar resizeMode="cover" searchPage={true} source={require('./../assets/img/Logo.png')} />
+                                        <Avatar resizeMode="cover" searchPage={true} source={{uri: SocialSquareLogo_B64_png}} />
                                     )}
                                     {postData.categoryNSFW == false && (
                                         <View>

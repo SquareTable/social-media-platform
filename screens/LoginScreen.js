@@ -118,7 +118,7 @@ const LoginScreen = ({navigation, route}) => {
         }
         console.log('Getting profile picture for ProfilePictureUriContext')
         const getProfilePicture = () => {
-            const url = serverUrl + '/user/getProfilePic/' + credentialsToUse.name;
+            const url = serverUrl + '/user/getProfilePic/' + credentialsToUse.secondId;
     
             axios.get(url).then((response) => {
                 const result = response.data;
