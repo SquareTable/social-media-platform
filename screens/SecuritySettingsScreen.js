@@ -47,6 +47,7 @@ import { CredentialsContext } from '../components/CredentialsContext.js';
 import KeyboardAvoidingWrapper from '../components/KeyboardAvoidingWrapper.js';
 import { AppStylingContext } from '../components/AppStylingContext.js';
 import SocialSquareLogo_B64_png from '../assets/SocialSquareLogo_Base64_png.js';
+import AppCredits from '../components/AppCredits.js';
 const {brand} = Colors;
 
 
@@ -68,6 +69,8 @@ const SecuritySettingsScreen = ({navigation}) => {
     const {AppStylingContextState, setAppStylingContextState} = useContext(AppStylingContext);
     if (storedCredentials) {var {email} = storedCredentials};
     const [hidePassword, setHidePassword] = useState(true);
+    const [destroyingLocalData, setDestroyingLocalData] = useState(false);
+    const [prevDestroyingLocalData, setPrevDestroyingLocalData] = useState(false);
 
     useEffect(() => {
         async function getBiometricsSupportData() {
@@ -83,29 +86,6 @@ const SecuritySettingsScreen = ({navigation}) => {
         }
         getBiometricsSupportData()
     })
-
-    const handleLogin = (credentials, setSubmitting) => {
-        handleMessage('');
-        const url = "https://nameless-dawn-41038.herokuapp.com/user/signin";
-
-        axios.post(url, credentials).then((response) => {
-            const result = response.data;
-            const {message, status} = result;
-
-            if (status !== 'SUCCESS') {
-                handleMessage(message,status);
-            } else {
-                setSubmitting(false);
-                destroyAllData()
-            }
-            setSubmitting(false);
-
-        }).catch(error => {
-            console.log(error);
-            setSubmitting(false);
-            handleMessage("An error occured. Try checking your network connection and retry.");
-        })
-    }
 
     const setContextAndAsyncStorage = (type) => {
         if (destroyLocalDataMenuHidden == true) {
@@ -158,11 +138,24 @@ const SecuritySettingsScreen = ({navigation}) => {
 
     const destroyAllData = () => {
         console.warn('Destroying all data')
-        setStoredCredentials(null)
-        setAppStylingContextState('Default')
-        setProfilePictureUri(SocialSquareLogo_B64_png);
-        navigation.replace('DestroyingLocalDataScreen')
+        setDestroyingLocalData(true)
     }
+
+    useEffect(() => {
+        if (destroyingLocalData == true && prevDestroyingLocalData == false) {
+            setStoredCredentials(null)
+            setAppStylingContextState('Default')
+            setProfilePictureUri(SocialSquareLogo_B64_png);
+            setDestroyingLocalData(false)
+            setPrevDestroyingLocalData(true)
+        }
+    }, [destroyingLocalData, prevDestroyingLocalData])
+
+    useEffect(() => {
+        if (destroyingLocalData == false && prevDestroyingLocalData == true) {
+            navigation.replace('DestroyingLocalDataScreen')
+        }
+    }, [destroyingLocalData, prevDestroyingLocalData])
     return(
         <> 
             <StatusBar style={colors.StatusBarColor}/>   
@@ -261,9 +254,7 @@ const SecuritySettingsScreen = ({navigation}) => {
                             <Icon name="trash-bin" size={60} color={colors.errorColor}/>
                             <Text style={{color: colors.errorColor, fontSize: 24, textAlign: 'center'}}>Destroy all locally stored data</Text>
                         </TouchableOpacity>
-                        <Text style={{color: colors.tertiary, fontSize: 24, textAlign: 'center'}}>© SquareTable 2022</Text>
-                        <Text style={{color: colors.tertiary, fontSize: 24, textAlign: 'center', marginBottom: 10}}>All Rights Reserved</Text>
-                        <Text style={{color: colors.tertiary, fontSize: 18, textAlign: 'center', marginBottom: 10}}>Made by Sebastian Webster, Kovid Dev, Didula Semasinghe, and Jacob Bowden</Text>
+                        <AppCredits/>
                     </View>
                 </ScrollView>
             </BackgroundDarkColor>

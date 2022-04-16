@@ -41,7 +41,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 //credentials context
 import { CredentialsContext } from '../components/CredentialsContext';
-import { ImageBackground, ScrollView, View, SectionList, ActivityIndicator, Text, SafeAreaView } from 'react-native';
+import { ImageBackground, ScrollView, View, SectionList, ActivityIndicator, Text, SafeAreaView, Keyboard } from 'react-native';
 
 // formik
 import {Formik} from 'formik';
@@ -50,7 +50,7 @@ import background from "./../assets/img/Toga.jpg";
 
 //axios
 import axios from 'axios';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { TouchableOpacity, TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 import { useTheme } from '@react-navigation/native';
 import SocialSquareLogo_B64_png from '../assets/SocialSquareLogo_Base64_png.js';
@@ -392,7 +392,7 @@ const FindScreen = ({navigation}) => {
     return(
         <>    
             <StatusBar style={colors.StatusBarColor}/>
-            <View style={{paddingTop: StatusBarHeight - 15, borderColor: colors.borderColor, borderBottomWidth: 1, paddingBottom: 5}}>
+            <TouchableWithoutFeedback style={{paddingTop: StatusBarHeight - 15, borderColor: colors.borderColor, borderBottomWidth: 1, paddingBottom: 5}} onPress={Keyboard.dismiss()}>
                 <SearchBarArea style={{alignSelf: 'center'}}>
                     <UserTextInput
                         placeholder="Search"
@@ -456,7 +456,7 @@ const FindScreen = ({navigation}) => {
                         )}
                     </View>
                 </View>
-            </View>
+            </TouchableWithoutFeedback>
             {filterFormatSearch == "Users" && (
                 <SectionList
                     sections={changeSectionsOne}

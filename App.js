@@ -47,8 +47,26 @@ import { OnlineContext } from './components/conversationOnlineHandler.js';
 import { SocketContext } from './components/socketHandler.js';
 import { ReconnectPromptContext } from './components/reconnectPrompt.js';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-const Stack = createStackNavigator();
+import * as Sentry from 'sentry-expo';
+import {SENTRY_DSN, IOSADID, ANDROIDADID} from '@dotenv';
 
+const routingInstrumentation = new Sentry.Native.ReactNavigationInstrumentation();
+
+Sentry.init({
+  dsn: SENTRY_DSN,
+  enableInExpoDevelopment: true,
+  debug: true, 
+  // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
+  // We recommend adjusting this value in production.
+  tracesSampleRate: 1.0,
+  /*integrations: [
+    new Sentry.Native.ReactNativeTracing({
+      // Pass instrumentation to be used as `routingInstrumentation`
+      routingInstrumentation,
+      // ...
+    }),
+  ],*/
+});
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -69,7 +87,7 @@ const App = () => {
   const [AsyncStorageSimpleStylingData, setAsyncStorageSimpleStylingData] = useState()
   const [currentSimpleStylingData, setCurrentSimpleStylingData] = useState()
   const testID = Platform.OS == "ios" ? 'ca-app-pub-3940256099942544/2934735716' : 'ca-app-pub-3940256099942544/6300978111';
-  const productionID = Platform.OS == 'ios' ? 'ca-app-pub-6980968247752885/8710919560' : 'ca-app-pub-6980968247752885/3057291726';
+  const productionID = Platform.OS == 'ios' ? IOSADID : ANDROIDADID;
   // Is a real device and running in production.
   const adUnitID = Device.isDevice && !__DEV__ ? productionID : testID;
   const previousStylingState = useRef(null)
@@ -89,7 +107,7 @@ const App = () => {
   const [allCredentialsStoredList, setAllCredentialsStoredList] = useState([])
   const [AccountSwitcherHeight, setAccountSwitcherHeight] = useState(0)
   const DismissAccountSwitcherBoxActivated = useRef(new Animated.Value(0)).current;
-  const [serverUrl, setServerUrl] = useState('https://nameless-dawn-41038.herokuapp.com')
+  const [serverUrl, setServerUrl] = useState('http://it-solutions.homedns.org:9443')
   const [badgeEarntNotification, setBadgeEarntNotification] = useState('')
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [socket, setSocket] = useState('');
@@ -173,7 +191,7 @@ useEffect(() => {
                   } else {
                       const uuidWithOutDouble = uuidOfDevice.replace(/(^"|"$)/g, '')
                       console.log(`UUID sent with socket ${uuidOfDevice}`)
-                      setSocket(io("https://nameless-dawn-41038.herokuapp.com/", { query: { idSentOnConnect: storedCredentials._id, uuidOfDevice: uuidWithOutDouble }}))
+                      setSocket(io((serverUrl + "/"), { query: { idSentOnConnect: storedCredentials._id, uuidOfDevice: uuidWithOutDouble }}))
                   }
               })
           }
@@ -196,7 +214,7 @@ useEffect(() => {
               });
           } else {
               registerForPushNotificationsAsync().then(token => {
-                  const url = "https://nameless-dawn-41038.herokuapp.com/user/sendnotificationkey";
+                  const url = serverUrl + "/user/sendnotificationkey";
                   axios.post(url, {idSent: storedCredentials._id, keySent: token}).then((response) => {
                       const result = response.data;
                       const {message, status, data} = result;
@@ -266,7 +284,7 @@ useEffect(() => {
                   } else {
                       const uuidWithOutDouble = uuidOfDevice.replace(/(^"|"$)/g, '')
                       console.log(`UUID sent with socket ${uuidOfDevice}`)
-                      setSocket(io("https://nameless-dawn-41038.herokuapp.com/", { query: { idSentOnConnect: storedCredentials._id, uuidOfDevice: uuidWithOutDouble }}))
+                      setSocket(io((serverUrl + "/"), { query: { idSentOnConnect: storedCredentials._id, uuidOfDevice: uuidWithOutDouble }}))
                   }
               })
           }
@@ -328,7 +346,7 @@ useEffect(() => {
     if (AppState.currentState == 'active' || AppState.currentState == 'unknown') {
       tryReconnect()
     }
-    socketAutoReconnectInterval = setInterval(tryReconnect, 10000)
+    socketAutoReconnectInterval = setInterval(tryReconnect, 5000)
   } else {
     console.log('Reconnect prompt is false')
     clearInterval(socketAutoReconnectInterval)
@@ -1123,7 +1141,7 @@ useEffect(() => {
         }
         async function refreshProfilePictureContext(credentials) {
           const getProfilePicture = () => {
-            const url = `https://nameless-dawn-41038.herokuapp.com/user/getProfilePic/${credentials.name}`;
+            const url = `${serverUrl}/user/getProfilePic/${credentials.name}`;
     
             axios.get(url).then((response) => {
                 const result = response.data;
@@ -1136,7 +1154,7 @@ useEffect(() => {
                 } else {
                     console.log(status)
                     console.log(message)
-                    axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${data}`)
+                    axios.get(`${serverUrl}/getImage/${data}`)
                     .then((response) => {
                         const result = response.data;
                         const {message, status, data} = result;
@@ -1206,6 +1224,7 @@ useEffect(() => {
       await AsyncStorage.getItem('AppStylingContextState').then((result) => {
         if (result == null) {
           setAppStylingContextState('Default')
+          AsyncStorage.setItem('AppStylingContextState', 'Default')
         } else if (result == 'Default') {
           setAppStylingContextState('Default')
         } else if (result == 'Dark') {
@@ -1277,7 +1296,12 @@ useEffect(() => {
         require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/277-exit.png'),
         require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/207-eye.png'),
         require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/265-notification.png'),
-        require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/113-bubbles4.png')
+        require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/113-bubbles4.png'),
+        require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png'),
+        require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png'),
+        require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/387-share2.png'),
+        require('./assets/img/ThreeDots.png'),
+
       ];
 
       const LockSocialSquareValue = await AsyncStorage.getItem('LockSocialSquare')
@@ -1326,8 +1350,8 @@ useEffect(() => {
 
       await AsyncStorage.getItem('SocialSquareServerUrl').then(value => {
         if (value == null) {
-          setServerUrl('https://nameless-dawn-41038.herokuapp.com')
-          AsyncStorage.setItem('SocialSquareServerUrl', 'https://nameless-dawn-41038.herokuapp.com')
+          setServerUrl('http://it-solutions.homedns.org:9443')
+          AsyncStorage.setItem('SocialSquareServerUrl', 'http://it-solutions.homedns.org:9443')
         } else {
           setServerUrl(value)
         }
@@ -1366,7 +1390,10 @@ useEffect(() => {
                                   <ReconnectPromptContext.Provider value={{reconnectPrompt, setReconnectPrompt}}>
                                     {AppStylingContextState != 'Default' && AppStylingContextState != 'Light' && AppStylingContextState != 'Dark' && AppStylingContextState != 'PureDark' && AppStylingContextState != 'PureLight' ? previousStylingState.current != AppStylingContextState ? setCurrentSimpleStylingDataToStyle(AppStylingContextState) : null : null}
                                     <AppearanceProvider>
-                                      <NavigationContainer ref={navigationRef} theme={appTheme} onStateChange={() => {console.log('Screen changed')}}>
+                                      <NavigationContainer ref={navigationRef} theme={appTheme} onStateChange={() => {console.log('Screen changed')}} onReady={() => {
+                                        // Register the navigation container with the instrumentation
+                                        routingInstrumentation.registerNavigationContainer(navigationRef);
+                                      }}>
                                         {lockSocialSquare == false ?
                                           showPlaceholderScreen == true && (appStateVisible == 'background' || appStateVisible == 'inactive') &&
                                               <Image source={require('./assets/Splash_Screen.png')} resizeMode="cover" style={{width: '100%', height: '100%', position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, zIndex: 100, backgroundColor: '#3B4252', borderWidth: 0}}/>
@@ -1452,7 +1479,7 @@ useEffect(() => {
   }
 };
 
-export default App;
+export default Sentry.Native.wrap(App);
 
 async function registerForPushNotificationsAsync() {
   let token;

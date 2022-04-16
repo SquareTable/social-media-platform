@@ -51,6 +51,8 @@ import background from "./../assets/img/Toga.jpg";
 import axios from 'axios';
 import { useTheme } from '@react-navigation/native';
 
+import { ServerUrlContext } from '../components/ServerUrlContext.js';
+
 const SelectCategorySearchScreen = ({route, navigation}) => {
     const {colors, dark} = useTheme()
      //context
@@ -67,6 +69,7 @@ const SelectCategorySearchScreen = ({route, navigation}) => {
     const [noResults, setNoResults] = useState(false);
     const [loadingResults, setLoadingResults] = useState(false);
     const [errorMessage, setErrorMessage] = useState();
+    const {serverUrl, setServerUrl} = useContext(ServerUrlContext);
     var userLoadMax = 10;
 
     const CategoryItem = ({categoryTitle, categoryDescription, members, categoryTags, image, NSFW, NSFL, datePosted, allowScreenShots}) => (
@@ -119,7 +122,7 @@ const SelectCategorySearchScreen = ({route, navigation}) => {
     );
 
     async function getImageInCategory(imageKey) {
-        return axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${imageKey}`)
+        return axios.get(`${serverUrl}/getImage/${imageKey}`)
         .then(res => res.data);
     }
 
@@ -163,7 +166,7 @@ const SelectCategorySearchScreen = ({route, navigation}) => {
             }
 
             handleMessage(null);
-            const url = `https://nameless-dawn-41038.herokuapp.com/user/searchpagesearchcategories/${val}`;
+            const url = `${serverUrl}/user/searchpagesearchcategories/${val}`;
             submitting = true;
             setLoadingResults(true);
             axios.get(url).then((response) => {

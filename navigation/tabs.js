@@ -192,7 +192,7 @@ const Tabs = ({navigation}) => {
                                     height: 35,
                                     borderWidth: 3,
                                     borderColor: focused ? colors.navFocusedColor : colors.navNonFocusedColor,
-                                    borderRadius: 40/2
+                                    borderRadius: 1000,
                                 }}
                             />
                             {/*<Text style={{color: focused ? colors.navFocusedColor : colors.navNonFocusedColor, fontSize: 10}}>PROFILE</Text>*/}

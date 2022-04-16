@@ -65,6 +65,8 @@ import { useTheme } from '@react-navigation/native';
 
 import * as Linking from 'expo-linking';
 
+import { ServerUrlContext } from '../components/ServerUrlContext.js';
+
 const CreateDMConversation = ({route, navigation}) => {
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
     const {_id} = storedCredentials;
@@ -76,6 +78,7 @@ const CreateDMConversation = ({route, navigation}) => {
     const [allowCreationOfChat, setAllowCreationOfChat] = useState(true)
     const [errorOrigin, setErrorOrigin] = useState('')
     const {colors, dark} = useTheme();
+    const {serverUrl, setServerUrl} = useContext(ServerUrlContext);
 
     const handleMessage = (message, type = 'FAILED') => {
         setMessage(message);
@@ -92,7 +95,7 @@ const CreateDMConversation = ({route, navigation}) => {
                         const nonce = await nacl.randomBytes(24)
     
                         console.log("Attempting to create a DM")
-                        const url = "https://nameless-dawn-41038.herokuapp.com/conversations/createDirectMessage";
+                        const url = serverUrl + "/conversations/createDirectMessage";
                         const toSend = {creatorId: _id, recipientName: nameSent, cryptographicNonce: nonce}
                         axios.post(url, toSend).then((response) => {
                             const result = response.data;
@@ -132,7 +135,7 @@ const CreateDMConversation = ({route, navigation}) => {
     }, [allowCreationOfChat])
 
     const navigateToChat = (chatId) => {
-        const url = `https://nameless-dawn-41038.herokuapp.com/conversations/singleConvoWithId/${chatId}/${_id}`;
+        const url = `${serverUrl}/conversations/singleConvoWithId/${chatId}/${_id}`;
         axios.get(url).then((response) => {
             const result = response.data;
             const {message, status, data} = result;

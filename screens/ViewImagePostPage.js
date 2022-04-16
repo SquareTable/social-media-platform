@@ -83,7 +83,10 @@ import {
     PostHorizontalView,
     PostsIcons,
     PostsIconFrame,
-    ImagePostTextFrame
+    ImagePostTextFrame,
+    ChatScreen_Title,
+    Navigator_BackButton,
+    TestText
 } from './screenStylings/styling';
 
 // Colors
@@ -106,6 +109,8 @@ import { View, ImageBackground, ScrollView, SectionList, ActivityIndicator, Styl
 import { useTheme } from '@react-navigation/native';
 import { ProfilePictureURIContext } from '../components/ProfilePictureURIContext';
 
+import { ServerUrlContext } from '../components/ServerUrlContext.js';
+
 
 const ViewImagePostPage = ({route, navigation}) => {
     const [hidePassword, setHidePassword] = useState(true);
@@ -127,6 +132,8 @@ const ViewImagePostPage = ({route, navigation}) => {
     const [imageUpOrDownVotes, setImageUpOrDownVotes] = useState("Finding")
     const [imageUpOrDownVoted, setImageUpOrDownVoted] = useState("Finding")
     const [initialImageUpOrDownVoted, setInitialImageUpOrDownVoted] = useState("Finding")
+    //Server stuff
+    const {serverUrl, setServerUrl} = useContext(ServerUrlContext);
 
     const handleMessage = (message, type = 'FAILED') => {
         setMessage(message);
@@ -140,17 +147,17 @@ const ViewImagePostPage = ({route, navigation}) => {
 
     //get image of post
     async function getImageInPost(imageData, index) {
-        return axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${imageData[index].imageKey}`)
+        return axios.get(`${serverUrl}/getImage/${imageData[index].imageKey}`)
         .then(res => res.data);
     }
     //profile image of creator
     async function getImageInPfp(imageData, index) {
-        return axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${imageData[index].creatorPfpKey}`)
+        return axios.get(`${serverUrl}/getImage/${imageData[index].creatorPfpKey}`)
         .then(res => res.data);
     }
     //profile image of commenter
     async function getImageInPfpComments(commentData, index) {
-        return axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${commentData[index].profileImageKey}`)
+        return axios.get(`${serverUrl}/getImage/${commentData[index].profileImageKey}`)
         .then(res => res.data);
     }
 
@@ -161,7 +168,7 @@ const ViewImagePostPage = ({route, navigation}) => {
             setImageUpOrDownVoted("Changing")
             //Do rest
             handleMessage(null, null, null);
-            const url = "https://nameless-dawn-41038.herokuapp.com/user/upvoteimage";
+            const url = serverUrl + "/user/upvoteimage";
 
             var toSend = {userId: _id, imageId: imageKey}
 
@@ -201,7 +208,7 @@ const ViewImagePostPage = ({route, navigation}) => {
             setImageUpOrDownVoted("Changing")
             //Do rest
             handleMessage(null, null, null);
-            const url = "https://nameless-dawn-41038.herokuapp.com/user/downvoteimage";
+            const url = serverUrl + "/user/downvoteimage";
 
             var toSend = {userId: _id, imageId: imageKey}
 
@@ -287,7 +294,7 @@ const ViewImagePostPage = ({route, navigation}) => {
     );
 
     const prepareUpVotes = () => {
-        const urlOne = `https://nameless-dawn-41038.herokuapp.com/user/getimageupvoteswithkey`;
+        const urlOne = `${serverUrl}/user/getimageupvoteswithkey`;
 
         axios.post(urlOne, {imageKey, userId: _id}).then((response) => {
             const result = response.data;
@@ -369,7 +376,7 @@ const ViewImagePostPage = ({route, navigation}) => {
             }
         }
 
-        const urlTwo = `https://nameless-dawn-41038.herokuapp.com/user/getimagecommentswithkey/${imageKey}/${_id}`;
+        const urlTwo = `${serverUrl}/user/getimagecommentswithkey/${imageKey}/${_id}`;
         setLoadingMoreComments(true)
         axios.get(urlTwo).then((response) => {
             const result = response.data;
@@ -402,7 +409,7 @@ const ViewImagePostPage = ({route, navigation}) => {
     
     const handleCommentPost = (commentProperties, setSubmitting) => {
         handleMessage(null);
-        const url = "https://nameless-dawn-41038.herokuapp.com/user/imagepostcomment";
+        const url = serverUrl + "/user/imagepostcomment";
 
         axios.post(url, commentProperties).then((response) => {
             const result = response.data;
@@ -477,9 +484,20 @@ const ViewImagePostPage = ({route, navigation}) => {
     }
     return(
         <>    
-            <StatusBar style="dark"/>
+            <StatusBar style={colors.StatusBarColor}/>
+            <ChatScreen_Title style={{backgroundColor: colors.primary, borderWidth: 0}}>
+                <Navigator_BackButton onPress={() => {navigation.goBack()}}>
+                    <Image
+                        source={require('../assets/app_icons/back_arrow.png')}
+                        style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2, tintColor: colors.tertiary}}
+                        resizeMode="contain"
+                        resizeMethod="resize"
+                    />
+                </Navigator_BackButton>
+                <TestText style={{textAlign: 'center', color: colors.tertiary}}>{creatorDisplayName ? creatorDisplayName : creatorName}'s post</TestText>
+            </ChatScreen_Title>
                 <ScrollView style={{height: '100%', backgroundColor: colors.primary}}>
-                    <View style={{backgroundColor: dark ? slightlyLighterPrimary : colors.borderColor, borderRadius: 15, marginBottom: 10, marginTop: 80}}>
+                    <View style={{backgroundColor: dark ? slightlyLighterPrimary : colors.borderColor, borderRadius: 15, marginBottom: 10}}>
                         <PostsHorizontalView style={{marginLeft: '5%', borderBottomWidth: 3, borderColor: darkLight, width: '90%', paddingBottom: 5, marginRight: '5%'}}>
                             <PostsVerticalView>
                                 <PostCreatorIcon source={{uri: creatorPfpB64}}/>

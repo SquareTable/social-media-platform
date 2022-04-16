@@ -49,11 +49,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { CredentialsContext } from '../components/CredentialsContext';
 import { withRepeat } from 'react-native-reanimated';
 
+import { ServerUrlContext } from '../components/ServerUrlContext.js';
+
 
 const ChangeDisplayNamePage = ({navigation}) => {
     const [hidePassword, setHidePassword] = useState(true);
     const [message, setMessage] = useState();
     const [messageType, setMessageType] = useState();
+    const {serverUrl, setServerUrl} = useContext(ServerUrlContext)
 
     //context
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
@@ -61,7 +64,7 @@ const ChangeDisplayNamePage = ({navigation}) => {
 
     const handleChangeDisplayName = (credentials, setSubmitting) => {
         handleMessage(null);
-        const url = "https://nameless-dawn-41038.herokuapp.com/user/changedisplayname";
+        const url = serverUrl + "/user/changedisplayname";
 
         axios.post(url, credentials).then((response) => {
             const result = response.data;

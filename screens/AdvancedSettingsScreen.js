@@ -31,6 +31,7 @@ import { ImageBackground, ScrollView, Settings } from 'react-native';
 import { ProfilePictureURIContext } from '../components/ProfilePictureURIContext.js';
 
 import {Image, View, Text, TouchableOpacity} from 'react-native';
+import AppCredits from '../components/AppCredits.js';
 
 
 const AdvancedSettingsScreen = ({navigation}) => {
@@ -61,9 +62,7 @@ const AdvancedSettingsScreen = ({navigation}) => {
                     <SettingsItemImage style={{tintColor: colors.tertiary}} source={require('./../assets/app_icons/settings.png')}/>
                     <SettingsItemText style={{color: colors.tertiary}}>Switch Server</SettingsItemText>
                 </SettingsPageItemTouchableOpacity>
-                <Text style={{color: colors.tertiary, fontSize: 24, textAlign: 'center'}}>© SquareTable 2022</Text>
-                <Text style={{color: colors.tertiary, fontSize: 24, textAlign: 'center', marginBottom: 10}}>All Rights Reserved</Text>
-                <Text style={{color: colors.tertiary, fontSize: 18, textAlign: 'center', marginBottom: 10}}>Made by Sebastian Webster, Kovid Dev, Didula Semasinghe, and Jacob Bowden</Text>
+                <AppCredits/>
             </WelcomeContainer>
         </>
     );

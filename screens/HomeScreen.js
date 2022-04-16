@@ -1,5 +1,5 @@
 import React, { useState, useContext, useRef, useEffect, useCallback, memo } from 'react';
-import { StyleSheet, Text, View, Button, Image, TouchableOpacity, SafeAreaView, ScrollView, FlatList, Alert, useWindowDimensions, Animated, ActivityIndicator, TouchableWithoutFeedback} from 'react-native';
+import { StyleSheet, Text, View, Button, Image, TouchableOpacity, SafeAreaView, ScrollView, FlatList, Alert, useWindowDimensions, Animated, ActivityIndicator, TouchableWithoutFeedback, RefreshControl} from 'react-native';
 import { StatusBar } from 'expo-status-bar';
 import styled from "styled-components";
 import Images from "../posts/images.js";
@@ -107,6 +107,13 @@ import { ProfilePictureURIContext } from '../components/ProfilePictureURIContext
 import { ServerUrlContext } from '../components/ServerUrlContext.js';
 import SocialSquareLogo_B64_png from '../assets/SocialSquareLogo_Base64_png.js';
 import { BadgeEarntNotificationContext } from '../components/BadgeEarntNotificationContext.js';
+import * as Haptics from 'expo-haptics';
+
+import Post from '../components/Posts.js';
+
+import {
+    AdMobBanner,
+} from 'expo-ads-admob'
 
 const {brand, primary, tertiary, greyish, darkLight, darkestBlue, slightlyLighterPrimary, slightlyLighterGrey, descTextColor, darkest, red, orange, yellow, green, purple} = Colors;
 
@@ -143,12 +150,809 @@ const HomeScreen = ({navigation, route}) => {
     const [optionFoursBarLength, setOptionFoursBarLength] = useState(0);
     const [optionFivesBarLength, setOptionFivesBarLength] = useState(0);
     const [optionSixesBarLength, setOptionSixesBarLength] = useState(0);
-    if (storedCredentials) {var {name, displayName, email, photoUrl, _id} = storedCredentials}
+    if (storedCredentials) {var {name, displayName, _id} = storedCredentials} else {var {name, displayName, _id} = {name: 'SSGUEST', displayName: 'SSGUEST', _id: 'SSGUEST'}}
     const {serverUrl, setServerUrl} = useContext(ServerUrlContext);
     const {badgeEarntNotification, setBadgeEarntNotification} = useContext(BadgeEarntNotificationContext);
 
     //Easter egg - Logo Press
     const logoPressedTimes = useRef(0);
+
+    // Start of Feed code
+
+    const MemoizedPost = memo(Post)
+
+    //Post usestates etc
+    const [allPosts, setAllPosts] = useState([])
+
+    //Usestates etc
+    const [currentFeed, setCurrentFeed] = useState('Following');
+    const [reloadFeed, setReloadFeed] = useState(false) //I havent made anything for this but I added it so its easier to make
+    const [loadingFeed, setLoadingFeed] = useState(false)
+
+    const viewedOnThisLoadsId = React.useRef([])
+
+    //msg stuff
+    const [message, setMessage] = useState();
+    const [messageType, setMessageType] = useState();
+    const [postNumForMsg, setPostNumForMsg] = useState();
+
+    const handleMessage = (message, type = 'FAILED', postNum) => {
+        setMessage(message);
+        setMessageType(type);
+        if (postNum !== null) {
+            setPostNumForMsg(postNum)
+        } else {
+            setPostNumForMsg(null)
+        }
+    }
+
+    //organise data and put to be displayed
+    async function getImageWithKey(imageKey) {
+        return axios.get(`${serverUrl}/getImage/${imageKey}`)
+            .then(res => res.data).catch(error => {
+                console.log(error);
+                //setSubmitting(false);
+                //setLoadingPostsImage(false)
+                console.log("Either an error or cancelled.");
+            })
+    }
+
+    const handleRecievedImagePost = (imageData, indexInRecieved, callback) => {
+        var index = indexInRecieved
+        if (allPosts.length !== 0) {
+            index = indexInRecieved+allPosts.length
+        } else {
+            index = indexInRecieved
+        }
+        console.log(`imageData.hasSeenPosts: ${imageData.hasSeenPosts}`)
+
+        /*
+        var upVotedImages = upVotesImages
+        var initialUpVotedImages = initialUpVotesImages
+        var downVotedImages = downVotesImages
+        var initialDownVotedImages = initialDownVotesImages
+        var neitherVotedImages = neitherVotesImages
+        var initialNeitherVotedImages = initialNeitherVotesImages
+        */
+
+        async function findImages() {
+            //
+            if (imageData.creatorPfpKey) {
+                async function asyncFunctionForImages() {
+                    const imageInPost = await getImageWithKey(imageData.imageKey)
+                    const imageInPfp = await getImageWithKey(imageData.creatorPfpKey)
+                    console.log("Image In Post Recieved")
+                    //Add
+                    const addAndPush = async () => {
+                        var imageB64 = imageInPost.data
+                        var pfpB64 = imageInPfp.data
+                        console.log("TestHere")
+                        var usersUdnVote = "Neither"
+                        if (imageData.imageUpVoted) {
+                            console.log("UpVoted")
+                            usersUdnVote = "UpVoted"
+                        } else if (imageData.imageDownVoted) {
+                            console.log("DownVoted")
+                            usersUdnVote = "DownVoted"
+                        } else {
+                            console.log("Neither")
+                            usersUdnVote = "Neither"
+                        }
+                        var forSendBack = {format: "Image", imageId: imageData.imageId, imageKey: imageData.imageKey, imageB64: imageB64, imageTitle: imageData.imageTitle, imageDescription: imageData.imageDescription, imageUpVotes: imageData.imageUpVotes, imageComments: imageData.imageComments, creatorName: imageData.creatorName, creatorDisplayName: imageData.creatorDisplayName, creatorPfpB64: pfpB64, datePosted: imageData.datePosted, postNum: index, hasSeenPosts: imageData.hasSeenPosts, usersUdnVote: usersUdnVote}
+                        return callback(forSendBack)
+                    }
+                    await addAndPush()
+                }
+                asyncFunctionForImages()
+            } else {
+                console.log("No pfp")
+                const imageInPost = await getImageWithKey(imageData.imageKey)
+                var imageInPfp = null
+                //Add
+                const addAndPush = async () => {
+                    var imageB64 = imageInPost.data
+                    var pfpB64 = imageInPfp
+                    console.log("TestHere")
+                    var usersUdnVote = "Neither"
+                    if (imageData.imageUpVoted) {
+                        console.log("UpVoted")
+                        usersUdnVote = "UpVoted"
+                    } else if (imageData.imageDownVoted) {
+                        console.log("DownVoted")
+                        usersUdnVote = "DownVoted"
+                    } else {
+                        console.log("Neither")
+                        usersUdnVote = "Neither"
+                    }
+                    var forSendBack = {format: "Image", imageId: imageData.imageId, imageKey: imageData.imageKey, imageB64: imageB64, imageTitle: imageData.imageTitle, imageDescription: imageData.imageDescription, imageUpVotes: imageData.imageUpVotes, imageComments: imageData.imageComments, creatorName: imageData.creatorName, creatorDisplayName: imageData.creatorDisplayName, creatorPfpB64: pfpB64, datePosted: imageData.datePosted, postNum: index, hasSeenPosts: imageData.hasSeenPosts, usersUdnVote: usersUdnVote}
+                    return callback(forSendBack)
+                }
+                await addAndPush()
+            }
+        }
+        findImages()
+    }
+
+    const handleRecievedPollPost = (pollData, indexInRecieved, callback) => {
+        var index = indexInRecieved
+        if (allPosts.length !== 0) {
+            index = indexInRecieved+allPosts.length
+        } else {
+            index = indexInRecieved
+        }
+        var optionOnesBarLength = 16.6666666667
+        var optionTwosBarLength = 16.6666666667
+        var optionThreesBarLength = 16.6666666667
+        var optionFoursBarLength = 16.6666666667
+        var optionFivesBarLength = 16.6666666667
+        var optionSixesBarLength = 16.6666666667
+        var totalVotes = pollData.optionOnesVotes + pollData.optionTwosVotes + pollData.optionThreesVotes + pollData.optionFoursVotes + pollData.optionFivesVotes + pollData.optionSixesVotes
+        //console.log(item, index);
+        if (totalVotes !== 0) {
+            optionOnesBarLength = (pollData.optionOnesVotes / totalVotes) * 100
+            console.log("O1 BL")
+            console.log(optionOnesBarLength)
+            optionTwosBarLength = (pollData.optionTwosVotes / totalVotes) * 100
+            console.log("O2 BL")
+            console.log(optionTwosBarLength)
+            optionThreesBarLength = (pollData.optionThreesVotes / totalVotes) * 100
+            console.log("O3 BL")
+            console.log(optionThreesBarLength)
+            optionFoursBarLength = (pollData.optionFoursVotes / totalVotes) * 100
+            console.log("O4 BL")
+            console.log(optionFoursBarLength)
+            optionFivesBarLength = (pollData.optionFivesVotes / totalVotes) * 100
+            console.log("O5 BL")
+            console.log(optionFivesBarLength)
+            optionSixesBarLength = (pollData.optionSixesVotes / totalVotes) * 100
+            console.log("O6 BL")
+            console.log(optionSixesBarLength)
+            if (Number.isNaN(optionOnesBarLength)) {
+                optionOnesBarLength = 0
+            }
+            if (Number.isNaN(optionTwosBarLength)) {
+                optionTwosBarLength = 0
+            }
+            if (Number.isNaN(optionThreesBarLength)) {
+                optionThreesBarLength = 0
+            }
+            if (Number.isNaN(optionFoursBarLength)) {
+                optionFoursBarLength = 0
+            }
+            if (Number.isNaN(optionFivesBarLength)) {
+                optionFivesBarLength = 0
+            }
+            if (Number.isNaN(optionSixesBarLength)) {
+                optionSixesBarLength = 0
+            }
+        } else {
+            if (totalVotes == 0) {
+                console.log("No Votes")
+                if (pollData.totalNumberOfOptions == "Two") {
+                    optionOnesBarLength = 100 / 2
+                    optionTwosBarLength = 100 / 2
+                    optionThreesBarLength = 0
+                    optionFoursBarLength = 0
+                    optionFivesBarLength = 0
+                    optionSixesBarLength = 0
+                } else if (pollData.totalNumberOfOptions == "Three") {
+                    optionOnesBarLength = 100 / 3
+                    optionTwosBarLength = 100 / 3
+                    optionThreesBarLength = 100 / 3
+                    optionFoursBarLength = 0
+                    optionFivesBarLength = 0
+                    optionSixesBarLength = 0
+                } else if (pollData.totalNumberOfOptions == "Four") {
+                    optionOnesBarLength = 100 / 4
+                    optionTwosBarLength = 100 / 4
+                    optionThreesBarLength = 100 / 4
+                    optionFoursBarLength = 100 / 4
+                    optionFivesBarLength = 0
+                    optionSixesBarLength = 0
+                } else if (pollData.totalNumberOfOptions == "Five") {
+                    optionOnesBarLength = 100 / 5
+                    optionTwosBarLength = 100 / 5
+                    optionThreesBarLength = 100 / 5
+                    optionFoursBarLength = 100 / 5
+                    optionFivesBarLength = 100 / 5
+                    optionSixesBarLength = 0
+                } else if (pollData.totalNumberOfOptions == "Six") {
+                    optionOnesBarLength = 100 / 6
+                    optionTwosBarLength = 100 / 6
+                    optionThreesBarLength = 100 / 6
+                    optionFoursBarLength = 100 / 6
+                    optionFivesBarLength = 100 / 6
+                    optionSixesBarLength = 100 / 6
+                }
+            }
+        }
+        console.log("poll data")
+        console.log(pollData)
+        if (pollData.creatorPfpKey) {
+            /*
+            var upVotedPolls = upVotesPolls
+            var initialUpVotedPolls = initialUpVotesPolls
+            var downVotedPolls = downVotesPolls
+            var initialDownVotedPolls = initialDownVotesPolls
+            var neitherVotedPolls = neitherVotesPolls
+            var initialNeitherVotedPolls = initialNeitherVotesPolls
+            */
+            async function getPfpImageForPollWithAsync() {
+                var imageData = pollData
+                const imageInPfp = await getImageWithKey(imageData.creatorPfpKey)
+                var pfpB64 = imageInPfp.data
+                var usersUdnVote = "Neither"
+                if (pollData.pollUpOrDownVoted == "UpVoted") {
+                    console.log("UpVoted")
+                    usersUdnVote = "UpVoted"
+                } else if (pollData.pollUpOrDownVoted == "DownVoted") {
+                    console.log("DownVoted")
+                    usersUdnVote = "DownVoted"
+                } else {
+                    console.log("Neither")
+                    usersUdnVote = "Neither"
+                }
+                var forSendBack = {format: "Poll", pollTitle: pollData.pollTitle, pollSubTitle: pollData.pollSubTitle, optionOne: pollData.optionOne, optionOnesColor: pollData.optionOnesColor, optionOnesVotes: pollData.optionOnesVotes, optionOnesBarLength: optionOnesBarLength, optionTwo: pollData.optionTwo, optionTwosColor: pollData.optionTwosColor, optionTwosVotes: pollData.optionTwosVotes, optionTwosBarLength: optionTwosBarLength, optionThree: pollData.optionThree, optionThreesColor: pollData.optionThreesColor, optionThreesVotes: pollData.optionThreesVotes, optionThreesBarLength: optionThreesBarLength, optionFour: pollData.optionFour, optionFoursColor: pollData.optionFoursColor, optionFoursVotes: pollData.optionFoursVotes, optionFoursBarLength: optionFoursBarLength, optionFive: pollData.optionFive, optionFivesColor: pollData.optionFivesColor, optionFivesVotes: pollData.optionFivesVotes, optionFivesBarLength: optionFivesBarLength, optionSix: pollData.optionSix, optionSixesColor: pollData.optionSixesColor, optionSixesVotes: pollData.optionSixesVotes, optionSixesBarLength: optionSixesBarLength, totalNumberOfOptions: pollData.totalNumberOfOptions, pollUpOrDownVotes: pollData.pollUpOrDownVotes, pollId: pollData._id, votedFor: pollData.votedFor, postNum: index, pollComments: pollData.pollComments, pfpB64: pfpB64, creatorName: pollData.creatorName, creatorDisplayName: pollData.creatorDisplayName, datePosted: pollData.datePosted, hasSeenPosts: pollData.hasSeenPosts, usersUdnVote: usersUdnVote}
+                return callback(forSendBack)
+            }
+            getPfpImageForPollWithAsync()
+        } else {
+            var pfpB64 = null
+            var usersUdnVote = "Neither"
+            if (pollData.pollUpOrDownVoted == "UpVoted") {
+                console.log("UpVoted")
+                usersUdnVote = "UpVoted"
+            } else if (pollData.pollUpOrDownVoted == "DownVoted") {
+                console.log("DownVoted")
+                usersUdnVote = "DownVoted"
+            } else {
+                console.log("Neither")
+                usersUdnVote = "Neither"
+            }
+            var forSendBack = {format: "Poll", pollTitle: pollData.pollTitle, pollSubTitle: pollData.pollSubTitle, optionOne: pollData.optionOne, optionOnesColor: pollData.optionOnesColor, optionOnesVotes: pollData.optionOnesVotes, optionOnesBarLength: optionOnesBarLength, optionTwo: pollData.optionTwo, optionTwosColor: pollData.optionTwosColor, optionTwosVotes: pollData.optionTwosVotes, optionTwosBarLength: optionTwosBarLength, optionThree: pollData.optionThree, optionThreesColor: pollData.optionThreesColor, optionThreesVotes: pollData.optionThreesVotes, optionThreesBarLength: optionThreesBarLength, optionFour: pollData.optionFour, optionFoursColor: pollData.optionFoursColor, optionFoursVotes: pollData.optionFoursVotes, optionFoursBarLength: optionFoursBarLength, optionFive: pollData.optionFive, optionFivesColor: pollData.optionFivesColor, optionFivesVotes: pollData.optionFivesVotes, optionFivesBarLength: optionFivesBarLength, optionSix: pollData.optionSix, optionSixesColor: pollData.optionSixesColor, optionSixesVotes: pollData.optionSixesVotes, optionSixesBarLength: optionSixesBarLength, totalNumberOfOptions: pollData.totalNumberOfOptions, pollUpOrDownVotes: pollData.pollUpOrDownVotes, pollId: pollData._id, votedFor: pollData.votedFor, postNum: index, pollComments: pollData.pollComments, pfpB64: pfpB64, creatorName: pollData.creatorName, creatorDisplayName: pollData.creatorDisplayName, datePosted: pollData.datePosted, hasSeenPosts: pollData.hasSeenPosts, usersUdnVote: usersUdnVote}
+            return callback(forSendBack)
+        }
+    }
+
+    const handleRecievedThreadPost = (threadData, indexInRecieved, callback) => {
+        var index = indexInRecieved
+        if (allPosts.length !== 0) {
+            index = indexInRecieved+allPosts.length
+        } else {
+            index = indexInRecieved
+        }
+
+        /*
+        var upVotedThreads = upVotesThreads
+        var initialUpVotedThreads = initialUpVotesThreads
+        var downVotedThreads = downVotesThreads
+        var initialDownVotedThreads = initialDownVotesThreads
+        var neitherVotedThreads = neitherVotesThreads
+        var initialNeitherVotedThreads = initialNeitherVotesThreads
+        */
+         
+        async function findImages() {
+            //
+            if (threadData.creatorImageKey) {
+                async function asyncFunctionForImages() {
+                    if (threadData.threadType == "Text") {
+                        const imageInPfp = await getImageWithKey(threadData.creatorImageKey)
+                        const addAndPush = async () => {
+                            var pfpB64 = imageInPfp.data
+                            var usersUdnVote = "Neither"
+                            if (threadData.threadUpVoted == true) {
+                                console.log("UpVoted")
+                                usersUdnVote = "UpVoted"
+                            } else if (threadData.threadDownVoted == true) {
+                                console.log("DownVoted")
+                                usersUdnVote = "DownVoted"
+                            } else {
+                                console.log("Neither")
+                                usersUdnVote = "Neither"
+                            }
+                            var forSendBack = { format: "Thread", postNum: index, threadId: threadData.threadId, threadComments: threadData.threadComments, threadType: threadData.threadType, threadUpVotes: threadData.threadUpVotes, threadTitle: threadData.threadTitle, threadSubtitle: threadData.threadSubtitle, threadTags: threadData.threadTags, threadCategory: threadData.threadCategory, threadBody: threadData.threadBody, threadImageKey: threadData.threadImageKey, threadImageDescription: threadData.threadImageDescription, threadNSFW: threadData.threadNSFW, threadNSFL: threadData.threadNSFL, datePosted: threadData.datePosted, threadUpVoted: threadData.threadUpVoted, threadDownVoted: threadData.threadDownVoted, creatorDisplayName: threadData.creatorDisplayName, creatorName: threadData.creatorName, creatorImageB64: pfpB64, imageInThreadB64: null, hasSeenPosts: threadData.hasSeenPosts, usersUdnVote: usersUdnVote }
+                            return callback(forSendBack)
+                        }
+                        await addAndPush()
+                    } else if (threadData.threadType == "Images") {
+                        const imageInPfp = await getImageWithKey(threadData.creatorImageKey)
+                        const imageInThread = await getImageWithKey(threadData.threadImageKey)
+                        const addAndPush = async () => {
+                            var pfpB64 = imageInPfp.data
+                            var imageInThreadB64 = imageInThread.data
+                            var usersUdnVote = "Neither"
+                            if (threadData.threadUpVoted == true) {
+                                console.log("UpVoted")
+                                usersUdnVote = "UpVoted"
+                            } else if (threadData.threadDownVoted == true) {
+                                console.log("DownVoted")
+                                usersUdnVote = "DownVoted"
+                            } else {
+                                console.log("Neither")
+                                usersUdnVote = "Neither"
+                            }
+                            var forSendBack = { format: "Thread", postNum: index, threadId: threadData.threadId, threadComments: threadData.threadComments, threadType: threadData.threadType, threadUpVotes: threadData.threadUpVotes, threadTitle: threadData.threadTitle, threadSubtitle: threadData.threadSubtitle, threadTags: threadData.threadTags, threadCategory: threadData.threadCategory, threadBody: threadData.threadBody, threadImageKey: threadData.threadImageKey, threadImageDescription: threadData.threadImageDescription, threadNSFW: threadData.threadNSFW, threadNSFL: threadData.threadNSFL, datePosted: threadData.datePosted, threadUpVoted: threadData.threadUpVoted, threadDownVoted: threadData.threadDownVoted, creatorDisplayName: threadData.creatorDisplayName, creatorName: threadData.creatorName, creatorImageB64: pfpB64, imageInThreadB64: imageInThreadB64, hasSeenPosts: threadData.hasSeenPosts, usersUdnVote: usersUdnVote }
+                            return callback(forSendBack)
+                        }
+                        await addAndPush()
+                    }
+                }
+                asyncFunctionForImages()
+            } else {
+                async function asyncFunctionForImages() {
+                    if (threadData.threadType == "Text") {
+                        const addAndPush = async () => {
+                            var pfpB64 = null
+                            var usersUdnVote = "Neither"
+                            if (threadData.threadUpVoted == true) {
+                                console.log("UpVoted")
+                                usersUdnVote = "UpVoted"
+                            } else if (threadData.threadDownVoted == true) {
+                                console.log("DownVoted")
+                                usersUdnVote = "DownVoted"
+                            } else {
+                                console.log("Neither")
+                                usersUdnVote = "Neither"
+                            }
+                            var forSendBack = { format: "Thread", postNum: index, threadId: threadData.threadId, threadComments: threadData.threadComments, threadType: threadData.threadType, threadUpVotes: threadData.threadUpVotes, threadTitle: threadData.threadTitle, threadSubtitle: threadData.threadSubtitle, threadTags: threadData.threadTags, threadCategory: threadData.threadCategory, threadBody: threadData.threadBody, threadImageKey: threadData.threadImageKey, threadImageDescription: threadData.threadImageDescription, threadNSFW: threadData.threadNSFW, threadNSFL: threadData.threadNSFL, datePosted: threadData.datePosted, threadUpVoted: threadData.threadUpVoted, threadDownVoted: threadData.threadDownVoted, creatorDisplayName: threadData.creatorDisplayName, creatorName: threadData.creatorName, creatorImageB64: pfpB64, imageInThreadB64: null, hasSeenPosts: threadData.hasSeenPosts, usersUdnVote: usersUdnVote }
+                            return callback(forSendBack)
+                        }
+                        await addAndPush()
+                    } else if (threadData.threadType == "Images") {
+                        const imageInThread = await getImageWithKey(threadData.threadImageKey)
+                        const addAndPush = async () => {
+                            var pfpB64 = null
+                            var imageInThreadB64 = imageInThread.data
+                            var usersUdnVote = "Neither"
+                            if (threadData.threadUpVoted == true) {
+                                console.log("UpVoted")
+                                usersUdnVote = "UpVoted"
+                            } else if (threadData.threadDownVoted == true) {
+                                console.log("DownVoted")
+                                usersUdnVote = "DownVoted"
+                            } else {
+                                console.log("Neither")
+                                usersUdnVote = "Neither"
+                            }
+                            var forSendBack = { format: "Thread", postNum: index, threadId: threadData.threadId, threadComments: threadData.threadComments, threadType: threadData.threadType, threadUpVotes: threadData.threadUpVotes, threadTitle: threadData.threadTitle, threadSubtitle: threadData.threadSubtitle, threadTags: threadData.threadTags, threadCategory: threadData.threadCategory, threadBody: threadData.threadBody, threadImageKey: threadData.threadImageKey, threadImageDescription: threadData.threadImageDescription, threadNSFW: threadData.threadNSFW, threadNSFL: threadData.threadNSFL, datePosted: threadData.datePosted, threadUpVoted: threadData.threadUpVoted, threadDownVoted: threadData.threadDownVoted, creatorDisplayName: threadData.creatorDisplayName, creatorName: threadData.creatorName, creatorImageB64: pfpB64, imageInThreadB64: imageInThreadB64, hasSeenPosts: threadData.hasSeenPosts, usersUdnVote: usersUdnVote }
+                            return callback(forSendBack)
+                        }
+                        await addAndPush()
+                    }
+                }
+                asyncFunctionForImages()
+            }
+        }
+        findImages()
+    }
+
+    const layOutAllPosts = (postsRecieved, resetPostsShowingOnLoad) => {
+        console.log(`postsRecieved amount ${postsRecieved.length}`)
+        const sortAndSet = (setUpPosts) => {
+            const hasNotSeenRecievedPosts = setUpPosts.filter(x => x.hasSeenPosts == false)
+            const hasSeenRecievedPosts = setUpPosts.filter(x => x.hasSeenPosts == true)
+            const notSeenSortedRecievedPosts = hasNotSeenRecievedPosts.sort(function(a, b){
+                var first = a.datePosted.split(" ")[0];
+                var second = b.datePosted.split(" ")[0];
+                if (first !== second) {
+                    var aa = first.split('/').reverse().join(),
+                        bb = second.split('/').reverse().join();
+                    //console.log(`aa ${aa}`)
+                    //console.log(`bb ${bb}`)
+                    return aa > bb ? -1 : (aa > bb ? 1 : 0);
+                } else {
+                    var ind11 = a.datePosted.indexOf(' ');
+                    var ind12 = a.datePosted.indexOf(' ', ind11 + 1);
+                    var firstTime = a.datePosted.substring(ind12);
+                    //console.log(firstTime)
+                    var ind21 = b.datePosted.indexOf(' ');
+                    var ind22 = b.datePosted.indexOf(' ', ind21 + 1);
+                    var secondTime = b.datePosted.substring(ind22);
+                    //console.log(ind22)
+                    return firstTime > secondTime ? -1 : (firstTime > secondTime ? 1 : 0);
+                }
+            });
+            const seenSortedRecievedPosts = hasSeenRecievedPosts.sort(function(a, b){
+                var first = a.datePosted.split(" ")[0];
+                var second = b.datePosted.split(" ")[0];
+                if (first !== second) {
+                    var aa = first.split('/').reverse().join(),
+                        bb = second.split('/').reverse().join();
+                    //console.log(`aa ${aa}`)
+                    //console.log(`bb ${bb}`)
+                    return aa > bb ? -1 : (aa > bb ? 1 : 0);
+                } else {
+                    var ind11 = a.datePosted.indexOf(' ');
+                    var ind12 = a.datePosted.indexOf(' ', ind11 + 1);
+                    var firstTime = a.datePosted.substring(ind12);
+                    //console.log(firstTime)
+                    var ind21 = b.datePosted.indexOf(' ');
+                    var ind22 = b.datePosted.indexOf(' ', ind21 + 1);
+                    var secondTime = b.datePosted.substring(ind22);
+                    //console.log(ind22)
+                    return firstTime > secondTime ? -1 : (firstTime > secondTime ? 1 : 0);
+                }
+            });
+            if (allPosts.length !== 0) {
+                if (resetPostsShowingOnLoad !== true) {
+                    const sortedRecievedPosts = allPosts.concat(notSeenSortedRecievedPosts).concat(seenSortedRecievedPosts)
+                    console.log("sortedRecievedPosts")
+                    //console.log(sortedRecievedPosts)
+                    setAllPosts(sortedRecievedPosts)
+                } else {
+                    setAllPosts(seenSortedRecievedPosts)
+                    console.log('Reload was successful')
+                }
+                setReloadFeed(false)
+            } else {
+                if (resetPostsShowingOnLoad !== true) {
+                    const sortedRecievedPosts = notSeenSortedRecievedPosts.concat(seenSortedRecievedPosts)
+                    console.log("sortedRecievedPosts")
+                    //console.log(sortedRecievedPosts)
+                    setAllPosts(sortedRecievedPosts)
+                } else {
+                    setAllPosts(seenSortedRecievedPosts)
+                    console.log('Reload was successful')
+                }
+                setReloadFeed(false)
+            }
+        }
+
+        if (postsRecieved.length !== 0) {
+            var postsProcessed = 0
+            var forConcat = []
+            postsRecieved.forEach(function (item, index) {
+                if (postsRecieved[index].format == "Image") {
+                    //Image
+                    handleRecievedImagePost(postsRecieved[index], index, function(setUpImagePost) {
+                        if (setUpImagePost.imageKey) { //just to check if it exists and is proper
+                            forConcat.push(setUpImagePost)
+                            postsProcessed++;
+                            if (postsProcessed == postsRecieved.length) {
+                                sortAndSet(forConcat)
+                                setLoadingFeed(false)
+                            }
+                        } else {
+                            postsProcessed++;
+                            if (postsProcessed == postsRecieved.length) {
+                                sortAndSet(forConcat)
+                                setLoadingFeed(false)
+                            }
+                        }
+                    })
+                    
+                } else if (postsRecieved[index].format == "Poll") {
+                    //Poll
+                    handleRecievedPollPost(postsRecieved[index], index, function(setUpPollPost) {
+                        if (setUpPollPost.pollId) { //just to check if it exists and is proper
+                            forConcat.push(setUpPollPost)
+                            postsProcessed++;
+                            if (postsProcessed == postsRecieved.length) {
+                                sortAndSet(forConcat)
+                                setLoadingFeed(false)
+                            }
+                        } else {
+                            postsProcessed++;
+                            if (postsProcessed == postsRecieved.length) {
+                                sortAndSet(forConcat)
+                                setLoadingFeed(false)
+                            }
+                        }
+                    })
+                    
+                } else if (postsRecieved[index].format == "Thread") {
+                    //Thread
+                    //Poll
+                    handleRecievedThreadPost(postsRecieved[index], index, function(setUpThreadPost) {
+                        if (setUpThreadPost.threadId) { //just to check if it exists and is proper
+                            forConcat.push(setUpThreadPost)
+                            postsProcessed++;
+                            if (postsProcessed == postsRecieved.length) {
+                                sortAndSet(forConcat)
+                                setLoadingFeed(false)
+                            }
+                        } else {
+                            postsProcessed++;
+                            if (postsProcessed == postsRecieved.length) {
+                                sortAndSet(forConcat)
+                                setLoadingFeed(false)
+                            }
+                        }
+                    })
+                } else {
+                    postsProcessed++;
+                    if (postsProcessed == postsRecieved.length) {
+                        sortAndSet(forConcat)
+                        setLoadingFeed(false)
+                    }
+                }
+            })
+        } else {
+            handleMessage("No more posts")
+            setLoadingFeed(false)
+        }   
+    }
+
+    const loadMorePosts = () => {
+        if (currentFeed == "Following") {
+            //is reload so bottom two isnt needed
+            const imagePosts = allPosts.filter(x => x.imageId).map(x => x.imageId)
+            const pollPosts = allPosts.filter(x => x.pollId).map(x => x.pollId)
+            const threadPosts = allPosts.filter(x => x.threadId).map(x => x.threadId)
+            const imageAndPolls = imagePosts.concat(pollPosts)
+            const allPostIds = imageAndPolls.concat(threadPosts) // concat doesnt change original array
+            const allPostIdsStringed = allPostIds.toString() 
+            console.log("allPostIdsStringed:")
+            console.log(allPostIdsStringed)
+
+            setLoadingFeed(true)
+            const url = `${serverUrl}/feed/followerFeed/${_id}/${allPostIdsStringed}`
+            axios.get(url).then((response) => {
+                const result = response.data;
+                const { message, status, data } = result;
+
+                if (status !== 'SUCCESS') {
+                    setLoadingFeed(false)
+                    handleMessage(message, status);
+                    console.log(status)
+                    console.log(message)
+                } else {
+                    layOutAllPosts(data, false);
+                    console.log(status)
+                    console.log(message)
+                }
+
+            }).catch(error => {
+                console.log(error);
+                setLoadingFeed(false)
+                handleMessage("An error occured. Try checking your network connection and retry.");
+            })
+        } else if ("Normal") {
+            console.log("Doesnt exist yet lol")
+        }
+    }
+
+    function loadFeed(forceReload) {
+        /*
+        const clearAllUpVotesDownVotesNeitherVotes = () => {
+            //image
+            upVotedImages = []
+            initialUpVotedImages = []
+            setUpVotesImages(upVotedImages)
+            setInitialUpVotesImages(initialUpVotedImages)
+            downVotedImages = []
+            initialDownVotedImages = []
+            setDownVotesImages(downVotedImages)
+            setInitialDownVotesImages(initialDownVotedImages)
+            neitherVotedImages = []
+            initialNeitherVotedImages = []
+            setNeitherVotesImages(neitherVotedImages)
+            setInitialNeitherVotesImages(initialNeitherVotedImages)
+            findingVotedImagesArray = []
+            setFindingVotedImages(findingVotedImagesArray)
+            changingVotedImagesArray = []
+            setChangingVotedImages(changingVotedImagesArray)
+            //poll
+            upVotedPolls = []
+            initialUpVotedPolls = []
+            setUpVotesPolls(upVotedPolls)
+            setInitialUpVotesPolls(initialUpVotedPolls)
+            downVotedPolls = []
+            initialDownVotedPolls = []
+            setDownVotesPolls(downVotedPolls)
+            setInitialDownVotesPolls(initialDownVotedPolls)
+            neitherVotedPolls = []
+            initialNeitherVotedPolls = []
+            setNeitherVotesPolls(neitherVotedPolls)
+            setInitialNeitherVotesPolls(initialNeitherVotedPolls)
+            findingVotedPollsArray = []
+            setFindingVotedPolls(findingVotedPollsArray)
+            changingVotedPollsArray = []
+            setChangingVotedPolls(changingVotedPollsArray)
+            //thread
+            upVotedThreads = []
+            initialUpVotedThreads = []
+            setUpVotesThreads(upVotedThreads)
+            setInitialUpVotesThreads(initialUpVotedThreads)
+            downVotedThreads = []
+            initialDownVotedThreads = []
+            setDownVotesThreads(downVotedThreads)
+            setInitialDownVotesThreads(initialDownVotedThreads)
+            neitherVotedThreads = []
+            initialNeitherVotedThreads = []
+            setNeitherVotesThreads(neitherVotedThreads)
+            setInitialNeitherVotesThreads(initialNeitherVotedThreads)
+            findingVotedThreadsArray = []
+            setFindingVotedThreads(findingVotedThreadsArray)
+            changingVotedThreadsArray = []
+            setChangingVotedThreads(changingVotedThreadsArray)
+        }
+        */
+       console.log('ReloadFeed is: ' + reloadFeed)
+       if (currentFeed == "Following") {
+           if (reloadFeed == true || forceReload == true) {
+               console.log('Loading feed')
+               //is reload so bottom two isnt needed
+               
+                const allPostIdsStringed = ',';
+
+               const url = `${serverUrl}/feed/followerFeed/${_id}/${allPostIdsStringed}`
+               axios.get(url).then((response) => {
+                   const result = response.data;
+                   const { message, status, data } = result;
+
+                   if (status !== 'SUCCESS') {
+                       setLoadingFeed(false)
+                       handleMessage(message, status);
+                       console.log(status)
+                       console.log(message)
+                       setReloadFeed(false)
+                   } else {
+                       //clearAllUpVotesDownVotesNeitherVotes() //do as these posts are the first posts being recieved
+                       console.log(data)
+                       layOutAllPosts(data, forceReload);
+                       console.log(status)
+                       console.log(message)
+                   }
+
+               }).catch(error => {
+                   console.log(error);
+                   setLoadingFeed(false)
+                   handleMessage("An error occured. Try checking your network connection and retry.");
+                   setReloadFeed(false)
+               })
+           } else {
+               handleMessage("An error occured because reloadFeed is false. Please try again.", 'FAILED')
+               console.error(new Error('ReloadFeed is false'))
+           }
+       } else if ("Normal") {
+           console.log("Doesnt exist yet lol")
+       }
+    }
+
+    useEffect(() => {
+        setReloadFeed(true)
+        loadFeed(true) //Force a reload and get rid of currently showing posts
+    }, [storedCredentials])
+
+    //Get feed of following
+    useState(() => {setReloadFeed(true)}, [])
+    useState(() => { if (reloadFeed == true) {loadFeed(false)}}, [reloadFeed])
+
+    const onViewRef = React.useRef((viewableItems)=> {
+        //console.log(viewableItems)
+
+        if (Array.isArray(viewableItems.changed)) {
+            //
+            const removeInCaseOfErrorOrNotSuccess = (idOfToRemove) => {
+                console.log("Removing in case of error or not success")
+                let duplicatedArray = viewedOnThisLoadsId.current.slice()
+                const indexIfInArray = duplicatedArray.findIndex(x => x == idOfToRemove)
+                if (indexIfInArray !== -1) {
+                    duplicatedArray.splice(indexIfInArray, 1)
+                    viewedOnThisLoadsId.current = duplicatedArray        
+                }
+            }
+            //
+            viewableItems.changed.forEach(function (item, index) {
+                if (viewableItems.changed[index].item.format == "Image") {
+                    //Image
+                    var idOfPost = viewableItems.changed[index].item.imageId
+                    console.log(idOfPost)
+                    if (!viewedOnThisLoadsId.current.includes(idOfPost)) {
+                        var arrayForPush = []
+                        arrayForPush = arrayForPush.concat(viewedOnThisLoadsId.current)
+                        arrayForPush.push(viewableItems.changed[index].item.imageId)
+                        viewedOnThisLoadsId.current = arrayForPush
+                        console.log(`viewedOnThisLoadsId: ${JSON.stringify(viewedOnThisLoadsId.current)}`)
+                        const url = serverUrl + '/feed/viewedPostInFeed'
+                        //
+                        const dataForView = {
+                            userId: _id,
+                            postId: idOfPost,
+                            postFormat: "Image"
+                        }
+                        //
+                        axios.post(url, dataForView).then((response) => {
+                            const result = response.data;
+                            const { message, status } = result;
+        
+                            if (status !== 'SUCCESS') {
+                                console.log(message)
+                                handleMessage(message, status, index);
+                                removeInCaseOfErrorOrNotSuccess(idOfPost)
+                            } else {
+                                console.log(`Viewed Image ${idOfPost}`)
+                            }
+                            
+                        }).catch(error => {
+                            console.log(error);
+                            handleMessage("An error occured. Try checking your network connection and retry.", 'FAILED', index);
+                            removeInCaseOfErrorOrNotSuccess(idOfPost)
+                        })
+                    }
+                } else if (viewableItems.changed[index].item.format == "Poll") {
+                    //Poll
+                    var idOfPost = viewableItems.changed[index].item.pollId
+                    console.log(idOfPost)
+                    if (!viewedOnThisLoadsId.current.includes(idOfPost)) {
+                        var arrayForPush = []
+                        arrayForPush = arrayForPush.concat(viewedOnThisLoadsId.current)
+                        arrayForPush.push(viewableItems.changed[index].item.pollId)
+                        viewedOnThisLoadsId.current = arrayForPush
+                        console.log(`viewedOnThisLoadsId: ${JSON.stringify(viewedOnThisLoadsId.current)}`)
+                        const url = serverUrl + '/feed/viewedPostInFeed'
+                        //
+                        const dataForView = {
+                            userId: _id,
+                            postId: idOfPost,
+                            postFormat: "Poll"
+                        }
+                        //
+                        axios.post(url, dataForView).then((response) => {
+                            const result = response.data;
+                            const { message, status } = result;
+        
+                            if (status !== 'SUCCESS') {
+                                console.log(message)
+                                handleMessage(message, status, index);
+                                removeInCaseOfErrorOrNotSuccess(idOfPost)
+                            } else {
+                                console.log(`Viewed Image ${idOfPost}`)
+                            }
+                            
+                        }).catch(error => {
+                            console.log(error);
+                            handleMessage("An error occured. Try checking your network connection and retry.", 'FAILED', index);
+                            removeInCaseOfErrorOrNotSuccess(idOfPost)
+                        })
+                    }
+                } else if (viewableItems.changed[index].item.format == "Thread") {
+                    //Thread
+                    var idOfPost = viewableItems.changed[index].item.threadId
+                    console.log(idOfPost)
+                    if (!viewedOnThisLoadsId.current.includes(idOfPost)) {
+                        var arrayForPush = []
+                        arrayForPush = arrayForPush.concat(viewedOnThisLoadsId.current)
+                        arrayForPush.push(viewableItems.changed[index].item.threadIds)
+                        viewedOnThisLoadsId.current = arrayForPush
+                        console.log(`viewedOnThisLoadsId: ${JSON.stringify(viewedOnThisLoadsId.current)}`)
+                        const url = serverUrl + '/feed/viewedPostInFeed'
+                        //
+                        const dataForView = {
+                            userId: _id,
+                            postId: idOfPost,
+                            postFormat: "Thread"
+                        }
+                        //
+                        axios.post(url, dataForView).then((response) => {
+                            const result = response.data;
+                            const { message, status } = result;
+        
+                            if (status !== 'SUCCESS') {
+                                console.log(message)
+                                handleMessage(message, status, index);
+                                removeInCaseOfErrorOrNotSuccess(idOfPost)
+                            } else {
+                                console.log(`Viewed Image ${idOfPost}`)
+                            }
+                            
+                        }).catch(error => {
+                            console.log(error);
+                            handleMessage("An error occured. Try checking your network connection and retry.", 'FAILED', index);
+                            removeInCaseOfErrorOrNotSuccess(idOfPost)
+                        })
+                    }
+                } else {
+                    console.log("Not a valid post format?")
+                }
+            })
+        }
+    })
+
+    const viewConfigRef = React.useRef({ viewAreaCoveragePercentThreshold: 50 })
+
+    // End of feed code
 
     // Uploading posts code
     const postMultiMedia = (postData) => { // Creating multimedia post
@@ -417,232 +1221,8 @@ const HomeScreen = ({navigation, route}) => {
             }
         }
     }, [postData, postType])
-
-    useEffect(() => {
-        async function setUp() {
-            const showPhotosValue = await AsyncStorage.getItem('ShowPhotos_AppBehaviour_AsyncStorage')
-            if (OutputAsyncStorageToConsole) {console.log('ShowPhotos_AppBehaviour_AsyncStorage key is: ' + showPhotosValue)}
-            if (showPhotosValue == null) {
-                setShowPhotos(true)
-                AsyncStorage.setItem('ShowPhotos_AppBehaviour_AsyncStorage', 'true')
-            } else if (showPhotosValue == 'true') {
-                setShowPhotos(true)
-                AsyncStorage.setItem('ShowPhotos_AppBehaviour_AsyncStorage', 'true')
-            } else if (showPhotosValue == 'false') {
-                setShowPhotos(false)
-                AsyncStorage.setItem('ShowPhotos_AppBehaviour_AsyncStorage', 'false')
-            } else {
-                console.log('Error occured while getting ShowPhotos value in setUp() function in AppBehaviour_HomeScreen.js')
-            }
-
-            const showVideosValue = await AsyncStorage.getItem('ShowVideos_AppBehaviour_AsyncStorage')
-            if (OutputAsyncStorageToConsole) {console.log('ShowVideos_AppBehaviour_AsyncStorage key is: ' + showVideosValue)}
-            if (showVideosValue == null) {
-                setShowVideos(true)
-                AsyncStorage.setItem('ShowVideos_AppBehaviour_AsyncStorage', 'true')
-            } else if (showVideosValue == 'true') {
-                setShowVideos(true)
-                AsyncStorage.setItem('ShowVideos_AppBehaviour_AsyncStorage', 'true')
-            } else if (showVideosValue == 'false') {
-                setShowVideos(false)
-                AsyncStorage.setItem('ShowVideos_AppBehaviour_AsyncStorage', 'false')
-            } else {
-                console.log('Error occured while getting ShowVideos value in setUp() function in AppBehaviour_HomeScreen.js')
-            }
-
-            const showAudioValue = await AsyncStorage.getItem('ShowAudio_AppBehaviour_AsyncStorage')
-            if (OutputAsyncStorageToConsole) {console.log('ShowAudio_AppBehaviour_AsyncStorage key is: ' + showAudioValue)}
-            if (showAudioValue == null) {
-                setShowAudio(true)
-                AsyncStorage.setItem('ShowAudio_AppBehaviour_AsyncStorage', 'true')
-            } else if (showAudioValue == 'true') {
-                setShowAudio(true)
-                AsyncStorage.setItem('ShowAudio_AppBehaviour_AsyncStorage', 'true')
-            } else if (showAudioValue == 'false') {
-                setShowAudio(false)
-                AsyncStorage.setItem('ShowAudio_AppBehaviour_AsyncStorage', 'false')
-            } else {
-                console.log('Error occured while getting ShowAudio value in setUp() function in AppBehaviour_HomeScreen.js')
-            }
-
-            const showPollsValue = await AsyncStorage.getItem('ShowPolls_AppBehaviour_AsyncStorage')
-            if (OutputAsyncStorageToConsole) {console.log('ShowPolls_AppBehaviour_AsyncStorage key is: ' + showPollsValue)}
-            if (showPollsValue == null) {
-                setShowPolls(true)
-                AsyncStorage.setItem('ShowPolls_AppBehaviour_AsyncStorage', 'true')
-            } else if (showPollsValue == 'true') {
-                setShowPolls(true)
-                AsyncStorage.setItem('ShowPolls_AppBehaviour_AsyncStorage', 'true')
-            } else if (showPollsValue == 'false') {
-                setShowPolls(false)
-                AsyncStorage.setItem('ShowPolls_AppBehaviour_AsyncStorage', 'false')
-            } else {
-                console.log('Error occured while getting ShowPolls value in setUp() function in AppBehaviour_HomeScreen.js')
-            }
-
-            const showThreadsValue = await AsyncStorage.getItem('ShowThreads_AppBehaviour_AsyncStorage')
-            if (OutputAsyncStorageToConsole) {console.log('ShowThreads_AppBehaviour_AsyncStorage key is: ' + showThreadsValue)}
-            if (showThreadsValue == null) {
-                setShowThreads(true)
-                AsyncStorage.setItem('ShowThreads_AppBehaviour_AsyncStorage', 'true')
-            } else if (showThreadsValue == 'true') {
-                setShowThreads(true)
-                AsyncStorage.setItem('ShowThreads_AppBehaviour_AsyncStorage', 'true')
-            } else if (showThreadsValue == 'false') {
-                setShowThreads(false)
-                AsyncStorage.setItem('ShowThreads_AppBehaviour_AsyncStorage', 'false')
-            } else {
-                console.log('Error occured while getting ShowThreads value in setUp() function in AppBehaviour_HomeScreen.js')
-            }
-
-            const value = await AsyncStorage.getItem('PlayAudioInSilentMode_AppBehaviour_AsyncStorage')
-            if (OutputAsyncStorageToConsole) {console.log('HomeScreen.js value of PlayAudioInSilentMode_AppBehaviour_AsyncStorage key is: ' + value)}
-            if (value == null) {
-                setPlayAudioInSilentMode(false)
-                AsyncStorage.setItem('PlayAudioInSilentMode_AppBehaviour_AsyncStorage', 'false')
-            } else if (value == 'true') {
-                setPlayAudioInSilentMode(true)
-                AsyncStorage.setItem('PlayAudioInSilentMode_AppBehaviour_AsyncStorage', 'true')
-            } else if (value == 'false') {
-                setPlayAudioInSilentMode(false)
-                AsyncStorage.setItem('PlayAudioInSilentMode_AppBehaviour_AsyncStorage', 'false')
-            } else {
-                console.log('Error occured in setUp() function in HomeScreen.js')
-            }
-
-            const showCategoriesValue = await AsyncStorage.getItem('ShowCategories_AppBehaviour_AsyncStorage')
-            if (OutputAsyncStorageToConsole) {console.log('ShowCategories_AppBehaviour_AsyncStorage key is: ' + showCategoriesValue)}
-            if (showCategoriesValue == null) {
-                setShowCategories(true)
-                AsyncStorage.setItem('ShowCategories_AppBehaviour_AsyncStorage', 'true')
-            } else if (showCategoriesValue == 'true') {
-                setShowCategories(true)
-                AsyncStorage.setItem('ShowCategories_AppBehaviour_AsyncStorage', 'true')
-            } else if (showCategoriesValue == 'false') {
-                setShowCategories(false)
-                AsyncStorage.setItem('ShowCategories_AppBehaviour_AsyncStorage', 'false')
-            } else {
-                console.log('Error occured while getting ShowCategories value in setUp() function in AppBehaviour_HomeScreen.js')
-            }
-
-            const PlayVideoSoundInSilentModeValue = await AsyncStorage.getItem('PlayVideoSoundInSilentMode_AppBehaviour_AsyncStorage')
-            if (OutputAsyncStorageToConsole) {console.log('HomeScreen.js value of PlayAudioInSilentMode_AppBehaviour_AsyncStorage key is: ' + PlayVideoSoundInSilentMode)}
-            if (PlayVideoSoundInSilentModeValue == null) {
-                setPlayVideoSoundInSilentMode(false)
-                AsyncStorage.setItem('PlayVideoSoundInSilentMode_AppBehaviour_AsyncStorage', 'false')
-            } else if (PlayVideoSoundInSilentModeValue == 'true') {
-                setPlayVideoSoundInSilentMode(true)
-                AsyncStorage.setItem('PlayVideoSoundInSilentMode_AppBehaviour_AsyncStorage', 'true')
-            } else if (PlayVideoSoundInSilentModeValue == 'false') {
-                setPlayVideoSoundInSilentMode(false)
-                AsyncStorage.setItem('PlayVideoSoundInSilentMode_AppBehaviour_AsyncStorage', 'false')
-            } else {
-                console.log('Error occured in setUp() function in HomeScreen.js')
-            }
-        }
-        setUp()
-    }, [])
    
-    const setContextAndAsyncStorage = (type) => {
-        if (type == 'ShowPhotos') {
-            if (showPhotos == true) {
-                setShowPhotos(false)
-                AsyncStorage.setItem('ShowPhotos_AppBehaviour_AsyncStorage', 'false')
-            } else {
-                setShowPhotos(true)
-                AsyncStorage.setItem('ShowPhotos_AppBehaviour_AsyncStorage', 'true')
-            }
-        }
-        else if (type == 'ShowVideos') {
-            if (showVideos == true) {
-                setShowVideos(false)
-                AsyncStorage.setItem('ShowVideos_AppBehaviour_AsyncStorage', 'false')
-            } else {
-                setShowVideos(true)
-                AsyncStorage.setItem('ShowVideos_AppBehaviour_AsyncStorage', 'true')
-            }
-        }
-        else if (type == 'ShowAudio') {
-            if (showAudio == true) {
-                setShowAudio(false)
-                AsyncStorage.setItem('ShowAudio_AppBehaviour_AsyncStorage', 'false')
-            } else {
-                setShowAudio(true)
-                AsyncStorage.setItem('ShowAudio_AppBehaviour_AsyncStorage', 'true')
-            }
-        }
-        else if (type == 'ShowPolls') {
-            if (showPolls == true) {
-                setShowPolls(false)
-                AsyncStorage.setItem('ShowPolls_AppBehaviour_AsyncStorage', 'false')
-            } else {
-                setShowPolls(true)
-                AsyncStorage.setItem('ShowPolls_AppBehaviour_AsyncStorage', 'true')
-            }
-        }
-        else if (type == 'ShowThreads') {
-            if (showThreads == true) {
-                setShowThreads(false)
-                AsyncStorage.setItem('ShowThreads_AppBehaviour_AsyncStorage', 'false')
-            } else {
-                setShowThreads(true)
-                AsyncStorage.setItem('ShowThreads_AppBehaviour_AsyncStorage', 'true')
-            }
-        }
-        else if (type == 'ShowCategories') {
-            if (showCategories == true) {
-                setShowCategories(false)
-                AsyncStorage.setItem('ShowCategories_AppBehaviour_AsyncStorage', 'false')
-            } else {
-                setShowCategories(true)
-                AsyncStorage.setItem('ShowCategories_AppBehaviour_AsyncStorage', 'true')
-            }
-        }
-        else if (type == 'PlayAudioInSilentMode') {
-            if (PlayAudioInSilentMode == true) {
-                setPlayAudioInSilentMode(false)
-                AsyncStorage.setItem('PlayAudioInSilentMode_AppBehaviour_AsyncStorage', 'false')
-            } else {
-                setPlayAudioInSilentMode(true)
-                AsyncStorage.setItem('PlayAudioInSilentMode_AppBehaviour_AsyncStorage', 'true')
-            }
-        }
-        else if (type == 'PlayVideoSoundInSilentMode') {
-            if (PlayVideoSoundInSilentMode == true) {
-                setPlayVideoSoundInSilentMode(false)
-                AsyncStorage.setItem('PlayVideoSoundInSilentMode_AppBehaviour_AsyncStorage', 'false')
-            } else {
-                setPlayVideoSoundInSilentMode(true)
-                AsyncStorage.setItem('PlayVideoSoundInSilentMode_AppBehaviour_AsyncStorage', 'true')
-            }
-        }
-        else {
-            console.error('Wrong value entered')
-        }
-    }
-    // End of filter code
-    if (darkModeOn === true) {
-        var styling = darkModeStyling;
-    } else {
-        var styling = lightModeStyling;
-    }
     const {colors, dark, indexNum, stylingType} = useTheme();
-
-    const [Posts, setPosts] = useState([
-        /*{ postSource: Images.posts.social_studies_1, profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', displayName: 'sebthemancreator', type: 'post', timeUploadedAgo: '4 hours ago', bio: 'Seb and Kovid are cool', encrypted: 'true' },
-        { postSource: Images.posts.seb_and_azaria_1, profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', displayName: 'sebthemancreator', type: 'post', timeUploadedAgo: '4 hours ago', bio: 'Seb and Kovid are cool', encrypted: 'true' },
-        { postSource: Images.posts.seb_and_azaria_2, profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', displayName: 'sebthemancreator', type: 'post', timeUploadedAgo: '4 hours ago', bio: 'Seb and Kovid are cool', encrypted: 'true' },
-        { postSource: Images.posts.seb_and_azaria_3, profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', displayName: 'sebthemancreator', type: 'post', timeUploadedAgo: '4 hours ago', bio: 'Seb and Kovid are cool', encrypted: 'true' },
-        { postSource: Images.posts.background, profilePictureSource: Images.posts.profile_picture, username: 'sebthemancreator', displayName: 'sebthemancreator', type: 'post', timeUploadedAgo: '4 hours ago', bio: 'Seb and Kovid are cool', encrypted: 'true' },
-        { postSource: Images.posts.apple, profilePictureSource: Images.posts.apple, username: 'ILoveApples', displayName: 'AppleKid', type: 'post', timeUploadedAgo: '4 hours ago', bio: 'Seb and Kovid are cool', encrypted: 'false' },
-        { postSource: 'https://github.com/SquareTable/social-media-platform/raw/main/assets/MorningMood_song.mp3', profilePictureSource: Images.posts.profile_picture, username: 'testing_audio', displayName: 'sebthemancreator', type: 'audio', timeUploadedAgo: '1 sec ago', bio: "Hello! This is an audio post. There are quite a few bugs with it right now, but we will be fixing those shortly :) For now just listen to this peaceful song", encrypted: 'false' },
-        { postSource: 'https://github.com/SquareTable/social-media-platform/raw/main/assets/ComputerSong.mp3', profilePictureSource: Images.posts.profile_picture, username: 'testing_audio', displayName: 'sebthemancreator', type: 'audio', timeUploadedAgo: '1 sec ago', bio: "Computer error song :) Also we are aware that sometimes the posts play the wrong audio and we will be fixing that shortly lol", encrypted: 'true' },*/
-    ]);
-    const goToProfileScreen = (name, userToNavigateTo, profilePictureUrl, displayName) => {
-        name? 
-        name === userToNavigateTo? navigation.navigate("Welcome", {backButtonHidden: false, imageFromRoute: null}) : navigation.navigate("VisitingProfileScreen", {name: userToNavigateTo, photoUrl: profilePictureUrl, displayName: displayName}) 
-        : alert("An error occured");
-    }
     
     const changeOptionsView = (PostOwner, PostEncrypted) => {
         if (ProfileOptionsViewState == true) {
@@ -732,96 +1312,6 @@ const HomeScreen = ({navigation, route}) => {
     }, [])
     // End of checking for update and announcing the update
 
-    var deviceDimensions = useWindowDimensions()
-
-    const [showEndOfListMessage, setShowEndOfListMessage] = useState(false);
-
-    const ViewportAwareView = Viewport.Aware(View);
-
-    // Audio play and pause code
-    const [playbackStatus, setPlaybackStatus] = useState(null);
-    const [isAudioPlaying, setIsAudioPlaying] = useState(false);
-    const [playRecording, setPlayRecording] = useState(undefined);
-    const [PlayAudioInSilentMode, setPlayAudioInSilentMode] = useState(undefined);
-        async function playAudio(recording_uri) {
-            setIntentionallyPaused(false);
-            if (playbackStatus != null && playRecording) {
-                if (playbackStatus.isLoaded && !playbackStatus.isPlaying) {
-                    const status = await playRecording.playAsync()
-                    setPlaybackStatus(status);
-                    setIsAudioPlaying(true);
-                }
-            }
-            if (!playbackStatus && !playRecording) {
-                await Audio.setAudioModeAsync({
-                    playsInSilentModeIOS: PlayAudioInSilentMode,
-                });
-                var play_sound = new Audio.Sound();
-                setPlayRecording(play_sound);
-                let status_update_num = 0;
-                try {
-                    console.log("Loading sound")
-                    await play_sound.loadAsync(
-                        { uri: recording_uri },
-                        { shouldPlay: true },
-                        { progressUpdateIntervalMillis: 100 }
-                    );
-                    await play_sound.setVolumeAsync(1);
-                    console.log('Loaded Sound');
-                    console.log("Playing sound");
-                    play_sound.setOnPlaybackStatusUpdate(async (status) => {
-                        setPlaybackStatus(status);
-                        status_update_num += 1;
-                        console.log("Playback status update num = " + status_update_num);
-                        if (status.didJustFinish === true) {
-                        // audio has finished!
-                        await play_sound.unloadAsync()
-                        setIsAudioPlaying(false);
-                        setPlaybackStatus(null);
-                        setPlayRecording(undefined);
-                        }
-                    })
-                    await play_sound.playAsync();
-                    setIsAudioPlaying(true);
-                    
-                } catch (error) {
-                    console.log("Error when playing sound:", error);
-                    alert("An error has occured. " + error)
-                }
-            }
-        }
-
-        async function pauseAudio(intentionallyPaused) {
-            if (intentionallyPaused == true) {
-                setIntentionallyPaused(true);
-            } else {
-                setIntentionallyPaused(false);
-            }
-            if (playRecording) {
-                setIsAudioPlaying(false);
-                await playRecording.pauseAsync();
-            } else {
-                setIsAudioPlaying(false);
-            }
-        }
-
-        async function unloadAudio() {
-            await playRecording.unloadAsync();
-            setIsAudioPlaying(false);
-            setPlaybackStatus(null);
-            setPlayRecording(undefined);
-            console.log('Unloaded audio')
-        }
-
-        const isFocused = useIsFocused()
-        isFocused ? null : logoPressedTimes.current = 0
-        isFocused ? null : playRecording ? unloadAudio() : null
-
-
-    //End of Audio play and pause code
-
-    const [intentionallyPaused, setIntentionallyPaused] = useState(false);
-
     useEffect(() => {
         async function checkToShowUpdateSimpleStylesWarning() {
             const lastVersionUsed = await AsyncStorage.getItem('versionLastShownForSimpleStylingUpdateWarning')
@@ -872,14 +1362,6 @@ const HomeScreen = ({navigation, route}) => {
     const logoPressEasterEgg = () => {
         setBadgeEarntNotification('HomeScreenLogoEasterEgg')
     }
-
-    const HTMLRenderers = {
-        iframe: IframeRenderer
-      };
-      
-    const customHTMLElementModels = {
-        iframe: iframeModel
-    };
     return(
         <View
          style={{flex: 1, backgroundColor: colors.primary, paddingTop: StatusBarHeight}}
@@ -917,8 +1399,18 @@ const HomeScreen = ({navigation, route}) => {
                 </TouchableOpacity>
             </View>
             <View style={{flexDirection: 'row', justifyContent: 'space-evenly', position: 'absolute', top: StatusBarHeight + 40, width: '100%', zIndex: 2}}>
-                <Text style={{fontSize: 18, fontWeight: 'bold', textAlign: 'center', color: colors.brand, marginRight: 3}}>For You</Text>
-                <Text style={{fontSize: 18, fontWeight: 'bold', textAlign: 'center', color: colors.tertiary, marginRight: 3}}>Following</Text>
+                <TouchableWithoutFeedback onPress={() => {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    setCurrentFeed('For You')
+                }}>
+                    <Text style={{fontSize: 18, fontWeight: 'bold', textAlign: 'center', color: currentFeed == 'For You' ? colors.brand : colors.tertiary, marginRight: 3}}>For You</Text>
+                </TouchableWithoutFeedback>
+                <TouchableWithoutFeedback onPress={() => {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                    setCurrentFeed('Following')
+                }}>
+                    <Text style={{fontSize: 18, fontWeight: 'bold', textAlign: 'center', color: currentFeed == 'Following' ? colors.brand : colors.tertiary, marginRight: 3}}>Following</Text>
+                </TouchableWithoutFeedback>
             </View>
             <ProfileOptionsView style={{backgroundColor: colors.primary}} viewHidden={updateSimpleStylesWarningHidden}>
                 <ScrollView style={{marginHorizontal: 10}}>
@@ -1040,240 +1532,157 @@ const HomeScreen = ({navigation, route}) => {
                     </ReportProfileOptionsViewButtons> 
                 </ScrollView>
             </ReportProfileOptionsView>
-            {uploading == true &&
-                <TouchableOpacity onPress={() => {errorOccuredWhileUploading ? postType == 'multimedia' ? postMultiMedia(postData) : postType == 'poll' ? handleCreatePollPost(postData) : postType == 'thread_text' ? handlePostThread(postData, 'text') : postType == 'thread_image' ? handlePostThread(postData, 'image') : alert('Error occured') : null}} style={{alignItems: 'center', flexDirection: 'row', alignSelf: 'center'}}>
-                    <ActivityIndicator size="small" color={colors.brand}/>
-                    <Text style={{color: colors.tertiary, fontSize: 20, marginLeft: 10, textAlign: 'center', marginBottom: 5}}>{uploadingText}</Text>
-                </TouchableOpacity>
-            }
-            <FlatList
-                data={Posts}
-                scrollEnabled={FlatListElementsEnabledState}
-                ListHeaderComponent={postData != undefined ?
-                    postType == 'multimedia' ?
-                    <>
-                        <View style={{backgroundColor: dark ? colors.slightlyLighterPrimary : colors.borderColor, borderRadius: 15, marginBottom: 10}}>
-                            <PostsHorizontalView style={{marginLeft: '5%', borderBottomWidth: 3, borderColor: colors.darkLight, width: '90%', paddingBottom: 5, marginRight: '5%'}}>
-                                <PostsVerticalView>
-                                    <PostCreatorIcon source={{uri: profilePictureUri}}/>
-                                </PostsVerticalView>
-                                <PostsVerticalView style={{marginTop: 9}}>
-                                    <SubTitle style={{fontSize: 20, color: colors.brand, marginBottom: 0}}>{displayName}</SubTitle>
-                                    <SubTitle style={{fontSize: 12, marginBottom: 0, color: colors.tertiary}}>@{name}</SubTitle>
-                                </PostsVerticalView>
-                            </PostsHorizontalView>
-                            <PostsHorizontalView style={{alignItems: 'center', justifyContent: 'center'}}>
-                                <MultiMediaPostFrame postOnProfile={true} style={{ aspectRatio: 1/1, backgroundColor: colors.primary }}>
-                                    <Image style={{width: '100%', height: '100%', resizeMode : 'cover', borderRadius: 20}} source={{uri: postData.image.uri}}/>
-                                </MultiMediaPostFrame>
-                            </PostsHorizontalView>
-                            <ImagePostTextFrame style={{textAlign: 'center'}}>
-                                <SubTitle style={{fontSize: 20, color: colors.tertiary, marginBottom: 0}}>{postData.title}</SubTitle>
-                                <SubTitle style={{fontSize: 16, color: colors.descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{postData.description}</SubTitle>
-                            </ImagePostTextFrame>
-                            <PostHorizontalView style={{marginLeft: '5%', width: '90%', paddingVertical: 10, flex: 1, flexDirection: 'row'}}>
-                                <PostsIconFrame>
-                                    <PostsIcons style={{flex: 1}} tintColor={colors.brand} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
-                                </PostsIconFrame>
-                                <PostsIconFrame>
-                                    <SubTitle style={{alignSelf: 'center', fontSize: 16, color: colors.descTextColor, marginBottom: 0, fontWeight: 'normal'}}>0</SubTitle>
-                                </PostsIconFrame>
-                                <PostsIconFrame>
-                                    <PostsIcons style={{flex: 1}} tintColor={colors.brand} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
-                                </PostsIconFrame>
-                                <PostsIconFrame/>
-                                <PostsIconFrame>
-                                    <PostsIcons style={{flex: 1}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/113-bubbles4.png')}/>
-                                </PostsIconFrame>
-                                <PostsIconFrame>
-                                    <PostsIcons style={{flex: 1, height: 30, width: 30}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/387-share2.png')}/>
-                                </PostsIconFrame>
-                                <PostsIconFrame>
-                                    <PostsIcons style={{flex: 1}} source={require('./../assets/img/ThreeDots.png')}/>
-                                </PostsIconFrame>
-                            </PostHorizontalView>
-                            <SubTitle style={{flex: 1, alignSelf: 'center', fontSize: 16, color: colors.descTextColor, marginBottom: 0, fontWeight: 'normal'}}>Just Now</SubTitle>
-                            <SubTitle style={{flex: 1, alignSelf: 'center', fontSize: 16, color: colors.descTextColor, marginBottom: 0, fontWeight: 'normal'}}>0 comments</SubTitle>
-                        </View>
-                    </>
-                    :   postType == 'poll' ?
+            {currentFeed == 'Following' ?
+                <View style={{flex: 1}}>
+                    <FlatList 
+                        style={{flex: 1, paddingTop: 0, backgroundColor: colors.primary}}
+                        onViewableItemsChanged={onViewRef.current}
+                        viewabilityConfig={viewConfigRef.current}
+                        data={allPosts}
+                        ListHeaderComponent={<View style={{height: 50}}/>}
+                        refreshControl={
+                            <RefreshControl
+                                refreshing={reloadFeed}
+                                onRefresh={() => {
+                                    setReloadFeed(true)
+                                    loadFeed(true) //Force the reload because since state is asynchronous reloadFeed will be false when the function loads
+                                }}
+                            />
+                        }
+                        onEndReachedThreshold={0.7}
+                        onEndReached = {({distanceFromEnd})=>{
+                            if (distanceFromEnd > 0) {
+                                console.log('End of the feed was reached with ' + distanceFromEnd + ' pixels from the end.')
+                                if (loadingFeed == false) {
+                                    loadMorePosts()
+                                }
+                            }
+                        }}
+                        renderItem={({item, index}) => {
+                            return(
+                                <View>
+                                    {item.hasSeenPosts == true && (
+                                        <View>
+                                            {index-1 == -1 && (
+                                                <View>
+                                                    <SubTitle style={{marginBottom: 0, color: colors.brand, textAlign: 'center'}}>All possible unviewed posts seen</SubTitle>
+                                                    <SubTitle style={{fontSize: 8, color: colors.tertiary, textAlign: 'center', marginBottom: 5}}>Now on you may have seen these posts more than twice or interacted with them</SubTitle>
+                                                </View>
+                                            )}
+                                            {index-1 !== -1 && (
+                                                <View>
+                                                    {allPosts.slice(0, index).findIndex(x => x.hasSeenPosts == true) == -1 && (
+                                                        <View>
+                                                            <SubTitle style={{marginBottom: 0, color: colors.brand, textAlign: 'center'}}>All possible unviewed posts seen</SubTitle>
+                                                            <SubTitle style={{fontSize: 8, color: colors.tertiary, textAlign: 'center', marginBottom: 5}}>Now on you may have seen these posts more than twice or interacted with them</SubTitle>
+                                                        </View>
+                                                    )}
+                                                </View>
+                                            )}
+                                        </View>
+                                    )}
+                                    
+                                    {item.hasSeenPosts == false && (
+                                        <View>
+                                            {index-1 !== -1 && (
+                                                <View>
+                                                    {allPosts.slice(0, index).findIndex(x => x.hasSeenPosts == true) !== -1 && ( //has seen one above somewhere
+                                                        <View>
+                                                            <SubTitle style={{marginBottom: 0, color: colors.brand, textAlign: 'center'}}>New Post</SubTitle>
+                                                            <SubTitle style={{fontSize: 8, color: colors.tertiary, textAlign: 'center', marginBottom: 5}}>You may have not seen the following post</SubTitle>
+                                                        </View>
+                                                    )}
+                                                </View>
+                                            )}
+                                        </View>
+                                    )}
+
+                                    {index % 5 == 0 && index !== 0 && (
+                                        <View style={{alignItems: 'center'}}>
+                                            <AdMobBanner
+                                                bannerSize="mediumRectangle"
+                                                adUnitID={AdID} // SocialSquare Google AdMob Ad ID
+                                                servePersonalizedAds={false}
+                                                onDidFailToReceiveAdWithError={(error) => {console.warn(error)}} 
+                                            />
+                                        </View>
+                                    )}
+
+                                    {item.format == "Image" && (
+                                        <MemoizedPost colors={colors} navigation={navigation} format={item.format} imageId={item.imageId} imageKey={item.imageKey} imageB64={item.imageB64} imageTitle={item.imageTitle} imageDescription={item.imageDescription} imageUpVotes={item.imageUpVotes} imageComments={item.imageComments} creatorName={item.creatorName} creatorDisplayName={item.creatorDisplayName} creatorPfpB64={item.creatorPfpB64} datePosted={item.datePosted} postNum={item.postNum} usersUdnVote={item.usersUdnVote} postNotFromFeed={false}/>
+                                    )}
+                                    {item.format == "Poll" && (
+                                        <MemoizedPost colors={colors} navigation={navigation} format={item.format} pollTitle={item.pollTitle} pollSubTitle={item.pollSubTitle} optionOne={item.optionOne} optionOnesColor={item.optionOnesColor} optionOnesVotes={item.optionOnesVotes} optionOnesBarLength={item.optionOnesBarLength} optionTwo={item.optionTwo} optionTwosColor={item.optionTwosColor} optionTwosVotes={item.optionTwosVotes} optionTwosBarLength={item.optionTwosBarLength} optionThree={item.optionThree} optionThreesColor={item.optionThreesColor} optionThreesVotes={item.optionThreesVotes} optionThreesBarLength={item.optionThreesBarLength} optionFour={item.optionFour} optionFoursColor={item.optionFoursColor} optionFoursVotes={item.optionFoursVotes} optionFoursBarLength={item.optionFoursBarLength} optionFive={item.optionFive} optionFivesColor={item.optionFivesColor} optionFivesVotes={item.optionFivesVotes} optionFivesBarLength={item.optionFivesBarLength} optionSix={item.optionSix} optionSixesColor={item.optionSixesColor} optionSixesVotes={item.optionSixesVotes} optionSixesBarLength={item.optionSixesBarLength} totalNumberOfOptions={item.totalNumberOfOptions} pollUpOrDownVotes={item.pollUpOrDownVotes} pollId={item.pollId} votedFor={item.votedFor} pfpB64={item.pfpB64} creatorName={item.creatorName} creatorDisplayName={item.creatorDisplayName} postNum={item.postNum} datePosted={item.datePosted} pollComments={item.pollComments} usersUdnVote={item.usersUdnVote}/>
+                                    )}
+                                    {item.format == "Thread" && (
+                                        <MemoizedPost colors={colors} navigation={navigation} format={item.format} postNum={item.postNum} threadId={item.threadId} threadComments={item.threadComments} threadType={item.threadType} threadUpVotes={item.threadUpVotes} threadTitle={item.threadTitle} threadSubtitle={item.threadSubtitle} threadTags={item.threadTags} threadCategory={item.threadCategory} threadBody={item.threadBody} threadImageKey={item.threadImageKey} threadImageDescription={item.threadImageDescription} threadNSFW={item.threadNSFW} threadNSFL={item.threadNSFL} datePosted={item.datePosted} threadUpVoted={item.threadUpVoted} threadDownVoted={item.threadDownVoted} creatorDisplayName={item.creatorDisplayName} creatorName={item.creatorName} creatorImageB64={item.creatorImageB64} imageInThreadB64={item.imageInThreadB64} usersUdnVote={item.usersUdnVote}/>
+                                    )}
+
+                                    {/*Check if its last index*/}
+                                    {index == allPosts.length-1 && (
+                                        <View>
+                                            {loadingFeed == true && (
+                                                <ActivityIndicator size="large" color={colors.brand} />  
+                                            )}
+                                            {loadingFeed == false && (
+                                                <TouchableOpacity style={{alignSelf: 'center'}} onPress={() => loadMorePosts()}>
+                                                    <SubTitle style={{textAlign: 'center', alignSelf: 'center', textAlign: 'center', color: colors.tertiary}}>Load More</SubTitle>
+                                                </TouchableOpacity>
+                                            )}
+                                        </View>
+                                    )}
+                                </View>
+                            )
+                        }}
+                        keyExtractor={(item, index) => index.toString()}
+                    />
+
+                    {postNumForMsg == null && (<MsgBox type={messageType}>{message}</MsgBox>)}
+                </View>
+            :
+                <>
+                    {uploading == true &&
+                        <TouchableOpacity onPress={() => {errorOccuredWhileUploading ? postType == 'multimedia' ? postMultiMedia(postData) : postType == 'poll' ? handleCreatePollPost(postData) : postType == 'thread_text' ? handlePostThread(postData, 'text') : postType == 'thread_image' ? handlePostThread(postData, 'image') : alert('Error occured') : null}} style={{alignItems: 'center', flexDirection: 'row', alignSelf: 'center'}}>
+                            <ActivityIndicator size="small" color={colors.brand}/>
+                            <Text style={{color: colors.tertiary, fontSize: 20, marginLeft: 10, textAlign: 'center', marginBottom: 5}}>{uploadingText}</Text>
+                        </TouchableOpacity>
+                    }
+                    <FlatList
+                        data={[{key: '1'}]}
+                        scrollEnabled={FlatListElementsEnabledState}
+                        ListHeaderComponent={postData != undefined ?
+                            postType == 'multimedia' ?
                             <>
-                                <PollPostFrame>
-                                    <PostsHorizontalView style={{marginLeft: '5%', borderBottomWidth: 3, borderColor: darkLight, width: '90%', paddingBottom: 5, marginRight: '5%'}}>
+                                <View style={{backgroundColor: dark ? colors.slightlyLighterPrimary : colors.borderColor, borderRadius: 15, marginBottom: 10}}>
+                                    <PostsHorizontalView style={{marginLeft: '5%', borderBottomWidth: 3, borderColor: colors.darkLight, width: '90%', paddingBottom: 5, marginRight: '5%'}}>
                                         <PostsVerticalView>
                                             <PostCreatorIcon source={{uri: profilePictureUri}}/>
                                         </PostsVerticalView>
                                         <PostsVerticalView style={{marginTop: 9}}>
-                                            <SubTitle style={{fontSize: 20, color: brand, marginBottom: 0}}>{displayName}</SubTitle>
+                                            <SubTitle style={{fontSize: 20, color: colors.brand, marginBottom: 0}}>{displayName}</SubTitle>
                                             <SubTitle style={{fontSize: 12, marginBottom: 0, color: colors.tertiary}}>@{name}</SubTitle>
                                         </PostsVerticalView>
                                     </PostsHorizontalView>
-                                    <PollPostTitle style={{width: '95%'}}>
-                                        {postData.pollTitle}
-                                    </PollPostTitle>
-                                    <PollPostSubTitle style={{width: '95%', color: colors.tertiary}}>
-                                        {postData.pollSubTitle}
-                                    </PollPostSubTitle>
-                                    <AboveBarPollPostHorizontalView>
-                                        <PollPostSubTitle style={{width: optionOnesBarLength+'%', color: colors.tertiary}}>
-                                            1
-                                        </PollPostSubTitle>
-                                        <PollPostSubTitle style={{width: optionTwosBarLength+'%', color: colors.tertiary }}>
-                                            2
-                                        </PollPostSubTitle>
-                                        <PollPostSubTitle style={{width: optionThreesBarLength+'%', color: colors.tertiary }}>
-                                            3
-                                        </PollPostSubTitle>
-                                        <PollPostSubTitle style={{width: optionFoursBarLength+'%', color: colors.tertiary }}>
-                                            4
-                                        </PollPostSubTitle>
-                                        <PollPostSubTitle style={{width: optionFivesBarLength+'%', color: colors.tertiary }}>
-                                            5
-                                        </PollPostSubTitle>
-                                        <PollPostSubTitle style={{width: optionSixesBarLength+'%', color: colors.tertiary }}>
-                                            6
-                                        </PollPostSubTitle>
-                                    </AboveBarPollPostHorizontalView>
-                                    <PollBarOutline>
-                                        <PollBarItem borderChange={optionOnesBarLength} style={{ width: optionOnesBarLength+'%', backgroundColor: postData.optionOnesColor == 'Not Specified' ? brand : eval(postData.optionOnesColor.toLowerCase())}}></PollBarItem>
-                                        <PollBarItem borderChange={optionTwosBarLength} style={{ width: optionTwosBarLength+'%', backgroundColor: postData.optionTwosColor == 'Not Specified' ? brand : eval(postData.optionTwosColor.toLowerCase() )}}></PollBarItem>
-                                        <PollBarItem borderChange={optionThreesBarLength} style={{ width: optionThreesBarLength+'%', backgroundColor: postData.optionThreesColor == 'Not Specified' ? brand : eval(postData.optionThreesColor.toLowerCase()) }}></PollBarItem>
-                                        <PollBarItem borderChange={optionFoursBarLength} style={{ width: optionFoursBarLength+'%', backgroundColor: postData.optionFoursColor == 'Not Specified' ? brand : eval(postData.optionFoursColor.toLowerCase()) }}></PollBarItem>
-                                        <PollBarItem borderChange={optionFivesBarLength} style={{ width: optionFivesBarLength+'%', backgroundColor: postData.optionFivesColor == 'Not Specified' ? brand : eval(postData.optionFivesColor.toLowerCase()) }}></PollBarItem>
-                                        <PollBarItem borderChange={optionSixesBarLength} style={{ width: optionSixesBarLength+'%', backgroundColor: postData.optionSixesColor == 'Not Specified' ? brand : eval(postData.optionSixesColor.toLowerCase()) }}></PollBarItem>
-                                    </PollBarOutline>
-                                    <PollPostHorizontalView>
-                                        <PollKeyViewOne pollOptions={postData.totalNumberOfOptions}>
-                                            <PollPostSubTitle style={{color: colors.tertiary}}>
-                                                1. {postData.optionOne}
-                                            </PollPostSubTitle>
-                                            <PollKeysCircle circleColor={postData.optionOnesColor}></PollKeysCircle>
-                                        </PollKeyViewOne>
-                                        <PollKeyViewTwo pollOptions={postData.totalNumberOfOptions}>
-                                            <PollKeysCircle circleColor={postData.optionTwosColor}></PollKeysCircle>
-                                            <PollPostSubTitle style={{color: colors.tertiary}}>
-                                                2. {postData.optionTwo}
-                                            </PollPostSubTitle>
-                                        </PollKeyViewTwo>
-                                    </PollPostHorizontalView>
-                                    
-                                    <PollPostHorizontalView>
-                                        <PollKeyViewThree pollOptions={postData.totalNumberOfOptions}>
-                                            <PollPostSubTitle style={{color: colors.tertiary}}>
-                                                3. {postData.optionThree}
-                                            </PollPostSubTitle>
-                                            <PollKeysCircle circleColor={postData.optionThreesColor}></PollKeysCircle>
-                                        </PollKeyViewThree>
-                                        <PollKeyViewFour pollOptions={postData.totalNumberOfOptions}>
-                                            <PollKeysCircle circleColor={postData.optionFoursColor}></PollKeysCircle>
-                                            <PollPostSubTitle style={{color: colors.tertiary}}>
-                                                4. {postData.optionFour}
-                                            </PollPostSubTitle>
-                                        </PollKeyViewFour>
-                                    </PollPostHorizontalView>
-
-                                    <PollPostHorizontalView>
-                                        <PollKeyViewFive pollOptions={postData.totalNumberOfOptions}>
-                                            <PollPostSubTitle style={{color: colors.tertiary}}>
-                                                5. {postData.optionFive}
-                                            </PollPostSubTitle>
-                                            <PollKeysCircle circleColor={postData.optionFivesColor}></PollKeysCircle>
-                                        </PollKeyViewFive>
-                                        <PollKeyViewSix pollOptions={postData.totalNumberOfOptions}>
-                                            <PollKeysCircle circleColor={postData.optionSixesColor}></PollKeysCircle>
-                                            <PollPostSubTitle style={{color: colors.tertiary}}>
-                                                6. {postData.optionSix}
-                                            </PollPostSubTitle>
-                                        </PollKeyViewSix>
-                                    </PollPostHorizontalView>
-                                    <PostHorizontalView style={{marginLeft: '5%', width: '90%', paddingVertical: 10, flex: 1, flexDirection: 'row', borderTopWidth: 3, borderColor: darkest}}>
-                                    <PostsIconFrame>
-                                        <PostsIcons style={{flex: 1}} tintColor={brand} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
-                                    </PostsIconFrame>
-                                    <PostsIconFrame>
-                                        <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>0</SubTitle>
-                                    </PostsIconFrame>
-                                    <PostsIconFrame>
-                                        <PostsIcons style={{flex: 1}} tintColor={brand} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
-                                    </PostsIconFrame>
-                                    <PostsIconFrame>
-                                        <PostsIcons style={{flex: 1}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/113-bubbles4.png')}/>
-                                    </PostsIconFrame>
-                                    <PostsIconFrame>
-                                        <PostsIcons style={{flex: 1, height: 30, width: 30}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/387-share2.png')}/>
-                                    </PostsIconFrame>
-                                    <PostsIconFrame>
-                                        <PostsIcons style={{flex: 1}} source={require('./../assets/img/ThreeDots.png')}/>
-                                    </PostsIconFrame>
-                                    </PostHorizontalView>
-                                    <SubTitle style={{flex: 1, alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>Just Now</SubTitle>
-                                    <SubTitle style={{flex: 1, alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>0 comments</SubTitle>
-                                </PollPostFrame>
-                            </>
-                        : postType == 'thread_text' || postType == 'thread_image' ?
-                            <>
-                                <View style={{backgroundColor: dark ? slightlyLighterPrimary : colors.borderColor, borderRadius: 15, marginBottom: 10}}>
-                                    {postData.threadNSFW === true && (
-                                        <SubTitle style={{fontSize: 10, color: red, marginBottom: 0}}>(NSFW)</SubTitle>
-                                    )}
-                                    {postData.threadNSFL === true && (
-                                        <SubTitle style={{fontSize: 10, color: red, marginBottom: 0}}>(NSFL)</SubTitle>
-                                    )}
-                                    <View style={{paddingHorizontal: '50%'}}/>
-                                    <PostsHorizontalView style={{marginLeft: '5%', borderColor: darkLight, width: '90%', paddingBottom: 5, marginRight: '5%'}}>
-                                        <TouchableOpacity style={{width: '100%', height: 60}}>
-                                            <PostsHorizontalView>
-                                                <PostsVerticalView>
-                                                    <PostCreatorIcon source={{uri: profilePictureUri}}/>
-                                                </PostsVerticalView>
-                                                <PostsVerticalView style={{marginTop: 9}}>
-                                                    <SubTitle style={{fontSize: 20, marginBottom: 0, color: colors.tertiary}}>{displayName}</SubTitle>
-                                                    <SubTitle style={{fontSize: 12, color: brand, marginBottom: 0}}>@{name}</SubTitle>
-                                                </PostsVerticalView>
-                                            </PostsHorizontalView>
-                                        </TouchableOpacity>
+                                    <PostsHorizontalView style={{alignItems: 'center', justifyContent: 'center'}}>
+                                        <MultiMediaPostFrame postOnProfile={true} style={{ aspectRatio: 1/1, backgroundColor: colors.primary }}>
+                                            <Image style={{width: '100%', height: '100%', resizeMode : 'cover', borderRadius: 20}} source={{uri: postData.image.uri}}/>
+                                        </MultiMediaPostFrame>
                                     </PostsHorizontalView>
-                                    <TouchableOpacity>
-                                        <ImagePostTextFrame style={{textAlign: 'left', alignItems: 'baseline'}}>
-                                            <TouchableOpacity>
-                                                <SubTitle style={{fontSize: 10, color: brand, marginBottom: 0}}>Category: {postData.selectedCategory}</SubTitle>
-                                            </TouchableOpacity>
-                                            <SubTitle style={{fontSize: 20, marginBottom: 0, color: colors.tertiary}}>{postData.threadTitle}</SubTitle>
-                                            {postData.threadSubtitle !== "" && (
-                                                <SubTitle style={{fontSize: 18, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{postData.threadSubtitle}</SubTitle>
-                                            )}
-                                            {postData.threadTags !== "" && (
-                                                <TouchableOpacity>
-                                                    <SubTitle style={{fontSize: 10, color: brand, marginBottom: 10}}>{postData.threadTags}</SubTitle>
-                                                </TouchableOpacity>
-                                            )}
-                                            {postType == "thread_text" && (
-                                                <SubTitle style={{fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{postData.threadBody}</SubTitle>
-                                            )}
-                                            <View style={{textAlign: 'left', alignItems: 'baseline', marginLeft: '5%', marginRight: '5%', width: '90%'}}>
-                                                {postType == "thread_image" && (
-                                                    <View>
-                                                        <View style={{height: 200, width: 200}}>
-                                                            <Image style={{height: '100%', width: 'auto', resizeMode: 'contain'}} source={{uri: postData.image.uri}}/>
-                                                        </View>
-                                                        <SubTitle style={{fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{postData.threadImageDescription}</SubTitle>
-                                                    </View>
-                                                )}
-                                            </View>
-                                        </ImagePostTextFrame>
-                                    </TouchableOpacity>
-                                    
+                                    <ImagePostTextFrame style={{textAlign: 'center'}}>
+                                        <SubTitle style={{fontSize: 20, color: colors.tertiary, marginBottom: 0}}>{postData.title}</SubTitle>
+                                        <SubTitle style={{fontSize: 16, color: colors.descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{postData.description}</SubTitle>
+                                    </ImagePostTextFrame>
                                     <PostHorizontalView style={{marginLeft: '5%', width: '90%', paddingVertical: 10, flex: 1, flexDirection: 'row'}}>
-                                    
                                         <PostsIconFrame>
-                                            <PostsIcons style={{flex: 1}} tintColor={brand} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
+                                            <PostsIcons style={{flex: 1}} tintColor={colors.brand} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
                                         </PostsIconFrame>
                                         <PostsIconFrame>
-                                            <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>0</SubTitle>
+                                            <SubTitle style={{alignSelf: 'center', fontSize: 16, color: colors.descTextColor, marginBottom: 0, fontWeight: 'normal'}}>0</SubTitle>
                                         </PostsIconFrame>
                                         <PostsIconFrame>
-                                            <PostsIcons style={{flex: 1}} tintColor={brand} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
+                                            <PostsIcons style={{flex: 1}} tintColor={colors.brand} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
                                         </PostsIconFrame>
+                                        <PostsIconFrame/>
                                         <PostsIconFrame>
                                             <PostsIcons style={{flex: 1}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/113-bubbles4.png')}/>
                                         </PostsIconFrame>
@@ -1284,62 +1693,256 @@ const HomeScreen = ({navigation, route}) => {
                                             <PostsIcons style={{flex: 1}} source={require('./../assets/img/ThreeDots.png')}/>
                                         </PostsIconFrame>
                                     </PostHorizontalView>
-                                    <SubTitle style={{flex: 1, alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>Just Now</SubTitle>
-                                    <TouchableOpacity>
-                                        <SubTitle style={{flex: 1, alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>0 comments</SubTitle>
-                                    </TouchableOpacity>
+                                    <SubTitle style={{flex: 1, alignSelf: 'center', fontSize: 16, color: colors.descTextColor, marginBottom: 0, fontWeight: 'normal'}}>Just Now</SubTitle>
+                                    <SubTitle style={{flex: 1, alignSelf: 'center', fontSize: 16, color: colors.descTextColor, marginBottom: 0, fontWeight: 'normal'}}>0 comments</SubTitle>
                                 </View>
                             </>
-                        : postType == 'category' ?
-                            <>
-                                <SearchFrame>
-                                    <View style={{paddingHorizontal: '50%'}}/>
-                                    {postData.image !== null && (
-                                        <Avatar resizeMode="cover" searchPage={true} source={{uri: postData.image.uri}} />
-                                    )}
-                                    {postData.image == null && (
-                                        <Avatar resizeMode="cover" searchPage={true} source={{uri: SocialSquareLogo_B64_png}} />
-                                    )}
-                                    {postData.categoryNSFW == false && (
-                                        <View>
-                                            {postData.categoryNSFL == false && (
-                                                <SubTitle style={{color: colors.tertiary}} searchResTitle={true}>{postData.categoryTitle}</SubTitle>
+                            :   postType == 'poll' ?
+                                    <>
+                                        <PollPostFrame>
+                                            <PostsHorizontalView style={{marginLeft: '5%', borderBottomWidth: 3, borderColor: darkLight, width: '90%', paddingBottom: 5, marginRight: '5%'}}>
+                                                <PostsVerticalView>
+                                                    <PostCreatorIcon source={{uri: profilePictureUri}}/>
+                                                </PostsVerticalView>
+                                                <PostsVerticalView style={{marginTop: 9}}>
+                                                    <SubTitle style={{fontSize: 20, color: brand, marginBottom: 0}}>{displayName}</SubTitle>
+                                                    <SubTitle style={{fontSize: 12, marginBottom: 0, color: colors.tertiary}}>@{name}</SubTitle>
+                                                </PostsVerticalView>
+                                            </PostsHorizontalView>
+                                            <PollPostTitle style={{width: '95%'}}>
+                                                {postData.pollTitle}
+                                            </PollPostTitle>
+                                            <PollPostSubTitle style={{width: '95%', color: colors.tertiary}}>
+                                                {postData.pollSubTitle}
+                                            </PollPostSubTitle>
+                                            <AboveBarPollPostHorizontalView>
+                                                <PollPostSubTitle style={{width: optionOnesBarLength+'%', color: colors.tertiary}}>
+                                                    1
+                                                </PollPostSubTitle>
+                                                <PollPostSubTitle style={{width: optionTwosBarLength+'%', color: colors.tertiary }}>
+                                                    2
+                                                </PollPostSubTitle>
+                                                <PollPostSubTitle style={{width: optionThreesBarLength+'%', color: colors.tertiary }}>
+                                                    3
+                                                </PollPostSubTitle>
+                                                <PollPostSubTitle style={{width: optionFoursBarLength+'%', color: colors.tertiary }}>
+                                                    4
+                                                </PollPostSubTitle>
+                                                <PollPostSubTitle style={{width: optionFivesBarLength+'%', color: colors.tertiary }}>
+                                                    5
+                                                </PollPostSubTitle>
+                                                <PollPostSubTitle style={{width: optionSixesBarLength+'%', color: colors.tertiary }}>
+                                                    6
+                                                </PollPostSubTitle>
+                                            </AboveBarPollPostHorizontalView>
+                                            <PollBarOutline>
+                                                <PollBarItem borderChange={optionOnesBarLength} style={{ width: optionOnesBarLength+'%', backgroundColor: postData.optionOnesColor == 'Not Specified' ? brand : eval(postData.optionOnesColor.toLowerCase())}}></PollBarItem>
+                                                <PollBarItem borderChange={optionTwosBarLength} style={{ width: optionTwosBarLength+'%', backgroundColor: postData.optionTwosColor == 'Not Specified' ? brand : eval(postData.optionTwosColor.toLowerCase() )}}></PollBarItem>
+                                                <PollBarItem borderChange={optionThreesBarLength} style={{ width: optionThreesBarLength+'%', backgroundColor: postData.optionThreesColor == 'Not Specified' ? brand : eval(postData.optionThreesColor.toLowerCase()) }}></PollBarItem>
+                                                <PollBarItem borderChange={optionFoursBarLength} style={{ width: optionFoursBarLength+'%', backgroundColor: postData.optionFoursColor == 'Not Specified' ? brand : eval(postData.optionFoursColor.toLowerCase()) }}></PollBarItem>
+                                                <PollBarItem borderChange={optionFivesBarLength} style={{ width: optionFivesBarLength+'%', backgroundColor: postData.optionFivesColor == 'Not Specified' ? brand : eval(postData.optionFivesColor.toLowerCase()) }}></PollBarItem>
+                                                <PollBarItem borderChange={optionSixesBarLength} style={{ width: optionSixesBarLength+'%', backgroundColor: postData.optionSixesColor == 'Not Specified' ? brand : eval(postData.optionSixesColor.toLowerCase()) }}></PollBarItem>
+                                            </PollBarOutline>
+                                            <PollPostHorizontalView>
+                                                <PollKeyViewOne pollOptions={postData.totalNumberOfOptions}>
+                                                    <PollPostSubTitle style={{color: colors.tertiary}}>
+                                                        1. {postData.optionOne}
+                                                    </PollPostSubTitle>
+                                                    <PollKeysCircle circleColor={postData.optionOnesColor}></PollKeysCircle>
+                                                </PollKeyViewOne>
+                                                <PollKeyViewTwo pollOptions={postData.totalNumberOfOptions}>
+                                                    <PollKeysCircle circleColor={postData.optionTwosColor}></PollKeysCircle>
+                                                    <PollPostSubTitle style={{color: colors.tertiary}}>
+                                                        2. {postData.optionTwo}
+                                                    </PollPostSubTitle>
+                                                </PollKeyViewTwo>
+                                            </PollPostHorizontalView>
+                                            
+                                            <PollPostHorizontalView>
+                                                <PollKeyViewThree pollOptions={postData.totalNumberOfOptions}>
+                                                    <PollPostSubTitle style={{color: colors.tertiary}}>
+                                                        3. {postData.optionThree}
+                                                    </PollPostSubTitle>
+                                                    <PollKeysCircle circleColor={postData.optionThreesColor}></PollKeysCircle>
+                                                </PollKeyViewThree>
+                                                <PollKeyViewFour pollOptions={postData.totalNumberOfOptions}>
+                                                    <PollKeysCircle circleColor={postData.optionFoursColor}></PollKeysCircle>
+                                                    <PollPostSubTitle style={{color: colors.tertiary}}>
+                                                        4. {postData.optionFour}
+                                                    </PollPostSubTitle>
+                                                </PollKeyViewFour>
+                                            </PollPostHorizontalView>
+
+                                            <PollPostHorizontalView>
+                                                <PollKeyViewFive pollOptions={postData.totalNumberOfOptions}>
+                                                    <PollPostSubTitle style={{color: colors.tertiary}}>
+                                                        5. {postData.optionFive}
+                                                    </PollPostSubTitle>
+                                                    <PollKeysCircle circleColor={postData.optionFivesColor}></PollKeysCircle>
+                                                </PollKeyViewFive>
+                                                <PollKeyViewSix pollOptions={postData.totalNumberOfOptions}>
+                                                    <PollKeysCircle circleColor={postData.optionSixesColor}></PollKeysCircle>
+                                                    <PollPostSubTitle style={{color: colors.tertiary}}>
+                                                        6. {postData.optionSix}
+                                                    </PollPostSubTitle>
+                                                </PollKeyViewSix>
+                                            </PollPostHorizontalView>
+                                            <PostHorizontalView style={{marginLeft: '5%', width: '90%', paddingVertical: 10, flex: 1, flexDirection: 'row', borderTopWidth: 3, borderColor: darkest}}>
+                                            <PostsIconFrame>
+                                                <PostsIcons style={{flex: 1}} tintColor={brand} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
+                                            </PostsIconFrame>
+                                            <PostsIconFrame>
+                                                <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>0</SubTitle>
+                                            </PostsIconFrame>
+                                            <PostsIconFrame>
+                                                <PostsIcons style={{flex: 1}} tintColor={brand} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
+                                            </PostsIconFrame>
+                                            <PostsIconFrame>
+                                                <PostsIcons style={{flex: 1}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/113-bubbles4.png')}/>
+                                            </PostsIconFrame>
+                                            <PostsIconFrame>
+                                                <PostsIcons style={{flex: 1, height: 30, width: 30}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/387-share2.png')}/>
+                                            </PostsIconFrame>
+                                            <PostsIconFrame>
+                                                <PostsIcons style={{flex: 1}} source={require('./../assets/img/ThreeDots.png')}/>
+                                            </PostsIconFrame>
+                                            </PostHorizontalView>
+                                            <SubTitle style={{flex: 1, alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>Just Now</SubTitle>
+                                            <SubTitle style={{flex: 1, alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>0 comments</SubTitle>
+                                        </PollPostFrame>
+                                    </>
+                                : postType == 'thread_text' || postType == 'thread_image' ?
+                                    <>
+                                        <View style={{backgroundColor: dark ? slightlyLighterPrimary : colors.borderColor, borderRadius: 15, marginBottom: 10}}>
+                                            {postData.threadNSFW === true && (
+                                                <SubTitle style={{fontSize: 10, color: red, marginBottom: 0}}>(NSFW)</SubTitle>
                                             )}
-                                            {postData.categoryNSFL == true && (
+                                            {postData.threadNSFL === true && (
+                                                <SubTitle style={{fontSize: 10, color: red, marginBottom: 0}}>(NSFL)</SubTitle>
+                                            )}
+                                            <View style={{paddingHorizontal: '50%'}}/>
+                                            <PostsHorizontalView style={{marginLeft: '5%', borderColor: darkLight, width: '90%', paddingBottom: 5, marginRight: '5%'}}>
+                                                <TouchableOpacity style={{width: '100%', height: 60}}>
+                                                    <PostsHorizontalView>
+                                                        <PostsVerticalView>
+                                                            <PostCreatorIcon source={{uri: profilePictureUri}}/>
+                                                        </PostsVerticalView>
+                                                        <PostsVerticalView style={{marginTop: 9}}>
+                                                            <SubTitle style={{fontSize: 20, marginBottom: 0, color: colors.tertiary}}>{displayName}</SubTitle>
+                                                            <SubTitle style={{fontSize: 12, color: brand, marginBottom: 0}}>@{name}</SubTitle>
+                                                        </PostsVerticalView>
+                                                    </PostsHorizontalView>
+                                                </TouchableOpacity>
+                                            </PostsHorizontalView>
+                                            <TouchableOpacity>
+                                                <ImagePostTextFrame style={{textAlign: 'left', alignItems: 'baseline'}}>
+                                                    <TouchableOpacity>
+                                                        <SubTitle style={{fontSize: 10, color: brand, marginBottom: 0}}>Category: {postData.selectedCategory}</SubTitle>
+                                                    </TouchableOpacity>
+                                                    <SubTitle style={{fontSize: 20, marginBottom: 0, color: colors.tertiary}}>{postData.threadTitle}</SubTitle>
+                                                    {postData.threadSubtitle !== "" && (
+                                                        <SubTitle style={{fontSize: 18, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{postData.threadSubtitle}</SubTitle>
+                                                    )}
+                                                    {postData.threadTags !== "" && (
+                                                        <TouchableOpacity>
+                                                            <SubTitle style={{fontSize: 10, color: brand, marginBottom: 10}}>{postData.threadTags}</SubTitle>
+                                                        </TouchableOpacity>
+                                                    )}
+                                                    {postType == "thread_text" && (
+                                                        <SubTitle style={{fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{postData.threadBody}</SubTitle>
+                                                    )}
+                                                    <View style={{textAlign: 'left', alignItems: 'baseline', marginLeft: '5%', marginRight: '5%', width: '90%'}}>
+                                                        {postType == "thread_image" && (
+                                                            <View>
+                                                                <View style={{height: 200, width: 200}}>
+                                                                    <Image style={{height: '100%', width: 'auto', resizeMode: 'contain'}} source={{uri: postData.image.uri}}/>
+                                                                </View>
+                                                                <SubTitle style={{fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{postData.threadImageDescription}</SubTitle>
+                                                            </View>
+                                                        )}
+                                                    </View>
+                                                </ImagePostTextFrame>
+                                            </TouchableOpacity>
+                                            
+                                            <PostHorizontalView style={{marginLeft: '5%', width: '90%', paddingVertical: 10, flex: 1, flexDirection: 'row'}}>
+                                            
+                                                <PostsIconFrame>
+                                                    <PostsIcons style={{flex: 1}} tintColor={brand} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>
+                                                </PostsIconFrame>
+                                                <PostsIconFrame>
+                                                    <SubTitle style={{alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>0</SubTitle>
+                                                </PostsIconFrame>
+                                                <PostsIconFrame>
+                                                    <PostsIcons style={{flex: 1}} tintColor={brand} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png')}/>
+                                                </PostsIconFrame>
+                                                <PostsIconFrame>
+                                                    <PostsIcons style={{flex: 1}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/113-bubbles4.png')}/>
+                                                </PostsIconFrame>
+                                                <PostsIconFrame>
+                                                    <PostsIcons style={{flex: 1, height: 30, width: 30}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/387-share2.png')}/>
+                                                </PostsIconFrame>
+                                                <PostsIconFrame>
+                                                    <PostsIcons style={{flex: 1}} source={require('./../assets/img/ThreeDots.png')}/>
+                                                </PostsIconFrame>
+                                            </PostHorizontalView>
+                                            <SubTitle style={{flex: 1, alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>Just Now</SubTitle>
+                                            <TouchableOpacity>
+                                                <SubTitle style={{flex: 1, alignSelf: 'center', fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>0 comments</SubTitle>
+                                            </TouchableOpacity>
+                                        </View>
+                                    </>
+                                : postType == 'category' ?
+                                    <>
+                                        <SearchFrame>
+                                            <View style={{paddingHorizontal: '50%'}}/>
+                                            {postData.image !== null && (
+                                                <Avatar resizeMode="cover" searchPage={true} source={{uri: postData.image.uri}} />
+                                            )}
+                                            {postData.image == null && (
+                                                <Avatar resizeMode="cover" searchPage={true} source={{uri: SocialSquareLogo_B64_png}} />
+                                            )}
+                                            {postData.categoryNSFW == false && (
+                                                <View>
+                                                    {postData.categoryNSFL == false && (
+                                                        <SubTitle style={{color: colors.tertiary}} searchResTitle={true}>{postData.categoryTitle}</SubTitle>
+                                                    )}
+                                                    {postData.categoryNSFL == true && (
+                                                        <View style={{flexDirection: 'row'}}>
+                                                            <SubTitle searchResTitle={true} style={{color: red}}>(NSFL) </SubTitle>
+                                                            <SubTitle style={{color: colors.tertiary}} searchResTitle={true}>{postData.categoryTitle}</SubTitle>
+                                                        </View>
+                                                    )}
+                                                </View>
+                                            )}
+                                            {postData.categoryNSFW == true && (
                                                 <View style={{flexDirection: 'row'}}>
-                                                    <SubTitle searchResTitle={true} style={{color: red}}>(NSFL) </SubTitle>
+                                                    <SubTitle searchResTitle={true} style={{color: red}}>(NSFW) </SubTitle>
                                                     <SubTitle style={{color: colors.tertiary}} searchResTitle={true}>{postData.categoryTitle}</SubTitle>
                                                 </View>
                                             )}
-                                        </View>
-                                    )}
-                                    {postData.categoryNSFW == true && (
-                                        <View style={{flexDirection: 'row'}}>
-                                            <SubTitle searchResTitle={true} style={{color: red}}>(NSFW) </SubTitle>
-                                            <SubTitle style={{color: colors.tertiary}} searchResTitle={true}>{postData.categoryTitle}</SubTitle>
-                                        </View>
-                                    )}
-                                    <SubTitle style={{color: colors.tertiary}} searchResTitleDisplayName={true}>{postData.categoryDescription}</SubTitle>
-                                    <SubTitle searchResTitleDisplayName={true} style={{color: brand}}>{postData.categoryTags}</SubTitle>
-                                    <SearchHorizontalView>
-                                        <SearchHorizontalViewItemCenter style={{height: '100%', justifyContent: 'center', alignItems: 'center', textAlign: 'center'}}>
-                                            <SearchSubTitle welcome={true} style={{flex: 1, color: colors.tertiary}}> Members </SearchSubTitle>
-                                            <ProfIcons style={{flex: 1}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/115-users.png')}/>
-                                            <SearchSubTitle welcome={true} style={{flex: 1, color: colors.tertiary}}> 0 </SearchSubTitle>
-                                        </SearchHorizontalViewItemCenter>
-                                        <SearchHorizontalViewItemCenter style={{height: '100%', justifyContent: 'center', alignItems: 'center', textAlign: 'center'}}>
-                                            <SearchSubTitle welcome={true} style={{flex: 1, color: colors.tertiary}}> Date Created </SearchSubTitle>
-                                            <ProfIcons style={{flex: 1}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/084-calendar.png')}/>
-                                            <SearchSubTitle welcome={true} style={{flex: 1, color: colors.tertiary}}> Just Now </SearchSubTitle>
-                                        </SearchHorizontalViewItemCenter>
-                                    </SearchHorizontalView>
-                                </SearchFrame>
-                            </>
-                        :
-                            <Text style={{color: colors.errorColor, fontSize: 20, textAlign: 'center', marginVertical: 20}}>Error occured.</Text>
-                : null
-                }
-            />
+                                            <SubTitle style={{color: colors.tertiary}} searchResTitleDisplayName={true}>{postData.categoryDescription}</SubTitle>
+                                            <SubTitle searchResTitleDisplayName={true} style={{color: brand}}>{postData.categoryTags}</SubTitle>
+                                            <SearchHorizontalView>
+                                                <SearchHorizontalViewItemCenter style={{height: '100%', justifyContent: 'center', alignItems: 'center', textAlign: 'center'}}>
+                                                    <SearchSubTitle welcome={true} style={{flex: 1, color: colors.tertiary}}> Members </SearchSubTitle>
+                                                    <ProfIcons style={{flex: 1}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/115-users.png')}/>
+                                                    <SearchSubTitle welcome={true} style={{flex: 1, color: colors.tertiary}}> 0 </SearchSubTitle>
+                                                </SearchHorizontalViewItemCenter>
+                                                <SearchHorizontalViewItemCenter style={{height: '100%', justifyContent: 'center', alignItems: 'center', textAlign: 'center'}}>
+                                                    <SearchSubTitle welcome={true} style={{flex: 1, color: colors.tertiary}}> Date Created </SearchSubTitle>
+                                                    <ProfIcons style={{flex: 1}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/084-calendar.png')}/>
+                                                    <SearchSubTitle welcome={true} style={{flex: 1, color: colors.tertiary}}> Just Now </SearchSubTitle>
+                                                </SearchHorizontalViewItemCenter>
+                                            </SearchHorizontalView>
+                                        </SearchFrame>
+                                    </>
+                                :
+                                    <Text style={{color: colors.errorColor, fontSize: 20, textAlign: 'center', marginVertical: 20}}>Error occured.</Text>
+                        : null
+                        }
+                    />
+                </>
+            }
         
         </View>
     );

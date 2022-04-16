@@ -32,9 +32,10 @@ import {
     PostsVerticalView,
     PostCreatorIcon,
     ChatScreen_Title,
-    Navigator_BackButton
+    Navigator_BackButton,
+    Navigator_RightButton
 } from './screenStylings/styling.js';
-import {View, ActivityIndicator, ImageBackground, StyleSheet, Image, SectionList, Text} from 'react-native';
+import {View, ActivityIndicator, ImageBackground, StyleSheet, Image, SectionList, Text, Animated} from 'react-native';
 
 // Colors
 const {brand, primary, tertiary, darkLight, descTextColor, slightlyLighterPrimary, red} = Colors;
@@ -67,6 +68,12 @@ import SocialSquareLogo_B64_png from '../assets/SocialSquareLogo_Base64_png.js';
 
 import {useTheme} from '@react-navigation/native';
 
+import AntDesign from 'react-native-vector-icons/AntDesign';
+
+import { ServerUrlContext } from '../components/ServerUrlContext.js';
+
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+
 function usePrevious(value) {
     const ref = useRef();
     useEffect(() => {
@@ -86,14 +93,31 @@ const Conversations = ({navigation}) => {
     const [onlineUsersForShow, setOnlineUsersForShow] = useState([])
     const [onlineUsersImageB64s, setOnlineUsersImageB64s] = useState([])
     const [compareOnlineUsers, setCompareOnlineUsers] = useState([])
-    if (storedCredentials) {var {_id} = storedCredentials} else {var _id = 'SSGUEST'}
+    if (storedCredentials) {var {_id, name} = storedCredentials} else {var {_id} = {_id: 'SSGUEST', name: 'SSGUEST'}}
     const [message, setMessage] = useState();
     const [messageType, setMessageType] = useState();
     const [conversationsSections, setConversationSections] = useState()
     const [loadingConversations, setLoadingConversations] = useState(false)
     const [extraUnreadsMessages, setExtraUnreadMessages] = useState([])
     const {colors, dark} = useTheme()
+    const {serverUrl, setServerUrl} = useContext(ServerUrlContext);
     var userLoadMax = 20
+    const LoadingOnlineUsersPlaceholderAnimationOpacity = useRef(new Animated.Value(1)).current;
+
+    Animated.loop(
+        Animated.sequence([
+            Animated.timing(LoadingOnlineUsersPlaceholderAnimationOpacity, {
+                toValue: 0.5,
+                duration: 500,
+                useNativeDriver: true
+            }),
+            Animated.timing(LoadingOnlineUsersPlaceholderAnimationOpacity, {
+                toValue: 1,
+                duration: 500,
+                useNativeDriver: true
+            })
+        ])
+    ).start();
     
     const handleMessage = (message, type = 'FAILED') => {
         setMessage(message);
@@ -102,12 +126,12 @@ const Conversations = ({navigation}) => {
     
     //any image honestly
     async function getImageWithKey(imageKey) {
-        return axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${imageKey}`)
+        return axios.get(`${serverUrl}/getImage/${imageKey}`)
         .then(res => res.data);
     }
 
     const ConversationItem = ({conversationId, isDirectMessage, members, conversationImageB64, conversationTitle, conversationNSFW, conversationNSFL, dateCreated, lastMessage, lastMessageDate, cryptographicNonce, conversationDescription, unreadsMessages}) => (
-        <TouchableOpacity style={{borderColor: colors.darkLight, borderWidth: 3, height: 100, borderRadius: 20, paddingTop: 5, paddingBottom: 5, paddingLeft: 2, paddingRight: 2, marginBottom: 10}} onPress={() => navigation.navigate("Chat", {conversationId: conversationId, conversationTitleSent: conversationTitle, cryptographicNonce: cryptographicNonce, conversationDescriptionSent: conversationDescription, isDirectMessage: isDirectMessage, conversationNSFL: conversationNSFL, conversationNSFW: conversationNSFW})}>
+        <TouchableOpacity style={{borderColor: colors.darkLight, borderWidth: 3, height: 100, borderRadius: 20, paddingTop: 5, paddingBottom: 5, paddingLeft: 2, paddingRight: 2, marginBottom: 10, width: '90%', alignSelf: 'center'}} onPress={() => navigation.navigate("Chat", {conversationId: conversationId, conversationTitleSent: conversationTitle, cryptographicNonce: cryptographicNonce, conversationDescriptionSent: conversationDescription, isDirectMessage: isDirectMessage, conversationNSFL: conversationNSFL, conversationNSFW: conversationNSFW})}>
             <PostsHorizontalView>
                 {conversationImageB64 !== null && (
                     <PostsVerticalView>
@@ -209,7 +233,7 @@ const Conversations = ({navigation}) => {
         }
 
         handleMessage(null);
-        const url = `https://nameless-dawn-41038.herokuapp.com/conversations/getConvos/${_id}`;
+        const url = `${serverUrl}/conversations/getConvos/${_id}`;
         setLoadingConversations(true)
         axios.get(url).then((response) => {
             const result = response.data;
@@ -277,7 +301,7 @@ const Conversations = ({navigation}) => {
         //
         const allOnlineUsersStringed = onlineUsers.toString()
         console.log(allOnlineUsersStringed)
-        const url = `https://nameless-dawn-41038.herokuapp.com/getUsersDetailsWithPubIds/${allOnlineUsersStringed}`
+        const url = `${serverUrl}/getUsersDetailsWithPubIds/${allOnlineUsersStringed}`
         axios.get(url).then((response) => {
             const result = response.data;
             const {message, status, data} = result;
@@ -340,7 +364,7 @@ const Conversations = ({navigation}) => {
     }
 
     const checkConversationMembersOnlineStatuses = () => {
-        const url = `https://nameless-dawn-41038.herokuapp.com/getOnlineUsersByDms/${_id}`
+        const url = `${serverUrl}/getOnlineUsersByDms/${_id}`
         axios.get(url).then((response) => {
             const result = response.data;
             const {message, status, data} = result;
@@ -447,7 +471,7 @@ const Conversations = ({navigation}) => {
                     //
                     const allOnlineUsersStringed = onlineUsers.toString()
                     console.log(allOnlineUsersStringed)
-                    const url = `https://nameless-dawn-41038.herokuapp.com/getUsersDetailsWithPubIds/${allOnlineUsersStringed}`
+                    const url = `${serverUrl}/getUsersDetailsWithPubIds/${allOnlineUsersStringed}`
                     axios.get(url).then((response) => {
                         const result = response.data;
                         const {message, status, data} = result;
@@ -516,7 +540,7 @@ const Conversations = ({navigation}) => {
     }, [onlineUsers, onlineUsersForShow, onlineUsersImageB64s])
 
     useEffect(() => {
-        if (storedCredentials) {
+        if (storedCredentials && isFocused == true) {
             console.log("Reload Conversations")
             loadConversations()
             checkConversationMembersOnlineStatuses()
@@ -541,6 +565,7 @@ const Conversations = ({navigation}) => {
 
     return(
         <>
+            <StatusBar style={colors.StatusBarColor}/>
             <ChatScreen_Title style={{backgroundColor: colors.primary, borderWidth: 0}}>
                 <Navigator_BackButton onPress={() => {navigation.goBack()}}>
                     <Image
@@ -550,83 +575,106 @@ const Conversations = ({navigation}) => {
                         resizeMethod="resize"
                     />
                 </Navigator_BackButton>
-                <Text style={{color: colors.tertiary, textAlign: 'center', fontWeight: 'bold', fontSize: 22, marginTop: -2}}>Conversations</Text>
+                    <Text style={{color: colors.tertiary, textAlign: 'center', fontWeight: 'bold', fontSize: 22, marginTop: -2}}>{storedCredentials ? name : 'Conversations'}</Text>
+                {storedCredentials &&
+                    <Navigator_RightButton onPress={() => {navigation.navigate("CreateConversationSelection")}}>
+                        <AntDesign name="plus" size={40} color={colors.tertiary} />
+                    </Navigator_RightButton>
+                }
             </ChatScreen_Title>
             {storedCredentials ?
-                <KeyboardAvoidingWrapper style={{backgroundColor: colors.primary}}>
-                    <StyledContainer style={{marginTop: -55, backgroundColor: colors.primary}}>
-                        <ScrollView>
-                            <StatusBar style={colors.StatusBarColor}/>
-                            <SearchBarArea style={{alignSelf: 'center', width: '100%', marginBottom: 0}}>
-                                <UserTextInput
-                                    placeholder="Search Conversations"
-                                    placeholderTextColor={colors.tertiary}
-                                    onChangeText={(val) => handleChange(val)}
-                                    style={{backgroundColor: colors.primary, borderColor: colors.borderColor, color: colors.tertiary}}
-                                />
-                            </SearchBarArea>
-                            <TouchableOpacity style={{flexDirection: 'row', alignItems: 'center', alignSelf: 'center', borderBottomWidth: 3, borderBottomColor: darkLight}} onPress={() => navigation.navigate("CreateConversationSelection")}>
-                                <SubTitle style={{borderRadius: 1000, backgroundColor: colors.primary, width: 30, height: 30, textAlign: 'center', fontWeight: 'normal', marginRight: 8, color: colors.tertiary, fontSize: 22}}>+</SubTitle>
-                                <SubTitle style={{color: colors.tertiary}}>Create Conversation</SubTitle>
-                            </TouchableOpacity>
-                            <SubTitle style={{marginBottom: 0, fontWeight: 'normal', fontSize: 12, textAlign: 'center', marginVertical: 2, color: colors.tertiary}}>Dm Users Online:</SubTitle>
-                            {onlineUsersForShow.length == 0 && (
-                                <TouchableOpacity style={{flexDirection: 'column', height: 80, width: 80, marginVertical: 10, borderRadius: 200, borderColor: colors.darkLight, borderWidth: 3, alignItems: 'center', justifyContent: 'center'}}>
-                                    <Text style={{textAlign: 'center', color: colors.tertiary}}>No one</Text>
-                                </TouchableOpacity>
-                            )}
-                            {onlineUsersForShow.length !== 0 && (
-                                <FlatList 
-                                    contentContainerStyle={{justifyContent: 'center'}}
-                                    horizontal={true}
-                                    style={{flexDirection: 'row', borderColor: colors.borderColor, borderBottomWidth: 3}}
-                                    data={onlineUsersForShow}
-                                    keyExtractor={(item, index) => item + index}
-                                    extraData={onlineUsersImageB64s}
-                                    renderItem={({item, index}) => {
-                                        return(
-                                            <View style={{alignItems: 'center'}}>
-                                                <TouchableOpacity style={{flexDirection: 'column', marginVertical: 10}}>
-                                                    {item.imageKey !== "" && (
-                                                        <View>
-                                                            {onlineUsersImageB64s.findIndex(x => x.imageKey == item.imageKey) !== -1 ? (
-                                                                <Image style={{height: 80, width: 80, borderRadius: 200, borderColor: colors.borderColor, borderWidth: 3}} source={{uri: `data:image/jpg;base64,${onlineUsersImageB64s[onlineUsersImageB64s.findIndex(x => x.imageKey == item.imageKey)].imageB64}`}}/>
-                                                            ) : (
-                                                                <Image style={{height: 80, width: 80, borderRadius: 200, borderWidth: 3, borderColor: colors.borderColor}}/>
-                                                            )} 
+                <View style={{flex: 1}}>
+                    <SectionList
+                        sections={conversationsSections}
+                        keyExtractor={(item, index) => item + index}
+                        renderItem={({ item }) => <ConversationItem conversationId={item.conversationId} isDirectMessage={item.isDirectMessage} members={item.members} conversationImageB64={item.conversationImageB64} conversationTitle={item.conversationTitle} conversationDescription={item.conversationDescription} conversationNSFW={item.conversationNSFW} conversationNSFL={item.conversationNSFL} dateCreated={item.dateCreated} lastMessage={item.lastMessage} lastMessageDate={item.lastMessageDate} cryptographicNonce={item.cryptographicNonce} unreadsMessages={item.unreadsMessages}/>}
+                        ListFooterComponent={<View style={{height: 30}}/>}
+                        ListHeaderComponent={
+                            <View style={{width: '90%', alignSelf: 'center', marginBottom: 3}}>
+                                <MsgBox type={messageType}>{message}</MsgBox>
+                                <SearchBarArea style={{alignSelf: 'center', width: '100%', marginBottom: 0}}>
+                                    <UserTextInput
+                                        placeholder="Search Conversations"
+                                        placeholderTextColor={colors.tertiary}
+                                        onChangeText={(val) => handleChange(val)}
+                                        style={{backgroundColor: colors.primary, borderColor: colors.borderColor, color: colors.tertiary}}
+                                    />
+                                </SearchBarArea>
+                                {onlineUsers.length !== onlineUsersForShow.length ?
+                                    <>
+                                        <SubTitle style={{marginBottom: 0, fontWeight: 'normal', fontSize: 12, textAlign: 'center', marginVertical: 2, color: colors.tertiary}}>Dm Users Online:</SubTitle>
+                                        <FlatList 
+                                            contentContainerStyle={{justifyContent: 'center'}}
+                                            horizontal={true}
+                                            style={{flexDirection: 'row', borderColor: colors.borderColor, borderBottomWidth: 3, marginBottom: 5}}
+                                            data={[{key: 1}, {key: 2}, {key: 3}, {key: 4}, {key: 5}, {key: 6}, {key: 7}, {key: 8}, {key: 9}, {key: 10}, {key: 11}, {key: 12}, {key: 13}, {key: 14}, {key: 15}, {key: 16}]}
+                                            renderItem={({item, index}) => {
+                                                return(
+                                                    <View style={{alignItems: 'center'}}>
+                                                        <Animated.View style={{height: 80, width: 80, borderRadius: 200, borderColor: colors.slightlyLighterPrimary, backgroundColor: colors.slightlyLighterPrimary, opacity: LoadingOnlineUsersPlaceholderAnimationOpacity}}/>
+                                                        <Animated.View style={{height: 15, width: 60, marginTop: 5, borderRadius: 20, borderColor: colors.slightlyLighterPrimary, backgroundColor: colors.slightlyLighterPrimary, opacity: LoadingOnlineUsersPlaceholderAnimationOpacity}}/>
+                                                        <Animated.View style={{height: 15, width: 90, marginTop: 5, borderRadius: 20, borderColor: colors.slightlyLighterPrimary, backgroundColor: colors.slightlyLighterPrimary, opacity: LoadingOnlineUsersPlaceholderAnimationOpacity}}/>
+                                                    </View>
+                                                )
+                                            }}
+                                        />
+                                    </>
+                                :
+                                    onlineUsersForShow.length == 0 ? (/*
+                                        <TouchableOpacity style={{flexDirection: 'column', height: 80, width: 80, marginVertical: 10, borderRadius: 200, borderColor: colors.darkLight, borderWidth: 3, alignItems: 'center', justifyContent: 'center'}}>
+                                            <Text style={{textAlign: 'center', color: colors.tertiary}}>No one</Text>
+                                        </TouchableOpacity>*/
+                                        null
+                                    )
+                                :   onlineUsersForShow.length !== 0 && (
+                                        <>
+                                            <SubTitle style={{marginBottom: 0, fontWeight: 'normal', fontSize: 12, textAlign: 'center', marginVertical: 2, color: colors.tertiary}}>Dm Users Online:</SubTitle>
+                                            <FlatList 
+                                                contentContainerStyle={{justifyContent: 'center'}}
+                                                horizontal={true}
+                                                style={{flexDirection: 'row', borderColor: colors.borderColor, borderBottomWidth: 3}}
+                                                data={onlineUsersForShow}
+                                                keyExtractor={(item, index) => item + index}
+                                                extraData={onlineUsersImageB64s}
+                                                renderItem={({item, index}) => {
+                                                    return(
+                                                        <View style={{alignItems: 'center'}}>
+                                                            <TouchableOpacity style={{flexDirection: 'column', marginVertical: 10}}>
+                                                                {item.imageKey !== "" && (
+                                                                    <View>
+                                                                        {onlineUsersImageB64s.findIndex(x => x.imageKey == item.imageKey) !== -1 ? (
+                                                                            <Image style={{height: 80, width: 80, borderRadius: 200, borderColor: colors.borderColor, borderWidth: 3}} source={{uri: `data:image/jpg;base64,${onlineUsersImageB64s[onlineUsersImageB64s.findIndex(x => x.imageKey == item.imageKey)].imageB64}`}}/>
+                                                                        ) : (
+                                                                            <Image style={{height: 80, width: 80, borderRadius: 200, borderWidth: 3, borderColor: colors.borderColor}}/>
+                                                                        )} 
+                                                                    </View>
+                                                                )}
+                                                                {item.imageKey == "" && (
+                                                                    <Image style={{height: 80, width: 80, borderRadius: 200, borderWidth: 3, borderColor: colors.borderColor}} source={{uri: SocialSquareLogo_B64_png}}/>
+                                                                )}
+                                                            </TouchableOpacity>
+                                                            {item.displayName == "" && (
+                                                                <View style={{marginBottom: 5}}>
+                                                                    <Text style={{color: colors.tertiary, textAlign: 'center'}}>@{item.name}</Text>
+                                                                </View>
+                                                            )}
+                                                            {item.displayName !== "" && (
+                                                                <View style={{marginBottom: 5}}>
+                                                                    <Text style={{color: colors.brand, textAlign: 'center'}}>{item.displayName}</Text>
+                                                                    <Text style={{color: colors.tertiary, textAlign: 'center'}}>@{item.name}</Text>
+                                                                </View>
+                                                            )}
                                                         </View>
-                                                    )}
-                                                    {item.imageKey == "" && (
-                                                        <Image style={{height: 80, width: 80, borderRadius: 200, borderWidth: 3, borderColor: colors.borderColor}} source={{uri: SocialSquareLogo_B64_png}}/>
-                                                    )}
-                                                </TouchableOpacity>
-                                                {item.displayName == "" && (
-                                                    <View style={{marginBottom: 5}}>
-                                                        <Text style={{color: colors.tertiary, textAlign: 'center'}}>@{item.name}</Text>
-                                                    </View>
-                                                )}
-                                                {item.displayName !== "" && (
-                                                    <View style={{marginBottom: 5}}>
-                                                        <Text style={{color: colors.brand, textAlign: 'center'}}>{item.displayName}</Text>
-                                                        <Text style={{color: colors.tertiary, textAlign: 'center'}}>@{item.name}</Text>
-                                                    </View>
-                                                )}
-                                            </View>
-                                        )
-                                    }}
-                                />
-                            )}
-                            <MsgBox type={messageType}>{message}</MsgBox>
-                        </ScrollView>
-                        <View style={{'width': '100%'}}>
-                            <SectionList
-                                sections={conversationsSections}
-                                keyExtractor={(item, index) => item + index}
-                                renderItem={({ item }) => <ConversationItem conversationId={item.conversationId} isDirectMessage={item.isDirectMessage} members={item.members} conversationImageB64={item.conversationImageB64} conversationTitle={item.conversationTitle} conversationDescription={item.conversationDescription} conversationNSFW={item.conversationNSFW} conversationNSFL={item.conversationNSFL} dateCreated={item.dateCreated} lastMessage={item.lastMessage} lastMessageDate={item.lastMessageDate} cryptographicNonce={item.cryptographicNonce} unreadsMessages={item.unreadsMessages}/>}
-                            />
-                        </View>
-                    </StyledContainer>
-                </KeyboardAvoidingWrapper>
+                                                    )
+                                                }}
+                                            />
+                                        </>
+                                    )
+                                }
+                            </View>
+                        }
+                    />
+                </View>
             :
                 <View style={{flex: 1, justifyContent: 'center', marginHorizontal: '2%'}}>
                     <Text style={{color: colors.tertiary, fontSize: 20, textAlign: 'center', marginBottom: 20}}>Please login to see conversations</Text>

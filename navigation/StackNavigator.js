@@ -72,6 +72,7 @@ import Algorithm_HomeScreenSettings from "../screens/HomeScreenSettings/Algorith
 import Audio_HomeScreenSettings from "../screens/HomeScreenSettings/Audio_HomeScreenSettings.js";
 import CreateConversationSelection from "../screens/CreateConversationSelection.js";
 import ConversationCreationPage from "../screens/CreateConversation.js";
+import ChangePasswordScreen from "../screens/ChangePasswordScreen.js";
 
 
 const Stack = createStackNavigator();
@@ -104,9 +105,6 @@ const RootStack = () => {
       <Stack.Screen name="SettingsScreen" component={SettingsScreen}/>
       <Stack.Screen name="CategoryViewPage" component={CategoryViewPage}/>
       <Stack.Screen name="CommentViewPage" component={CommentViewPage}/>
-      <Stack.Screen name="ThreadViewPage" component={ThreadViewPage}/>
-      <Stack.Screen name="ViewImagePostPage" component={ViewImagePostPage}/>
-      <Stack.Screen name="ViewPollPostPage" component={ViewPollPostPage}/>
       <Stack.Screen name="CategoryHome" component={CategoryHome}/>
       <Stack.Screen name="CategoryCreationPage" component={CategoryCreationPage}/>
       <Stack.Screen name="TakeImage_Camera" component={TakeImage_Camera}/>
@@ -127,6 +125,9 @@ const RootStack = () => {
         <Stack.Screen name="BadgeInfo" component={BadgeInfo}/>
         <Stack.Screen name="ProfileStats" component={ProfileStats}/>
         <Stack.Screen name="AccountBadges" component={AccountBadges}/>
+        <Stack.Screen name="ViewImagePostPage" component={ViewImagePostPage}/>
+        <Stack.Screen name="ViewPollPostPage" component={ViewPollPostPage}/>
+        <Stack.Screen name="ThreadViewPage" component={ThreadViewPage}/>
       </Stack.Group>
     </Stack.Navigator>
   );
@@ -160,12 +161,12 @@ const FindScreen_Stack = () => {
         <Stack.Screen name="BadgeInfo" component={BadgeInfo}/>
         <Stack.Screen name="CategoryViewPage" component={CategoryViewPage}/>
         <Stack.Screen name="SelectCategorySearchScreen" component={SelectCategorySearchScreen}/>
+        <Stack.Screen name="ViewImagePostPage" component={ViewImagePostPage}/>
+        <Stack.Screen name="ViewPollPostPage" component={ViewPollPostPage}/>
+        <Stack.Screen name="ThreadViewPage" component={ThreadViewPage}/>
       </Stack.Group>
       <Stack.Screen name="ProfileScreen_FromFindScreenPost" component={ProfileScreen}/>
       <Stack.Screen name="CommentviewPage" component={CommentViewPage}/>
-      <Stack.Screen name="ThreadViewPage" component={ThreadViewPage}/>
-      <Stack.Screen name="ViewImagePostPage" component={ViewImagePostPage}/>
-      <Stack.Screen name="ViewPollPostPage" component={ViewPollPostPage}/>
       <Stack.Screen name="ThreadUploadPage_FromCategory_FindStack" component={ThreadUploadPage}/>
       <Stack.Screen name="CommentViewPage" component={CommentViewPage}/>
       <Stack.Screen name="TakeImage_Camera" component={TakeImage_Camera}/>
@@ -190,6 +191,9 @@ const home_screen_post_to_profile_screen = () => {
     }}>
       <Stack.Screen name="HomeScreen" component={HomeScreen} />
       <Stack.Screen name="NotificationsScreen" component={NotificationsScreen} options={{gestureDirection: 'horizontal-inverted'}}/>
+      <Stack.Screen name="ViewImagePostPage" component={ViewImagePostPage}/>
+      <Stack.Screen name="ViewPollPostPage" component={ViewPollPostPage}/>
+      <Stack.Screen name="ThreadViewPage" component={ThreadViewPage}/>
     </Stack.Navigator>
   )
 }
@@ -263,6 +267,7 @@ const SettingsStack = () => {
       <Stack.Screen name="Filter_HomeScreenSettings" component={Filter_HomeScreenSettings}/>
       <Stack.Screen name="Algorithm_HomeScreenSettings" component={Algorithm_HomeScreenSettings}/>
       <Stack.Screen name="Audio_HomeScreenSettings" component={Audio_HomeScreenSettings}/>
+      <Stack.Screen name="ChangePasswordScreen" component={ChangePasswordScreen}/>
     </Stack.Navigator>
   )
 }

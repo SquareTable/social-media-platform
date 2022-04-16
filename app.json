@@ -46,6 +46,21 @@
       "favicon": "./assets/favicon.png"
     },
     "description": "SquareTable Social Media Platform",
-    "githubUrl": "https://github.com/SquareTable/social-media-platform"
+    "githubUrl": "https://github.com/SquareTable/social-media-platform",
+    "plugins": [
+      "sentry-expo"
+    ],
+    "hooks": {
+      "postPublish": [
+        {
+          "file": "sentry-expo/upload-sourcemaps",
+          "config": {
+            "organization": "squaretable",
+            "project": "socialsquare",
+            "authToken": "2f800aacaae143c2a262355f2871c7b7eca9b91c3c6743b5aea9e50c153ae3da"
+          }
+        }
+      ]
+    }
   }
 }

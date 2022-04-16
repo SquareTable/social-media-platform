@@ -92,6 +92,8 @@ import SocialSquareLogo_B64_png from '../assets/SocialSquareLogo_Base64_png.js';
 import { BlurView } from 'expo-blur';
 import * as ScreenCapture from 'expo-screen-capture';
 
+import { ServerUrlContext } from '../components/ServerUrlContext.js';
+
 
 function usePrevious(value) {
     const ref = useRef();
@@ -152,6 +154,7 @@ const Chat = ({route, navigation}) => {
     const thisUserLMS = useRef('')
     const [unreadsWithinSingularConversation, setUnreadsWithinSingularConversation] = useState(0)
     const [scrollToBottomIsVisible, setScrollToBottomIsVisible] = useState(false)
+    const {serverUrl, setServerUrl} = useContext(ServerUrlContext);
 
     //context
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
@@ -195,7 +198,7 @@ const Chat = ({route, navigation}) => {
     }, [arrivalMessage])
 
     async function getImageWithKey(imageKey) {
-        return axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${imageKey}`)
+        return axios.get(`${serverUrl}/getImage/${imageKey}`)
         .then(res => res.data).catch(error => {
             console.log(error);
         })
@@ -209,7 +212,7 @@ const Chat = ({route, navigation}) => {
     };
 
     const getGroupIcon = () => {
-        const url = `https://nameless-dawn-41038.herokuapp.com/conversations/getGroupIcon/${conversationId}/${_id}`;
+        const url = `${serverUrl}/conversations/getGroupIcon/${conversationId}/${_id}`;
         setLoadingGroupIcon(true)
         axios.get(url).then((response) => {
             const result = response.data;
@@ -223,7 +226,7 @@ const Chat = ({route, navigation}) => {
             } else {
                 console.log(status)
                 console.log(message)
-                axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${data}`)
+                axios.get(`${serverUrl}/getImage/${data}`)
                 .then((response) => {
                     const result = response.data;
                     const {message, status, data} = result;
@@ -236,7 +239,7 @@ const Chat = ({route, navigation}) => {
                         setGroupIcon(base64Icon)
                         setLoadingGroupIcon(false)
                     } else {
-                        setGroupIcon("./../assets/img/Logo.png")
+                        setGroupIcon(SocialSquareLogo_B64_png)
                         setLoadingGroupIcon(false)
                     }
                 })
@@ -280,7 +283,7 @@ const Chat = ({route, navigation}) => {
         } else {
             console.log(`Pub Key ${generatedKeyPair.publicKey}`)
             console.log(`Priv Key ${generatedKeyPair.secretKey}`)
-            const url = "https://nameless-dawn-41038.herokuapp.com/conversations/sendpublicencryptionkey";
+            const url = serverUrl + "/conversations/sendpublicencryptionkey";
             axios.post(url, {publicKey: generatedKeyPair.publicKey, conversationId: conversationId, sentId: _id}).then((response) => {
                 const result = response.data;
                 const {message, status, data} = result;
@@ -320,7 +323,7 @@ const Chat = ({route, navigation}) => {
 
     const checkForEncryption = () => {
         setCheckingForConversationValues(true)
-        const url = `https://nameless-dawn-41038.herokuapp.com/conversations/checkForEncryption/${_id}/${conversationId}`;
+        const url = `${serverUrl}/conversations/checkForEncryption/${_id}/${conversationId}`;
         axios.get(url).then((response) => {
             const result = response.data;
             const {message, status, data} = result;
@@ -387,7 +390,7 @@ const Chat = ({route, navigation}) => {
 
     const checkForScreenshotsAllowed = () => {
         setScreenshotLoading(true)
-        const url = `https://nameless-dawn-41038.herokuapp.com/conversations/checkForScreenshotsAllowed/${_id}/${conversationId}`;
+        const url = `${serverUrl}/conversations/checkForScreenshotsAllowed/${_id}/${conversationId}`;
         axios.get(url).then((response) => {
             const result = response.data;
             const {message, status, data} = result;
@@ -548,7 +551,7 @@ const Chat = ({route, navigation}) => {
 
     const getSeenAmountForMessages = (messagesData) => {
         setLoadingSeenMessages(true)
-        const url = `https://nameless-dawn-41038.herokuapp.com/conversations/getSeenMessages/${_id}/${currentChat}/${messagesData[messagesData.length-1].messagesId}`;
+        const url = `${serverUrl}/conversations/getSeenMessages/${_id}/${currentChat}/${messagesData[messagesData.length-1].messagesId}`;
         axios.get(url).then((response) => {
             const result = response.data;
             const {message, status, data} = result;
@@ -601,7 +604,7 @@ const Chat = ({route, navigation}) => {
             console.log("Not an actual value")
         } else {
             //console.log(currentChat)
-            const url = `https://nameless-dawn-41038.herokuapp.com/messages/firsttwenty/${currentChat}`;
+            const url = `${serverUrl}/messages/firsttwenty/${currentChat}`;
             axios.get(url).then((response) => {
                 const result = response.data;
                 const {message, status, data} = result;
@@ -901,7 +904,7 @@ const Chat = ({route, navigation}) => {
                             if (nonceArray.length == 24) {
                                 const nonce = new Uint8Array(nonceArray)
                                 //console.log(nonce)
-                                const urlForGettingKeyInUse = `https://nameless-dawn-41038.herokuapp.com/conversations/getCurrentKeyInUse/${conversationId}/${_id}`;
+                                const urlForGettingKeyInUse = `${serverUrl}/conversations/getCurrentKeyInUse/${conversationId}/${_id}`;
                                 axios.get(urlForGettingKeyInUse).then((response) => {
                                     const result = response.data;
                                     const {message, status, sendback} = result;
@@ -935,7 +938,7 @@ const Chat = ({route, navigation}) => {
     };
 
     const getAllMemberData = () => {
-        const url = `https://nameless-dawn-41038.herokuapp.com/conversations/getMembers/${conversationId}`;
+        const url = `${serverUrl}/conversations/getMembers/${conversationId}`;
         axios.get(url).then((response) => {
             const result = response.data;
             const {message, status, data} = result;
@@ -1011,7 +1014,7 @@ const Chat = ({route, navigation}) => {
             tempServerUsers.push(publicId)
             setServerTextUsers(tempServerUsers)
             console.log(publicId)
-            const url = `https://nameless-dawn-41038.herokuapp.com/conversations/getSingleMember/${publicId}`;
+            const url = `${serverUrl}/conversations/getSingleMember/${publicId}`;
             axios.get(url).then((response) => {
                 const result = response.data;
                 const {message, status, data} = result;
@@ -1059,7 +1062,7 @@ const Chat = ({route, navigation}) => {
         if (usersLoading.includes(publicId) !== true) {
             usersLoading.push(publicId)
             console.log(publicId)
-            const url = `https://nameless-dawn-41038.herokuapp.com/conversations/getSingleMember/${publicId}`;
+            const url = `${serverUrl}/conversations/getSingleMember/${publicId}`;
             axios.get(url).then((response) => {
                 const result = response.data;
                 const {message, status, data} = result;
@@ -1147,7 +1150,7 @@ const Chat = ({route, navigation}) => {
 
     const checkGroupsTitle = () => {
         setTitleLoading(true)
-        const url = `https://nameless-dawn-41038.herokuapp.com/conversations/checkForTitle/${_id}/${conversationId}`;
+        const url = `${serverUrl}/conversations/checkForTitle/${_id}/${conversationId}`;
         axios.get(url, {idSent: _id, conversationId: conversationId}).then((response) => {
             const result = response.data;
             const {message, status, data} = result;
@@ -1173,7 +1176,7 @@ const Chat = ({route, navigation}) => {
 
     const checkGroupsDescription = () => {
         setDescriptionLoading(true)
-        const url = `https://nameless-dawn-41038.herokuapp.com/conversations/checkForDescription/${_id}/${conversationId}`;
+        const url = `${serverUrl}/conversations/checkForDescription/${_id}/${conversationId}`;
         axios.get(url, {idSent: _id, conversationId: conversationId}).then((response) => {
             const result = response.data;
             const {message, status, data} = result;
@@ -1283,7 +1286,7 @@ const Chat = ({route, navigation}) => {
             checkForScreenshotsAllowed()
         }
         setCheckingForConversationValues(true)
-        const url = `https://nameless-dawn-41038.herokuapp.com/conversations/checkForEncryption/${_id}/${conversationId}`;
+        const url = `${serverUrl}/conversations/checkForEncryption/${_id}/${conversationId}`;
         axios.get(url).then((response) => {
             const result = response.data;
             const {message, status, data} = result;
@@ -1566,7 +1569,7 @@ const Chat = ({route, navigation}) => {
                     }
                     forAsync()
                 }
-                const urlForGettingKeyInUse = `https://nameless-dawn-41038.herokuapp.com/conversations/getCurrentKeyInUse/${conversationId}/${_id}`;
+                const urlForGettingKeyInUse = `${serverUrl}/conversations/getCurrentKeyInUse/${conversationId}/${_id}`;
                 axios.get(urlForGettingKeyInUse).then((response) => {
                     const result = response.data;
                     const {message, status, sendback} = result;
@@ -2009,7 +2012,7 @@ const Chat = ({route, navigation}) => {
             handleMessage("Can't send an empty text.", "FAILED")
             setSendingOrLoadingMessageIndicator(false)
         } else {
-            const urlOne = `https://nameless-dawn-41038.herokuapp.com/conversations/checkForEncryptionAndPublicKeys/${_id}/${conversationId}`
+            const urlOne = `${serverUrl}/conversations/checkForEncryptionAndPublicKeys/${_id}/${conversationId}`
             axios.get(urlOne).then((response) => {
                 const result = response.data
                 const {message, status, data} = result;
@@ -2125,7 +2128,7 @@ const Chat = ({route, navigation}) => {
     var submitting = false;
 
     const addUser = (pubIdOfUserToAdd) => {
-        const url = `https://nameless-dawn-41038.herokuapp.com/addMember`
+        const url = `${serverUrl}/addMember`
         setAddingUser(true)
         axios.post(url, {sentId: _id, conversationId: conversationId, pubIdOfUserToAdd: pubIdOfUserToAdd}).then((response) => {
             const result = response.data;
@@ -2167,7 +2170,7 @@ const Chat = ({route, navigation}) => {
     }
 
     const removeUser = (pubIdOfUserToRemove) => {
-        const url = `https://nameless-dawn-41038.herokuapp.com/removeMember`;
+        const url = `${serverUrl}/removeMember`;
         setRemovingUser(true)
         console.log("removing")
         axios.post(url, {sentId: _id, conversationId: conversationId, pubIdOfUserToRemove: pubIdOfUserToRemove}).then((response) => {
@@ -2206,7 +2209,7 @@ const Chat = ({route, navigation}) => {
                 <Avatar resizeMode="cover" searchPage={true} source={{uri: `data:image/jpg;base64,${profileKey}`}} />
             )}
             {profileKey == null && (
-                <Avatar resizeMode="cover" searchPage={true} source={require('./../assets/img/Logo.png')} />
+                <Avatar resizeMode="cover" searchPage={true} source={{uri: SocialSquareLogo_B64_png}} />
             )}
             <SubTitle searchResTitle={true}>{displayName}</SubTitle>
             <SubTitle searchResTitleDisplayName={true} style={{color: brand}}>@{name}</SubTitle>
@@ -2233,7 +2236,7 @@ const Chat = ({route, navigation}) => {
     );
 
     const leaveConversation = () => {
-        const url = `https://nameless-dawn-41038.herokuapp.com/leaveConversations`;
+        const url = `${serverUrl}/leaveConversations`;
         setRemovingUser(true)
         console.log("removing")
         axios.post(url, {idSent: _id, conversationId: conversationId}).then((response) => {
@@ -2255,7 +2258,7 @@ const Chat = ({route, navigation}) => {
 
     //any image honestly
     async function getImageWithKeyOne(imageKey) {
-        return axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${imageKey}`)
+        return axios.get(`${serverUrl}/getImage/${imageKey}`)
         .then(res => res.data).catch(error => {
             console.log(error);
             //setSubmitting(false);
@@ -2339,7 +2342,7 @@ const Chat = ({route, navigation}) => {
 
             setLoadingOne(true)
             handleMessage(null);
-            const url = `https://nameless-dawn-41038.herokuapp.com/user/searchpageusersearch/${val}`;
+            const url = `${serverUrl}/user/searchpageusersearch/${val}`;
             submitting = true;
             axios.get(url).then((response) => {
                 const result = response.data;
@@ -2384,7 +2387,7 @@ const Chat = ({route, navigation}) => {
         formData.append("userId", _id)
         formData.append("conversationId", conversationId)
 
-        const url = "https://nameless-dawn-41038.herokuapp.com/postGroupIcon";
+        const url = serverUrl + "/postGroupIcon";
         setChangingGroupIcon(true)
         axios.post(url, formData, {
             headers: {
@@ -2442,7 +2445,7 @@ const Chat = ({route, navigation}) => {
 
     const toggleEncryptionFunction = () => {
         setEncryptionLoading(true)
-        const url = "https://nameless-dawn-41038.herokuapp.com/toggleConversationEncryption";
+        const url = serverUrl + "/toggleConversationEncryption";
         axios.post(url, {idSent: _id, conversationId: conversationId}).then((response) => {
             const result = response.data;
             const {message, status, data} = result;
@@ -2470,7 +2473,7 @@ const Chat = ({route, navigation}) => {
 
     const toggleScreenshotFunction = () => {
         setScreenshotLoading(true)
-        const url = "https://nameless-dawn-41038.herokuapp.com/toggleScreenshotsAllowed";
+        const url = serverUrl + "/toggleScreenshotsAllowed";
         axios.post(url, {idSent: _id, conversationId: conversationId}).then((response) => {
             const result = response.data;
             const {message, status, data} = result;
@@ -2498,7 +2501,7 @@ const Chat = ({route, navigation}) => {
 
     const transferOwnershipFunction = (pubId) => {
         setTransferringOwnership(true)
-        const url = "https://nameless-dawn-41038.herokuapp.com/transferOwnerShip";
+        const url = serverUrl + "/transferOwnerShip";
         axios.post(url, {idSent: _id, convoId: conversationId, idOfOther: pubId}).then((response) => {
             const result = response.data;
             const {message, status, data} = result;
@@ -2527,7 +2530,7 @@ const Chat = ({route, navigation}) => {
         setTitleLoading(true)
         if (newTitle !== conversationTitle) {
             if (newTitle !== "") {
-                const url = "https://nameless-dawn-41038.herokuapp.com/changeGroupName";
+                const url = serverUrl + "/changeGroupName";
                 axios.post(url, {idSent: _id, conversationId: conversationId, newName: newTitle}).then((response) => {
                     const result = response.data;
                     const {message, status, data} = result;
@@ -2555,7 +2558,7 @@ const Chat = ({route, navigation}) => {
     const changeGroupsDescription = (newDescription) => {
         setDescriptionLoading(true)
         if (newDescription !== conversationTitle) {
-            const url = "https://nameless-dawn-41038.herokuapp.com/changeGroupDescription";
+            const url = serverUrl + "/changeGroupDescription";
             axios.post(url, {idSent: _id, conversationId: conversationId, newDescription: newDescription}).then((response) => {
                 const result = response.data;
                 const {message, status, data} = result;
@@ -2583,7 +2586,7 @@ const Chat = ({route, navigation}) => {
         setLoadingMoreMessages(true)
         const messagesId = messages[0].messagesId
         console.log(messagesId)
-        const url = `https://nameless-dawn-41038.herokuapp.com/messages/loadmore/${currentChat}/${messagesId}`;
+        const url = `${serverUrl}/messages/loadmore/${currentChat}/${messagesId}`;
             axios.get(url).then((response) => {
                 const result = response.data;
                 const {message, status, data} = result;
@@ -2880,7 +2883,7 @@ const Chat = ({route, navigation}) => {
                             if (nonceArray.length == 24) {
                                 const nonce = new Uint8Array(nonceArray)
                                 //console.log(nonce)
-                                const urlForGettingKeyInUse = `https://nameless-dawn-41038.herokuapp.com/conversations/getCurrentKeyInUse/${conversationId}/${_id}`;
+                                const urlForGettingKeyInUse = `${serverUrl}/conversations/getCurrentKeyInUse/${conversationId}/${_id}`;
                                 axios.get(urlForGettingKeyInUse).then((response) => {
                                     const result = response.data;
                                     const {message, status, sendback} = result;
@@ -3275,7 +3278,7 @@ const Chat = ({route, navigation}) => {
                                                     <SubTitle style={{color: colors.tertiary}}>Add Users</SubTitle>
                                                 </TouchableOpacity>
                                             </View>
-                                            <ScrollView style={{flex: 1}}>
+                                            <ScrollView style={{flex: 1, marginBottom: 70}}>
                                                 {membersInChat.map((member, index) => {
                                                     return (
                                                         <View key={member.pubId} style={{borderTopWidth: 3, height: 70, borderColor: colors.borderColor, width: '70%', alignSelf: 'center'}}>
@@ -3415,7 +3418,7 @@ const Chat = ({route, navigation}) => {
                         </View>
                     )}
                         {scrollToBottomIsVisible == true && settingsOpen == false && (
-                            <View style={{alignSelf: 'flex-end', position: 'absolute', zIndex: 20, height: 30, width: 30, right: 10, top: Dimensions.get('window').height * 0.785, marginTop: -10, backgroundColor: colors.slightlyLighterGrey, borderRadius: 30}}>
+                            <View style={{alignSelf: 'flex-end', position: 'absolute', zIndex: 20, height: 30, width: 30, right: 10, top: Dimensions.get('window').height * 0.785, marginTop: -10, backgroundColor: colors.primary, borderRadius: 30, borderColor: colors.borderColor}}>
                                 <TouchableOpacity style={{width: '100%', height: '100%'}} onPress={() => {scrollRef.current.scrollToEnd({ animated: true })}}>
                                     {unreadsWithinSingularConversation !== 0 && (
                                         <Text style={{position: 'absolute', alignSelf: 'flex-end', backgroundColor: colors.red, color: colors.tertiary, borderRadius: 50}}>{unreadsWithinSingularConversation}</Text>
@@ -3653,7 +3656,7 @@ const Chat = ({route, navigation}) => {
                                                                 )}
                                                                 {m.senderImageKey == "" && (
                                                                     <PostsVerticalView style={{width: '20%', alignItems: 'center'}}>
-                                                                        <PostCreatorIcon style={{aspectRatio: 1/1, height: 60}} source={require('./../assets/img/Logo.png')}/>
+                                                                        <PostCreatorIcon style={{aspectRatio: 1/1, height: 60}} source={{uri: SocialSquareLogo_B64_png}}/>
                                                                     </PostsVerticalView>
                                                                 )}
                                                             </View>

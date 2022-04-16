@@ -81,11 +81,14 @@ import SocialSquareLogo_B64_png from '../assets/SocialSquareLogo_Base64_png';
 
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
+import { ServerUrlContext } from '../components/ServerUrlContext.js';
+
 const CategoryViewPage = ({route, navigation}) => {
     const {colors, dark} = useTheme()
      //context
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
     if (storedCredentials) {var {_id} = storedCredentials} else {var _id = 'SSGUEST'}
+    const {serverUrl, setServerUrl} = useContext(ServerUrlContext);
     const {categoryTitle, NSFW, NSFL, allowScreenShots} = route.params;
     const [AvatarImg, setAvatarImage] = useState(null)
     const [gridViewState, setGridViewState] = useState("flex")
@@ -171,7 +174,7 @@ const CategoryViewPage = ({route, navigation}) => {
     }
 
     const getAllCategoryItems = () => {
-        const url = `https://nameless-dawn-41038.herokuapp.com/user/findcategorywithname/${categoryTitle}/${_id}`;
+        const url = `${serverUrl}/user/findcategorywithname/${categoryTitle}/${_id}`;
     
         axios.get(url).then((response) => {
             const result = response.data;
@@ -187,7 +190,7 @@ const CategoryViewPage = ({route, navigation}) => {
                 console.log(data)
                 var CategoryData = data
                 if (data.imageKey) {
-                    axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${data.imageKey}`)
+                    axios.get(`${serverUrl}/getImage/${data.imageKey}`)
                     .then((response) => {
                         const result = response.data;
                         const {message, status, data} = result;
@@ -257,7 +260,7 @@ const CategoryViewPage = ({route, navigation}) => {
     const JoinCategory = () => {
         if (storedCredentials) {
             if (inCategory !== "Finding") {
-                const url = "https://nameless-dawn-41038.herokuapp.com/user/joincategory";
+                const url = serverUrl + "/user/joincategory";
 
                 var toSend = {userId: _id, categoryTitle: categoryTitle}
                 const beforeChange = inCategory
@@ -335,7 +338,7 @@ const CategoryViewPage = ({route, navigation}) => {
                     setChangingVotedThreads(changingVotedThreadsArray)
                     //Do rest
                     handleMessage(null, null, null);
-                    const url = "https://nameless-dawn-41038.herokuapp.com/user/upvotethread";
+                    const url = serverUrl + "/user/upvotethread";
 
                     var toSend = {userId: _id, threadId: threadId}
 
@@ -478,7 +481,7 @@ const CategoryViewPage = ({route, navigation}) => {
                     setChangingVotedThreads(changingVotedThreadsArray)
                     //Do rest
                     handleMessage(null, null, null);
-                    const url = "https://nameless-dawn-41038.herokuapp.com/user/downvotethread";
+                    const url = serverUrl + "/user/downvotethread";
 
                     var toSend = {userId: _id, threadId: threadId}
 
@@ -726,18 +729,18 @@ const CategoryViewPage = ({route, navigation}) => {
 
     //get image of post
     async function getImageInPost(imageData, index) {
-        return axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${imageData[index].imageKey}`)
+        return axios.get(`${serverUrl}/getImage/${imageData[index].imageKey}`)
         .then(res => res.data);
     }
     //profile image of creator
     async function getImageInPfp(threadData, index) {
-        return axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${threadData[index].creatorImageKey}`)
+        return axios.get(`${serverUrl}/getImage/${threadData[index].creatorImageKey}`)
         .then(res => res.data);
     }
 
     //any image honestly
     async function getImageWithKey(imageKey) {
-        return axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${imageKey}`)
+        return axios.get(`${serverUrl}/getImage/${imageKey}`)
         .then(res => res.data);
     }
 
@@ -934,7 +937,7 @@ const CategoryViewPage = ({route, navigation}) => {
             });
         }
 
-        const url = `https://nameless-dawn-41038.herokuapp.com/user/getthreadsfromcategory/${categoryTitle}/${_id}`;
+        const url = `${serverUrl}/user/getthreadsfromcategory/${categoryTitle}/${_id}`;
 
         setLoadingPosts(true)
         axios.get(url).then((response) => {

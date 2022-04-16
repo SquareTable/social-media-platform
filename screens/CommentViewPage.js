@@ -93,6 +93,8 @@ import { useTheme } from '@react-navigation/native';
 import SocialSquareLogo_B64_png from '../assets/SocialSquareLogo_Base64_png';
 import { ProfilePictureURIContext } from '../components/ProfilePictureURIContext';
 
+import { ServerUrlContext } from '../components/ServerUrlContext.js';
+
 const CommentViewPage = ({route, navigation}) => {
      //context
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
@@ -150,25 +152,26 @@ const CommentViewPage = ({route, navigation}) => {
     const {colors, dark} = useTheme();
     // PFP
     const {profilePictureUri, setProfilePictureUri} = useContext(ProfilePictureURIContext)
+    const {serverUrl, setServerUrl} = useContext(ServerUrlContext)
 
     //get image of post
     async function getImageInPost(imageData, index) {
-        return axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${imageData[index].imageKey}`)
+        return axios.get(`${serverUrl}/getImage/${imageData[index].imageKey}`)
         .then(res => res.data);
     }
     //profile image of creator
     async function getImageInPfp(threadData, index) {
-        return axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${threadData[index].creatorImageKey}`)
+        return axios.get(`${serverUrl}/getImage/${threadData[index].creatorImageKey}`)
         .then(res => res.data);
     }
     //profile image of commenter
     async function getImageInPfpComments(commentData, index) {
-        return axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${commentData[index].profileImageKey}`)
+        return axios.get(`${serverUrl}/getImage/${commentData[index].profileImageKey}`)
         .then(res => res.data);
     }
     //any image honestly
     async function getImageWithKey(imageKey) {
-        return axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${imageKey}`)
+        return axios.get(`${serverUrl}/getImage/${imageKey}`)
         .then(res => res.data);
     }
 
@@ -214,11 +217,11 @@ const CommentViewPage = ({route, navigation}) => {
         }
         var url = ""
         if (postFormat == "Poll") {
-            url = `https://nameless-dawn-41038.herokuapp.com/user/getsinglepollcomment/${postId}/${_id}/${commentId}`;
+            url = `${serverUrl}/user/getsinglepollcomment/${postId}/${_id}/${commentId}`;
         } else if (postFormat == "Image") {
-            url = `https://nameless-dawn-41038.herokuapp.com/user/getsingleimagecomment/${postId}/${_id}/${commentId}`;
+            url = `${serverUrl}/user/getsingleimagecomment/${postId}/${_id}/${commentId}`;
         } else if (postFormat == "Thread") {
-            url = `https://nameless-dawn-41038.herokuapp.com/user/getsinglethreadcomment/${postId}/${_id}/${commentId}`;
+            url = `${serverUrl}/user/getsinglethreadcomment/${postId}/${_id}/${commentId}`;
         }
         
         axios.get(url).then((response) => {
@@ -349,11 +352,11 @@ const CommentViewPage = ({route, navigation}) => {
 
         var urlTwo = ""
         if (postFormat == "Poll") {
-            urlTwo = `https://nameless-dawn-41038.herokuapp.com/user/searchforpollcommentreplies/${postId}/${_id}/${commentId}/`;
+            urlTwo = `${serverUrl}/user/searchforpollcommentreplies/${postId}/${_id}/${commentId}/`;
         } else if (postFormat == "Image") {
-            urlTwo = `https://nameless-dawn-41038.herokuapp.com/user/searchforimagecommentreplies/${postId}/${_id}/${commentId}/`;
+            urlTwo = `${serverUrl}/user/searchforimagecommentreplies/${postId}/${_id}/${commentId}/`;
         } else if (postFormat == "Thread") {
-            urlTwo = `https://nameless-dawn-41038.herokuapp.com/user/searchforthreadcommentreplies/${postId}/${_id}/${commentId}/`;
+            urlTwo = `${serverUrl}/user/searchforthreadcommentreplies/${postId}/${_id}/${commentId}/`;
         }
         setLoadingMoreComments(true)
         axios.get(urlTwo).then((response) => {
@@ -383,7 +386,7 @@ const CommentViewPage = ({route, navigation}) => {
 
     const handleCommentPost = (commentProperties, setSubmitting) => {
         handleMessage(null);
-        const url = "https://nameless-dawn-41038.herokuapp.com/user/threadpostcommentreply";
+        const url = serverUrl + "/user/threadpostcommentreply";
 
         axios.post(url, commentProperties).then((response) => {
             const result = response.data;
@@ -447,7 +450,7 @@ const CommentViewPage = ({route, navigation}) => {
                 setChangingVotedComments(changingVotedCommentsArray)
                 //Do rest
                 handleMessage(null, null, null);
-                const url = "https://nameless-dawn-41038.herokuapp.com/user/upvotecomment";
+                const url = serverUrl + "/user/upvotecomment";
 
                 var toSend = {format: postFormat, userId: _id, postId: postId, commentId: commentId}
 
@@ -586,7 +589,7 @@ const CommentViewPage = ({route, navigation}) => {
                 setChangingVotedComments(changingVotedCommentsArray)
                 //Do rest
                 handleMessage(null, null, null);
-                const url = "https://nameless-dawn-41038.herokuapp.com/user/downvotecomment";
+                const url = serverUrl + "/user/downvotecomment";
 
                 var toSend = {format: postFormat, userId: _id, postId: postId, commentId: commentId}
 

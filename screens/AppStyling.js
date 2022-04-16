@@ -1,4 +1,4 @@
-import React, {useState, useContext, useEffect} from 'react';
+import React, {useState, useContext, useEffect, useRef} from 'react';
 import {useTheme} from '@react-navigation/native';
 
 import {
@@ -14,69 +14,45 @@ import { AppStylingContext } from '../components/AppStylingContext.js';
 const AppStyling = ({navigation}) => {
     const {AppStylingContextState, setAppStylingContextState} = useContext(AppStylingContext);
     const {colors, dark} = useTheme();
-    const [buttonOneSelected, setButtonOneSelected] = useState(true)
-    const [buttonTwoSelected, setButtonTwoSelected] = useState(false)
-    const [buttonThreeSelected, setButtonThreeSelected] = useState(false)
+    const allowedToChangeStyle = useRef(true);
 
     console.log('Primary color is: ' + colors.primary)
 
-    useEffect(() => {
-        async function ChooseWhichButtonIsSelected() {
-            await AsyncStorage.getItem('AppStylingContextState').then((result) => {
-                if (result == 'Default') {
-                    setButtonOneSelected(true)
-                    setButtonTwoSelected(false)
-                    setButtonThreeSelected(false)
-                } else if (result == 'Dark') {
-                    setButtonOneSelected(false)
-                    setButtonTwoSelected(true)
-                    setButtonThreeSelected(false)
-                } else if (result == 'Light') {
-                    setButtonOneSelected(false)
-                    setButtonTwoSelected(false)
-                    setButtonThreeSelected(true)
-                } else if (result == null) {
-                    AsyncStorage.setItem('AppStylingContextState', 'Default');
-                    setButtonOneSelected(true)
-                } else {
-                    setButtonOneSelected(false)
-                    setButtonTwoSelected(false)
-                    setButtonThreeSelected(false)
-                }
-            })
-        }
-        ChooseWhichButtonIsSelected()
-    })
-
     const handleButtonOnePress = async () => {
-        if (buttonOneSelected == false) {
-            setButtonOneSelected(true)
-            setButtonTwoSelected(false)
-            setButtonThreeSelected(false)
-            setAppStylingContextState('Default')
-            await AsyncStorage.setItem('AppStylingContextState', 'Default')
+        if (AppStylingContextState != 'Default') {
+            if (allowedToChangeStyle.current) {
+                allowedToChangeStyle.current = false;
+                setAppStylingContextState('Default')
+                await AsyncStorage.setItem('AppStylingContextState', 'Default')
+            }
         }
     }
 
     const handleButtonTwoPress = async () => {
-        if (buttonTwoSelected == false) {
-            setButtonOneSelected(false)
-            setButtonTwoSelected(true)
-            setButtonThreeSelected(false)
-            setAppStylingContextState('Dark')
-            await AsyncStorage.setItem('AppStylingContextState', 'Dark')
+        if (AppStylingContextState != 'Dark') {
+            if (allowedToChangeStyle.current) {
+                allowedToChangeStyle.current = false;
+                setAppStylingContextState('Dark')
+                await AsyncStorage.setItem('AppStylingContextState', 'Dark')
+            }
         }
     }
 
     const handleButtonThreePress = async () => {
-        if (buttonThreeSelected == false) {
-            setButtonOneSelected(false)
-            setButtonTwoSelected(false)
-            setButtonThreeSelected(true)
-            setAppStylingContextState('Light')
-            await AsyncStorage.setItem('AppStylingContextState', 'Light')
+        if (AppStylingContextState != 'Light') {
+            if (allowedToChangeStyle.current) {
+                allowedToChangeStyle.current = false;
+                setAppStylingContextState('Light')
+                await AsyncStorage.setItem('AppStylingContextState', 'Light')
+            }
         }
     }
+
+    useEffect(() => {
+        if (allowedToChangeStyle.current == false) {
+            allowedToChangeStyle.current = true;
+        }
+    }, [AppStylingContextState])
     return(
         <View style={{height: '100%'}}>
             <ChatScreen_Title style={{backgroundColor: colors.primary, borderWidth: 0}}>
@@ -100,8 +76,8 @@ const AppStyling = ({navigation}) => {
                             <Text style={{fontSize: 16, color: colors.tertiary, textAlign: 'center', fontWeight: 'bold'}}>Device Default</Text>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={handleButtonOnePress}>
-                            <View style={{marginTop: 20, backgroundColor: colors.borderColor, minHeight: 30, height: 30, maxHeight: 30, minWidth: 30, width: 30, maxWidth: 30, borderRadius: 30/2, borderColor: buttonOneSelected ? colors.brand : colors.tertiary, borderWidth: 2, justifyContent: 'center', alignItems: 'center'}}>
-                                {buttonOneSelected && (
+                            <View style={{marginTop: 20, backgroundColor: colors.borderColor, minHeight: 30, height: 30, maxHeight: 30, minWidth: 30, width: 30, maxWidth: 30, borderRadius: 30/2, borderColor: AppStylingContextState == 'Default' ? colors.brand : colors.tertiary, borderWidth: 2, justifyContent: 'center', alignItems: 'center'}}>
+                                {AppStylingContextState == 'Default' && (
                                     <View style={{backgroundColor: colors.tertiary, minHeight: 15, height: 15, maxHeight: 15, minWidth: 15, width: 15, maxWidth: 15, borderRadius: 15/2}}/>
                                 )}
                             </View>
@@ -115,8 +91,8 @@ const AppStyling = ({navigation}) => {
                             <Text style={{fontSize: 16, color: colors.tertiary, textAlign: 'center', fontWeight: 'bold'}}>Dark</Text>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={handleButtonTwoPress}>
-                            <View style={{marginTop: 20, backgroundColor: colors.borderColor, minHeight: 30, height: 30, maxHeight: 30, minWidth: 30, width: 30, maxWidth: 30, borderRadius: 30/2, borderColor: buttonTwoSelected ? colors.brand : colors.tertiary, borderWidth: 2, justifyContent: 'center', alignItems: 'center'}}>
-                                {buttonTwoSelected && (
+                            <View style={{marginTop: 20, backgroundColor: colors.borderColor, minHeight: 30, height: 30, maxHeight: 30, minWidth: 30, width: 30, maxWidth: 30, borderRadius: 30/2, borderColor: AppStylingContextState == 'Dark' ? colors.brand : colors.tertiary, borderWidth: 2, justifyContent: 'center', alignItems: 'center'}}>
+                                {AppStylingContextState == 'Dark' && (
                                     <View style={{backgroundColor: colors.tertiary, minHeight: 15, height: 15, maxHeight: 15, minWidth: 15, width: 15, maxWidth: 15, borderRadius: 15/2}}/>
                                 )}
                             </View>
@@ -130,8 +106,8 @@ const AppStyling = ({navigation}) => {
                             <Text style={{fontSize: 16, color: colors.tertiary, textAlign: 'center', fontWeight: 'bold'}}>Light</Text>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={handleButtonThreePress}>
-                            <View style={{marginTop: 20, backgroundColor: colors.borderColor, minHeight: 30, height: 30, maxHeight: 30, minWidth: 30, width: 30, maxWidth: 30, borderRadius: 30/2, borderColor: buttonThreeSelected ? colors.brand : colors.tertiary, borderWidth: 2, justifyContent: 'center', alignItems: 'center'}}>
-                                {buttonThreeSelected && (
+                            <View style={{marginTop: 20, backgroundColor: colors.borderColor, minHeight: 30, height: 30, maxHeight: 30, minWidth: 30, width: 30, maxWidth: 30, borderRadius: 30/2, borderColor: AppStylingContextState == 'Light' ? colors.brand : colors.tertiary, borderWidth: 2, justifyContent: 'center', alignItems: 'center'}}>
+                                {AppStylingContextState == 'Light' && (
                                     <View style={{backgroundColor: colors.tertiary, minHeight: 15, height: 15, maxHeight: 15, minWidth: 15, width: 15, maxWidth: 15, borderRadius: 15/2}}/>
                                 )}
                             </View>

@@ -71,7 +71,10 @@ import {
     CommentIcons,
     CommentText,
     CommentsContainer,
-    VoteText
+    VoteText,
+    ChatScreen_Title,
+    Navigator_BackButton,
+    TestText
 } from './screenStylings/styling';
 
 // Colors
@@ -92,6 +95,8 @@ import { ImageBackground, ScrollView, SectionList, View, Image, TouchableOpacity
 import { useTheme } from '@react-navigation/native';
 import { ProfilePictureURIContext } from '../components/ProfilePictureURIContext';
 import SocialSquareLogo_B64_png from '../assets/SocialSquareLogo_Base64_png';
+
+import { ServerUrlContext } from '../components/ServerUrlContext.js';
 
 const ThreadViewPage = ({route, navigation}) => {
     const {colors, dark} = useTheme()
@@ -165,25 +170,27 @@ const ThreadViewPage = ({route, navigation}) => {
     const [findingVotedComments, setFindingVotedComments] = useState([])
     //PFP
     const {profilePictureUri, setProfilePictureUri} = useContext(ProfilePictureURIContext);
+    // Server stuff
+    const {serverUrl, setServerUrl} = useContext(ServerUrlContext);
 
     //get image of post
     async function getImageInPost(imageData, index) {
-        return axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${imageData[index].imageKey}`)
+        return axios.get(`${serverUrl}/getImage/${imageData[index].imageKey}`)
         .then(res => res.data);
     }
     //profile image of creator
     async function getImageInPfp(threadData, index) {
-        return axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${threadData[index].creatorImageKey}`)
+        return axios.get(`${serverUrl}/getImage/${threadData[index].creatorImageKey}`)
         .then(res => res.data);
     }
     //profile image of commenter
     async function getImageInPfpComments(commentData, index) {
-        return axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${commentData[index].profileImageKey}`)
+        return axios.get(`${serverUrl}/getImage/${commentData[index].profileImageKey}`)
         .then(res => res.data);
     }
     //any image honestly
     async function getImageWithKey(imageKey) {
-        return axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${imageKey}`)
+        return axios.get(`${serverUrl}/getImage/${imageKey}`)
         .then(res => res.data);
     }
 
@@ -251,7 +258,7 @@ const ThreadViewPage = ({route, navigation}) => {
             setImageInThreadB64(imageB64Var)
             setCategoryImageB64(categoryB64Var)
         }
-        const url = `https://nameless-dawn-41038.herokuapp.com/user/getthreadbyid/${threadId}/${_id}`;
+        const url = `${serverUrl}/user/getthreadbyid/${threadId}/${_id}`;
         
         axios.get(url).then((response) => {
             const result = response.data;
@@ -379,7 +386,7 @@ const ThreadViewPage = ({route, navigation}) => {
             });
         }
 
-        const urlTwo = `https://nameless-dawn-41038.herokuapp.com/user/searchforthreadcomments/${threadId}/${_id}`;
+        const urlTwo = `${serverUrl}/user/searchforthreadcomments/${threadId}/${_id}`;
         setLoadingMoreComments(true)
         axios.get(urlTwo).then((response) => {
             const result = response.data;
@@ -411,7 +418,7 @@ const ThreadViewPage = ({route, navigation}) => {
 
     const handleCommentPost = (commentProperties, setSubmitting) => {
         handleMessage(null);
-        const url = "https://nameless-dawn-41038.herokuapp.com/user/threadpostcomment";
+        const url = serverUrl + "/user/threadpostcomment";
 
         axios.post(url, commentProperties).then((response) => {
             const result = response.data;
@@ -476,7 +483,7 @@ const ThreadViewPage = ({route, navigation}) => {
                     setChangingVotedComments(changingVotedCommentsArray)
                     //Do rest
                     handleMessage(null, null, null);
-                    const url = "https://nameless-dawn-41038.herokuapp.com/user/upvotecomment";
+                    const url = serverUrl + "/user/upvotecomment";
 
                     var toSend = {format: "Thread", userId: _id, postId: threadId, commentId: commentId}
 
@@ -619,7 +626,7 @@ const ThreadViewPage = ({route, navigation}) => {
                     setChangingVotedComments(changingVotedCommentsArray)
                     //Do rest
                     handleMessage(null, null, null);
-                    const url = "https://nameless-dawn-41038.herokuapp.com/user/downvotecomment";
+                    const url = serverUrl + "/user/downvotecomment";
 
                     var toSend = {format: "Thread", userId: _id, postId: threadId, commentId: commentId}
 
@@ -833,7 +840,7 @@ const ThreadViewPage = ({route, navigation}) => {
             setThreadUpOrDownVoted("Changing")
             //Do rest
             handleMessage(null, null, null);
-            const url = "https://nameless-dawn-41038.herokuapp.com/user/upvotethread";
+            const url = serverUrl + "/user/upvotethread";
 
             var toSend = {userId: _id, threadId: threadId}
 
@@ -875,7 +882,7 @@ const ThreadViewPage = ({route, navigation}) => {
             setThreadUpOrDownVoted("Changing")
             //Do rest
             handleMessage(null, null, null);
-            const url = "https://nameless-dawn-41038.herokuapp.com/user/downvotethread";
+            const url = serverUrl + "/user/downvotethread";
 
             var toSend = {userId: _id, threadId: threadId}
 
@@ -915,8 +922,19 @@ const ThreadViewPage = ({route, navigation}) => {
     return(
         <>    
             <StatusBar style={colors.StatusBarColor}/>
+            <ChatScreen_Title style={{backgroundColor: colors.darkest, borderWidth: 0}}>
+                <Navigator_BackButton onPress={() => {navigation.goBack()}}>
+                    <Image
+                        source={require('../assets/app_icons/back_arrow.png')}
+                        style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2, tintColor: colors.tertiary}}
+                        resizeMode="contain"
+                        resizeMethod="resize"
+                    />
+                </Navigator_BackButton>
+                <TestText style={{textAlign: 'center', color: colors.tertiary}}>{creatorDisplayName ? creatorDisplayName : creatorName}'s thread</TestText>
+            </ChatScreen_Title>
             <ScrollView style={{backgroundColor: colors.primary}}>
-                <StyledContainer style={{width: '100%', backgroundColor: dark ? colors.darkest : colors.greyish, alignItems: 'center', paddingBottom: 2}}>
+                <StyledContainer style={{width: '100%', backgroundColor: dark ? colors.darkest : colors.greyish, alignItems: 'center', paddingBottom: 2, paddingTop: 0}}>
                     {categoryImageB64 == "Finding" && (
                         <Avatar style={{height: 70, width: 70, marginBottom: 0}} source={{uri: SocialSquareLogo_B64_png}}/>
                     )}

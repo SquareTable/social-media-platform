@@ -50,6 +50,8 @@ import axios from 'axios';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useTheme } from '@react-navigation/native';
 
+import { ServerUrlContext } from '../components/ServerUrlContext.js';
+
 const CategoryHome = ({navigation}) => {
     const {colors, dark} = useTheme()
      //context
@@ -63,6 +65,7 @@ const CategoryHome = ({navigation}) => {
     const [foundAmount, setFoundAmount] = useState();
     const [debounce, setDebounce] = useState(false);
     const [changeSections, setChangeSections] = useState()
+    const {serverUrl, setServerUrl} = useContext(ServerUrlContext);
     var userLoadMax = 10;
 
     const Item = ({name, displayName, following, followers, totalLikes}) => (
@@ -115,7 +118,7 @@ const CategoryHome = ({navigation}) => {
         }
 
         handleMessage(null);
-        const url = "https://nameless-dawn-41038.herokuapp.com/user/searchpagesearch";
+        const url = serverUrl + "/user/searchpagesearch";
         console.log(commentProperties)
         submitting = true;
         axios.post(url, commentProperties).then((response) => {

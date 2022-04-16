@@ -25,6 +25,7 @@ import {
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 import {Image, View, Text, TouchableOpacity} from 'react-native';
+import AppCredits from '../components/AppCredits.js';
 
 
 const HomeScreenSettings = ({navigation}) => {
@@ -59,9 +60,7 @@ const HomeScreenSettings = ({navigation}) => {
                     <FontAwesome name="music" size={60} color={colors.tertiary}/>
                     <SettingsItemText style={{color: colors.tertiary}}>Audio</SettingsItemText>
                 </SettingsPageItemTouchableOpacity>
-                <Text style={{color: colors.tertiary, fontSize: 24, textAlign: 'center'}}>© SquareTable 2022</Text>
-                <Text style={{color: colors.tertiary, fontSize: 24, textAlign: 'center', marginBottom: 10}}>All Rights Reserved</Text>
-                <Text style={{color: colors.tertiary, fontSize: 18, textAlign: 'center', marginBottom: 10}}>Made by Sebastian Webster, Kovid Dev, Didula Semasinghe, and Jacob Bowden</Text>
+                <AppCredits/>
             </WelcomeContainer>
         </>
     );

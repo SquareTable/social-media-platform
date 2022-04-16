@@ -32,6 +32,7 @@ import { CredentialsContext } from '../components/CredentialsContext';
 import * as Notifications from 'expo-notifications';
 import * as Linking from 'expo-linking';
 import * as IntentLauncher from 'expo-intent-launcher';
+import AppCredits from '../components/AppCredits.js';
 
 
 const NotificationsSettingsScreen = ({navigation}) => {
@@ -350,8 +351,8 @@ const NotificationsSettingsScreen = ({navigation}) => {
             setNotificationsAllowed(allowsNotifications);  
             await AsyncStorage.getItem('NotificationsSettings').then((data) => {
                 if (data == null) {
-                    turnOnAllSendNotifications()
-                    turnOnAllReceiveNotifications()
+                    //turnOnAllSendNotifications()
+                    //turnOnAllReceiveNotifications()
                     const settingsObject = {
                         TextMessages: true,
                         UpvotesOnPosts: true,
@@ -1268,9 +1269,7 @@ const NotificationsSettingsScreen = ({navigation}) => {
                                                 />
                                             </View>
                                         </View>
-                                        <Text style={{color: colors.tertiary, fontSize: 24, textAlign: 'center'}}>© SquareTable 2022</Text>
-                                        <Text style={{color: colors.tertiary, fontSize: 24, textAlign: 'center', marginBottom: 10}}>All Rights Reserved</Text>
-                                        <Text style={{color: colors.tertiary, fontSize: 18, textAlign: 'center', marginBottom: 10}}>Made by Sebastian Webster, Kovid Dev, Didula Semasinghe, and Jacob Bowden</Text>
+                                        <AppCredits/>
                                     </ScrollView>
                                 :
                                     <>

@@ -78,7 +78,10 @@ import {
     PostsIcons,
     PostsHorizontalView,
     PostsVerticalView,
-    PostCreatorIcon
+    PostCreatorIcon,
+    ChatScreen_Title,
+    Navigator_BackButton,
+    TestText
 } from './screenStylings/styling';
 
 // Colors
@@ -96,9 +99,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 //credentials context
 import { CredentialsContext } from './../components/CredentialsContext';
 
-import { View, ImageBackground, ScrollView, SectionList, ActivityIndicator, StyleSheet, TouchableOpacity, Text } from 'react-native';
+import { View, ImageBackground, ScrollView, SectionList, ActivityIndicator, StyleSheet, TouchableOpacity, Text, Image } from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import { ProfilePictureURIContext } from '../components/ProfilePictureURIContext';
+
+import { ServerUrlContext } from '../components/ServerUrlContext.js';
 
 
 const ViewPollPostPage = ({route, navigation}) => {
@@ -148,20 +153,22 @@ const ViewPollPostPage = ({route, navigation}) => {
     const [pollinitialVoteOption, setPollinitialVoteOption] = useState("Finding")
     //PFP
     const {profilePictureUri, setProfilePictureUri} = useContext(ProfilePictureURIContext)
+    //Server stuff
+    const {serverUrl, setServerUrl} = useContext(ServerUrlContext);
 
     //get image of post
     async function getImageInPost(imageData, index) {
-        return axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${imageData[index].imageKey}`)
+        return axios.get(`${serverUrl}/getImage/${imageData[index].imageKey}`)
         .then(res => res.data);
     }
     //profile image of creator
     async function getImageInPfp(imageData, index) {
-        return axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${imageData[index].creatorPfpKey}`)
+        return axios.get(`${serverUrl}/getImage/${imageData[index].creatorPfpKey}`)
         .then(res => res.data);
     }
     //profile image of commenter
     async function getImageInPfpComments(commentData, index) {
-        return axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${commentData[index].profileImageKey}`)
+        return axios.get(`${serverUrl}/getImage/${commentData[index].profileImageKey}`)
         .then(res => res.data);
     }
 
@@ -277,7 +284,7 @@ const ViewPollPostPage = ({route, navigation}) => {
             setInitialPollVotesForOptions({optionOne: pollData.optionOnesVotes, optionTwo: pollData.optionTwosVotes, optionThree: pollData.optionThreesVotes, optionFour: pollData.optionFoursVotes, optionFive: pollData.optionFivesVotes, optionSix: pollData.optionSixesVotes})
             setPollVotesForOptions({optionOne: pollData.optionOnesVotes, optionTwo: pollData.optionTwosVotes, optionThree: pollData.optionThreesVotes, optionFour: pollData.optionFoursVotes, optionFive: pollData.optionFivesVotes, optionSix: pollData.optionSixesVotes})
         }
-        const url = "https://nameless-dawn-41038.herokuapp.com/user/searchforpollpostsbyid";
+        const url = serverUrl + "/user/searchforpollpostsbyid";
     
         var toSend = {"pollId": pollId, "userId": _id}
 
@@ -406,7 +413,7 @@ const ViewPollPostPage = ({route, navigation}) => {
             });
         }
 
-        const url = `https://nameless-dawn-41038.herokuapp.com/user/searchforpollcomments/${pollId}/${_id}`;
+        const url = `${serverUrl}/user/searchforpollcomments/${pollId}/${_id}`;
         setLoadingMoreComments(true)
         axios.get(url).then((response) => {
             const result = response.data;
@@ -435,7 +442,7 @@ const ViewPollPostPage = ({route, navigation}) => {
     
     const handleCommentPost = (commentProperties, setSubmitting) => {
         handleMessage(null);
-        const url = "https://nameless-dawn-41038.herokuapp.com/user/pollpostcomment";
+        const url = serverUrl + "/user/pollpostcomment";
 
         axios.post(url, commentProperties).then((response) => {
             const result = response.data;
@@ -461,7 +468,7 @@ const ViewPollPostPage = ({route, navigation}) => {
         if (storedCredentials) {
             handleMessage(null);
             console.log(optionSelected)
-            const url = "https://nameless-dawn-41038.herokuapp.com/user/voteonpoll";
+            const url = serverUrl + "/user/voteonpoll";
 
             var toSend = {userId: _id, optionSelected: optionSelected, pollId: pollId}
 
@@ -850,7 +857,7 @@ const ViewPollPostPage = ({route, navigation}) => {
             setPollUpOrDownVoted("Changing")
             //Do rest
             handleMessage(null, null, null);
-            const url = "https://nameless-dawn-41038.herokuapp.com/user/upvotepoll";
+            const url = serverUrl + "/user/upvotepoll";
 
             var toSend = {userId: _id, pollId: pollId}
 
@@ -890,7 +897,7 @@ const ViewPollPostPage = ({route, navigation}) => {
             setPollUpOrDownVoted("Changing")
             //Do rest
             handleMessage(null, null, null);
-            const url = "https://nameless-dawn-41038.herokuapp.com/user/downvotepoll";
+            const url = serverUrl + "/user/downvotepoll";
 
             var toSend = {userId: _id, pollId: pollId}
 
@@ -973,10 +980,21 @@ const ViewPollPostPage = ({route, navigation}) => {
 
     return(
         <>    
-            <StatusBar style="dark"/>
+            <StatusBar style={colors.StatusBarColor}/>
+            <ChatScreen_Title style={{backgroundColor: colors.primary, borderWidth: 0}}>
+                <Navigator_BackButton onPress={() => {navigation.goBack()}}>
+                    <Image
+                        source={require('../assets/app_icons/back_arrow.png')}
+                        style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2, tintColor: colors.tertiary}}
+                        resizeMode="contain"
+                        resizeMethod="resize"
+                    />
+                </Navigator_BackButton>
+                <TestText style={{textAlign: 'center', color: colors.tertiary}}>{creatorDisplayName ? creatorDisplayName : creatorName}'s poll</TestText>
+            </ChatScreen_Title>
             <ScrollView style={{backgroundColor: colors.primary}}>
-                <WelcomeContainer style={{backgroundColor: colors.primary}}>
-                    <WelcomeContainer style={{backgroundColor: colors.primary}}>
+                <WelcomeContainer style={{backgroundColor: colors.primary, paddingTop: 0}}>
+                    <WelcomeContainer style={{backgroundColor: colors.primary, paddingTop: 0}}>
                         <ViewScreenPollPostFrame style={{width: '100%'}}>
                             <PostsHorizontalView style={{borderBottomWidth: 3, borderColor: darkLight, width: '100%', paddingBottom: 5}}>
                                 <PostsVerticalView>

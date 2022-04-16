@@ -2139,3 +2139,10 @@ export const ProfileBadgeItemUnderline = styled.View`
     bottom: -13px;
     z-index: 20;
 `;
+
+export const Navigator_RightButton = styled.TouchableOpacity`
+    position: absolute;
+    right: 10px;
+    padding-top: ${StatusBarHeight + 2}px;
+    z-index: 10000;
+`;

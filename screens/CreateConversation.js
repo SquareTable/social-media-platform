@@ -66,6 +66,8 @@ import { useIsFocused } from '@react-navigation/native';
 
 import { useTheme } from '@react-navigation/native';
 
+import { ServerUrlContext } from '../components/ServerUrlContext.js';
+
 const ConversationCreationPage = ({route, navigation}) => {
     const isFocused = useIsFocused();
     const [hidePassword, setHidePassword] = useState(true);
@@ -84,6 +86,7 @@ const ConversationCreationPage = ({route, navigation}) => {
     const [membersInChat, setMembersInChat] = useState([])
     const [changeOnce, setChangeOnce] = useState(false)
     const {colors, dark} = useTheme();
+    const {serverUrl, setServerUrl} = useContext(ServerUrlContext);
 
     function reloadMembers () {
         if (sentConversationMembers !== null) {
@@ -146,7 +149,7 @@ const ConversationCreationPage = ({route, navigation}) => {
             
             const nonce = await nacl.randomBytes(24)
 
-            const url = "https://nameless-dawn-41038.herokuapp.com/conversations/create";
+            const url = serverUrl + "/conversations/create";
             const toSend = {creatorId: _id, conversationTitle: credentials.conversationTitle, conversationDescription: credentials.conversationDescription, conversationMembers: membersInChat, conversationNSFW: credentials.conversationNSFW, conversationNSFL: credentials.conversationNSFL, cryptographicNonce: nonce}
             axios.post(url, toSend).then((response) => {
                 const result = response.data;

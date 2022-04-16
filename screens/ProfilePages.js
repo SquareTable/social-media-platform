@@ -106,6 +106,8 @@ import * as Haptics from 'expo-haptics';
 
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
 
+import { ServerUrlContext } from '../components/ServerUrlContext.js';
+
 const ProfilePages = ({ route, navigation }) => {
     const StatusBarHeight = Constants.statusBarHeight;
     var backButtonHidden = false
@@ -257,9 +259,11 @@ const ProfilePages = ({ route, navigation }) => {
     const [settingUpChat, setSettingUpChat] = useState(false);
     const [settingUpChatErrorMessage, setSettingUpChatErrorMessage] = useState(null);
     const [settingUpChatErrorOrigin, setSettingUpChatErrorOrigin] = useState(null);
+    // Server url
+    const {serverUrl, setServerUrl} = useContext(ServerUrlContext);
 
     const getFollowersEtc = () => {
-        const url = `https://nameless-dawn-41038.herokuapp.com/user/reloadUsersDetails/${pubId}/${secondId}`;
+        const url = `${serverUrl}/user/reloadUsersDetails/${pubId}/${secondId}`;
         changeToOne()
         
         axios.get(url).then((response) => {
@@ -352,7 +356,7 @@ const ProfilePages = ({ route, navigation }) => {
                     setChangingVotedImages(changingVotedImagesArray)
                     //Do rest
                     handleMessage(null, null, null);
-                    const url = "https://nameless-dawn-41038.herokuapp.com/user/upvoteimage";
+                    const url = serverUrl + "/user/upvoteimage";
 
                     var toSend = { userId: _id, imageId: imageId }
 
@@ -494,7 +498,7 @@ const ProfilePages = ({ route, navigation }) => {
                     setChangingVotedImages(changingVotedImagesArray)
                     //Do rest
                     handleMessage(null, null, null);
-                    const url = "https://nameless-dawn-41038.herokuapp.com/user/downvoteimage";
+                    const url = serverUrl + "/user/downvoteimage";
 
                     var toSend = { userId: _id, imageId: imageId }
 
@@ -636,7 +640,7 @@ const ProfilePages = ({ route, navigation }) => {
                     setChangingVotedPolls(changingVotedPollsArray)
                     //Do rest
                     handleMessage(null, null, null);
-                    const url = "https://nameless-dawn-41038.herokuapp.com/user/upvotepoll";
+                    const url = serverUrl + "/user/upvotepoll";
 
                     var toSend = { userId: _id, pollId: pollId }
 
@@ -778,7 +782,7 @@ const ProfilePages = ({ route, navigation }) => {
                     setChangingVotedPolls(changingVotedPollsArray)
                     //Do rest
                     handleMessage(null, null, null);
-                    const url = "https://nameless-dawn-41038.herokuapp.com/user/downvotepoll";
+                    const url = serverUrl + "/user/downvotepoll";
 
                     var toSend = { userId: _id, pollId: pollId }
 
@@ -920,7 +924,7 @@ const ProfilePages = ({ route, navigation }) => {
                     setChangingVotedThreads(changingVotedThreadsArray)
                     //Do rest
                     handleMessage(null, null, null);
-                    const url = "https://nameless-dawn-41038.herokuapp.com/user/upvotethread";
+                    const url = serverUrl + "/user/upvotethread";
 
                     var toSend = { userId: _id, threadId: threadId }
 
@@ -1063,7 +1067,7 @@ const ProfilePages = ({ route, navigation }) => {
                     setChangingVotedThreads(changingVotedThreadsArray)
                     //Do rest
                     handleMessage(null, null, null);
-                    const url = "https://nameless-dawn-41038.herokuapp.com/user/downvotethread";
+                    const url = serverUrl + "/user/downvotethread";
 
                     var toSend = { userId: _id, threadId: threadId }
 
@@ -1661,7 +1665,7 @@ const ProfilePages = ({ route, navigation }) => {
 
     //get image of post
     async function getImageInPost(imageData, index) {
-        return axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${imageData[index].imageKey}`, { cancelToken: source.token })
+        return axios.get(`${serverUrl}/getImage/${imageData[index].imageKey}`, { cancelToken: source.token })
             .then(res => res.data).catch(error => {
                 console.log(error);
                 //setSubmitting(false);
@@ -1671,7 +1675,7 @@ const ProfilePages = ({ route, navigation }) => {
     }
     //profile image of creator
     async function getImageInPfp(imageData, index) {
-        return axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${imageData[index].creatorPfpKey}`, { cancelToken: source.token })
+        return axios.get(`${serverUrl}/getImage/${imageData[index].creatorPfpKey}`, { cancelToken: source.token })
             .then(res => res.data).catch(error => {
                 console.log(error);
                 //setSubmitting(false);
@@ -1680,7 +1684,7 @@ const ProfilePages = ({ route, navigation }) => {
             })
     }
     async function getImageInCategory(imageKey) {
-        return axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${imageKey}`, { cancelToken: cancelTokenPostFormatFive.token })
+        return axios.get(`${serverUrl}/getImage/${imageKey}`, { cancelToken: cancelTokenPostFormatFive.token })
             .then(res => res.data).catch(error => {
                 console.log(error);
                 //setSubmitting(false);
@@ -1690,7 +1694,7 @@ const ProfilePages = ({ route, navigation }) => {
     }
     //any image honestly
     async function getImageWithKeyOne(imageKey) {
-        return axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${imageKey}`, { cancelToken: cancelTokenPostFormatOne.token })
+        return axios.get(`${serverUrl}/getImage/${imageKey}`, { cancelToken: cancelTokenPostFormatOne.token })
             .then(res => res.data).catch(error => {
                 console.log(error);
                 //setSubmitting(false);
@@ -1699,7 +1703,7 @@ const ProfilePages = ({ route, navigation }) => {
             })
     }
     async function getImageWithKeyTwo(imageKey) {
-        return axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${imageKey}`, { cancelToken: cancelTokenPostFormatTwo.token })
+        return axios.get(`${serverUrl}/getImage/${imageKey}`, { cancelToken: cancelTokenPostFormatTwo.token })
             .then(res => res.data).catch(error => {
                 console.log(error);
                 //setSubmitting(false);
@@ -1708,7 +1712,7 @@ const ProfilePages = ({ route, navigation }) => {
             })
     }
     async function getImageWithKeyThree(imageKey) {
-        return axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${imageKey}`, { cancelToken: cancelTokenPostFormatThree.token })
+        return axios.get(`${serverUrl}/getImage/${imageKey}`, { cancelToken: cancelTokenPostFormatThree.token })
             .then(res => res.data).catch(error => {
                 console.log(error);
                 //setSubmitting(false);
@@ -1717,7 +1721,7 @@ const ProfilePages = ({ route, navigation }) => {
             })
     }
     async function getImageWithKeyFour(imageKey) {
-        return axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${imageKey}`, { cancelToken: cancelTokenPostFormatFour.token })
+        return axios.get(`${serverUrl}/getImage/${imageKey}`, { cancelToken: cancelTokenPostFormatFour.token })
             .then(res => res.data).catch(error => {
                 console.log(error);
                 //setSubmitting(false);
@@ -1726,7 +1730,7 @@ const ProfilePages = ({ route, navigation }) => {
             })
     }
     async function getImageWithKeyFive(imageKey) {
-        return axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${imageKey}`, { cancelToken: cancelTokenPostFormatFive.token })
+        return axios.get(`${serverUrl}/getImage/${imageKey}`, { cancelToken: cancelTokenPostFormatFive.token })
             .then(res => res.data).catch(error => {
                 console.log(error);
                 //setSubmitting(false);
@@ -1818,7 +1822,7 @@ const ProfilePages = ({ route, navigation }) => {
                 });
             }
 
-            const url = "https://nameless-dawn-41038.herokuapp.com/user/getImagesFromProfile";
+            const url = serverUrl + "/user/getImagesFromProfile";
 
             setLoadingPostsImage(true)
             axios.post(url, toSendProfileName).then((response) => {
@@ -2018,7 +2022,7 @@ const ProfilePages = ({ route, navigation }) => {
                 });
             }
 
-            const url = "https://nameless-dawn-41038.herokuapp.com/user/searchforpollposts";
+            const url = serverUrl + "/user/searchforpollposts";
 
             setLoadingPostsPoll(true)
             axios.post(url, toSendProfileName).then((response) => {
@@ -2164,7 +2168,7 @@ const ProfilePages = ({ route, navigation }) => {
                 });
             }
 
-            const url = `https://nameless-dawn-41038.herokuapp.com/user/getthreadsfromprofile/${pubId}/${_id}`;
+            const url = `${serverUrl}/user/getthreadsfromprofile/${pubId}/${_id}`;
 
             setLoadingPostsThread(true)
             axios.get(url).then((response) => {
@@ -2242,7 +2246,7 @@ const ProfilePages = ({ route, navigation }) => {
             }
 
             handleMessage(null);
-            const url = `https://nameless-dawn-41038.herokuapp.com/user/findcategoryfromprofile/${pubId}/${_id}`;
+            const url = `${serverUrl}/user/findcategoryfromprofile/${pubId}/${_id}`;
             setLoadingPostsCategory(true)
             axios.get(url).then((response) => {
                 const result = response.data;
@@ -2359,7 +2363,7 @@ const ProfilePages = ({ route, navigation }) => {
                     const nonce = await nacl.randomBytes(24)
 
                     console.log("Attempting to create a DM")
-                    const url = "https://nameless-dawn-41038.herokuapp.com/conversations/createDirectMessage";
+                    const url = serverUrl + "/conversations/createDirectMessage";
                     const toSend = {creatorId: _id, recipientName: profilesName, cryptographicNonce: nonce}
                     axios.post(url, toSend).then((response) => {
                         const result = response.data;
@@ -2394,7 +2398,7 @@ const ProfilePages = ({ route, navigation }) => {
     }
 
     const navigateToChatScreen = () => {
-        const url = `https://nameless-dawn-41038.herokuapp.com/conversations/singleDmWithName/${profilesName}/${_id}`;
+        const url = `${serverUrl}/conversations/singleDmWithName/${profilesName}/${_id}`;
         axios.get(url).then((response) => {
             const result = response.data;
             const { message, status, data } = result;
@@ -2703,7 +2707,7 @@ const ProfilePages = ({ route, navigation }) => {
     const toggleFollowOfAUser = () => {
         if (storedCredentials) {
             setTogglingFollow(true)
-            const url = `https://nameless-dawn-41038.herokuapp.com/user/toggleFollowOfAUser`;
+            const url = `${serverUrl}/user/toggleFollowOfAUser`;
             axios.post(url, {userId: _id, userToFollowPubId: pubId}).then((response) => {
                 const result = response.data;
                 const { message, status, data } = result;

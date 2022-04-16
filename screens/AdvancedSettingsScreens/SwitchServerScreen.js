@@ -65,7 +65,7 @@ const SwitchServerScreen = ({navigation}) => {
         AsyncStorage.setItem('SocialSquareServerUrl', serverInfo.toString());
         setSubmitting(false);
         setMessageType('SUCCESS');
-        if (serverInfo == 'https://nameless-dawn-41038.herokuapp.com') {
+        if (serverInfo == 'http://it-solutions.homedns.org:9443') {
             handleMessage('Switched to default server');
         } else {
             handleMessage('Switched to ' + serverInfo);
@@ -133,18 +133,18 @@ const SwitchServerScreen = ({navigation}) => {
                                         <ActivityIndicator size="large" color={colors.primary} />
                                     </StyledButton>)}
 
-                                    {serverUrl != 'https://nameless-dawn-41038.herokuapp.com' && (
+                                    {serverUrl != 'http://it-solutions.homedns.org:9443' && (
                                         <StyledButton onPress={() => {
-                                            values.serverInfo = 'https://nameless-dawn-41038.herokuapp.com';
+                                            values.serverInfo = 'http://it-solutions.homedns.org:9443';
                                             handleSubmit()
                                         }}>
                                             <ButtonText> Switch to Default Server</ButtonText>
                                         </StyledButton>
                                     )}
                                     <Text style={{textAlign: 'center', color: colors.tertiary, fontSize: 16}}>Current server URL is:</Text>
-                                    <Text style={{textAlign: 'center', color: colors.tertiary, fontSize: 16}}>{serverUrl == 'https://nameless-dawn-41038.herokuapp.com' ? 'SocialSquare Default Servers' : serverUrl}</Text>
-                                    {serverUrl == 'https://nameless-dawn-41038.herokuapp.com' && (
-                                        <Text style={{textAlign: 'center', color: colors.tertiary, fontSize: 13}}>(https://nameless-dawn-41038.herokuapp.com)</Text>
+                                    <Text style={{textAlign: 'center', color: colors.tertiary, fontSize: 16}}>{serverUrl == 'http://it-solutions.homedns.org:9443' ? 'SocialSquare Default Servers' : serverUrl}</Text>
+                                    {serverUrl == 'http://it-solutions.homedns.org:9443' && (
+                                        <Text style={{textAlign: 'center', color: colors.tertiary, fontSize: 13}}>(http://it-solutions.homedns.org:9443)</Text>
                                     )}
                                         
                                 </StyledFormArea>

@@ -28,12 +28,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 //credentials context
 import { CredentialsContext } from '../components/CredentialsContext';
-import { ImageBackground, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { ImageBackground, ScrollView, Switch, Text, TouchableOpacity, View } from 'react-native';
 import * as Linking from 'expo-linking';
 import SocialSquareLogo_B64_png from '../assets/SocialSquareLogo_Base64_png.js';
 import * as WebBrowser from 'expo-web-browser';
 import { ProfilePictureURIContext } from '../components/ProfilePictureURIContext.js';
 import { AllCredentialsStoredContext } from '../components/AllCredentialsStoredContext.js';
+import { AdIDContext } from '../components/AdIDContext.js';
+import AppCredits from '../components/AppCredits.js';
 
 
 const SettingsPage = ({navigation}) => {
@@ -44,6 +46,7 @@ const SettingsPage = ({navigation}) => {
     const [webBrowserResult, setWebBrowserResult] = useState(null)
     const {profilePictureUri, setProfilePictureUri} = useContext(ProfilePictureURIContext);
     const {allCredentialsStoredList, setAllCredentialsStoredList} = useContext(AllCredentialsStoredContext);
+    const {AdID, setAdID} = useContext(AdIDContext)
 
     const clearLogin = () => {
         AsyncStorage.removeItem('SocialSquareDMsList');
@@ -169,9 +172,7 @@ const SettingsPage = ({navigation}) => {
                             }
                             <SettingsItemText style={{color: colors.tertiary}}>{storedCredentials ? 'Logout' : 'Login/Signup'}</SettingsItemText>
                         </SettingsPageItemTouchableOpacity>
-                        <Text style={{color: colors.tertiary, fontSize: 24, textAlign: 'center'}}>© SquareTable 2022</Text>
-                        <Text style={{color: colors.tertiary, fontSize: 24, textAlign: 'center', marginBottom: 10}}>All Rights Reserved</Text>
-                        <Text style={{color: colors.tertiary, fontSize: 18, textAlign: 'center', marginBottom: 10}}>Made by Sebastian Webster, Kovid Dev, Didula Semasinghe, and Jacob Bowden</Text>
+                        <AppCredits/>
                         <TouchableOpacity disabled={!logoutViewState} style={{marginHorizontal: '20%', borderColor: colors.borderColor, borderWidth: 5, borderRadius: 20/2}} onPressOut={() => {Linking.openURL('https://github.com/SquareTable/social-media-platform')}}>
                             <View>
                                 <Text style={{color: colors.tertiary, fontSize: 16, textAlign: 'center', padding: 7}}>Press here to visit the SocialSquare GitHub repo</Text>
@@ -188,6 +189,19 @@ const SettingsPage = ({navigation}) => {
                         <TextLink disabled={!logoutViewState} onPress={() => {goToLink('https://squaretable.github.io/social-media-platform/PrivacyPolicy')}}>
                             <TextLinkContent style={{color: colors.brand}}>Privacy Policy</TextLinkContent>
                         </TextLink>
+                        <Switch
+                            value={Platform.OS == "ios" ? AdID == 'ca-app-pub-3940256099942544/2934735716' ? false : true : AdID == 'ca-app-pub-3940256099942544/6300978111' ? false : true}
+                            onValueChange={() => {
+                                if (Platform.OS == "ios") {
+                                    AdID == 'ca-app-pub-3940256099942544/2934735716' ? setAdID('ca-app-pub-6980968247752885/8710919560') : setAdID('ca-app-pub-3940256099942544/2934735716');
+                                } else {
+                                    AdID == 'ca-app-pub-3940256099942544/6300978111' ? setAdID('ca-app-pub-6980968247752885/3057291726') : setAdID('ca-app-pub-3940256099942544/6300978111');
+                                }
+                            }}
+                            trackColor={{false: colors.tertiary, true: colors.brand}}
+                            thumbColor={colors.tertiary}
+                            style={{marginTop: 10}}
+                        />
                     </WelcomeContainer>
                 </ScrollView>
             </BackgroundDarkColor>
@@ -196,3 +210,4 @@ const SettingsPage = ({navigation}) => {
 }
 
 export default SettingsPage;
+const productionID = Platform.OS == 'ios' ? 'ca-app-pub-6980968247752885/8710919560' : 'ca-app-pub-6980968247752885/3057291726';

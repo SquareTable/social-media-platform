@@ -57,6 +57,8 @@ import SocialSquareLogo_B64_png from '../assets/SocialSquareLogo_Base64_png';
 
 import { useTheme } from '@react-navigation/native';
 
+import { ServerUrlContext } from '../components/ServerUrlContext.js';
+
 const ConversationDMUserFind = ({route, navigation}) => {
      //context
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
@@ -71,6 +73,7 @@ const ConversationDMUserFind = ({route, navigation}) => {
     const {colors, dark} = useTheme()
     const [noResults, setNoResults] = useState(false)
     const [errorMessage, setErrorMessage] = useState('')
+    const {serverUrl, setServerUrl} = useContext(ServerUrlContext);
 
     var userLoadMax = 10;
     
@@ -113,7 +116,7 @@ const ConversationDMUserFind = ({route, navigation}) => {
 
     //any image honestly
     async function getImageWithKeyOne(imageKey) {
-        return axios.get(`https://nameless-dawn-41038.herokuapp.com/getImage/${imageKey}`)
+        return axios.get(`${serverUrl}/getImage/${imageKey}`)
         .then(res => res.data).catch(error => {
             console.log(error);
             //setSubmitting(false);
@@ -178,7 +181,7 @@ const ConversationDMUserFind = ({route, navigation}) => {
 
             setLoadingOne(true)
             handleMessage(null);
-            const url = `https://nameless-dawn-41038.herokuapp.com/user/searchpageusersearch/${val}`;
+            const url = `${serverUrl}/user/searchpageusersearch/${val}`;
             submitting = true;
             axios.get(url).then((response) => {
                 const result = response.data;
