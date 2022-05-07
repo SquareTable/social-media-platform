@@ -1,7 +1,6 @@
 import { StyleSheet} from 'react-native';
 import styled from "styled-components/native";
 import Constants from "expo-constants";
-import { Appearance, AppearanceProvider, useColorScheme } from 'react-native-appearance';
 import { DefaultTheme, DarkTheme } from '@react-navigation/native';
 import React from 'react';
 
