@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 
 import { AppRegistry, StyleSheet, FlatList, Text, View, Alert, Platform, ScrollView, Animated, TouchableOpacity, Image } from 'react-native';
 
@@ -44,6 +44,8 @@ import { set } from 'react-native-reanimated';
 
 const AccountBadges = ({navigation, route}) => {
     const {name, displayName, badgesObject, profilePictureUri} = route.params;
+    const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
+    if (storedCredentials) {var {badges} = storedCredentials} else {var {badges} = {badges: []}}
     const [logoutViewState, setLogoutViewState] = useState("false")
     const [badgeValue, setBadgeValue] = useState("")
     const [badgeDebounce, setBadgeDebounce] = useState("")
@@ -99,7 +101,7 @@ const AccountBadges = ({navigation, route}) => {
                     <Text style={{fontSize: 14, color: colors.tertiary, marginLeft: 10}}>GENERAL</Text>
                     <SeperationLine/>
                     <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
-                        <TouchableOpacity style={badgesObject.includes('onSignUpBadge') ? {opacity: 1} : {opacity: 0.3}} onPress={() => {navigation.navigate('BadgeInfo', {badgeName: 'Joined SocialSquare', badgeUnlocked: badgesObject.includes('onSignUpBadge'), usernameToUse: displayName || name || 'Cannot Find Name'})}}>
+                        <TouchableOpacity style={badgesObject.includes('onSignUpBadge') ? {opacity: 1} : {opacity: 0.3}} onPress={() => {navigation.navigate('BadgeInfo', {badgeName: 'Joined SocialSquare', badgeUnlocked: badgesObject.includes('onSignUpBadge'), usernameToUse: displayName || name || 'Cannot Find Name', hiddenBadge: false})}}>
                             <EvilIcons name="trophy" size={75} color={colors.tertiary} style={{marginLeft: -10}}/>
                         </TouchableOpacity>
                     </View>
@@ -107,10 +109,10 @@ const AccountBadges = ({navigation, route}) => {
                     <Text style={{fontSize: 14, color: colors.tertiary, marginLeft: 10}}>TEXTS</Text>
                     <SeperationLine/>
                     <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
-                        <TouchableOpacity style={badgesObject.includes('sentTenTexts') ? {opacity: 1} : {opacity: 0.3}} onPress={() => {navigation.navigate('BadgeInfo', {badgeName: 'Sent 10 texts', badgeUnlocked: badgesObject.includes('sentTenTexts'), usernameToUse: displayName || name || 'Cannot Find Name'})}}>
+                        <TouchableOpacity style={badgesObject.includes('sentTenTexts') ? {opacity: 1} : {opacity: 0.3}} onPress={() => {navigation.navigate('BadgeInfo', {badgeName: 'Sent 10 texts', badgeUnlocked: badgesObject.includes('sentTenTexts'), usernameToUse: displayName || name || 'Cannot Find Name', hiddenBadge: false})}}>
                             <AntDesign name="message1" size={50} color={colors.tertiary} style={{marginLeft: 5, marginTop: 10}}/>
                         </TouchableOpacity>
-                        <TouchableOpacity style={badgesObject.includes('receiveTenHeartReactions') ? {opacity: 1} : {opacity: 0.3}} onPress={() => {navigation.navigate('BadgeInfo', {badgeName: 'Receive 10 heart reactions', badgeUnlocked: badgesObject.includes('receiveTenHeartReactions'), usernameToUse: displayName || name || 'Cannot Find Name'})}}>
+                        <TouchableOpacity style={badgesObject.includes('receiveTenHeartReactions') ? {opacity: 1} : {opacity: 0.3}} onPress={() => {navigation.navigate('BadgeInfo', {badgeName: 'Receive 10 heart reactions', badgeUnlocked: badgesObject.includes('receiveTenHeartReactions'), usernameToUse: displayName || name || 'Cannot Find Name', hiddenBadge: false})}}>
                             <AntDesign name="hearto" size={50} color={colors.tertiary} style={{marginLeft: 5, marginTop: 10}}/>
                         </TouchableOpacity>
                     </View>
@@ -118,7 +120,7 @@ const AccountBadges = ({navigation, route}) => {
                     <Text style={{fontSize: 14, color: colors.tertiary, marginLeft: 10}}>CALLS</Text>
                     <SeperationLine/>
                     <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
-                        <TouchableOpacity style={badgesObject.includes('totalCallTimeTenMinutes') ? {opacity: 1} : {opacity: 0.3}} onPress={() => {navigation.navigate('BadgeInfo', {badgeName: '10 Minutes of Call Time', badgeUnlocked: badgesObject.includes('totalCallTimeTenMinutes'), usernameToUse: displayName || name || 'Cannot Find Name'})}}>
+                        <TouchableOpacity style={badgesObject.includes('totalCallTimeTenMinutes') ? {opacity: 1} : {opacity: 0.3}} onPress={() => {navigation.navigate('BadgeInfo', {badgeName: '10 Minutes of Call Time', badgeUnlocked: badgesObject.includes('totalCallTimeTenMinutes'), usernameToUse: displayName || name || 'Cannot Find Name', hiddenBadge: false})}}>
                             <AntDesign name="phone" size={60} color={colors.tertiary} style={{marginTop: 10}}/>
                         </TouchableOpacity>
                     </View>
@@ -126,7 +128,7 @@ const AccountBadges = ({navigation, route}) => {
                     <Text style={{fontSize: 14, color: colors.tertiary, marginLeft: 10}}>POSTS</Text>
                     <SeperationLine/>
                     <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
-                        <TouchableOpacity style={badgesObject.includes('uploadFirstPost') ? {opacity: 1} : {opacity: 0.3}} onPress={() => {navigation.navigate('BadgeInfo', {badgeName: 'Upload 1 Post', badgeUnlocked: badgesObject.includes('uploadFirstPost'), usernameToUse: displayName || name || 'Cannot Find Name'})}}>
+                        <TouchableOpacity style={badgesObject.includes('uploadFirstPost') ? {opacity: 1} : {opacity: 0.3}} onPress={() => {navigation.navigate('BadgeInfo', {badgeName: 'Upload 1 Post', badgeUnlocked: badgesObject.includes('uploadFirstPost'), usernameToUse: displayName || name || 'Cannot Find Name', hiddenBadge: false})}}>
                             <Ionicons name="cloud-upload-outline" size={65} color={colors.tertiary}/>
                         </TouchableOpacity>
                     </View>
@@ -134,7 +136,7 @@ const AccountBadges = ({navigation, route}) => {
                     <Text style={{fontSize: 14, color: colors.tertiary, marginLeft: 10}}>COMMENTS</Text>
                     <SeperationLine/>
                     <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
-                        <TouchableOpacity style={badgesObject.includes('postFirstComment') ? {opacity: 1} : {opacity: 0.3}} onPress={() => {navigation.navigate('BadgeInfo', {badgeName: 'Post 1 Comment', badgeUnlocked: badgesObject.includes('postFirstComment'), usernameToUse: displayName || name || 'Cannot Find Name'})}}>
+                        <TouchableOpacity style={badgesObject.includes('postFirstComment') ? {opacity: 1} : {opacity: 0.3}} onPress={() => {navigation.navigate('BadgeInfo', {badgeName: 'Post 1 Comment', badgeUnlocked: badgesObject.includes('postFirstComment'), usernameToUse: displayName || name || 'Cannot Find Name', hiddenBadge: false})}}>
                             <FontAwesome name="comments" size={65} color={colors.tertiary}/>
                         </TouchableOpacity>
                     </View>
@@ -142,8 +144,12 @@ const AccountBadges = ({navigation, route}) => {
                     <Text style={{fontSize: 14, color: colors.tertiary, marginLeft: 10}}>SPECIAL</Text>
                     <SeperationLine/>
                     <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
-                        <TouchableOpacity style={badgesObject.includes('homeScreenLogoPressEasterEgg') ? {opacity: 1} : {opacity: 0.3}} onPress={() => {navigation.navigate('BadgeInfo', {badgeName: badgesObject.includes('homeScreenLogoPressEasterEgg') ? 'Home Screen Easter Egg 1' : 'Easter Egg', badgeUnlocked: badgesObject.includes('homeScreenLogoPressEasterEgg'), usernameToUse: displayName || name || 'Cannot Find Name'})}}>
-                            <MaterialCommunityIcons name="egg-easter" size={65} color={colors.tertiary}/>
+                        <TouchableOpacity style={badgesObject.includes('homeScreenLogoPressEasterEgg') ? {opacity: 1} : {opacity: 0.3}} onPress={() => {navigation.navigate('BadgeInfo', {badgeName: badgesObject.includes('homeScreenLogoPressEasterEgg') ? 'Home Screen Easter Egg 1' : 'Easter Egg', badgeUnlocked: badgesObject.includes('homeScreenLogoPressEasterEgg'), usernameToUse: displayName || name || 'Cannot Find Name', hiddenBadge: !badges.includes('homeScreenLogoPressEasterEgg')})}}>
+                            {badges.includes('homeScreenLogoPressEasterEgg') ?
+                                <Image style={{width: 60, height: 60, tintColor: colors.tertiary, marginTop: 10}} source={require('../assets/app_icons/home.png')}/>
+                            :
+                                <MaterialCommunityIcons name="egg-easter" size={65} color={colors.tertiary}/>
+                            }
                         </TouchableOpacity>
                     </View>
                     <View style={{minHeight: 50}}/>

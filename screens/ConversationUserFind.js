@@ -246,7 +246,7 @@ const ConversationUserFind = ({route, navigation}) => {
 
     //any image honestly
     async function getImageWithKeyOne(imageKey) {
-        return axios.get(`${serverUrl}/getImage/${imageKey}`)
+        return axios.get(`${serverUrl}/getImageOnServer/${imageKey}`)
         .then(res => res.data).catch(error => {
             console.log(error);
             //setSubmitting(false);

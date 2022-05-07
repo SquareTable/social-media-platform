@@ -125,7 +125,7 @@ const Welcome = ({navigation, route}) => {
      //context
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
     const {profilePictureUri, setProfilePictureUri} = useContext(ProfilePictureURIContext);
-    if (storedCredentials) {var {_id, name, displayName, email, photoUrl, followers, following, badges, secondId} = storedCredentials}
+    if (storedCredentials) {var {_id, name, displayName, email, photoUrl, followers, following, badges, secondId, bio, privateAccount} = storedCredentials}
     const [gridViewState, setGridViewState] = useState("flex")
     const [featuredViewState, setFeaturedViewState] = useState("none")
     const [selectedPostFormat, setSelectedPostFormat] = useState("One")
@@ -1704,7 +1704,7 @@ const Welcome = ({navigation, route}) => {
 
     //get image of post
     async function getImageInPost(imageData, index) {
-        return axios.get((serverUrl + '/getImage/' + imageData[index].imageKey), { cancelToken: source.token})
+        return axios.get((serverUrl + '/getImageOnServer/' + imageData[index].imageKey), { cancelToken: source.token})
         .then(res => res.data).catch(error => {
             console.log(error);
             //setSubmitting(false);
@@ -1714,7 +1714,7 @@ const Welcome = ({navigation, route}) => {
     }
     //profile image of creator
     async function getImageInPfp(imageData, index) {
-        return axios.get((serverUrl + '/getImage/' + imageData[index].creatorPfpKey), { cancelToken: source.token})
+        return axios.get((serverUrl + '/getImageOnServer/' + imageData[index].creatorPfpKey), { cancelToken: source.token})
         .then(res => res.data).catch(error => {
             console.log(error);
             //setSubmitting(false);
@@ -1723,7 +1723,7 @@ const Welcome = ({navigation, route}) => {
         })
     }
     async function getImageInCategory(imageKey) {
-        return axios.get((serverUrl + '/getImage/' + imageKey), { cancelToken: cancelTokenPostFormatFive.token})
+        return axios.get((serverUrl + '/getImageOnServer/' + imageKey), { cancelToken: cancelTokenPostFormatFive.token})
         .then(res => res.data).catch(error => {
             console.log(error);
             //setSubmitting(false);
@@ -1733,7 +1733,7 @@ const Welcome = ({navigation, route}) => {
     }
     //any image honestly
     async function getImageWithKeyOne(imageKey) {
-            return axios.get((serverUrl + '/getImage/' + imageKey), { cancelToken: cancelTokenPostFormatOne.token})
+            return axios.get((serverUrl + '/getImageOnServer/' + imageKey), { cancelToken: cancelTokenPostFormatOne.token})
             .then(res => res.data).catch(error => {
                 console.log(error);
                 //setSubmitting(false);
@@ -1742,7 +1742,7 @@ const Welcome = ({navigation, route}) => {
             })
     }
     async function getImageWithKeyTwo(imageKey) {
-        return axios.get((serverUrl + '/getImage/' + imageKey), { cancelToken: cancelTokenPostFormatTwo.token})
+        return axios.get((serverUrl + '/getImageOnServer/' + imageKey), { cancelToken: cancelTokenPostFormatTwo.token})
         .then(res => res.data).catch(error => {
             console.log(error);
             //setSubmitting(false);
@@ -1751,7 +1751,7 @@ const Welcome = ({navigation, route}) => {
         })
     }
     async function getImageWithKeyThree(imageKey) {
-        return axios.get((serverUrl + '/getImage/' + imageKey), { cancelToken: cancelTokenPostFormatThree.token})
+        return axios.get((serverUrl + '/getImageOnServer/' + imageKey), { cancelToken: cancelTokenPostFormatThree.token})
         .then(res => res.data).catch(error => {
             console.log(error);
             //setSubmitting(false);
@@ -1760,7 +1760,7 @@ const Welcome = ({navigation, route}) => {
         })
     }
     async function getImageWithKeyFour(imageKey) {
-        return axios.get((serverUrl + '/getImage/' + imageKey), { cancelToken: cancelTokenPostFormatFour.token})
+        return axios.get((serverUrl + '/getImageOnServer/' + imageKey), { cancelToken: cancelTokenPostFormatFour.token})
         .then(res => res.data).catch(error => {
             console.log(error);
             //setSubmitting(false);
@@ -1769,7 +1769,7 @@ const Welcome = ({navigation, route}) => {
         })
     }
     async function getImageWithKeyFive(imageKey) {
-        return axios.get((serverUrl + '/getImage/' + imageKey), { cancelToken: cancelTokenPostFormatFive.token})
+        return axios.get((serverUrl + '/getImageOnServer/' + imageKey), { cancelToken: cancelTokenPostFormatFive.token})
         .then(res => res.data).catch(error => {
             console.log(error);
             //setSubmitting(false);
@@ -2333,7 +2333,7 @@ const Welcome = ({navigation, route}) => {
             } else {
                 console.log(status)
                 console.log(message)
-                axios.get(`${serverUrl}/getImage/${data}`)
+                axios.get(`${serverUrl}/getImageOnServer/${data}`)
                 .then((response) => {
                     const result = response.data;
                     const {message, status, data} = result;
@@ -2511,6 +2511,8 @@ const Welcome = ({navigation, route}) => {
             <View style={{width: 25, height: 25, marginHorizontal: 3, marginTop: 6, marginBottom: 12}}>
                 {badge == 'onSignUpBadge' ?
                     <EvilIcons name="trophy" size={35} color={colors.tertiary} style={{marginLeft: -5, marginTop: -1}}/>
+                : badge == 'homeScreenLogoPressEasterEgg' ?
+                    <Image style={{width: 25, height: 25, tintColor: colors.tertiary}} source={require('../assets/app_icons/home.png')}/>
                 :
                     <AntDesign name="questioncircleo" size={25} color={colors.tertiary}/>
                 }
@@ -2574,6 +2576,8 @@ const Welcome = ({navigation, route}) => {
             return null
         }
     }
+
+    console.log(followers)
     return(
         <>
             <StatusBar style={colors.StatusBarColor}/>
@@ -2623,7 +2627,8 @@ const Welcome = ({navigation, route}) => {
                             }}
                         />
                     </>
-                    <TouchableOpacity onPress={() => {setShowAccountSwitcher(true)}} style={{backgroundColor: colors.primary, paddingTop: StatusBarHeight, paddingBottom: 10}}>
+                    <TouchableOpacity onPress={() => {setShowAccountSwitcher(true)}} style={{backgroundColor: colors.primary, paddingTop: StatusBarHeight, paddingBottom: 10, flexDirection: 'row', justifyContent: 'center'}}>
+                        {privateAccount == true ? <EvilIcons name="lock" size={30} color={colors.tertiary}/> : null}
                         <SubTitle style={{color: colors.tertiary, marginBottom: 0, textAlign: 'center'}}>{"@"+name}</SubTitle>
                     </TouchableOpacity>
                     <Animated.View style={{paddingTop: StatusBarHeight - 10, backgroundColor: colors.primary, borderColor: colors.borderColor, borderBottomWidth: 1, alignItems: 'center', opacity: TopProfileBarFadeAnim, zIndex: TopProfileBarFadeAnim.interpolate({inputRange: [0, 1], outputRange: [-10, 100]}), position: 'absolute', top: 0, width: '100%', flexDirection: 'column'}}>
@@ -2707,18 +2712,21 @@ const Welcome = ({navigation, route}) => {
                                     <PageTitle style={{marginTop: -15, marginBottom: -15}} welcome={true}>{displayName || name || "Couldn't get name"}</PageTitle>
                                 }
                                 {BadgesArea(badges)}
-                                <SubTitle style={{color: colors.tertiary}} bioText={true} > Bio will go here </SubTitle>
+                                {bio ? <SubTitle style={{color: colors.tertiary, marginBottom: 5, fontSize: 14, textAlign: 'center'}} bioText={true}>{bio}</SubTitle> : null}
                             </ProfInfoAreaImage>
+                            <TouchableOpacity onPress={() => {navigation.navigate('EditProfile', {imageFromRoute: null})}} style={{marginBottom: 10, paddingHorizontal: 15, paddingVertical: 6, borderRadius: 5, borderColor: colors.tertiary, borderWidth: 2, alignSelf: 'center', width: '90%'}}>
+                                <Text style={{color: colors.tertiary, fontSize: 16, textAlign: 'center'}}>Edit Profile</Text>
+                            </TouchableOpacity>
                             <ProfileHorizontalView>
                                 <ProfileHorizontalViewItem profLeftIcon={true}>
-                                    <TouchableOpacity onPress={() => {navigation.navigate('ProfileStats', {name: name, followers: followers, type: 'Followers'})}} style={{alignItems: 'center'}}>
+                                    <TouchableOpacity onPress={() => {navigation.navigate('ProfileStats', {followers: followers, type: 'Followers'})}} style={{alignItems: 'center'}}>
                                         <SubTitle style={{color: colors.tertiary}} welcome={true}> Followers </SubTitle>
                                         <ProfIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/114-user.png')}/>
                                         <SubTitle style={{color: colors.tertiary}} welcome={true}> {followers.length} </SubTitle>
                                     </TouchableOpacity>
                                 </ProfileHorizontalViewItem>
                                 <ProfileHorizontalViewItem profCenterIcon={true}>
-                                    <TouchableOpacity onPress={() => {navigation.navigate('ProfileStats', {name: name, followers: following, type: 'Following'})}} style={{alignItems: 'center'}}>
+                                    <TouchableOpacity onPress={() => {navigation.navigate('ProfileStats', {followers: following, type: 'Following'})}} style={{alignItems: 'center'}}>
                                         <SubTitle style={{color: colors.tertiary}} welcome={true}> Following </SubTitle>
                                         <ProfIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/115-users.png')}/>
                                         <SubTitle style={{color: colors.tertiary}} welcome={true}> {following.length} </SubTitle>

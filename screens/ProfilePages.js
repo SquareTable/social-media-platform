@@ -105,8 +105,11 @@ import SocialSquareLogo_B64_png from '../assets/SocialSquareLogo_Base64_png';
 import * as Haptics from 'expo-haptics';
 
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import { ServerUrlContext } from '../components/ServerUrlContext.js';
+import ActionSheet from 'react-native-actionsheet';
 
 const ProfilePages = ({ route, navigation }) => {
     const StatusBarHeight = Constants.statusBarHeight;
@@ -114,9 +117,9 @@ const ProfilePages = ({ route, navigation }) => {
     const [PageElementsState, setPageElementsState] = useState(false)
     const { colors, dark } = useTheme();
     //context
-    const { profilesName, profilesDisplayName, following, followers, totalLikes, profileKey, badges, pubId } = route.params;
+    const { profilesName, profilesDisplayName, following, followers, totalLikes, profileKey, badges, pubId, bio, privateAccount } = route.params;
     const { storedCredentials, setStoredCredentials } = useContext(CredentialsContext);
-    if (storedCredentials) {var { _id, secondId } = storedCredentials} else {var {_id, secondId} = {_id: "SSGUEST", secondId: "SSGUEST"}}
+    if (storedCredentials) {var { _id, secondId, badges: storedBadges } = storedCredentials} else {var {_id, secondId, badges: storedBadges} = {_id: "SSGUEST", secondId: "SSGUEST", badges: []}}
     const [gridViewState, setGridViewState] = useState("flex")
     const [featuredViewState, setFeaturedViewState] = useState("none")
     const [selectedPostFormat, setSelectedPostFormat] = useState("One")
@@ -261,6 +264,8 @@ const ProfilePages = ({ route, navigation }) => {
     const [settingUpChatErrorOrigin, setSettingUpChatErrorOrigin] = useState(null);
     // Server url
     const {serverUrl, setServerUrl} = useContext(ServerUrlContext);
+    //Unfollow confirmation
+    const UnfollowPrivateAccountConfirmationPickerMenu = useRef(null);
 
     const getFollowersEtc = () => {
         const url = `${serverUrl}/user/reloadUsersDetails/${pubId}/${secondId}`;
@@ -1665,7 +1670,7 @@ const ProfilePages = ({ route, navigation }) => {
 
     //get image of post
     async function getImageInPost(imageData, index) {
-        return axios.get(`${serverUrl}/getImage/${imageData[index].imageKey}`, { cancelToken: source.token })
+        return axios.get(`${serverUrl}/getImageOnServer/${imageData[index].imageKey}`, { cancelToken: source.token })
             .then(res => res.data).catch(error => {
                 console.log(error);
                 //setSubmitting(false);
@@ -1675,7 +1680,7 @@ const ProfilePages = ({ route, navigation }) => {
     }
     //profile image of creator
     async function getImageInPfp(imageData, index) {
-        return axios.get(`${serverUrl}/getImage/${imageData[index].creatorPfpKey}`, { cancelToken: source.token })
+        return axios.get(`${serverUrl}/getImageOnServer/${imageData[index].creatorPfpKey}`, { cancelToken: source.token })
             .then(res => res.data).catch(error => {
                 console.log(error);
                 //setSubmitting(false);
@@ -1684,7 +1689,7 @@ const ProfilePages = ({ route, navigation }) => {
             })
     }
     async function getImageInCategory(imageKey) {
-        return axios.get(`${serverUrl}/getImage/${imageKey}`, { cancelToken: cancelTokenPostFormatFive.token })
+        return axios.get(`${serverUrl}/getImageOnServer/${imageKey}`, { cancelToken: cancelTokenPostFormatFive.token })
             .then(res => res.data).catch(error => {
                 console.log(error);
                 //setSubmitting(false);
@@ -1694,7 +1699,7 @@ const ProfilePages = ({ route, navigation }) => {
     }
     //any image honestly
     async function getImageWithKeyOne(imageKey) {
-        return axios.get(`${serverUrl}/getImage/${imageKey}`, { cancelToken: cancelTokenPostFormatOne.token })
+        return axios.get(`${serverUrl}/getImageOnServer/${imageKey}`, { cancelToken: cancelTokenPostFormatOne.token })
             .then(res => res.data).catch(error => {
                 console.log(error);
                 //setSubmitting(false);
@@ -1703,7 +1708,7 @@ const ProfilePages = ({ route, navigation }) => {
             })
     }
     async function getImageWithKeyTwo(imageKey) {
-        return axios.get(`${serverUrl}/getImage/${imageKey}`, { cancelToken: cancelTokenPostFormatTwo.token })
+        return axios.get(`${serverUrl}/getImageOnServer/${imageKey}`, { cancelToken: cancelTokenPostFormatTwo.token })
             .then(res => res.data).catch(error => {
                 console.log(error);
                 //setSubmitting(false);
@@ -1712,7 +1717,7 @@ const ProfilePages = ({ route, navigation }) => {
             })
     }
     async function getImageWithKeyThree(imageKey) {
-        return axios.get(`${serverUrl}/getImage/${imageKey}`, { cancelToken: cancelTokenPostFormatThree.token })
+        return axios.get(`${serverUrl}/getImageOnServer/${imageKey}`, { cancelToken: cancelTokenPostFormatThree.token })
             .then(res => res.data).catch(error => {
                 console.log(error);
                 //setSubmitting(false);
@@ -1721,7 +1726,7 @@ const ProfilePages = ({ route, navigation }) => {
             })
     }
     async function getImageWithKeyFour(imageKey) {
-        return axios.get(`${serverUrl}/getImage/${imageKey}`, { cancelToken: cancelTokenPostFormatFour.token })
+        return axios.get(`${serverUrl}/getImageOnServer/${imageKey}`, { cancelToken: cancelTokenPostFormatFour.token })
             .then(res => res.data).catch(error => {
                 console.log(error);
                 //setSubmitting(false);
@@ -1730,7 +1735,7 @@ const ProfilePages = ({ route, navigation }) => {
             })
     }
     async function getImageWithKeyFive(imageKey) {
-        return axios.get(`${serverUrl}/getImage/${imageKey}`, { cancelToken: cancelTokenPostFormatFive.token })
+        return axios.get(`${serverUrl}/getImageOnServer/${imageKey}`, { cancelToken: cancelTokenPostFormatFive.token })
             .then(res => res.data).catch(error => {
                 console.log(error);
                 //setSubmitting(false);
@@ -2640,6 +2645,11 @@ const ProfilePages = ({ route, navigation }) => {
             <View style={{width: 25, height: 25, marginHorizontal: 3, marginTop: 6, marginBottom: 12}}>
                 {badge == 'onSignUpBadge' ?
                     <EvilIcons name="trophy" size={35} color={colors.tertiary} style={{marginLeft: -5, marginTop: -1}}/>
+                : badge == 'homeScreenLogoPressEasterEgg' ?
+                    storedBadges.includes('homeScreenLogoPressEasterEgg') ?
+                        <Image style={{width: 25, height: 25, tintColor: colors.tertiary}} source={require('../assets/app_icons/home.png')}/>
+                    :
+                        <MaterialCommunityIcons name="egg-easter" size={28} color={colors.tertiary} style={{marginLeft: -1, marginTop: -1}}/>
                 :
                     <AntDesign name="questioncircleo" size={25} color={colors.tertiary}/>
                 }
@@ -2721,8 +2731,12 @@ const ProfilePages = ({ route, navigation }) => {
                         //Followed
                         setUserIsFollowed(true)
                         setTogglingFollow(false)
+                    } else if (message == "Requested To Follow User") {
+                        //Requested
+                        setUserIsFollowed('Requested')
+                        setTogglingFollow(false)
                     } else {
-                        //Unfollowed
+                        //Unfollowed or unrequested
                         setUserIsFollowed(false)
                         setTogglingFollow(false)
                     }
@@ -2737,8 +2751,29 @@ const ProfilePages = ({ route, navigation }) => {
         }
     }
 
+    console.log('User is followed: ' + userIsFollowed)
+    console.log('Initially user followed is: ' + initiallyFollowed)
+
     return (
         <>
+            <ActionSheet
+                ref={UnfollowPrivateAccountConfirmationPickerMenu}
+                title={'Are you sure you want to unfollow this user? You will have to make a follow request if you want to follow them again.'}
+                options={['Unfollow', 'Cancel']}
+                // Define cancel button index in the option array
+                // This will take the cancel option in bottom
+                // and will highlight it
+                cancelButtonIndex={1}
+                // Highlight any specific option
+                destructiveButtonIndex={0}
+                onPress={(index) => {
+                    if (index == 0) {
+                        toggleFollowOfAUser()
+                    } else {
+                        console.log('Cancelled')
+                    }
+                }}
+            />
             <StatusBar style={colors.StatusBarColor} />
             <Animated.View style={{opacity: ProfileOptionsViewOpacity, zIndex: ProfileOptionsViewOpacity.interpolate({inputRange: [0, 1], outputRange: [-10, 3]})}}>
                 {settingUpChatErrorMessage ?
@@ -2944,7 +2979,7 @@ const ProfilePages = ({ route, navigation }) => {
                         <PageTitle welcome={true}>{profilesDisplayName || profilesName || "Couldn't get name"}</PageTitle>
                         <SubTitle style={{color: colors.tertiary, marginBottom: 0}}>{"@" + profilesDisplayName}</SubTitle>
                         {BadgesArea(badges)}
-                        <SubTitle style={{color: colors.tertiary}} bioText={true} > Bio will go here </SubTitle>
+                        {bio ? <SubTitle style={{color: colors.tertiary, marginBottom: 5, fontSize: 14, textAlign: 'center'}} bioText={true} >{bio}</SubTitle> : null}
                     </ProfInfoAreaImage>
                     <ProfileHorizontalView>
                         <ProfileHorizontalViewItem profLeftIcon={true}>
@@ -2961,14 +2996,14 @@ const ProfilePages = ({ route, navigation }) => {
                                     <SubTitle welcome={true} style={{color: colors.tertiary}}> Error </SubTitle> 
                                 </>
                             :
-                                <TouchableOpacity onPress={() => {navigation.navigate('ProfileStats', {name: profilesName, followers: followers, type: 'Followers'})}} style={{alignItems: 'center'}}>
+                                <View style={{alignItems: 'center'}}>
                                     <ProfIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/114-user.png')} />
                                     {initiallyFollowed == false && (
                                         <View>
                                             {userIsFollowed == true && (
                                                 <SubTitle welcome={true} style={{color: colors.tertiary}}> {followers + 1} </SubTitle> 
                                             )}
-                                            {userIsFollowed == false && (
+                                            {(userIsFollowed == false || userIsFollowed == 'Requested') && (
                                                 <SubTitle welcome={true} style={{color: colors.tertiary}}> {followers} </SubTitle> 
                                             )}
                                         </View>
@@ -2978,10 +3013,13 @@ const ProfilePages = ({ route, navigation }) => {
                                             {userIsFollowed == true && (
                                                 <SubTitle welcome={true} style={{color: colors.tertiary}}> {followers} </SubTitle> 
                                             )}
-                                            {userIsFollowed == false && (
+                                            {userIsFollowed == false || userIsFollowed == 'Requested' && (
                                                 <SubTitle welcome={true} style={{color: colors.tertiary}}> {followers - 1} </SubTitle> 
                                             )}
                                         </View>
+                                    )}
+                                    {initiallyFollowed == 'Requested' && (
+                                        <SubTitle welcome={true} style={{color: colors.tertiary}}> {followers} </SubTitle> 
                                     )}
                                     {togglingFollow == false && (
                                         <View style={{width: '80%', borderRadius: 5, backgroundColor: colors.primary, borderColor: colors.borderColor, borderWidth: 3, paddingHorizontal: 10, paddingTop: 2}}>
@@ -2991,14 +3029,23 @@ const ProfilePages = ({ route, navigation }) => {
                                                 </TouchableOpacity>
                                             )}
                                             {userIsFollowed == true && (
-                                                <TouchableOpacity onPress={() => toggleFollowOfAUser()}>
+                                                <TouchableOpacity onPress={() => privateAccount == true ? UnfollowPrivateAccountConfirmationPickerMenu.current.show() : toggleFollowOfAUser()}>
                                                     <SubTitle welcome={true} style={{textAlign: 'center', color: colors.tertiary}}> Unfollow </SubTitle>
+                                                </TouchableOpacity>
+                                            )}
+                                            {userIsFollowed == 'Requested' && (
+                                                <TouchableOpacity onPress={() => toggleFollowOfAUser()}>
+                                                    <SubTitle welcome={true} style={{textAlign: 'center', color: colors.tertiary, fontSize: 14}}> Requested </SubTitle>
                                                 </TouchableOpacity>
                                             )}
                                             {userIsFollowed !== true && (
                                                 <View>
                                                     {userIsFollowed !== false && (
-                                                        <ActivityIndicator size={20} color={colors.brand} />
+                                                        <View>
+                                                            {userIsFollowed !== 'Requested' && (
+                                                                <ActivityIndicator size={20} color={colors.brand} />
+                                                            )}
+                                                        </View>
                                                     )}
                                                 </View>
                                             )}
@@ -3007,15 +3054,13 @@ const ProfilePages = ({ route, navigation }) => {
                                     {togglingFollow == true && (
                                         <ActivityIndicator size="large" color={colors.brand} />
                                     )}
-                                </TouchableOpacity>
+                                </View>
                             }
                         </ProfileHorizontalViewItem>
                         <ProfileHorizontalViewItem profCenterIcon={true}>
-                            <TouchableOpacity onPress={() => {navigation.navigate('ProfileStats', {name: profilesName, followers: following, type: 'Following'})}} style={{alignItems: 'center'}}>
-                                <SubTitle style={{color: colors.tertiary}} welcome={true}> Following </SubTitle>
-                                <ProfIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/115-users.png')} />
-                                <SubTitle style={{color: colors.tertiary}} welcome={true}> {following} </SubTitle>
-                            </TouchableOpacity>
+                            <SubTitle style={{color: colors.tertiary}} welcome={true}> Following </SubTitle>
+                            <ProfIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/115-users.png')} />
+                            <SubTitle style={{color: colors.tertiary}} welcome={true}> {following} </SubTitle>
                         </ProfileHorizontalViewItem>
                         <ProfileHorizontalViewItem profRightIcon={true}>
                             <SubTitle style={{color: colors.tertiary}} welcome={true}> Upvotes </SubTitle>
@@ -3023,85 +3068,95 @@ const ProfilePages = ({ route, navigation }) => {
                             <SubTitle style={{color: colors.tertiary}} welcome={true}> Coming soon{/*totalLikes*/} </SubTitle>
                         </ProfileHorizontalViewItem>
                     </ProfileHorizontalView>
-                    <ProfilePostsSelectionView style={{borderBottomWidth: 0}}>
-                        <ProfilePostsSelectionBtns onPress={changeToGrid}>
-                            <Icon name="grid" color={colors.tertiary} size={45}/>
-                        </ProfilePostsSelectionBtns>
-                        <ProfilePostsSelectionBtns onPress={changeToFeatured}>
-                            <FontAwesomeFive name="user-tag" color={colors.tertiary} size={45}/>
-                        </ProfilePostsSelectionBtns>
-                        <Animated.View style={{backgroundColor: colors.tertiary, height: 3, width: '50%', position: 'absolute', bottom: 0, transform: [{translateX: GridOrTagLineTranslateX}], zIndex: 2}}/>
-                        <View style={{backgroundColor: colors.borderColor, height: 3, width: '100%', position: 'absolute', bottom: 0}}/>
-                    </ProfilePostsSelectionView>
-                    <ProfileSelectMediaTypeHorizontalView>
-                        <ProfileSelectMediaTypeItem onPress={changeToOne}>
-                            <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor, borderColor: colors.borderColor}}>
-                                <ProfileSelectMediaTypeIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/015-images.png')} />
-                            </ProfileSelectMediaTypeIconsBorder>
-                        </ProfileSelectMediaTypeItem>
-                        <ProfileSelectMediaTypeItem onPress={changeToTwo}>
-                            <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor, borderColor: colors.borderColor}}>
-                                <ProfileSelectMediaTypeIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/020-film.png')} />
-                            </ProfileSelectMediaTypeIconsBorder>
-                        </ProfileSelectMediaTypeItem>
-                        <ProfileSelectMediaTypeItem onPress={changeToThree}>
-                            <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor, borderColor: colors.borderColor}}>
-                                <ProfileSelectMediaTypeIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/157-stats-bars.png')} />
-                            </ProfileSelectMediaTypeIconsBorder>
-                        </ProfileSelectMediaTypeItem>
-                        <ProfileSelectMediaTypeItem onPress={changeToFour}>
-                            <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor, borderColor: colors.borderColor}}>
-                                <ProfileSelectMediaTypeIcons style={{ height: '80%', width: '80%', tintColor: colors.tertiary }} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/007-pencil2.png')} />
-                            </ProfileSelectMediaTypeIconsBorder>
-                        </ProfileSelectMediaTypeItem>
-                        <ProfileSelectMediaTypeItem onPress={changeToFive}>
-                            <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor, borderColor: colors.borderColor}}>
-                                <ProfileSelectMediaTypeIcons style={{ height: '80%', width: '80%', tintColor: colors.tertiary }} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/093-drawer.png')} />
-                            </ProfileSelectMediaTypeIconsBorder>
-                        </ProfileSelectMediaTypeItem>
-                    </ProfileSelectMediaTypeHorizontalView>
-                    <ProfileGridPosts display={gridViewState}>
-                        {selectedPostFormat == "One" && (<SectionList
-                            sections={changeSectionsOne}
-                            keyExtractor={(item, index) => item + index}
-                            renderItem={({ item }) => <ImageItem imageKey={item.imageKey} imageB64={item.imageB64} imageTitle={item.imageTitle} imageDescription={item.imageDescription} imageUpVotes={item.imageUpVotes} imageComments={item.imageComments} creatorName={item.creatorName} creatorDisplayName={item.creatorDisplayName} creatorPfpB64={item.creatorPfpB64} datePosted={item.datePosted} postNum={item.postNum} />}
-                            ListFooterComponent={<PostLoadingSpinners selectedPostFormat={selectedPostFormat} loadingPostsImage={loadingPostsImage} loadingPostsVideo={loadingPostsVideo} loadingPostsPoll={loadingPostsPoll} loadingPostsThread={loadingPostsThread} loadingPostsCategory={loadingPostsCategory}/>}
-                            ListHeaderComponent={<PostMessages selectedPostFormat={selectedPostFormat} formatOneText={formatOneText} formatTwoText={formatTwoText} formatThreeText={formatThreeText} formatFourText={formatFourText} formatFiveText={formatFiveText} colors={colors}/>}
-                        />)}
-                        {selectedPostFormat == "Two" && (<SectionList
-                            sections={changeSectionsTwo}
-                            keyExtractor={(item, index) => item + index}
-                            renderItem={({ item }) => <PollItem pollTitle={item.pollTitle} pollSubTitle={item.pollSubTitle} optionOne={item.optionOne} optionOnesColor={item.optionOnesColor} optionOnesVotes={item.optionOnesVotes} optionOnesBarLength={item.optionOnesBarLength} optionTwo={item.optionTwo} optionTwosColor={item.optionTwosColor} optionTwosVotes={item.optionTwosVotes} optionTwosBarLength={item.optionTwosBarLength} optionThree={item.optionThree} optionThreesColor={item.optionThreesColor} optionThreesVotes={item.optionThreesVotes} optionThreesBarLength={item.optionThreesBarLength} optionFour={item.optionFour} optionFoursColor={item.optionFoursColor} optionFoursVotes={item.optionFoursVotes} optionFoursBarLength={item.optionFoursBarLength} optionFive={item.optionFive} optionFivesColor={item.optionFivesColor} optionFivesVotes={item.optionFivesVotes} optionFivesBarLength={item.optionFivesBarLength} optionSix={item.optionSix} optionSixesColor={item.optionSixesColor} optionSixesVotes={item.optionSixesVotes} optionSixesBarLength={item.optionSixesBarLength} totalNumberOfOptions={item.totalNumberOfOptions} pollUpOrDownVotes={item.pollUpOrDownVotes} pollId={item.pollId} votedFor={item.votedFor} pollLiked={item.pollLiked} pfpB64={item.pfpB64} creatorName={item.creatorName} creatorDisplayName={item.creatorDisplayName} />}
-                            ListFooterComponent={<PostLoadingSpinners selectedPostFormat={selectedPostFormat} loadingPostsImage={loadingPostsImage} loadingPostsVideo={loadingPostsVideo} loadingPostsPoll={loadingPostsPoll} loadingPostsThread={loadingPostsThread} loadingPostsCategory={loadingPostsCategory}/>}
-                            ListHeaderComponent={<PostMessages selectedPostFormat={selectedPostFormat} formatOneText={formatOneText} formatTwoText={formatTwoText} formatThreeText={formatThreeText} formatFourText={formatFourText} formatFiveText={formatFiveText} colors={colors}/>}
-                        />)}
-                        {selectedPostFormat == "Three" && (<SectionList
-                            sections={changeSectionsThree}
-                            keyExtractor={(item, index) => item + index}
-                            renderItem={({ item }) => <PollItem pollTitle={item.pollTitle} pollSubTitle={item.pollSubTitle} optionOne={item.optionOne} optionOnesColor={item.optionOnesColor} optionOnesVotes={item.optionOnesVotes} optionOnesBarLength={item.optionOnesBarLength} optionTwo={item.optionTwo} optionTwosColor={item.optionTwosColor} optionTwosVotes={item.optionTwosVotes} optionTwosBarLength={item.optionTwosBarLength} optionThree={item.optionThree} optionThreesColor={item.optionThreesColor} optionThreesVotes={item.optionThreesVotes} optionThreesBarLength={item.optionThreesBarLength} optionFour={item.optionFour} optionFoursColor={item.optionFoursColor} optionFoursVotes={item.optionFoursVotes} optionFoursBarLength={item.optionFoursBarLength} optionFive={item.optionFive} optionFivesColor={item.optionFivesColor} optionFivesVotes={item.optionFivesVotes} optionFivesBarLength={item.optionFivesBarLength} optionSix={item.optionSix} optionSixesColor={item.optionSixesColor} optionSixesVotes={item.optionSixesVotes} optionSixesBarLength={item.optionSixesBarLength} totalNumberOfOptions={item.totalNumberOfOptions} pollUpOrDownVotes={item.pollUpOrDownVotes} pollId={item.pollId} votedFor={item.votedFor} pfpB64={item.pfpB64} creatorName={item.creatorName} creatorDisplayName={item.creatorDisplayName} postNum={item.postNum} datePosted={item.datePosted} pollComments={item.pollComments} />}
-                            ListFooterComponent={<PostLoadingSpinners selectedPostFormat={selectedPostFormat} loadingPostsImage={loadingPostsImage} loadingPostsVideo={loadingPostsVideo} loadingPostsPoll={loadingPostsPoll} loadingPostsThread={loadingPostsThread} loadingPostsCategory={loadingPostsCategory}/>}
-                            ListHeaderComponent={<PostMessages selectedPostFormat={selectedPostFormat} formatOneText={formatOneText} formatTwoText={formatTwoText} formatThreeText={formatThreeText} formatFourText={formatFourText} formatFiveText={formatFiveText} colors={colors}/>}
-                        />)}
-                        {selectedPostFormat == "Four" && (<SectionList
-                            sections={changeSectionsFour}
-                            keyExtractor={(item, index) => item + index}
-                            renderItem={({ item }) => <ThreadItems postNum={item.postNum} threadId={item.threadId} threadComments={item.threadComments} threadType={item.threadType} threadUpVotes={item.threadUpVotes} threadTitle={item.threadTitle} threadSubtitle={item.threadSubtitle} threadTags={item.threadTags} threadCategory={item.threadCategory} threadBody={item.threadBody} threadImageKey={item.threadImageKey} threadImageDescription={item.threadImageDescription} threadNSFW={item.threadNSFW} threadNSFL={item.threadNSFL} datePosted={item.datePosted} threadUpVoted={item.threadUpVoted} threadDownVoted={item.threadDownVoted} creatorDisplayName={item.creatorDisplayName} creatorName={item.creatorName} creatorImageB64={item.creatorImageB64} imageInThreadB64={item.imageInThreadB64} />}
-                            ListFooterComponent={<PostLoadingSpinners selectedPostFormat={selectedPostFormat} loadingPostsImage={loadingPostsImage} loadingPostsVideo={loadingPostsVideo} loadingPostsPoll={loadingPostsPoll} loadingPostsThread={loadingPostsThread} loadingPostsCategory={loadingPostsCategory}/>}
-                            ListHeaderComponent={<PostMessages selectedPostFormat={selectedPostFormat} formatOneText={formatOneText} formatTwoText={formatTwoText} formatThreeText={formatThreeText} formatFourText={formatFourText} formatFiveText={formatFiveText} colors={colors}/>}
-                        />)}
-                        {selectedPostFormat == "Five" && (<SectionList
-                            sections={changeSectionsFive}
-                            keyExtractor={(item, index) => item + index}
-                            renderItem={({ item }) => <CategoryItem categoryTitle={item.categoryTitle} categoryDescription={item.categoryDescription} members={item.members} categoryTags={item.categoryTags} image={item.image} NSFW={item.NSFW} NSFL={item.NSFL} datePosted={item.datePosted} />}
-                            ListFooterComponent={<PostLoadingSpinners selectedPostFormat={selectedPostFormat} loadingPostsImage={loadingPostsImage} loadingPostsVideo={loadingPostsVideo} loadingPostsPoll={loadingPostsPoll} loadingPostsThread={loadingPostsThread} loadingPostsCategory={loadingPostsCategory}/>}
-                            ListHeaderComponent={<PostMessages selectedPostFormat={selectedPostFormat} formatOneText={formatOneText} formatTwoText={formatTwoText} formatThreeText={formatThreeText} formatFourText={formatFourText} formatFiveText={formatFiveText} colors={colors}/>}
-                        />)}
-                    </ProfileGridPosts>
-                    <ProfileFeaturedPosts display={featuredViewState}>
-                        <SubTitle style={{color: colors.tertiary}} profNoPosts={true}>
-                            Features don't work yet...
-                        </SubTitle>
-                    </ProfileFeaturedPosts>
+                    {privateAccount == false || (userIsFollowed == true && privateAccount == true) ?
+                        <>
+                            <ProfilePostsSelectionView style={{borderBottomWidth: 0}}>
+                                <ProfilePostsSelectionBtns onPress={changeToGrid}>
+                                    <Icon name="grid" color={colors.tertiary} size={45}/>
+                                </ProfilePostsSelectionBtns>
+                                <ProfilePostsSelectionBtns onPress={changeToFeatured}>
+                                    <FontAwesomeFive name="user-tag" color={colors.tertiary} size={45}/>
+                                </ProfilePostsSelectionBtns>
+                                <Animated.View style={{backgroundColor: colors.tertiary, height: 3, width: '50%', position: 'absolute', bottom: 0, transform: [{translateX: GridOrTagLineTranslateX}], zIndex: 2}}/>
+                                <View style={{backgroundColor: colors.borderColor, height: 3, width: '100%', position: 'absolute', bottom: 0}}/>
+                            </ProfilePostsSelectionView>
+                            <ProfileSelectMediaTypeHorizontalView>
+                                <ProfileSelectMediaTypeItem onPress={changeToOne}>
+                                    <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor, borderColor: colors.borderColor}}>
+                                        <ProfileSelectMediaTypeIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/015-images.png')} />
+                                    </ProfileSelectMediaTypeIconsBorder>
+                                </ProfileSelectMediaTypeItem>
+                                <ProfileSelectMediaTypeItem onPress={changeToTwo}>
+                                    <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor, borderColor: colors.borderColor}}>
+                                        <ProfileSelectMediaTypeIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/020-film.png')} />
+                                    </ProfileSelectMediaTypeIconsBorder>
+                                </ProfileSelectMediaTypeItem>
+                                <ProfileSelectMediaTypeItem onPress={changeToThree}>
+                                    <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor, borderColor: colors.borderColor}}>
+                                        <ProfileSelectMediaTypeIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/157-stats-bars.png')} />
+                                    </ProfileSelectMediaTypeIconsBorder>
+                                </ProfileSelectMediaTypeItem>
+                                <ProfileSelectMediaTypeItem onPress={changeToFour}>
+                                    <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor, borderColor: colors.borderColor}}>
+                                        <ProfileSelectMediaTypeIcons style={{ height: '80%', width: '80%', tintColor: colors.tertiary }} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/007-pencil2.png')} />
+                                    </ProfileSelectMediaTypeIconsBorder>
+                                </ProfileSelectMediaTypeItem>
+                                <ProfileSelectMediaTypeItem onPress={changeToFive}>
+                                    <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor, borderColor: colors.borderColor}}>
+                                        <ProfileSelectMediaTypeIcons style={{ height: '80%', width: '80%', tintColor: colors.tertiary }} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/093-drawer.png')} />
+                                    </ProfileSelectMediaTypeIconsBorder>
+                                </ProfileSelectMediaTypeItem>
+                            </ProfileSelectMediaTypeHorizontalView>
+                            <ProfileGridPosts display={gridViewState}>
+                                {selectedPostFormat == "One" && (<SectionList
+                                    sections={changeSectionsOne}
+                                    keyExtractor={(item, index) => item + index}
+                                    renderItem={({ item }) => <ImageItem imageKey={item.imageKey} imageB64={item.imageB64} imageTitle={item.imageTitle} imageDescription={item.imageDescription} imageUpVotes={item.imageUpVotes} imageComments={item.imageComments} creatorName={item.creatorName} creatorDisplayName={item.creatorDisplayName} creatorPfpB64={item.creatorPfpB64} datePosted={item.datePosted} postNum={item.postNum} />}
+                                    ListFooterComponent={<PostLoadingSpinners selectedPostFormat={selectedPostFormat} loadingPostsImage={loadingPostsImage} loadingPostsVideo={loadingPostsVideo} loadingPostsPoll={loadingPostsPoll} loadingPostsThread={loadingPostsThread} loadingPostsCategory={loadingPostsCategory}/>}
+                                    ListHeaderComponent={<PostMessages selectedPostFormat={selectedPostFormat} formatOneText={formatOneText} formatTwoText={formatTwoText} formatThreeText={formatThreeText} formatFourText={formatFourText} formatFiveText={formatFiveText} colors={colors}/>}
+                                />)}
+                                {selectedPostFormat == "Two" && (<SectionList
+                                    sections={changeSectionsTwo}
+                                    keyExtractor={(item, index) => item + index}
+                                    renderItem={({ item }) => <PollItem pollTitle={item.pollTitle} pollSubTitle={item.pollSubTitle} optionOne={item.optionOne} optionOnesColor={item.optionOnesColor} optionOnesVotes={item.optionOnesVotes} optionOnesBarLength={item.optionOnesBarLength} optionTwo={item.optionTwo} optionTwosColor={item.optionTwosColor} optionTwosVotes={item.optionTwosVotes} optionTwosBarLength={item.optionTwosBarLength} optionThree={item.optionThree} optionThreesColor={item.optionThreesColor} optionThreesVotes={item.optionThreesVotes} optionThreesBarLength={item.optionThreesBarLength} optionFour={item.optionFour} optionFoursColor={item.optionFoursColor} optionFoursVotes={item.optionFoursVotes} optionFoursBarLength={item.optionFoursBarLength} optionFive={item.optionFive} optionFivesColor={item.optionFivesColor} optionFivesVotes={item.optionFivesVotes} optionFivesBarLength={item.optionFivesBarLength} optionSix={item.optionSix} optionSixesColor={item.optionSixesColor} optionSixesVotes={item.optionSixesVotes} optionSixesBarLength={item.optionSixesBarLength} totalNumberOfOptions={item.totalNumberOfOptions} pollUpOrDownVotes={item.pollUpOrDownVotes} pollId={item.pollId} votedFor={item.votedFor} pollLiked={item.pollLiked} pfpB64={item.pfpB64} creatorName={item.creatorName} creatorDisplayName={item.creatorDisplayName} />}
+                                    ListFooterComponent={<PostLoadingSpinners selectedPostFormat={selectedPostFormat} loadingPostsImage={loadingPostsImage} loadingPostsVideo={loadingPostsVideo} loadingPostsPoll={loadingPostsPoll} loadingPostsThread={loadingPostsThread} loadingPostsCategory={loadingPostsCategory}/>}
+                                    ListHeaderComponent={<PostMessages selectedPostFormat={selectedPostFormat} formatOneText={formatOneText} formatTwoText={formatTwoText} formatThreeText={formatThreeText} formatFourText={formatFourText} formatFiveText={formatFiveText} colors={colors}/>}
+                                />)}
+                                {selectedPostFormat == "Three" && (<SectionList
+                                    sections={changeSectionsThree}
+                                    keyExtractor={(item, index) => item + index}
+                                    renderItem={({ item }) => <PollItem pollTitle={item.pollTitle} pollSubTitle={item.pollSubTitle} optionOne={item.optionOne} optionOnesColor={item.optionOnesColor} optionOnesVotes={item.optionOnesVotes} optionOnesBarLength={item.optionOnesBarLength} optionTwo={item.optionTwo} optionTwosColor={item.optionTwosColor} optionTwosVotes={item.optionTwosVotes} optionTwosBarLength={item.optionTwosBarLength} optionThree={item.optionThree} optionThreesColor={item.optionThreesColor} optionThreesVotes={item.optionThreesVotes} optionThreesBarLength={item.optionThreesBarLength} optionFour={item.optionFour} optionFoursColor={item.optionFoursColor} optionFoursVotes={item.optionFoursVotes} optionFoursBarLength={item.optionFoursBarLength} optionFive={item.optionFive} optionFivesColor={item.optionFivesColor} optionFivesVotes={item.optionFivesVotes} optionFivesBarLength={item.optionFivesBarLength} optionSix={item.optionSix} optionSixesColor={item.optionSixesColor} optionSixesVotes={item.optionSixesVotes} optionSixesBarLength={item.optionSixesBarLength} totalNumberOfOptions={item.totalNumberOfOptions} pollUpOrDownVotes={item.pollUpOrDownVotes} pollId={item.pollId} votedFor={item.votedFor} pfpB64={item.pfpB64} creatorName={item.creatorName} creatorDisplayName={item.creatorDisplayName} postNum={item.postNum} datePosted={item.datePosted} pollComments={item.pollComments} />}
+                                    ListFooterComponent={<PostLoadingSpinners selectedPostFormat={selectedPostFormat} loadingPostsImage={loadingPostsImage} loadingPostsVideo={loadingPostsVideo} loadingPostsPoll={loadingPostsPoll} loadingPostsThread={loadingPostsThread} loadingPostsCategory={loadingPostsCategory}/>}
+                                    ListHeaderComponent={<PostMessages selectedPostFormat={selectedPostFormat} formatOneText={formatOneText} formatTwoText={formatTwoText} formatThreeText={formatThreeText} formatFourText={formatFourText} formatFiveText={formatFiveText} colors={colors}/>}
+                                />)}
+                                {selectedPostFormat == "Four" && (<SectionList
+                                    sections={changeSectionsFour}
+                                    keyExtractor={(item, index) => item + index}
+                                    renderItem={({ item }) => <ThreadItems postNum={item.postNum} threadId={item.threadId} threadComments={item.threadComments} threadType={item.threadType} threadUpVotes={item.threadUpVotes} threadTitle={item.threadTitle} threadSubtitle={item.threadSubtitle} threadTags={item.threadTags} threadCategory={item.threadCategory} threadBody={item.threadBody} threadImageKey={item.threadImageKey} threadImageDescription={item.threadImageDescription} threadNSFW={item.threadNSFW} threadNSFL={item.threadNSFL} datePosted={item.datePosted} threadUpVoted={item.threadUpVoted} threadDownVoted={item.threadDownVoted} creatorDisplayName={item.creatorDisplayName} creatorName={item.creatorName} creatorImageB64={item.creatorImageB64} imageInThreadB64={item.imageInThreadB64} />}
+                                    ListFooterComponent={<PostLoadingSpinners selectedPostFormat={selectedPostFormat} loadingPostsImage={loadingPostsImage} loadingPostsVideo={loadingPostsVideo} loadingPostsPoll={loadingPostsPoll} loadingPostsThread={loadingPostsThread} loadingPostsCategory={loadingPostsCategory}/>}
+                                    ListHeaderComponent={<PostMessages selectedPostFormat={selectedPostFormat} formatOneText={formatOneText} formatTwoText={formatTwoText} formatThreeText={formatThreeText} formatFourText={formatFourText} formatFiveText={formatFiveText} colors={colors}/>}
+                                />)}
+                                {selectedPostFormat == "Five" && (<SectionList
+                                    sections={changeSectionsFive}
+                                    keyExtractor={(item, index) => item + index}
+                                    renderItem={({ item }) => <CategoryItem categoryTitle={item.categoryTitle} categoryDescription={item.categoryDescription} members={item.members} categoryTags={item.categoryTags} image={item.image} NSFW={item.NSFW} NSFL={item.NSFL} datePosted={item.datePosted} />}
+                                    ListFooterComponent={<PostLoadingSpinners selectedPostFormat={selectedPostFormat} loadingPostsImage={loadingPostsImage} loadingPostsVideo={loadingPostsVideo} loadingPostsPoll={loadingPostsPoll} loadingPostsThread={loadingPostsThread} loadingPostsCategory={loadingPostsCategory}/>}
+                                    ListHeaderComponent={<PostMessages selectedPostFormat={selectedPostFormat} formatOneText={formatOneText} formatTwoText={formatTwoText} formatThreeText={formatThreeText} formatFourText={formatFourText} formatFiveText={formatFiveText} colors={colors}/>}
+                                />)}
+                            </ProfileGridPosts>
+                            <ProfileFeaturedPosts display={featuredViewState}>
+                                <SubTitle style={{color: colors.tertiary}} profNoPosts={true}>
+                                    Features don't work yet...
+                                </SubTitle>
+                            </ProfileFeaturedPosts>
+                        </>
+                    : 
+                        <View style={{alignItems: 'center', justifyContent: 'center'}}>
+                            <EvilIcons name="lock" color={colors.tertiary} size={70}/>
+                            <Text style={{color: colors.tertiary, fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>This is a private account.</Text>
+                            <Text style={{color: colors.tertiary, fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>Follow this account to see their posts.</Text>
+                        </View>
+                    }
                 </WelcomeContainer>
             </ScrollView>
         </>

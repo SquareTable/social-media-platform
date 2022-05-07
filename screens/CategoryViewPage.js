@@ -190,7 +190,7 @@ const CategoryViewPage = ({route, navigation}) => {
                 console.log(data)
                 var CategoryData = data
                 if (data.imageKey) {
-                    axios.get(`${serverUrl}/getImage/${data.imageKey}`)
+                    axios.get(`${serverUrl}/getImageOnServer/${data.imageKey}`)
                     .then((response) => {
                         const result = response.data;
                         const {message, status, data} = result;
@@ -729,18 +729,18 @@ const CategoryViewPage = ({route, navigation}) => {
 
     //get image of post
     async function getImageInPost(imageData, index) {
-        return axios.get(`${serverUrl}/getImage/${imageData[index].imageKey}`)
+        return axios.get(`${serverUrl}/getImageOnServer/${imageData[index].imageKey}`)
         .then(res => res.data);
     }
     //profile image of creator
     async function getImageInPfp(threadData, index) {
-        return axios.get(`${serverUrl}/getImage/${threadData[index].creatorImageKey}`)
+        return axios.get(`${serverUrl}/getImageOnServer/${threadData[index].creatorImageKey}`)
         .then(res => res.data);
     }
 
     //any image honestly
     async function getImageWithKey(imageKey) {
-        return axios.get(`${serverUrl}/getImage/${imageKey}`)
+        return axios.get(`${serverUrl}/getImageOnServer/${imageKey}`)
         .then(res => res.data);
     }
 

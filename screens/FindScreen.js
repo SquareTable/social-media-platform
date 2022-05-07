@@ -1,4 +1,4 @@
-import React, {useContext, useEffect, useState, useRef} from 'react';
+import React, {useContext, useEffect, useState, useRef, memo} from 'react';
 import { StatusBar } from 'expo-status-bar';
 import Constants from 'expo-constants';
 
@@ -78,7 +78,7 @@ const FindScreen = ({navigation}) => {
     let cancelTokenPostFormatTwo = axios.CancelToken.source();
     const {serverUrl, setServerurl} = useContext(ServerUrlContext);
     const StatusBarHeight = Constants.statusBarHeight;
-    const UserItem = ({name, displayName, following, followers, totalLikes, profileKey, badges, index, pubId}) => (
+    const UserItem = ({name, displayName, following, followers, totalLikes, profileKey, badges, index, pubId, bio, privateAccount}) => (
         /* OLD DESIGN
             <SearchFrame onPress={() => navigation.navigate("ProfilePages", {profilesName: name, profilesDisplayName: displayName, following: following, followers: followers, totalLikes: totalLikes, profileKey: profileKey != null ? `data:image/jpg;base64,${profileKey}` : SocialSquareLogo_B64_png, badges: badges})}>
                 {profileKey !== null && (
@@ -110,27 +110,18 @@ const FindScreen = ({navigation}) => {
                 </SearchHorizontalView>
             </SearchFrame>
         */
-            <TouchableOpacity onPress={() => navigation.navigate("ProfilePages", {profilesName: name, profilesDisplayName: displayName, following: following, followers: followers, totalLikes: totalLikes, profileKey: profileKey != null ? `data:image/jpg;base64,${profileKey}` : SocialSquareLogo_B64_png, badges: badges, pubId: pubId})} style={{borderColor: colors.darkLight, flexDirection: 'row', width: '100%', padding: 5}}>
+            <TouchableOpacity onPress={() => navigation.navigate("ProfilePages", {profilesName: name, profilesDisplayName: displayName, following: following, followers: followers, totalLikes: totalLikes, profileKey: profileKey != null ? `data:image/jpg;base64,${profileKey}` : SocialSquareLogo_B64_png, badges: badges, pubId: pubId, bio: bio, privateAccount: privateAccount})} style={{borderColor: colors.darkLight, flexDirection: 'row', width: '100%', padding: 5}}>
                 <View style={{alignItems: 'flex-start', justifyContent: 'center', flexDirection: 'row'}}>
-                    {profileKey !== null && (
-                        <Avatar style={{width: 60, height: 60, marginBottom: 5, marginTop: 5}} resizeMode="cover" searchPage={true} source={{uri: `data:image/jpg;base64,${profileKey}`}} />
-                    )}
-                    {profileKey == null && (
-                        <Avatar style={{width: 60, height: 60, marginBottom: 5, marginTop: 5}} resizeMode="cover" searchPage={true} source={{uri: SocialSquareLogo_B64_png}} />
-                    )}
-                    <SubTitle style={{color: colors.tertiary, marginTop: 24, marginLeft: 10}} searchResTitle={true}>{name}</SubTitle>
+                    {console.log(profileKey)}
+                    <Avatar style={{width: 60, height: 60, marginBottom: 5, marginTop: 5}} resizeMode="cover" searchPage={true} source={{uri: profileKey != null ? `data:image/jpg;base64,${profileKey}` : SocialSquareLogo_B64_png}} />
+                    <SubTitle style={{color: colors.tertiary, marginTop: 24, marginLeft: 10}} searchResTitle={true}>{displayName || name}</SubTitle>
                 </View>
             </TouchableOpacity>
     );
 
     const CategoryItem = ({categoryTitle, categoryDescription, members, categoryTags, image, NSFW, NSFL, datePosted, allowScreenShots}) => (
         <SearchFrame onPress={() => navigation.navigate("CategoryViewPage", {categoryTitle: categoryTitle, NSFL: NSFL, NSFW: NSFW, allowScreenShots: (allowScreenShots != undefined ? allowScreenShots : true)})}>
-            {image !== null && (
-                <Avatar resizeMode="cover" searchPage={true} source={{uri: `data:image/jpg;base64,${image}`}} />
-            )}
-            {image == null && (
-                <Avatar resizeMode="cover" searchPage={true} source={{uri: SocialSquareLogo_B64_png}} />
-            )}
+            <Avatar resizeMode="cover" searchPage={true} source={{uri: image != undefined && image != null && image != '' ? `data:image/jpg;base64,${image}` : SocialSquareLogo_B64_png}} />
             {NSFW == false && (
                 <View>
                     {NSFL == false && (
@@ -174,7 +165,7 @@ const FindScreen = ({navigation}) => {
 
     //any image honestly
     async function getImageWithKeyOne(imageKey) {
-        return axios.get((serverUrl + '/getImage/' + imageKey), { cancelToken: cancelTokenPostFormatOne.token})
+        return axios.get((serverUrl + '/getImageOnServer/' + imageKey), { cancelToken: cancelTokenPostFormatOne.token})
         .then(res => res.data).catch(error => {
             console.log(error);
             //setSubmitting(false);
@@ -202,7 +193,7 @@ const FindScreen = ({navigation}) => {
                                 }
                                 const imageInPfp = await getImageWithKeyOne(allData[index].profileKey)
                                 const imageInPfpB64 = imageInPfp.data
-                                var tempSectionsTemp = {data: [{name: allData[index].name, displayName: displayName, followers: allData[index].followers, following: allData[index].following, totalLikes: allData[index].totalLikes, profileKey: imageInPfpB64, badges: allData[index].badges, pubId: allData[index].pubId}]}
+                                var tempSectionsTemp = {data: [{name: allData[index].name, displayName: displayName, followers: allData[index].followers, following: allData[index].following, totalLikes: allData[index].totalLikes, profileKey: imageInPfpB64, badges: allData[index].badges, pubId: allData[index].pubId, bio: allData[index].bio, privateAccount: allData[index].privateAccount}]}
                                 tempSections.push(tempSectionsTemp)
                                 itemsProcessed++;
                                 if(itemsProcessed === allData.length) {
@@ -218,7 +209,7 @@ const FindScreen = ({navigation}) => {
                             if (displayName == "") {
                                 displayName = allData[index].name
                             }
-                            var tempSectionsTemp = {data: [{name: allData[index].name, displayName: displayName, followers: allData[index].followers, following: allData[index].following, totalLikes: allData[index].totalLikes, profileKey: null, badges: allData[index].badges, pubId: allData[index].pubId}]}
+                            var tempSectionsTemp = {data: [{name: allData[index].name, displayName: displayName, followers: allData[index].followers, following: allData[index].following, totalLikes: allData[index].totalLikes, profileKey: null, badges: allData[index].badges, pubId: allData[index].pubId, bio: allData[index].bio, privateAccount: allData[index].privateAccount}]}
                             tempSections.push(tempSectionsTemp)
                             itemsProcessed++;
                             if(itemsProcessed === allData.length) {
@@ -271,7 +262,7 @@ const FindScreen = ({navigation}) => {
     }
 
     async function getImageInCategory(imageKey) {
-        return axios.get((serverUrl + '/getImage/' + imageKey), { cancelToken: cancelTokenPostFormatTwo.token})
+        return axios.get((serverUrl + '/getImageOnServer/' + imageKey), { cancelToken: cancelTokenPostFormatTwo.token})
         .then(res => res.data);
     }
 
@@ -392,15 +383,8 @@ const FindScreen = ({navigation}) => {
     return(
         <>    
             <StatusBar style={colors.StatusBarColor}/>
-            <TouchableWithoutFeedback style={{paddingTop: StatusBarHeight - 15, borderColor: colors.borderColor, borderBottomWidth: 1, paddingBottom: 5}} onPress={Keyboard.dismiss()}>
-                <SearchBarArea style={{alignSelf: 'center'}}>
-                    <UserTextInput
-                        placeholder="Search"
-                        placeholderTextColor={darkLight}
-                        onChangeText={(val) => handleChange(val)}
-                        colors={colors}
-                    />
-                </SearchBarArea>
+            <TouchableWithoutFeedback style={{paddingTop: StatusBarHeight - 15, borderColor: colors.borderColor, borderBottomWidth: 1, paddingBottom: 5}} onPress={() => {Keyboard.dismiss()}}>
+                <MemoSearchInput colors={colors} handleChange={handleChange}/>
                 <View style={{alignItems: 'center', flexDirection: 'row', justifyContent: 'space-around', marginTop: -20}}>
                     <View style={{flexDirection: 'column', alignItems: 'center'}}>
                         <SubTitle style={{marginBottom: 0, fontSize: 15, fontWeight: 'normal', color: colors.tertiary}}>Users</SubTitle>
@@ -461,7 +445,7 @@ const FindScreen = ({navigation}) => {
                 <SectionList
                     sections={changeSectionsOne}
                     keyExtractor={(item, index) => item + index}
-                    renderItem={({ item, index }) => <UserItem name={item.name} displayName={item.displayName} followers={item.followers}  following={item.following} totalLikes={item.totalLikes} profileKey={item.profileKey} badges={item.badges} index={index} pubId={item.pubId}/>}
+                    renderItem={({ item, index }) => <UserItem name={item.name} displayName={item.displayName} followers={item.followers}  following={item.following} totalLikes={item.totalLikes} profileKey={item.profileKey} badges={item.badges} index={index} pubId={item.pubId} bio={item.bio} privateAccount={item.privateAccount}/>}
                     ListFooterComponent={
                         <>
                             <View style={{marginTop: 20}}>
@@ -527,5 +511,22 @@ const UserTextInput = ({label, icon, isPassword, colors, ...props}) => {
         </SearchBarArea>
     )
 }
+
+const SearchInput = ({colors, handleChange}) => {
+    return(
+        <SearchBarArea style={{alignSelf: 'center'}}>
+            <UserTextInput
+                placeholder="Search"
+                placeholderTextColor={colors.darkLight}
+                onChangeText={(val) => handleChange(val)}
+                colors={colors}
+                autoCapitalize="none"
+                autoCorrect={false}
+            />
+        </SearchBarArea>
+    );
+}
+
+const MemoSearchInput = memo(SearchInput);
 
 export default FindScreen;

@@ -20,20 +20,20 @@ import axios from 'axios';
 import {ServerUrlContext} from '../components/ServerUrlContext';
 import KeyboardAvoidingWrapper from '../components/KeyboardAvoidingWrapper';
 import { Formik } from 'formik';
-import { CredentialsContext } from '../components/CredentialsContext';
 import {Octicons, Ionicons, Fontisto} from '@expo/vector-icons';
+import { useIsFocused } from '@react-navigation/native';
 
-const ChangePasswordScreen = ({navigation}) => {
+const ResetPasswordAfterVerificationScreen = ({navigation, route}) => {
     const {colors, dark} = useTheme();
     const {serverUrl, setServerUrl} = useContext(ServerUrlContext);
-    const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
-    const {_id} = storedCredentials;
     const [message, setMessage] = useState();
     const [messageType, setMessageType] = useState();
     const [hidePassword, setHidePassword] = useState(true);
+    const {username, code} = route.params;
+    const isFocused = useIsFocused();
 
     const handleChangePassword = (values, setSubmitting) => {
-        const url = serverUrl + '/user/changepassword';
+        const url = serverUrl + '/user/changepasswordwithverificationcode';
         const toSend = values;
         axios.post(url, toSend).then((response) => {
             const result = response.data;
@@ -47,7 +47,7 @@ const ChangePasswordScreen = ({navigation}) => {
             } else {
                 handleMessage(message,status);
                 setTimeout(() => {
-                    navigation.goBack();
+                    isFocused ? navigation.replace('LoginScreen') : null;
                 }, 1000);
             }
             setSubmitting(false);
@@ -78,10 +78,10 @@ const ChangePasswordScreen = ({navigation}) => {
             <KeyboardAvoidingWrapper>
                 <InnerContainer>
                     <Formik
-                        initialValues={{currentPassword: '', newPassword: '', confirmNewPassword: '', userId: _id}}
+                        initialValues={{newPassword: '', confirmNewPassword: '', verificationCode: code, username: username}}
                         onSubmit={(values, {setSubmitting}) => {
                             console.log("Submitting")
-                            if (values.currentPassword == '' || values.newPassword == '' || values.confirmNewPassword == '') {
+                            if (values.newPassword == '' || values.confirmNewPassword == '') {
                                 handleMessage('Please fill all the fields.');
                                 setSubmitting(false);
                             } else if (values.newPassword !== values.confirmNewPassword) {
@@ -99,21 +99,6 @@ const ChangePasswordScreen = ({navigation}) => {
                     >
                         {({handleChange, handleBlur, handleSubmit, values, isSubmitting}) => (
                             <StyledFormArea>
-                                <UserTextInput
-                                    icon="lock"
-                                    placeholder="Current Password"
-                                    placeholderTextColor={colors.tertiary}
-                                    onChangeText={handleChange('currentPassword')}
-                                    onBlur={handleBlur('currentPassword')}
-                                    value={values.password}
-                                    secureTextEntry={hidePassword}
-                                    isPassword={true}
-                                    hidePassword={hidePassword}
-                                    setHidePassword={setHidePassword}
-                                    style={{backgroundColor: colors.primary, color: colors.tertiary}}
-                                    colors={colors}
-                                    textContentType="password"
-                                />
                                 <UserTextInput
                                     icon="lock"
                                     placeholder="New Password"
@@ -160,7 +145,7 @@ const ChangePasswordScreen = ({navigation}) => {
     );
 }
 
-export default ChangePasswordScreen;
+export default ResetPasswordAfterVerificationScreen;
 
 const UserTextInput = ({label, icon, isPassword, hidePassword, setHidePassword, colors, ...props}) => {
     return(

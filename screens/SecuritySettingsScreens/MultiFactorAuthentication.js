@@ -12,7 +12,7 @@ import {
 import Icon from 'react-native-vector-icons/AntDesign';
 import {CredentialsContext} from '../../components/CredentialsContext';
 
-const TwoFA = ({navigation}) => {
+const MultiFactorAuthentication = ({navigation}) => {
     const {colors, dark} = useTheme()
     const {brand} = Colors;
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
@@ -27,7 +27,7 @@ const TwoFA = ({navigation}) => {
                     resizeMethod="resize"
                     />
                 </Navigator_BackButton>
-                <TestText style={{textAlign: 'center', color: colors.tertiary}}>Two Factor Authentication</TestText>
+                <TestText style={{textAlign: 'center', color: colors.tertiary}}>Multi-Factor Authentication</TestText>
             </ChatScreen_Title>
             {storedCredentials ?
                 <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
@@ -49,4 +49,4 @@ const TwoFA = ({navigation}) => {
     );
 }
 
-export default TwoFA;
+export default MultiFactorAuthentication;

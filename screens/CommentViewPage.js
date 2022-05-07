@@ -156,22 +156,22 @@ const CommentViewPage = ({route, navigation}) => {
 
     //get image of post
     async function getImageInPost(imageData, index) {
-        return axios.get(`${serverUrl}/getImage/${imageData[index].imageKey}`)
+        return axios.get(`${serverUrl}/getImageOnServer/${imageData[index].imageKey}`)
         .then(res => res.data);
     }
     //profile image of creator
     async function getImageInPfp(threadData, index) {
-        return axios.get(`${serverUrl}/getImage/${threadData[index].creatorImageKey}`)
+        return axios.get(`${serverUrl}/getImageOnServer/${threadData[index].creatorImageKey}`)
         .then(res => res.data);
     }
     //profile image of commenter
     async function getImageInPfpComments(commentData, index) {
-        return axios.get(`${serverUrl}/getImage/${commentData[index].profileImageKey}`)
+        return axios.get(`${serverUrl}/getImageOnServer/${commentData[index].profileImageKey}`)
         .then(res => res.data);
     }
     //any image honestly
     async function getImageWithKey(imageKey) {
-        return axios.get(`${serverUrl}/getImage/${imageKey}`)
+        return axios.get(`${serverUrl}/getImageOnServer/${imageKey}`)
         .then(res => res.data);
     }
 

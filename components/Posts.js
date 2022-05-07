@@ -110,6 +110,8 @@ export default function Post( post ) {
 
     const colors = post.colors
     
+    console.log('Image B64 is: ' + post.imageB64)
+
     const handleMessage = (message, type = 'FAILED', postNum) => {
         setMessage(message);
         setMessageType(type);
@@ -431,6 +433,7 @@ export default function Post( post ) {
 
     //Items/models
     const ImageItem = ({format, imageKey, imageB64, imageTitle, imageDescription, imageUpVotes, imageComments, creatorName, creatorDisplayName, creatorPfpB64, datePosted, postNum , postNotFromFeed}) => (
+        
         <View style={{ backgroundColor: colors.primary, borderRadius: 15, marginBottom: 10, borderWidth: 3, borderColor: colors.borderColor }}>
             <PostsHorizontalView style={{ marginLeft: '5%', borderBottomWidth: 3, borderColor: colors.borderColor, width: '90%', paddingBottom: 5, marginRight: '5%' }}>
                 <PostsVerticalView>

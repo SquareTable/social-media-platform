@@ -39,6 +39,7 @@ import { OpenAppContext } from './components/OpenAppContext.js';
 import { ShowAccountSwitcherContext } from './components/ShowAccountSwitcherContext.js';
 import { AllCredentialsStoredContext } from './components/AllCredentialsStoredContext.js';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import { navigationRef } from './components/ReactNavigationRef.js';
 import * as AppNavigation from './components/ReactNavigationRef.js';
 import { ServerUrlContext } from './components/ServerUrlContext.js';
@@ -873,18 +874,17 @@ useEffect(() => {
             <>
               <View style={{flexDirection: 'row', justifyContent: 'flex-start', height: 60, alignItems: 'flex-start'}}>
                 <Avatar style={{width: 40, height: 40, marginLeft: 15}} resizeMode="cover" source={{uri: profilePictureUri}}/>
-                <Text style={{color: 'white', fontSize: 20, fontWeight: 'bold', marginTop: 16, position: 'absolute', left: 71}}>{storedCredentials.name}</Text>
+                <Text style={{color: 'white', fontSize: 20, fontWeight: 'bold', marginTop: 16, position: 'absolute', left: 71}}>{storedCredentials.displayName || storedCredentials.name}</Text>
               </View>
               <View style={{width: '100%', backgroundColor: 'white', height: 3, borderColor: 'white', borderWidth: 1, borderRadius: 20, width: '96%', alignSelf: 'center'}}/>
               <FlatList
                 data={allCredentialsStoredList}
-                inverted={true}
                 renderItem={({item}) => (
                   <>
                     {item.secondId != storedCredentials.secondId ?
                       <TouchableOpacity onPress={() => {goToAccount(item)}} style={{flexDirection: 'row', justifyContent: 'flex-start', height: 60, alignItems: 'flex-start'}}>
                         <Avatar style={{width: 40, height: 40, marginLeft: 15}} resizeMode="cover" source={{uri: item.profilePictureUri}}/>
-                        <Text style={{color: 'white', fontSize: 20, fontWeight: 'bold', marginTop: 16, position: 'absolute', left: 71}}>{item.name}</Text>
+                        <Text style={{color: 'white', fontSize: 20, fontWeight: 'bold', marginTop: 16, position: 'absolute', left: 71}}>{item.displayName || item.name}</Text>
                       </TouchableOpacity>
                     : null}
                   </>
@@ -950,7 +950,7 @@ useEffect(() => {
             <Animated.View style={{backgroundColor: (colors.primary + 'CC'), height: 60, width: '90%', position: 'absolute', zIndex: 999, top: appHeight - 140, marginHorizontal: '5%', flexDirection: 'row', borderColor: 'black', borderRadius: 15, borderWidth: 1, transform: [{translateY: AccountSwitchedBoxY}], justifyContent: 'center', alignItems: 'center'}}>
               <TouchableOpacity onPress={onBoxPress} style={{flexDirection: 'row', justifyContent: 'flex-start'}}>
                 <Avatar style={{width: 40, height: 40, marginLeft: 15}} source={{uri: profilePictureUri}}/>
-                <Text style={{color: colors.tertiary, fontSize: 16, marginTop: 20, marginLeft: 15, fontWeight: 'bold'}}>{'Switched to ' + storedCredentials.name}</Text>
+                <Text style={{color: colors.tertiary, fontSize: 16, marginTop: 20, marginLeft: 15, fontWeight: 'bold'}}>{'Switched to ' + (storedCredentials.displayName || storedCredentials.name)}</Text>
               </TouchableOpacity>
             </Animated.View>
           </PanGestureHandler>
@@ -1082,14 +1082,28 @@ useEffect(() => {
     return(
       <PanGestureHandler onGestureEvent={onPanGestureEvent} onHandlerStateChange={onHandlerStateChange}>
         <Animated.View style={{backgroundColor: 'rgba(0, 0, 0, 0.8)', height: 60, width: '90%', position: 'absolute', zIndex: 1000, top: 40, marginHorizontal: '5%', flexDirection: 'row', borderColor: 'black', borderRadius: 15, borderWidth: 1, transform: [{translateY: BadgeEarntBoxY.interpolate({inputRange: [0, 10], outputRange: [0, 10]})}]}}>
-          <TouchableOpacity onPress={BoxPressed} style={{flexDirection: 'row'}}>
-            <View style={{width: '20%', minWidth: '20%', maxWidth: '20%', justifyContent: 'center', alignItems: 'center'}}>
-              {getBadgeEarntNotificationIcon(badgeEarntNotification)}
-            </View>
-            <View style={{width: '80%', minWidth: '80%', maxWidth: '80%'}}>
-              <Text numberOfLines={1} style={{color: 'white', fontSize: 16, fontWeight: 'bold', marginRight: 15}}>Badge Earnt!</Text>
-              <Text numberOfLines={2} style={{color: 'white', fontSize: 14, marginTop: 2, marginRight: 15}}>{getBadgeEarntNotificationDescription(badgeEarntNotification)}</Text>
-            </View>
+          <TouchableOpacity onPress={BoxPressed}>
+            {badgeEarntNotification != 'Badge already earnt.' ?
+              <View style={{flexDirection: 'row'}}>
+                <View style={{width: '20%', minWidth: '20%', maxWidth: '20%', justifyContent: 'center', alignItems: 'center'}}>
+                  {getBadgeEarntNotificationIcon(badgeEarntNotification)}
+                </View>
+                <View style={{width: '80%', minWidth: '80%', maxWidth: '80%'}}>
+                  <Text numberOfLines={1} style={{color: 'white', fontSize: 16, fontWeight: 'bold', marginRight: 15}}>Badge Earnt!</Text>
+                  <Text numberOfLines={2} style={{color: 'white', fontSize: 14, marginTop: 2, marginRight: 15}}>{getBadgeEarntNotificationDescription(badgeEarntNotification)}</Text>
+                </View>
+              </View>
+            :
+              <View style={{flexDirection: 'row'}}>
+                <View style={{width: '20%', minWidth: '20%', maxWidth: '20%', justifyContent: 'center', alignItems: 'center'}}>
+                  {getBadgeEarntNotificationIcon(badgeEarntNotification)}
+                </View>
+                <View style={{width: '80%', minWidth: '80%', maxWidth: '80%'}}>
+                  <Text numberOfLines={1} style={{color: 'white', fontSize: 16, fontWeight: 'bold', marginRight: 15}}>Badge has already been earnt!</Text>
+                  <Text numberOfLines={2} style={{color: 'white', fontSize: 14, marginTop: 2, marginRight: 15}}>This badge has already been earnt.</Text>
+                </View>
+              </View>
+            }
           </TouchableOpacity>
         </Animated.View>
       </PanGestureHandler>
@@ -1120,6 +1134,8 @@ useEffect(() => {
       return (
         <MaterialCommunityIcons name="egg-easter" size={65} color={'white'} style={{marginTop: -3}}/>
       )
+    } else {
+      return <AntDesign name="exclamation" size={65} color={'white'} style={{marginTop: -3}}/>
     }
   }
 

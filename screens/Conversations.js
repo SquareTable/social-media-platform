@@ -126,7 +126,7 @@ const Conversations = ({navigation}) => {
     
     //any image honestly
     async function getImageWithKey(imageKey) {
-        return axios.get(`${serverUrl}/getImage/${imageKey}`)
+        return axios.get(`${serverUrl}/getImageOnServer/${imageKey}`)
         .then(res => res.data);
     }
 

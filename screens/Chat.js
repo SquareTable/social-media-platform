@@ -198,7 +198,7 @@ const Chat = ({route, navigation}) => {
     }, [arrivalMessage])
 
     async function getImageWithKey(imageKey) {
-        return axios.get(`${serverUrl}/getImage/${imageKey}`)
+        return axios.get(`${serverUrl}/getImageOmServer/${imageKey}`)
         .then(res => res.data).catch(error => {
             console.log(error);
         })
@@ -226,7 +226,7 @@ const Chat = ({route, navigation}) => {
             } else {
                 console.log(status)
                 console.log(message)
-                axios.get(`${serverUrl}/getImage/${data}`)
+                axios.get(`${serverUrl}/getImageOnServer/${data}`)
                 .then((response) => {
                     const result = response.data;
                     const {message, status, data} = result;
@@ -2258,7 +2258,7 @@ const Chat = ({route, navigation}) => {
 
     //any image honestly
     async function getImageWithKeyOne(imageKey) {
-        return axios.get(`${serverUrl}/getImage/${imageKey}`)
+        return axios.get(`${serverUrl}/getImageOnServer/${imageKey}`)
         .then(res => res.data).catch(error => {
             console.log(error);
             //setSubmitting(false);

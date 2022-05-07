@@ -66,6 +66,9 @@ const Signup = ({navigation, route}) => {
     const [webBrowserResult, setWebBrowserResult] = useState(null);
     const {allCredentialsStoredList, setAllCredentialsStoredList} = useContext(AllCredentialsStoredContext);
     const {profilePictureUri, setProfilePictureUri} = useContext(ProfilePictureURIContext);
+    const [usernameIsAvailable, setUsernameIsAvailable] = useState(undefined)
+    const [usernameAvailableMessage, setUsernameAvailableMessage] = useState(undefined)
+    const [usernameAvailableMessageColor, setUsernameAvailableMessageColor] = useState(undefined)
 
     const {serverUrl, setServerUrl} = useContext(ServerUrlContext);
 
@@ -163,6 +166,54 @@ const Signup = ({navigation, route}) => {
         }
     }
 
+    const debounce = (callback, delay) => {
+        let timeout;
+        return (...args) => {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                callback(...args);
+            }, delay);
+        };
+    }
+
+    const checkIfUsernameIsAvailable = debounce((username) => {
+        if (username.length < 1) {
+            setUsernameIsAvailable(false);
+            setUsernameAvailableMessage('Username cannot be blank')
+            setUsernameAvailableMessageColor(colors.red)
+        } else {
+            const url = serverUrl + '/user/checkusernameavailability';
+            axios.post(url, {username}).then((response) => {
+                const result = response.data;
+                const {message, status} = result;
+                console.log(message)
+                if (status !== 'SUCCESS') {
+                    setUsernameIsAvailable(false)
+                    setUsernameAvailableMessage(message)
+                    setUsernameAvailableMessageColor(colors.red)
+                } else {
+                    if (message == 'Username is available') {
+                        setUsernameIsAvailable(true);
+                        setUsernameAvailableMessage('This username is available')
+                        setUsernameAvailableMessageColor(colors.green)
+                    } else if (message == 'Username is not available') {
+                        setUsernameIsAvailable(false);
+                        setUsernameAvailableMessage('This username is not available')
+                        setUsernameAvailableMessageColor(colors.red)
+                    } else {
+                        setUsernameIsAvailable(false);
+                        setUsernameAvailableMessage('An error occured. Try checking your network connection and retry.')
+                        setUsernameAvailableMessageColor(colors.red)
+                    }
+                }
+            }).catch(error => {
+                console.log(error);
+                setUsernameIsAvailable(false);
+                setUsernameAvailableMessage('An error occured. Try checking your network connection and retry.')
+                setUsernameAvailableMessageColor(colors.red)
+            })
+        }
+    }, 750);
     return(
         <KeyboardAvoidingWrapper>
             <StyledContainer style={{backgroundColor: colors.primary}}>
@@ -193,12 +244,19 @@ const Signup = ({navigation, route}) => {
                                     icon="person"
                                     placeholder="Eg. PhotosAreCool123"
                                     placeholderTextColor={colors.tertiary}
-                                    onChangeText={handleChange('name')}
+                                    onChangeText={(text) => {
+                                        handleChange('name')(text);
+                                        checkIfUsernameIsAvailable(text);
+                                    }}
                                     onBlur={handleBlur('name')}
                                     value={values.name}
                                     style={{backgroundColor: colors.primary, color: colors.tertiary}}
                                     autoCapitalize="none"
+                                    usernameIsAvailable={usernameIsAvailable}
+                                    colors={colors}
                                 />
+
+                                {usernameAvailableMessage ? <Text style={{color: usernameAvailableMessageColor, fontSize: 16, textAlign: 'center', marginHorizontal: '5%'}}>{usernameAvailableMessage}</Text> : null}
 
                                 <UserTextInput
                                     label="Email Address"
@@ -211,6 +269,7 @@ const Signup = ({navigation, route}) => {
                                     keyboardType="email-address"
                                     style={{backgroundColor: colors.primary, color: colors.tertiary}}
                                     autoCapitalize="none"
+                                    colors={colors}
                                 />
 
                                 <UserTextInput
@@ -226,6 +285,7 @@ const Signup = ({navigation, route}) => {
                                     hidePassword={hidePassword}
                                     setHidePassword={setHidePassword}
                                     style={{backgroundColor: colors.primary, color: colors.tertiary}}
+                                    colors={colors}
                                 />
 
                                 <UserTextInput
@@ -241,9 +301,10 @@ const Signup = ({navigation, route}) => {
                                     hidePassword={hidePassword}
                                     setHidePassword={setHidePassword}
                                     style={{backgroundColor: colors.primary, color: colors.tertiary}}
+                                    colors={colors}
                                 />
                                 <MsgBox type={messageType}>{message}</MsgBox>
-                                {!isSubmitting && (<StyledButton onPress={handleSubmit}>
+                                {!isSubmitting && (<StyledButton onPress={handleSubmit} style={usernameIsAvailable == true ? {opacity: 1} : {opacity: 0.2}} disabled={usernameIsAvailable == true ? false : true}>
                                     <ButtonText> Signup </ButtonText>
                                 </StyledButton>)}
 
@@ -282,17 +343,22 @@ const Signup = ({navigation, route}) => {
     );
 }
 
-const UserTextInput = ({label, icon, isPassword, hidePassword, setHidePassword, ...props}) => {
+const UserTextInput = ({label, icon, isPassword, hidePassword, setHidePassword, usernameIsAvailable, colors, ...props}) => {
     return(
         <View>
             <LeftIcon style={{top: 34.5}}>
-                <Octicons name={icon} size={30} color={brand} />
+                <Octicons name={icon} size={30} color={colors.brand} />
             </LeftIcon>
             <StyledInputLabel>{label}</StyledInputLabel>
             <StyledTextInput {...props}/>
             {isPassword && (
                 <RightIcon style={{top: 32.5}} onPress={() => setHidePassword(!hidePassword)}>
-                    <Ionicons name={hidePassword ? 'md-eye-off' : 'md-eye'} size={30} color={brand}/>
+                    <Ionicons name={hidePassword ? 'md-eye-off' : 'md-eye'} size={30} color={colors.brand}/>
+                </RightIcon>
+            )}
+            {label == 'Username' && usernameIsAvailable != undefined && (
+                <RightIcon style={{top: 32.5}} disabled={true /* This is disabled because RightIcon is a TouchableOpacity and we do not want this icon to be touchable */}>
+                    <Ionicons name={usernameIsAvailable ? 'checkmark-circle-outline' : 'close-circle-outline'} size={30} color={usernameIsAvailable ? colors.green : colors.red}/>
                 </RightIcon>
             )}
         </View>

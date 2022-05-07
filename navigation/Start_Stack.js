@@ -18,6 +18,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import IntroScreen from "../screens/IntroductionScreens/IntroScreen.js";
 import DestroyingLocalDataScreen from "../screens/DestroyingLocalDataScreen.js";
 import { ChatScreen_Stack } from "./ChatScreenStackNavigator.js";
+import ForgottenPasswordScreen from "../screens/ForgottenPasswordScreen.js";
+import ResetPasswordScreen from "../screens/ResetPasswordScreen.js";
+import ResetPasswordAfterVerificationScreen from "../screens/ResetPasswordAfterVerificationScreen.js";
 
 const Stack = createStackNavigator();
 
@@ -71,6 +74,9 @@ const Start_Stack = () => {
                                 <Stack.Screen name="ModalLoginScreen" component={LoginScreen}/>
                                 <Stack.Screen name="ModalSignupScreen" component={Signup}/>
                             </Stack.Group>
+                            <Stack.Screen name="ForgottenPasswordScreen" component={ForgottenPasswordScreen}/>
+                            <Stack.Screen name="ResetPasswordScreen" component={ResetPasswordScreen}/>
+                            <Stack.Screen name="ResetPasswordAfterVerificationScreen" component={ResetPasswordAfterVerificationScreen}/>
                         </>
                     ) : ( 
                         <>
@@ -96,6 +102,9 @@ const Start_Stack = () => {
                                 <Stack.Screen name="ModalLoginScreen" component={LoginScreen}/>
                                 <Stack.Screen name="ModalSignupScreen" component={Signup}/>
                             </Stack.Group>
+                            <Stack.Screen name="ForgottenPasswordScreen" component={ForgottenPasswordScreen}/>
+                            <Stack.Screen name="ResetPasswordScreen" component={ResetPasswordScreen}/>
+                            <Stack.Screen name="ResetPasswordAfterVerificationScreen" component={ResetPasswordAfterVerificationScreen}/>
                         </>
                     ) : (
                         <>
@@ -104,6 +113,9 @@ const Start_Stack = () => {
                             <Stack.Screen name="Signup" component={Signup}/>
                             <Stack.Screen name="Tabs" component={Tabs}/>
                             <Stack.Screen name="DestroyingLocalDataScreen" component={DestroyingLocalDataScreen}/>
+                            <Stack.Screen name="ForgottenPasswordScreen" component={ForgottenPasswordScreen}/>
+                            <Stack.Screen name="ResetPasswordScreen" component={ResetPasswordScreen}/>
+                            <Stack.Screen name="ResetPasswordAfterVerificationScreen" component={ResetPasswordAfterVerificationScreen}/>
                         </>
                     )}
                 </Stack.Navigator>

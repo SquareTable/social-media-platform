@@ -192,9 +192,9 @@ const SecuritySettingsScreen = ({navigation}) => {
                             <SettingsItemImage style={{tintColor: colors.tertiary}} source={require('./../assets/app_icons/settings.png')}/>
                             <SettingsItemText style={{color: colors.tertiary}}>Login Activity</SettingsItemText>
                         </SettingsPageItemTouchableOpacity>
-                        <SettingsPageItemTouchableOpacity disabled={!destroyLocalDataMenuHidden} style={{borderColor: colors.borderColor}} onPress={() => navigation.navigate("2FA")}>
+                        <SettingsPageItemTouchableOpacity disabled={!destroyLocalDataMenuHidden} style={{borderColor: colors.borderColor}} onPress={() => navigation.navigate("MultiFactorAuthentication")}>
                             <SettingsItemImage style={{tintColor: colors.tertiary}} source={require('./../assets/app_icons/settings.png')}/>
-                            <SettingsItemText style={{color: colors.tertiary}}>Two Factor Authentication</SettingsItemText>
+                            <SettingsItemText style={{color: colors.tertiary}}>Multi-Factor Authentication</SettingsItemText>
                         </SettingsPageItemTouchableOpacity>
                         <SettingsPageItemTouchableOpacity disabled={!destroyLocalDataMenuHidden} style={{borderColor: colors.borderColor}} onPress={() => navigation.navigate("LoginAttempts")}>
                             <SettingsItemImage style={{tintColor: colors.tertiary}} source={require('./../assets/app_icons/settings.png')}/>

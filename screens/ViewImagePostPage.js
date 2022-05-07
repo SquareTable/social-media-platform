@@ -147,17 +147,17 @@ const ViewImagePostPage = ({route, navigation}) => {
 
     //get image of post
     async function getImageInPost(imageData, index) {
-        return axios.get(`${serverUrl}/getImage/${imageData[index].imageKey}`)
+        return axios.get(`${serverUrl}/getImageOnServer/${imageData[index].imageKey}`)
         .then(res => res.data);
     }
     //profile image of creator
     async function getImageInPfp(imageData, index) {
-        return axios.get(`${serverUrl}/getImage/${imageData[index].creatorPfpKey}`)
+        return axios.get(`${serverUrl}/getImageOnServer/${imageData[index].creatorPfpKey}`)
         .then(res => res.data);
     }
     //profile image of commenter
     async function getImageInPfpComments(commentData, index) {
-        return axios.get(`${serverUrl}/getImage/${commentData[index].profileImageKey}`)
+        return axios.get(`${serverUrl}/getImageOnServer/${commentData[index].profileImageKey}`)
         .then(res => res.data);
     }
 

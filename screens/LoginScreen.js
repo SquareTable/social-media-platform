@@ -132,7 +132,7 @@ const LoginScreen = ({navigation, route}) => {
                 } else {
                     console.log(status)
                     console.log(message)
-                    axios.get(serverUrl + '/getImage/' + data)
+                    axios.get(serverUrl + '/getImageOnServer/' + data)
                     .then((response) => {
                         const result = response.data;
                         const {message, status, data} = result;
@@ -305,15 +305,11 @@ const LoginScreen = ({navigation, route}) => {
                                         handleSubmit={handleSubmit}
                                     />
                                     <MsgBox type={messageType}>{message}</MsgBox>
-                                    {downloadingPfp == false ?
+                                    {isSubmitting == false && downloadingPfp == false ?
                                         <>
-                                            {!isSubmitting && (<StyledButton onPress={handleSubmit}>
+                                            <StyledButton onPress={handleSubmit}>
                                                 <ButtonText> Login </ButtonText>
-                                            </StyledButton>)}
-
-                                            {isSubmitting && (<StyledButton disabled={true}>
-                                                <ActivityIndicator size="large" color={primary} />
-                                            </StyledButton>)}
+                                            </StyledButton>
                                             
                                             <StyledButton style={{backgroundColor: colors.primary, color: colors.tertiary}} signUpButton={true} onPress={() => modal == true ? navigation.navigate('ModalSignupScreen', {modal: true}) : navigation.navigate("Signup")}>
                                                     <ButtonText signUpButton={true} style={{color: colors.tertiary, top: -9.5}}> Signup </ButtonText>
@@ -331,9 +327,13 @@ const LoginScreen = ({navigation, route}) => {
                                                     <ButtonText signUpButton={true} style={{color: colors.tertiary, top: -9.5}}> Close </ButtonText>
                                                 </StyledButton> 
                                             : null}
+
+                                            <TouchableOpacity onPress={() => {navigation.navigate('ForgottenPasswordScreen')}} style={{justifyContent: 'center', alignItems: 'center', flexDirection: 'row', marginTop: 10}}>
+                                                <ButtonText style={{color: colors.brand, fontSize: 20}}>Forgotten password?</ButtonText>
+                                            </TouchableOpacity>
                                         </>
                                     :
-                                        <ActivityIndicator size="large" color={brand} />
+                                        <ActivityIndicator size="large" color={colors.brand} />
                                     }
                                 </StyledFormArea>)}
                         </Formik>

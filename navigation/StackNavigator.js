@@ -32,8 +32,6 @@ import MultiMediaUploadPreview from '../screens/PostScreens/MultiMediaUploadPrev
 import SelectCategorySearchScreen from '../screens/SelectCategorySearchScreen'
 
 import AccountBadges from "../screens/AccountBadges.js";
-import ChangeDisplayNamePage from "../screens/ChangeDisplayNamePage";
-import ChangeUsernamePage from "../screens/ChangeUsernamePage";
 import ChangeEmailPage from "../screens/ChangeEmailPage";
 
 import Conversations from "../screens/Conversations.js";
@@ -53,7 +51,7 @@ import TakeImage_Camera from "../screens/TakeImage_Camera.js";
 import GDPRCompliance from "../screens/SecuritySettingsScreens/GDPRCompliance.js";
 import SecuritySettingsScreen from "../screens/SecuritySettingsScreen.js";
 import LoginActivity from "../screens/SecuritySettingsScreens/LoginActivity.js";
-import TwoFA from "../screens/SecuritySettingsScreens/2FA.js";
+import MultiFactorAuthentication from "../screens/SecuritySettingsScreens/MultiFactorAuthentication.js";
 import WhatIsStoredOnOurServers from "../screens/SecuritySettingsScreens/WhatIsStoredOnOurServers.js";
 import NotificationsSettingsScreen from "../screens/NotificationsSettingsScreen.js";
 import ProfileStats from "../screens/ProfileStats.js";
@@ -73,6 +71,8 @@ import Audio_HomeScreenSettings from "../screens/HomeScreenSettings/Audio_HomeSc
 import CreateConversationSelection from "../screens/CreateConversationSelection.js";
 import ConversationCreationPage from "../screens/CreateConversation.js";
 import ChangePasswordScreen from "../screens/ChangePasswordScreen.js";
+import EditProfile from "../screens/EditProfile.js";
+import AccountFollowRequestsScreen from "../screens/AccountFollowRequestsScreen.js";
 
 
 const Stack = createStackNavigator();
@@ -128,6 +128,7 @@ const RootStack = () => {
         <Stack.Screen name="ViewImagePostPage" component={ViewImagePostPage}/>
         <Stack.Screen name="ViewPollPostPage" component={ViewPollPostPage}/>
         <Stack.Screen name="ThreadViewPage" component={ThreadViewPage}/>
+        <Stack.Screen name="EditProfile" component={EditProfile}/>
       </Stack.Group>
     </Stack.Navigator>
   );
@@ -191,6 +192,7 @@ const home_screen_post_to_profile_screen = () => {
     }}>
       <Stack.Screen name="HomeScreen" component={HomeScreen} />
       <Stack.Screen name="NotificationsScreen" component={NotificationsScreen} options={{gestureDirection: 'horizontal-inverted'}}/>
+      <Stack.Screen name="AccountFollowRequestsScreen" component={AccountFollowRequestsScreen}/>
       <Stack.Screen name="ViewImagePostPage" component={ViewImagePostPage}/>
       <Stack.Screen name="ViewPollPostPage" component={ViewPollPostPage}/>
       <Stack.Screen name="ThreadViewPage" component={ThreadViewPage}/>
@@ -245,14 +247,12 @@ const SettingsStack = () => {
       headerLeft: null
     }}>
       <Stack.Screen name="SettingsScreen" component={SettingsScreen}/>
-      <Stack.Screen name="ChangeDisplayNamePage" component={ChangeDisplayNamePage}/>
-      <Stack.Screen name="ChangeUsernamePage" component={ChangeUsernamePage}/>
       <Stack.Screen name="ChangeEmailPage" component={ChangeEmailPage}/>
       <Stack.Screen name="AppStyling" component={AppStyling}/>
       <Stack.Screen name="GDPRCompliance" component={GDPRCompliance}/>
       <Stack.Screen name="SecuritySettingsScreen" component={SecuritySettingsScreen}/>
       <Stack.Screen name="LoginActivity" component={LoginActivity}/>
-      <Stack.Screen name="2FA" component={TwoFA}/>
+      <Stack.Screen name="MultiFactorAuthentication" component={MultiFactorAuthentication}/>
       <Stack.Screen name="WhatIsStoredOnOurServers" component={WhatIsStoredOnOurServers}/>
       <Stack.Screen name="NotificationsSettingsScreen" component={NotificationsSettingsScreen}/>
       <Stack.Screen name="SimpleStylingMenu" component={SimpleStylingMenu}/>

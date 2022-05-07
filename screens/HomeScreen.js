@@ -114,6 +114,7 @@ import Post from '../components/Posts.js';
 import {
     AdMobBanner,
 } from 'expo-ads-admob'
+import { AllCredentialsStoredContext } from '../components/AllCredentialsStoredContext.js';
 
 const {brand, primary, tertiary, greyish, darkLight, darkestBlue, slightlyLighterPrimary, slightlyLighterGrey, descTextColor, darkest, red, orange, yellow, green, purple} = Colors;
 
@@ -153,6 +154,7 @@ const HomeScreen = ({navigation, route}) => {
     if (storedCredentials) {var {name, displayName, _id} = storedCredentials} else {var {name, displayName, _id} = {name: 'SSGUEST', displayName: 'SSGUEST', _id: 'SSGUEST'}}
     const {serverUrl, setServerUrl} = useContext(ServerUrlContext);
     const {badgeEarntNotification, setBadgeEarntNotification} = useContext(BadgeEarntNotificationContext);
+    const {allCredentialsStoredList, setAllCredentialsStoredList} = useContext(AllCredentialsStoredContext);
 
     //Easter egg - Logo Press
     const logoPressedTimes = useRef(0);
@@ -188,7 +190,7 @@ const HomeScreen = ({navigation, route}) => {
 
     //organise data and put to be displayed
     async function getImageWithKey(imageKey) {
-        return axios.get(`${serverUrl}/getImage/${imageKey}`)
+        return axios.get(`${serverUrl}/getImageOnServer/${imageKey}`)
             .then(res => res.data).catch(error => {
                 console.log(error);
                 //setSubmitting(false);
@@ -1360,7 +1362,42 @@ const HomeScreen = ({navigation, route}) => {
     }, [])
 
     const logoPressEasterEgg = () => {
-        setBadgeEarntNotification('HomeScreenLogoEasterEgg')
+        if (storedCredentials && allCredentialsStoredList && allCredentialsStoredList.length > 0) {
+            logoPressedTimes.current = 0;
+            
+            const url = serverUrl + '/user/earnSpecialBadge';
+            const toSend = {userId: _id, badgeEarnt: "homeScreenLogoPressEasterEgg"};
+            axios.post(url, toSend).then((response) => {
+                const result = response.data;
+                const {message, status} = result;
+
+                if (status != "SUCCESS") {
+                    if (message == "Badge already earnt.") {
+                        setBadgeEarntNotification('Badge already earnt.')
+                    } else {
+                        alert(message);
+                        console.error(message)
+                    }
+                } else {
+                    setBadgeEarntNotification('HomeScreenLogoEasterEgg')
+                    var currentStoredCredentials = storedCredentials;
+                    currentStoredCredentials.badges = [...currentStoredCredentials.badges, 'homeScreenLogoPressEasterEgg']
+                    setStoredCredentials(currentStoredCredentials)
+                    var currentAllStoredCredentialsList = allCredentialsStoredList;
+                    for (var i = 0; i < currentAllStoredCredentialsList.length; i++) {
+                        if (currentAllStoredCredentialsList[i]._id == currentStoredCredentials._id) {
+                            currentAllStoredCredentialsList[i] = currentStoredCredentials
+                        }
+                    }
+                    setAllCredentialsStoredList(currentAllStoredCredentialsList);
+                }
+            }).catch((error) => {
+                console.log(error);
+                alert('An error occured. Try checking your internet connection and then try again.')
+            });
+        } else {
+            logoPressedTimes.current = 0;
+        }
     }
     return(
         <View

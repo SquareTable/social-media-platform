@@ -122,7 +122,7 @@ const SelectCategorySearchScreen = ({route, navigation}) => {
     );
 
     async function getImageInCategory(imageKey) {
-        return axios.get(`${serverUrl}/getImage/${imageKey}`)
+        return axios.get(`${serverUrl}/getImageOnServer/${imageKey}`)
         .then(res => res.data);
     }
 
