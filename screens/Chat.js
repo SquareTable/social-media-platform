@@ -2944,17 +2944,17 @@ const Chat = ({route, navigation}) => {
     }, [])
 
     useEffect(() => {
-        AppState.addEventListener("change", _handleAppStateChange);
+        const appStateSubscription = AppState.addEventListener("change", _handleAppStateChange);
         if (Platform.OS == 'android') {
-            AppState.addEventListener('blur', handleAppStateBlur);
-            AppState.addEventListener('focus', handleAppStateFocus);
+            var appStateBlurSubscription = AppState.addEventListener('blur', handleAppStateBlur);
+            var appStateFocusSubscription = AppState.addEventListener('focus', handleAppStateFocus);
         }
     
         return () => {
-            AppState.removeEventListener("change", _handleAppStateChange);
+            appStateSubscription.remove();
             if (Platform.OS == 'android') {
-                AppState.removeEventListener('blur', handleAppStateBlur);
-                AppState.removeEventListener('focus', handleAppStateFocus);
+                appStateBlurSubscription.remove();
+                appStateFocusSubscription.remove();
             }
         };
     }, []);
