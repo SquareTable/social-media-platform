@@ -9,7 +9,6 @@ import LoginScreen from './screens/LoginScreen.js';
 import { Start_Stack } from './navigation/Start_Stack.js';
 import * as Notifications from 'expo-notifications';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import AppLoading from 'expo-app-loading';
 import { Asset } from 'expo-asset';
 import { AppearanceProvider, useColorScheme } from 'react-native-appearance';
 import { DefaultTheme, DarkTheme, useRoute } from '@react-navigation/native';
@@ -50,6 +49,7 @@ import { ReconnectPromptContext } from './components/reconnectPrompt.js';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import * as Sentry from 'sentry-expo';
 import {SENTRY_DSN, IOSADID, ANDROIDADID} from '@dotenv';
+import * as SplashScreen from 'expo-splash-screen';
 
 const routingInstrumentation = new Sentry.Native.ReactNavigationInstrumentation();
 
@@ -1147,247 +1147,250 @@ useEffect(() => {
     }
   }
 
-  if (isReady == false) {
+  useEffect(() => {
     async function cacheResourcesAsync() {
-      AsyncStorage.getItem('socialSquareCredentials').then((result) => {
-        if (result !== null) {
-          setStoredCredentials(JSON.parse(result));
-        } else {
-          setStoredCredentials(null);
-        }
-        async function refreshProfilePictureContext(credentials) {
-          const getProfilePicture = () => {
-            const url = `${serverUrl}/user/getProfilePic/${credentials.name}`;
-    
-            axios.get(url).then((response) => {
-                const result = response.data;
-                const {message, status, data} = result;
-    
-                if (status !== 'SUCCESS') {
-                    console.log('GETTING PROFILE PICTURE FOR ProfilePictureUriContext WAS NOT A SUCCESS')
-                    console.log(status)
-                    console.log(message)
-                } else {
-                    console.log(status)
-                    console.log(message)
-                    axios.get(`${serverUrl}/getImage/${data}`)
-                    .then((response) => {
-                        const result = response.data;
-                        const {message, status, data} = result;
-                        console.log(status)
-                        console.log(message)
-                        console.log(data)
-                        //set image
-                        if (message == 'No profile image.' && status == 'FAILED') {
-                            console.log('Setting logo to SocialSquare logo')
-                            setProfilePictureUri(SocialSquareLogo_B64_png)
-                        } else if (data) {
-                              //convert back to image
-                              console.log('Setting logo in tab bar to profile logo')
-                              var base64Icon = `data:image/jpg;base64,${data}`
-                              setProfilePictureUri(base64Icon)
-                        } else {
-                            console.log('Setting logo to SocialSquare logo')
-                            setProfilePictureUri(SocialSquareLogo_B64_png)
-                        }
-                    })
-                    .catch(function (error) {
-                        console.log("Image not recieved")
-                        console.log(error);
-                    });
-                }
-                //setSubmitting(false);
-    
-            }).catch(error => {
-                console.log(error);
-                //setSubmitting(false);
-                handleMessage("An error occured. Try checking your network connection and retry.");
-            })
-          }
-          let credentialsListObject = await AsyncStorage.getItem('socialSquare_AllCredentialsList');
-          if (credentialsListObject == null && credentials) {
-            setStoredCredentials(null);
-            setAllCredentialsStoredList(null);
+      try {
+        SplashScreen.preventAutoHideAsync();
+        AsyncStorage.getItem('socialSquareCredentials').then((result) => {
+          if (result !== null) {
+            setStoredCredentials(JSON.parse(result));
           } else {
-            let parsedCredentialsListObject = JSON.parse(credentialsListObject);
-            setAllCredentialsStoredList(parsedCredentialsListObject);
-            if (credentials && parsedCredentialsListObject[credentials.indexLength].profilePictureUri != null && parsedCredentialsListObject[credentials.indexLength].profilePictureUri != undefined) {
-              console.log('Setting ProfilePictureUri context to profile picture in Async Storage')
-              setProfilePictureUri(parsedCredentialsListObject[credentials.indexLength].profilePictureUri)
-            } else {
-              NetInfo.fetch().then(state => {
-                console.log("Connection type", state.type);
-                console.log("Is connected?", state.isConnected);
-                if (state.isConnected == true) {
-                  if (credentials) {
-                    console.log('There is no profile picture in AsyncStorage. Loading profile picture for ProfilePictureUri Context using internet connection')
-                    getProfilePicture()
+            setStoredCredentials(null);
+          }
+          async function refreshProfilePictureContext(credentials) {
+            const getProfilePicture = () => {
+              const url = `${serverUrl}/user/getProfilePic/${credentials.name}`;
+      
+              axios.get(url).then((response) => {
+                  const result = response.data;
+                  const {message, status, data} = result;
+      
+                  if (status !== 'SUCCESS') {
+                      console.log('GETTING PROFILE PICTURE FOR ProfilePictureUriContext WAS NOT A SUCCESS')
+                      console.log(status)
+                      console.log(message)
                   } else {
-                    console.log('There is no stored credentials and no profile picture in Async Storage. Setting ProfilePictureUri to SocialSquareB64Logo')
+                      console.log(status)
+                      console.log(message)
+                      axios.get(`${serverUrl}/getImage/${data}`)
+                      .then((response) => {
+                          const result = response.data;
+                          const {message, status, data} = result;
+                          console.log(status)
+                          console.log(message)
+                          console.log(data)
+                          //set image
+                          if (message == 'No profile image.' && status == 'FAILED') {
+                              console.log('Setting logo to SocialSquare logo')
+                              setProfilePictureUri(SocialSquareLogo_B64_png)
+                          } else if (data) {
+                                //convert back to image
+                                console.log('Setting logo in tab bar to profile logo')
+                                var base64Icon = `data:image/jpg;base64,${data}`
+                                setProfilePictureUri(base64Icon)
+                          } else {
+                              console.log('Setting logo to SocialSquare logo')
+                              setProfilePictureUri(SocialSquareLogo_B64_png)
+                          }
+                      })
+                      .catch(function (error) {
+                          console.log("Image not recieved")
+                          console.log(error);
+                      });
+                  }
+                  //setSubmitting(false);
+      
+              }).catch(error => {
+                  console.log(error);
+                  //setSubmitting(false);
+                  handleMessage("An error occured. Try checking your network connection and retry.");
+              })
+            }
+            let credentialsListObject = await AsyncStorage.getItem('socialSquare_AllCredentialsList');
+            if (credentialsListObject == null && credentials) {
+              setStoredCredentials(null);
+              setAllCredentialsStoredList(null);
+            } else {
+              let parsedCredentialsListObject = JSON.parse(credentialsListObject);
+              setAllCredentialsStoredList(parsedCredentialsListObject);
+              if (credentials && parsedCredentialsListObject[credentials.indexLength].profilePictureUri != null && parsedCredentialsListObject[credentials.indexLength].profilePictureUri != undefined) {
+                console.log('Setting ProfilePictureUri context to profile picture in Async Storage')
+                setProfilePictureUri(parsedCredentialsListObject[credentials.indexLength].profilePictureUri)
+              } else {
+                NetInfo.fetch().then(state => {
+                  console.log("Connection type", state.type);
+                  console.log("Is connected?", state.isConnected);
+                  if (state.isConnected == true) {
+                    if (credentials) {
+                      console.log('There is no profile picture in AsyncStorage. Loading profile picture for ProfilePictureUri Context using internet connection')
+                      getProfilePicture()
+                    } else {
+                      console.log('There is no stored credentials and no profile picture in Async Storage. Setting ProfilePictureUri to SocialSquareB64Logo')
+                      setProfilePictureUri(SocialSquareLogo_B64_png)
+                    }
+                  } else {
+                    console.log('There is no internet connection and no saved profile picture in Async Storage. Setting ProfilePictureUri to SocialSquareB64Logo')
                     setProfilePictureUri(SocialSquareLogo_B64_png)
                   }
-                } else {
-                  console.log('There is no internet connection and no saved profile picture in Async Storage. Setting ProfilePictureUri to SocialSquareB64Logo')
-                  setProfilePictureUri(SocialSquareLogo_B64_png)
-                }
-              });
+                });
+              }
             }
           }
+          console.log('Getting profile picture for ProfilePictureUriContext')
+          refreshProfilePictureContext(JSON.parse(result))
+        }).catch((error) => console.log(error));
+        await AsyncStorage.getItem('AppStylingContextState').then((result) => {
+          if (result == null) {
+            setAppStylingContextState('Default')
+            AsyncStorage.setItem('AppStylingContextState', 'Default')
+          } else if (result == 'Default') {
+            setAppStylingContextState('Default')
+          } else if (result == 'Dark') {
+            setAppStylingContextState('Dark')
+          } else if (result == 'Light') {
+            setAppStylingContextState('Light')
+          } else {
+            setAppStylingContextState(result)
+          }
+        }).catch((error) => {console.log(error)})
+        setAdID(adUnitID);
+        const images = [
+          require('./assets/img/Logo.png'),
+          require('./assets/app_icons/test3.png'),
+          require('./assets/app_icons/3dots.png'),
+          require('./assets/app_icons/settings.png'),
+          require('./assets/app_icons/message_bubbles.png'),
+          require('./assets/app_icons/heart.png'),
+          require('./assets/app_icons/find.png'),
+          require('./assets/app_icons/home.png'),
+          require('./assets/app_icons/bookmark.png'),
+          require('./assets/app_icons/chat.png'),
+          require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/016-camera.png'),
+          require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/007-pencil2.png'),
+          require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/157-stats-bars.png'),
+          require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/018-music.png'),
+          require("./assets/record_button.png"),
+          require("./assets/recording_icon.png"),
+          require("./assets/app_icons/upload_arrow.png"),
+          require('./post_media/clock.gif'),
+          require('./assets/app_icons/profile_pic.jpg'),
+          require('./post_media/social_studies_images/image_1.png'),
+          require('./post_media/social_studies_images/image_2.png'),
+          require('./post_media/social_studies_images/image_3.png'),
+          require('./post_media/social_studies_images/image_4.png'),
+          require('./post_media/social_studies_images/image_5.png'),
+          require('./assets/img/TempProfIcons.jpg'),
+          require('./assets/img/BgImage1.png'),
+          require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/114-user.png'),
+          require('./assets/img/Toga.jpg'),
+          require('./assets/app_icons/cannot_get_post_lightmode.png'),
+          require('./assets/app_icons/cannot_get_post_darkmode.png'),
+          require('./post_media/code.png'),
+          require('./assets/app_icons/back_arrow.png'),
+          require('./post_media/code.png'),
+          require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/269-info.png'),
+          require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/266-question.png'),
+          require('./assets/lightmode_recordbutton.png'),
+          require('./assets/lightmode_recordingicon.png'),
+          require('./assets/apple_photo.png'),
+          require('./assets/sad_pepe.jpg'),
+          require('./post_media/seb_and_azaria_1.jpeg'),
+          require('./post_media/seb_and_azaria_2.jpeg'),
+          require('./post_media/seb_and_azaria_3.jpeg'),
+          require('./assets/appstyling_fusion.png'),
+          require('./assets/appstyling_darkmode.png'),
+          require('./assets/appstyling_lightmode.png'),
+          require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/035-file-text.png'),
+          require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/093-drawer.png'),
+          require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/015-images.png'),
+          require('./assets/Splash_Screen.png'),
+          require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/348-filter.png'),
+          require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/015-images.png'),
+          require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/115-users.png'),
+          require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/219-heart.png'),
+          require('./assets/NewLogo.png'),
+          require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/084-calendar.png'),
+          require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/020-film.png'),
+          require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/277-exit.png'),
+          require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/207-eye.png'),
+          require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/265-notification.png'),
+          require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/113-bubbles4.png'),
+          require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png'),
+          require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png'),
+          require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/387-share2.png'),
+          require('./assets/img/ThreeDots.png'),
+
+        ];
+
+        const LockSocialSquareValue = await AsyncStorage.getItem('LockSocialSquare')
+        const ShowPlaceholderScreenValue = await AsyncStorage.getItem('ShowPlaceholderScreen')
+
+        if (LockSocialSquareValue != 'true') {
+          setOpenApp(true)
         }
-        console.log('Getting profile picture for ProfilePictureUriContext')
-        refreshProfilePictureContext(JSON.parse(result))
-      }).catch((error) => console.log(error));
-      await AsyncStorage.getItem('AppStylingContextState').then((result) => {
-        if (result == null) {
-          setAppStylingContextState('Default')
-          AsyncStorage.setItem('AppStylingContextState', 'Default')
-        } else if (result == 'Default') {
-          setAppStylingContextState('Default')
-        } else if (result == 'Dark') {
-          setAppStylingContextState('Dark')
-        } else if (result == 'Light') {
-          setAppStylingContextState('Light')
+
+        if (LockSocialSquareValue == null) {
+          setLockSocialSquare(false)
+          AsyncStorage.setItem('LockSocialSquare', 'false')
+        } else if (LockSocialSquareValue == 'true') {
+          setLockSocialSquare(true)
+        } else if (LockSocialSquareValue == 'false') {
+          setLockSocialSquare(false)
         } else {
-          setAppStylingContextState(result)
+          console.error('LockSocialSquareValue is not what it is supposed to be: ' + LockSocialSquareValue)
         }
-      }).catch((error) => {console.log(error)})
-      setAdID(adUnitID);
-      const images = [
-        require('./assets/img/Logo.png'),
-        require('./assets/app_icons/test3.png'),
-        require('./assets/app_icons/3dots.png'),
-        require('./assets/app_icons/settings.png'),
-        require('./assets/app_icons/message_bubbles.png'),
-        require('./assets/app_icons/heart.png'),
-        require('./assets/app_icons/find.png'),
-        require('./assets/app_icons/home.png'),
-        require('./assets/app_icons/bookmark.png'),
-        require('./assets/app_icons/chat.png'),
-        require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/016-camera.png'),
-        require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/007-pencil2.png'),
-        require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/157-stats-bars.png'),
-        require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/018-music.png'),
-        require("./assets/record_button.png"),
-        require("./assets/recording_icon.png"),
-        require("./assets/app_icons/upload_arrow.png"),
-        require('./post_media/clock.gif'),
-        require('./assets/app_icons/profile_pic.jpg'),
-        require('./post_media/social_studies_images/image_1.png'),
-        require('./post_media/social_studies_images/image_2.png'),
-        require('./post_media/social_studies_images/image_3.png'),
-        require('./post_media/social_studies_images/image_4.png'),
-        require('./post_media/social_studies_images/image_5.png'),
-        require('./assets/img/TempProfIcons.jpg'),
-        require('./assets/img/BgImage1.png'),
-        require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/114-user.png'),
-        require('./assets/img/Toga.jpg'),
-        require('./assets/app_icons/cannot_get_post_lightmode.png'),
-        require('./assets/app_icons/cannot_get_post_darkmode.png'),
-        require('./post_media/code.png'),
-        require('./assets/app_icons/back_arrow.png'),
-        require('./post_media/code.png'),
-        require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/269-info.png'),
-        require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/266-question.png'),
-        require('./assets/lightmode_recordbutton.png'),
-        require('./assets/lightmode_recordingicon.png'),
-        require('./assets/apple_photo.png'),
-        require('./assets/sad_pepe.jpg'),
-        require('./post_media/seb_and_azaria_1.jpeg'),
-        require('./post_media/seb_and_azaria_2.jpeg'),
-        require('./post_media/seb_and_azaria_3.jpeg'),
-        require('./assets/appstyling_fusion.png'),
-        require('./assets/appstyling_darkmode.png'),
-        require('./assets/appstyling_lightmode.png'),
-        require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/035-file-text.png'),
-        require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/093-drawer.png'),
-        require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/015-images.png'),
-        require('./assets/Splash_Screen.png'),
-        require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/348-filter.png'),
-        require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/015-images.png'),
-        require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/115-users.png'),
-        require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/219-heart.png'),
-        require('./assets/NewLogo.png'),
-        require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/084-calendar.png'),
-        require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/020-film.png'),
-        require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/277-exit.png'),
-        require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/207-eye.png'),
-        require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/265-notification.png'),
-        require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/113-bubbles4.png'),
-        require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png'),
-        require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/324-circle-down.png'),
-        require('./assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/387-share2.png'),
-        require('./assets/img/ThreeDots.png'),
 
-      ];
-
-      const LockSocialSquareValue = await AsyncStorage.getItem('LockSocialSquare')
-      const ShowPlaceholderScreenValue = await AsyncStorage.getItem('ShowPlaceholderScreen')
-
-      if (LockSocialSquareValue != 'true') {
-        setOpenApp(true)
-      }
-
-      if (LockSocialSquareValue == null) {
-        setLockSocialSquare(false)
-        AsyncStorage.setItem('LockSocialSquare', 'false')
-      } else if (LockSocialSquareValue == 'true') {
-        setLockSocialSquare(true)
-      } else if (LockSocialSquareValue == 'false') {
-        setLockSocialSquare(false)
-      } else {
-        console.error('LockSocialSquareValue is not what it is supposed to be: ' + LockSocialSquareValue)
-      }
-
-      if (ShowPlaceholderScreenValue == null) {
-        setShowPlaceholderScreen(false)
-        AsyncStorage.setItem('ShowPlaceholderScreen', 'false')
-      } else if (ShowPlaceholderScreenValue == 'true') {
-        setShowPlaceholderScreen(true)
-      } else if (ShowPlaceholderScreenValue == 'false') {
-        setShowPlaceholderScreen(false)
-      }
-
-      const compatibleWithBiometrics = await LocalAuthentication.hasHardwareAsync();
-      const enrolledForBiometrics = await LocalAuthentication.isEnrolledAsync()
-      const AppEnvironment = Constants.appOwnership
-      setBiometricSupported(compatibleWithBiometrics);
-      setBiometricsEnrolled(enrolledForBiometrics)
-      setAppOwnershipValue(AppEnvironment)
-      if (LocalAuthentication.SecurityLevel == 0 || AppEnvironment == 'expo') {
-        setBiometricsCanBeUsed(false)
-        setLockSocialSquare(false)
-        AsyncStorage.setItem('LockSocialSquare', 'false')
-        if (LockSocialSquareValue == 'true') {
-          alert('Biometric locking has been turned off because SocialSquare cannot access biometric scanning. Please check that SocialSquare has biometric permissions and that your device has biometric profiles.')
+        if (ShowPlaceholderScreenValue == null) {
+          setShowPlaceholderScreen(false)
+          AsyncStorage.setItem('ShowPlaceholderScreen', 'false')
+        } else if (ShowPlaceholderScreenValue == 'true') {
+          setShowPlaceholderScreen(true)
+        } else if (ShowPlaceholderScreenValue == 'false') {
+          setShowPlaceholderScreen(false)
         }
-      } else {
-        setBiometricsCanBeUsed(true)
-      }
 
-      await AsyncStorage.getItem('SocialSquareServerUrl').then(value => {
-        if (value == null) {
-          setServerUrl('http://it-solutions.homedns.org:9443')
-          AsyncStorage.setItem('SocialSquareServerUrl', 'http://it-solutions.homedns.org:9443')
+        const compatibleWithBiometrics = await LocalAuthentication.hasHardwareAsync();
+        const enrolledForBiometrics = await LocalAuthentication.isEnrolledAsync()
+        const AppEnvironment = Constants.appOwnership
+        setBiometricSupported(compatibleWithBiometrics);
+        setBiometricsEnrolled(enrolledForBiometrics)
+        setAppOwnershipValue(AppEnvironment)
+        if (LocalAuthentication.SecurityLevel == 0 || AppEnvironment == 'expo') {
+          setBiometricsCanBeUsed(false)
+          setLockSocialSquare(false)
+          AsyncStorage.setItem('LockSocialSquare', 'false')
+          if (LockSocialSquareValue == 'true') {
+            alert('Biometric locking has been turned off because SocialSquare cannot access biometric scanning. Please check that SocialSquare has biometric permissions and that your device has biometric profiles.')
+          }
         } else {
-          setServerUrl(value)
+          setBiometricsCanBeUsed(true)
         }
-      })
-  
-      const cacheImages = images.map(image => {
-        return Asset.fromModule(image).downloadAsync();
-      }); 
-      return Promise.all(cacheImages);
+
+        await AsyncStorage.getItem('SocialSquareServerUrl').then(value => {
+          if (value == null) {
+            setServerUrl('http://it-solutions.homedns.org:9443')
+            AsyncStorage.setItem('SocialSquareServerUrl', 'http://it-solutions.homedns.org:9443')
+          } else {
+            setServerUrl(value)
+          }
+        })
+    
+        const cacheImages = images.map(image => {
+          return Asset.fromModule(image).downloadAsync();
+        }); 
+        return Promise.all(cacheImages);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setIsReady(true);
+      }
     }
-    async function toDoOnFinish() {
-      setIsReady(true);
-    }
-    return (
-      <AppLoading
-        startAsync={cacheResourcesAsync}
-        onFinish={toDoOnFinish}
-        onError={console.warn}
-      />
-    ); } else {
+    cacheResourcesAsync();
+  }, []);
+
+  if (isReady == false) {
+    return null
+  } else {
     return (
       <CredentialsContext.Provider value={{storedCredentials, setStoredCredentials}}>
         <AdIDContext.Provider value={{AdID, setAdID}}>
@@ -1409,6 +1412,12 @@ useEffect(() => {
                                       <NavigationContainer ref={navigationRef} theme={appTheme} onStateChange={() => {console.log('Screen changed')}} onReady={() => {
                                         // Register the navigation container with the instrumentation
                                         routingInstrumentation.registerNavigationContainer(navigationRef);
+                                        setTimeout(() => {
+                                          // DOCS SAY TO USE ONLAYOUT ON A VIEW TO MAKE SURE THAT AS SOON AS CONTENT LOADS THE SPLASH SCREEN WILL HIDE
+                                          // BUT BECAUSE WE DO NOT HAVE A PARENT VIEW LOADING I CANNOT SEE HOW THAT WOULD BE POSSIBLE
+                                          // PR TO FIX THIS WOULD BE GREATLY APPRECIATED :)
+                                          SplashScreen.hideAsync(); // Use setTimeout to prevent showing nothing while content loads
+                                        }, 500);
                                       }}>
                                         {lockSocialSquare == false ?
                                           showPlaceholderScreen == true && (appStateVisible == 'background' || appStateVisible == 'inactive') &&
@@ -1472,7 +1481,7 @@ useEffect(() => {
                                         <DisconnectedFromInternetBox/>
                                         <AccountSwitcher/>
                                         <AccountSwitchedBox/>
-                                        <Start_Stack/>
+                                        <Start_Stack />
                                       </NavigationContainer>
                                     </AppearanceProvider>
                                   </ReconnectPromptContext.Provider>
