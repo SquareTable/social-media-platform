@@ -68,7 +68,7 @@ const ConversationDMUserFind = ({route, navigation}) => {
     const [messageType, setMessageType] = useState();
     const [foundAmount, setFoundAmount] = useState();
     const [debounce, setDebounce] = useState(false);
-    const [changeSections, setChangeSections] = useState()
+    const [changeSections, setChangeSections] = useState([])
     const [loadingOne, setLoadingOne] = useState()
     const {colors, dark} = useTheme()
     const [noResults, setNoResults] = useState(false)
@@ -84,12 +84,7 @@ const ConversationDMUserFind = ({route, navigation}) => {
 
     const UserItem = ({name, displayName, following, followers, totalLikes, profileKey}) => (
         <SearchFrame onPress={() => {tryToCreateDM(name)}}>
-            {profileKey !== null && (
-                <Avatar resizeMode="cover" searchPage={true} source={{uri: `data:image/jpg;base64,${profileKey}`}} />
-            )}
-            {profileKey == null && (
-                <Avatar resizeMode="cover" searchPage={true} source={{uri: SocialSquareLogo_B64_png}} />
-            )}
+            <Avatar resizeMode="cover" searchPage={true} source={{uri: profileKey != null || '' ? `data:image/jpg;base64,${profileKey}` : SocialSquareLogo_B64_png}} />
             <SubTitle searchResTitle={true} style={{color: colors.tertiary}}>{displayName}</SubTitle>
             <SubTitle searchResTitleDisplayName={true} style={{color: colors.brand}}>@{name}</SubTitle>
             <SearchHorizontalView>
@@ -125,7 +120,7 @@ const ConversationDMUserFind = ({route, navigation}) => {
     }
 
     const handleUserSearch = (val) => {
-        setChangeSections()
+        setChangeSections([])
         if (val !== "") {
             const layoutUsersFound = (data) => {
                 var allData = data
@@ -218,7 +213,7 @@ const ConversationDMUserFind = ({route, navigation}) => {
             console.log('Empty search')
             setNoResults(false)
             setErrorMessage('')
-            setChangeSections()
+            setChangeSections([])
         }
     }
 
@@ -276,6 +271,8 @@ const ConversationDMUserFind = ({route, navigation}) => {
                     ) : null
                 }
                 style={{marginTop: -20}}
+                keyboardDismissMode="on-drag"
+                keyboardShouldPersistTaps="handled"
             />
         </>
     );

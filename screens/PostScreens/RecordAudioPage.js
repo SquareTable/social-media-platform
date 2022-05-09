@@ -90,19 +90,22 @@ const RecordAudioPage = ({navigation}) => {
         : 'host.exp.exponent'
 
         const onChangeRecordingStatus = (status) => {
-            var recordingDuration = status.durationMillis % 1000;
-            recordingDuration = status.durationMillis - recordingDuration;
-            recordingDuration = recordingDuration / 1000;
-            console.log("Recording has gone on for " + recordingDuration);
-            setTimeSpentRecording(recordingDuration);
-            var d = Number(status.durationMillis / 1000);
-            var h = Math.floor(d / 3600);
-            var m = Math.floor(d % 3600 / 60);
-            var s = Math.floor(d % 3600 % 60);
-        
-            setHoursDisplay(h > 0 ? h + (h == 1 ? m == '' ? " hour " : " hour, " : m != '' ? " hours " : " hours, ") : "")
-            setMinutesDisplay(m > 0 ? m + (m == 1 ? s == '' ? " minute " : " minute, and " : s != '' ? " minutes" : "minutes, and ") : "")
-            setSecondsDisplay(s > 0 ? s + (s == 1 ? " second" : " seconds") : "")
+            if (status.isDoneRecording !== true) { // Prevent time spent recording being set to 0 when recording has finished
+                var recordingDuration = status.durationMillis % 1000;
+                recordingDuration = status.durationMillis - recordingDuration;
+                recordingDuration = recordingDuration / 1000;
+                console.log("Recording has gone on for " + recordingDuration);
+                setTimeSpentRecording(recordingDuration);
+                var d = Number(status.durationMillis / 1000);
+                var h = Math.floor(d / 3600);
+                var m = Math.floor(d % 3600 / 60);
+                var s = Math.floor(d % 3600 % 60);
+                console.log(status)
+            
+                setHoursDisplay(h > 0 ? h + (h == 1 ? m == '' ? " hour " : " hour, " : m != '' ? " hours " : " hours, ") : "")
+                setMinutesDisplay(m > 0 ? m + (m == 1 ? s == '' ? " minute " : " minute, and " : s != '' ? " minutes" : "minutes, and ") : "")
+                setSecondsDisplay(s > 0 ? s + (s == 1 ? " second" : " seconds") : "")
+            }
         }
 
         const [recording, setRecording] = useState();
@@ -310,7 +313,6 @@ const RecordAudioPage = ({navigation}) => {
         if (recordingStatus == true) {
             setRecordingStatus(false)
             stopRecording();
-            setTimeSpentRecording(0)
         } else {
             setRecordingStatus(true)
             startRecording();
@@ -323,6 +325,8 @@ const RecordAudioPage = ({navigation}) => {
                 // If we don't have unsaved changes, then we don't need to do anything
                 return;
             }
+            console.log('Time spent recording: ' + timeSpentRecording);
+            console.log('Recording URI: ' + recording_uri);
     
             // Prevent default behavior of leaving the screen
             e.preventDefault();
@@ -356,7 +360,7 @@ const RecordAudioPage = ({navigation}) => {
                     'Audio is still playing',
                     'Audio is still playing. What do you want to do?',
                     [
-                      { text: "Don't leave and stop playing", style: 'cancel', onPress: () => {} },
+                      { text: "Don't leave and continue playing", style: 'cancel', onPress: () => {} },
                       {
                         text: 'Stop playing and discard audio',
                         style: 'destructive',

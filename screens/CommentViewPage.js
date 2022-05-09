@@ -107,7 +107,7 @@ const CommentViewPage = ({route, navigation}) => {
     const [postNumForMsg, setPostNumForMsg] = useState();
     //Comment stuff
     const [ifCommentText, setIfCommentText] = useState("No comments found")
-    const [changeSections, setChangeSections] = useState()
+    const [changeSections, setChangeSections] = useState([])
     const [submitting, setSubmitting] = useState(false)
     const [limitSearch, setLimitSearch] = useState(false)
     const [commentLoadMax, setCommentLoadMax] = useState(10)
@@ -272,7 +272,7 @@ const CommentViewPage = ({route, navigation}) => {
             var commentData = imageData
             console.log(commentData)
             setCommentsLength(commentData.length)
-            setChangeSections()
+            setChangeSections([])
             console.log(commentData.length)
             var tempSections = []
             var itemsProcessed = 0;

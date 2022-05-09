@@ -411,7 +411,7 @@ export default function Post( post ) {
                 onHandlerStateChange={onPinchStateChange}
             >
                 <Animated.Image
-                    source={{ uri: `data:image/jpg;base64,${imageUri}` }}
+                    source={{ uri: imageUri}}
                     style={{
                     width: '100%',
                     height: '100%',
@@ -437,7 +437,7 @@ export default function Post( post ) {
         <View style={{ backgroundColor: colors.primary, borderRadius: 15, marginBottom: 10, borderWidth: 3, borderColor: colors.borderColor }}>
             <PostsHorizontalView style={{ marginLeft: '5%', borderBottomWidth: 3, borderColor: colors.borderColor, width: '90%', paddingBottom: 5, marginRight: '5%' }}>
                 <PostsVerticalView>
-                    <PostCreatorIcon source={creatorPfpB64 ? { uri: `data:image/jpg;base64,${creatorPfpB64}` } : {uri: SocialSquareLogo_B64_png}} />
+                    <PostCreatorIcon source={creatorPfpB64 ? { uri: creatorPfpB64 } : {uri: SocialSquareLogo_B64_png}} />
                 </PostsVerticalView>
                 <PostsVerticalView style={{ marginTop: 9 }}>
                     {creatorDisplayName !== "" ? (
@@ -554,7 +554,7 @@ export default function Post( post ) {
         <PollPostFrame style={{marginLeft: 0, marginRight: 0, width: '100%'}} onPress={() => post.navigation.navigate("ViewPollPostPage", { pollTitle, pollSubTitle, optionOne, optionOnesColor, optionOnesVotes, optionOnesBarLength, optionTwo, optionTwosColor, optionTwosVotes, optionTwosBarLength, optionThree, optionThreesColor, optionThreesVotes, optionThreesBarLength, optionFour, optionFoursColor, optionFoursVotes, optionFoursBarLength, optionFive, optionFivesColor, optionFivesVotes, optionFivesBarLength, optionSix, optionSixesColor, optionSixesVotes, optionSixesBarLength, totalNumberOfOptions, pollId, creatorPfpB64: `data:image/jpg;base64,${pfpB64}`, creatorName, creatorDisplayName, datePosted })}>
             <PostsHorizontalView style={{ marginLeft: '5%', borderBottomWidth: 3, borderColor: colors.borderColor, width: '90%', paddingBottom: 5, marginRight: '5%' }}>
                 <PostsVerticalView>
-                    <PostCreatorIcon source={pfpB64 ? { uri: `data:image/jpg;base64,${pfpB64}` } : {uri: SocialSquareLogo_B64_png}} />
+                    <PostCreatorIcon source={pfpB64 ? { uri: pfpB64 } : {uri: SocialSquareLogo_B64_png}} />
                 </PostsVerticalView>
                 <PostsVerticalView style={{ marginTop: 9 }}>
                     {creatorDisplayName !== "" ? (

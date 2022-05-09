@@ -96,7 +96,7 @@ const CategoryViewPage = ({route, navigation}) => {
     const [selectedPostFormat, setSelectedPostFormat] = useState("One")
     const [selectedPostFormatName, setSelectedPostFormatName] = useState("No thread posts yet, Be the first!")
     const [useStatePollData, setUseStatePollData] = useState()
-    const [changeSections, setChangeSections] = useState()
+    const [changeSections, setChangeSections] = useState([])
     const [loadingPosts, setLoadingPosts] = useState(false)
     const [getCategoryItems, setGetCategoryItems] = useState(false)
     const [getImagesOnLoad, setGetImagesOnLoad] = useState(false)
@@ -192,14 +192,10 @@ const CategoryViewPage = ({route, navigation}) => {
                 if (data.imageKey) {
                     axios.get(`${serverUrl}/getImageOnServer/${data.imageKey}`)
                     .then((response) => {
-                        const result = response.data;
-                        const {message, status, data} = result;
-                        console.log(status)
-                        console.log(message)
                         //set image
-                        if (data) {
+                        if (response.data) {
                             //convert back to image
-                            var base64Icon = `data:image/jpg;base64,${data}`
+                            var base64Icon = `data:image/jpeg;base64,${response.data}`
                             setAvatarImage(base64Icon)
                             setCategoryDescription(CategoryData.categoryDescription)
                             setCategoryTags(CategoryData.categoryTags)
@@ -594,18 +590,9 @@ const CategoryViewPage = ({route, navigation}) => {
                 <PostsHorizontalView style={{marginLeft: '5%', borderColor: darkLight, width: '90%', paddingBottom: 5, marginRight: '5%'}}>
                     <TouchableOpacity style={{width: '100%', height: 60}}>
                         <PostsHorizontalView>
-                            {creatorImageB64 !== null && (
-                                <PostsVerticalView>
-                                    {creatorImageB64 !== null && (
-                                        <PostCreatorIcon source={{uri: `data:image/jpg;base64,${creatorImageB64}`}}/>
-                                    )}
-                                </PostsVerticalView>
-                            )}
-                            {creatorImageB64 == null && (
-                                <PostsVerticalView>
-                                    <PostCreatorIcon source={require('./../assets/img/Logo.png')}/>
-                                </PostsVerticalView>
-                            )}
+                            <PostsVerticalView>
+                                    <PostCreatorIcon source={{uri: creatorImageB64 != null && creatorImageB64 != '' ? creatorImageB64 : SocialSquareLogo_B64_png }}/>
+                            </PostsVerticalView>
                             <PostsVerticalView style={{marginTop: 9}}>
                                 <SubTitle style={{fontSize: 20, marginBottom: 0}}>{creatorDisplayName}</SubTitle>
                                 <SubTitle style={{fontSize: 12, color: brand, marginBottom: 0}}>@{creatorName}</SubTitle>
@@ -613,7 +600,7 @@ const CategoryViewPage = ({route, navigation}) => {
                         </PostsHorizontalView>
                     </TouchableOpacity>
                 </PostsHorizontalView>
-                <TouchableOpacity onPress={() => navigation.navigate("ThreadViewPage", {threadId: threadId, creatorPfpB64: `data:image/jpg;base64,${creatorImageB64}`})}>
+                <TouchableOpacity onPress={() => navigation.navigate("ThreadViewPage", {threadId: threadId, creatorPfpB64: creatorImageB64})}>
                     <ImagePostTextFrame style={{textAlign: 'left', alignItems: 'baseline'}}>
                         <TouchableOpacity>
                             <SubTitle style={{fontSize: 10, color: brand, marginBottom: 0}}>Category: {threadCategory}</SubTitle>
@@ -634,7 +621,7 @@ const CategoryViewPage = ({route, navigation}) => {
                             {threadType == "Images" && (
                                 <View>
                                     <View style={{height: 200, width: 200}}>
-                                        <Image style={{height: '100%', width: 'auto', resizeMode: 'contain'}} source={{uri: `data:image/jpg;base64,${imageInThreadB64}`}}/>
+                                        <Image style={{height: '100%', width: 'auto', resizeMode: 'contain'}} source={{uri: imageInThreadB64}}/>
                                     </View>
                                     <SubTitle style={{fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{threadImageDescription}</SubTitle>
                                 </View>
@@ -730,18 +717,18 @@ const CategoryViewPage = ({route, navigation}) => {
     //get image of post
     async function getImageInPost(imageData, index) {
         return axios.get(`${serverUrl}/getImageOnServer/${imageData[index].imageKey}`)
-        .then(res => res.data);
+        .then(res => 'data:image/jpg;base64,' + res.data);
     }
     //profile image of creator
     async function getImageInPfp(threadData, index) {
         return axios.get(`${serverUrl}/getImageOnServer/${threadData[index].creatorImageKey}`)
-        .then(res => res.data);
+        .then(res => 'data:image/jpg;base64,' + res.data);
     }
 
     //any image honestly
     async function getImageWithKey(imageKey) {
         return axios.get(`${serverUrl}/getImageOnServer/${imageKey}`)
-        .then(res => res.data);
+        .then(res => 'data:image/jpg;base64,' + res.data);
     }
 
     const changeToOne = () => {
@@ -761,7 +748,7 @@ const CategoryViewPage = ({route, navigation}) => {
         setFindingVotedThreads(findingVotedThreadsArray)
         changingVotedThreadsArray = []
         setChangingVotedThreads(changingVotedThreadsArray)
-        setChangeSections()
+        setChangeSections([])
         handleMessage(null, null, null);
         setSelectedPostFormat("One")
         setSelectedPostFormatName("No thread posts yet, Be the first!")
@@ -780,9 +767,8 @@ const CategoryViewPage = ({route, navigation}) => {
                     if (threadData[index].creatorImageKey) {
                         async function asyncFunctionForImages() {
                             if (threadData[index].threadType == "Text") {
-                                const imageInPfp = await getImageInPfp(threadData, index)
+                                const pfpB64 = await getImageInPfp(threadData, index)
                                 const addAndPush = async () => {
-                                    var pfpB64 = imageInPfp.data
                                     var tempSectionsTemp = {data: [{postNum: index, threadId: threadData[index].threadId, threadComments: threadData[index].threadComments, threadType: threadData[index].threadType, threadUpVotes: threadData[index].threadUpVotes, threadTitle: threadData[index].threadTitle, threadSubtitle: threadData[index].threadSubtitle, threadTags: threadData[index].threadTags, threadCategory: threadData[index].threadCategory, threadBody: threadData[index].threadBody, threadImageKey: threadData[index].threadImageKey, threadImageDescription: threadData[index].threadImageDescription, threadNSFW: threadData[index].threadNSFW, threadNSFL: threadData[index].threadNSFL, datePosted: threadData[index].datePosted, threadUpVoted: threadData[index].threadUpVoted, threadDownVoted: threadData[index].threadDownVoted, creatorDisplayName: threadData[index].creatorDisplayName, creatorName: threadData[index].creatorName, creatorImageB64: pfpB64, imageInThreadB64: null}]}
                                     if (threadData[index].threadUpVoted == true) {
                                         console.log("UpVoted")
@@ -815,11 +801,9 @@ const CategoryViewPage = ({route, navigation}) => {
                                 }
                                 await addAndPush()
                             } else if (threadData[index].threadType == "Images") {
-                                const imageInPfp = await getImageInPfp(threadData, index)
-                                const imageInThread = await getImageWithKey(threadData[index].threadImageKey)
+                                const pfpB64 = await getImageInPfp(threadData, index)
+                                const imageInThreadB64 = await getImageWithKey(threadData[index].threadImageKey)
                                 const addAndPush = async () => {
-                                    var pfpB64 = imageInPfp.data
-                                    var imageInThreadB64 = imageInThread.data
                                     var tempSectionsTemp = {data: [{postNum: index, threadId: threadData[index].threadId, threadComments: threadData[index].threadComments, threadType: threadData[index].threadType, threadUpVotes: threadData[index].threadUpVotes, threadTitle: threadData[index].threadTitle, threadSubtitle: threadData[index].threadSubtitle, threadTags: threadData[index].threadTags, threadCategory: threadData[index].threadCategory, threadBody: threadData[index].threadBody, threadImageKey: threadData[index].threadImageKey, threadImageDescription: threadData[index].threadImageDescription, threadNSFW: threadData[index].threadNSFW, threadNSFL: threadData[index].threadNSFL, datePosted: threadData[index].datePosted, threadUpVoted: threadData[index].threadUpVoted, threadDownVoted: threadData[index].threadDownVoted, creatorDisplayName: threadData[index].creatorDisplayName, creatorName: threadData[index].creatorName, creatorImageB64: pfpB64, imageInThreadB64: imageInThreadB64}]}
                                     if (threadData[index].threadUpVoted == true) {
                                         console.log("UpVoted")
@@ -857,9 +841,8 @@ const CategoryViewPage = ({route, navigation}) => {
                     } else {
                         async function asyncFunctionForImages() {
                             if (threadData[index].threadType == "Text") {
-                                const imageInPfp = await getImageInPfp(threadData, index)
+                                const pfpB64 = await getImageInPfp(threadData, index)
                                 const addAndPush = async () => {
-                                    var pfpB64 = imageInPfp.data
                                     var tempSectionsTemp = {data: [{postNum: index, threadId: threadData[index].threadId, threadComments: threadData[index].threadComments, threadType: threadData[index].threadType, threadUpVotes: threadData[index].threadUpVotes, threadTitle: threadData[index].threadTitle, threadSubtitle: threadData[index].threadSubtitle, threadTags: threadData[index].threadTags, threadCategory: threadData[index].threadCategory, threadBody: threadData[index].threadBody, threadImageKey: threadData[index].threadImageKey, threadImageDescription: threadData[index].threadImageDescription, threadNSFW: threadData[index].threadNSFW, threadNSFL: threadData[index].threadNSFL, datePosted: threadData[index].datePosted, threadUpVoted: threadData[index].threadUpVoted, threadDownVoted: threadData[index].threadDownVoted, creatorDisplayName: threadData[index].creatorDisplayName, creatorName: threadData[index].creatorName, creatorImageB64: pfpB64, imageInThreadB64: null}]}
                                     if (threadData[index].threadUpVoted == true) {
                                         console.log("UpVoted")
@@ -892,11 +875,9 @@ const CategoryViewPage = ({route, navigation}) => {
                                 }
                                 await addAndPush()
                             } else if (threadData[index].threadType == "Images") {
-                                const imageInPfp = await getImageInPfp(threadData, index)
-                                const imageInThread = await getImageWithKey(threadData[index].threadImageKey)
+                                const pfpB64 = await getImageInPfp(threadData, index)
+                                const imageInThreadB64 = await getImageWithKey(threadData[index].threadImageKey)
                                 const addAndPush = async () => {
-                                    var pfpB64 = imageInPfp.data
-                                    var imageInThreadB64 = imageInThread.data
                                     var tempSectionsTemp = {data: [{postNum: index, threadId: threadData[index].threadId, threadComments: threadData[index].threadComments, threadType: threadData[index].threadType, threadUpVotes: threadData[index].threadUpVotes, threadTitle: threadData[index].threadTitle, threadSubtitle: threadData[index].threadSubtitle, threadTags: threadData[index].threadTags, threadCategory: threadData[index].threadCategory, threadBody: threadData[index].threadBody, threadImageKey: threadData[index].threadImageKey, threadImageDescription: threadData[index].threadImageDescription, threadNSFW: threadData[index].threadNSFW, threadNSFL: threadData[index].threadNSFL, datePosted: threadData[index].datePosted, threadUpVoted: threadData[index].threadUpVoted, threadDownVoted: threadData[index].threadDownVoted, creatorDisplayName: threadData[index].creatorDisplayName, creatorName: threadData[index].creatorName, creatorImageB64: pfpB64, imageInThreadB64: imageInThreadB64}]}
                                     if (threadData[index].threadUpVoted == true) {
                                         console.log("UpVoted")
@@ -971,12 +952,12 @@ const CategoryViewPage = ({route, navigation}) => {
 
     const changeToTwo = () => {
         setSelectedPostFormatName("This user has no Video posts.")
-        setChangeSections()
+        setChangeSections([])
     }
 
     const changeToThree = () => {
         setSelectedPostFormatName("This user has no Poll posts.")
-        setChangeSections()
+        setChangeSections([])
     }
 
     return(

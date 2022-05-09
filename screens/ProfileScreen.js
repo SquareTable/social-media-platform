@@ -136,11 +136,11 @@ const Welcome = ({navigation, route}) => {
     const [formatFourText, setFormatFourText] = useState("This user has no Thread posts.")
     const [formatFiveText, setFormatFiveText] = useState("This user associates with no categories.")
     const [useStatePollData, setUseStatePollData] = useState()
-    const [changeSectionsOne, setChangeSectionsOne] = useState()
-    const [changeSectionsTwo, setChangeSectionsTwo] = useState()
-    const [changeSectionsThree, setChangeSectionsThree] = useState()
-    const [changeSectionsFour, setChangeSectionsFour] = useState()
-    const [changeSectionsFive, setChangeSectionsFive] = useState()
+    const [changeSectionsOne, setChangeSectionsOne] = useState([])
+    const [changeSectionsTwo, setChangeSectionsTwo] = useState([])
+    const [changeSectionsThree, setChangeSectionsThree] = useState([])
+    const [changeSectionsFour, setChangeSectionsFour] = useState([])
+    const [changeSectionsFive, setChangeSectionsFive] = useState([])
     const [changePollIfLiked, setChangePollIfLiked] = useState(tertiary)
     const [resetFoundPolls, setResetFoundPolls] = useState(false)
     const [loadingPostsImage, setLoadingPostsImage] = useState(false)
@@ -1201,7 +1201,7 @@ const Welcome = ({navigation, route}) => {
             </PostsHorizontalView>
             <PostsHorizontalView style={{alignItems: 'center', justifyContent: 'center'}}>
                 <MultiMediaPostFrame postOnProfile={true} style={{ aspectRatio: 1/1, backgroundColor: colors.primary }}>
-                    <Image style={{width: '100%', height: '100%', resizeMode : 'cover', borderRadius: 20}} source={{uri: `data:image/jpg;base64,${imageB64}`}}/>
+                    <Image style={{width: '100%', height: '100%', resizeMode : 'cover', borderRadius: 20}} source={{uri: imageB64}}/>
                 </MultiMediaPostFrame>
             </PostsHorizontalView>
             <ImagePostTextFrame style={{textAlign: 'center'}}>
@@ -1475,12 +1475,7 @@ const Welcome = ({navigation, route}) => {
         <SearchFrame onPress={() => navigation.navigate("CategoryViewPage", {categoryTitle: categoryTitle})}>
             <View style={{paddingHorizontal: '50%'}}>
             </View>
-            {image !== null && (
-                <Avatar resizeMode="cover" searchPage={true} source={{uri: `data:image/jpg;base64,${image}`}} />
-            )}
-            {image == null && (
-                <Avatar resizeMode="cover" searchPage={true} source={{uri: SocialSquareLogo_B64_png}} />
-            )}
+            <Avatar resizeMode="cover" searchPage={true} source={{uri: image != null || '' ? image : SocialSquareLogo_B64_png}} />
             {NSFW == false && (
                 <View>
                     {NSFL == false && (
@@ -1523,7 +1518,7 @@ const Welcome = ({navigation, route}) => {
     );
 
     const ThreadItems = ({postNum, threadId, threadComments, threadType, threadUpVotes, threadTitle, threadSubtitle, threadTags, threadCategory, threadBody, threadImageKey, threadImageDescription, threadNSFW, threadNSFL, datePosted, threadUpVoted, threadDownVoted, creatorDisplayName, creatorName, creatorImageB64, imageInThreadB64})  => (
-        <View style={{backgroundColor: dark ? slightlyLighterPrimary : colors.borderColor, borderRadius: 15, marginBottom: 10}} onPress={() => {navigation.navigate("ThreadViewPage", {creatorPfpB64: profilePictureUri, threadId: threadId})}}>
+        <View style={{backgroundColor: dark ? slightlyLighterPrimary : colors.borderColor, borderRadius: 15, marginBottom: 10}} onPress={() => navigation.navigate("ThreadViewPage", {creatorPfpB64: profilePictureUri, threadId: threadId})}>
                 {postsWithDeleteMenuOpen == threadId && (
                     <View style={{position: 'absolute', zIndex: 100, alignSelf: 'center', alignItems: 'center', width: '100%', height: '100%', justifyContent: 'center'}}>
                         <View style={{borderRadius: 30, width: '80%', minHeight: '35%', alignSelf: 'center', alignItems: 'center', justifyContent: 'center', backgroundColor: colors.primary, borderColor: darkest, borderWidth: 6}}>
@@ -1578,7 +1573,7 @@ const Welcome = ({navigation, route}) => {
                             {threadType == "Images" && (
                                 <View>
                                     <View style={{height: 200, width: 200}}>
-                                        <Image style={{height: '100%', width: 'auto', resizeMode: 'contain'}} source={{uri: `data:image/jpg;base64,${imageInThreadB64}`}}/>
+                                        <Image style={{height: '100%', width: 'auto', resizeMode: 'contain'}} source={{uri: imageInThreadB64}}/>
                                     </View>
                                     <SubTitle style={{fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{threadImageDescription}</SubTitle>
                                 </View>
@@ -1705,7 +1700,7 @@ const Welcome = ({navigation, route}) => {
     //get image of post
     async function getImageInPost(imageData, index) {
         return axios.get((serverUrl + '/getImageOnServer/' + imageData[index].imageKey), { cancelToken: source.token})
-        .then(res => res.data).catch(error => {
+        .then(res => 'data:image/jpeg;base64,' + res.data).catch(error => {
             console.log(error);
             //setSubmitting(false);
             setLoadingPosts(false)
@@ -1715,7 +1710,7 @@ const Welcome = ({navigation, route}) => {
     //profile image of creator
     async function getImageInPfp(imageData, index) {
         return axios.get((serverUrl + '/getImageOnServer/' + imageData[index].creatorPfpKey), { cancelToken: source.token})
-        .then(res => res.data).catch(error => {
+        .then(res => 'data:image/jpeg;base64,' + res.data).catch(error => {
             console.log(error);
             //setSubmitting(false);
             setLoadingPosts(false)
@@ -1724,7 +1719,7 @@ const Welcome = ({navigation, route}) => {
     }
     async function getImageInCategory(imageKey) {
         return axios.get((serverUrl + '/getImageOnServer/' + imageKey), { cancelToken: cancelTokenPostFormatFive.token})
-        .then(res => res.data).catch(error => {
+        .then(res => 'data:image/jpeg;base64,' + res.data).catch(error => {
             console.log(error);
             //setSubmitting(false);
             setLoadingPosts(false)
@@ -1734,7 +1729,7 @@ const Welcome = ({navigation, route}) => {
     //any image honestly
     async function getImageWithKeyOne(imageKey) {
             return axios.get((serverUrl + '/getImageOnServer/' + imageKey), { cancelToken: cancelTokenPostFormatOne.token})
-            .then(res => res.data).catch(error => {
+            .then(res => 'data:image/jpeg;base64,' + res.data).catch(error => {
                 console.log(error);
                 //setSubmitting(false);
                 setLoadingPostsImage(false)
@@ -1743,7 +1738,7 @@ const Welcome = ({navigation, route}) => {
     }
     async function getImageWithKeyTwo(imageKey) {
         return axios.get((serverUrl + '/getImageOnServer/' + imageKey), { cancelToken: cancelTokenPostFormatTwo.token})
-        .then(res => res.data).catch(error => {
+        .then(res => 'data:image/jpeg;base64,' + res.data).catch(error => {
             console.log(error);
             //setSubmitting(false);
             setLoadingPostsVideo(false)
@@ -1752,7 +1747,7 @@ const Welcome = ({navigation, route}) => {
     }
     async function getImageWithKeyThree(imageKey) {
         return axios.get((serverUrl + '/getImageOnServer/' + imageKey), { cancelToken: cancelTokenPostFormatThree.token})
-        .then(res => res.data).catch(error => {
+        .then(res => 'data:image/jpeg;base64,' + res.data).catch(error => {
             console.log(error);
             //setSubmitting(false);
             setLoadingPostsPoll(false)
@@ -1761,7 +1756,7 @@ const Welcome = ({navigation, route}) => {
     }
     async function getImageWithKeyFour(imageKey) {
         return axios.get((serverUrl + '/getImageOnServer/' + imageKey), { cancelToken: cancelTokenPostFormatFour.token})
-        .then(res => res.data).catch(error => {
+        .then(res => 'data:image/jpeg;base64,' + res.data).catch(error => {
             console.log(error);
             //setSubmitting(false);
             setLoadingPostsThread(false)
@@ -1770,7 +1765,7 @@ const Welcome = ({navigation, route}) => {
     }
     async function getImageWithKeyFive(imageKey) {
         return axios.get((serverUrl + '/getImageOnServer/' + imageKey), { cancelToken: cancelTokenPostFormatFive.token})
-        .then(res => res.data).catch(error => {
+        .then(res => 'data:image/jpeg;base64,' + res.data).catch(error => {
             console.log(error);
             //setSubmitting(false);
             setLoadingPostsCategory(false)
@@ -1800,7 +1795,7 @@ const Welcome = ({navigation, route}) => {
             setFindingVotedImages(findingVotedImagesArray)
             changingVotedImagesArray = []
             setChangingVotedImages(changingVotedImagesArray)
-            setChangeSectionsOne()
+            setChangeSectionsOne([])
             handleMessage(null, null, null);
             setSelectedPostFormat("One")
             setFormatOneText("This user has no Image posts.")
@@ -1817,11 +1812,10 @@ const Welcome = ({navigation, route}) => {
                     async function findImages() {
                         //
                         async function asyncFunctionForImages() {
-                            const imageInPost = await getImageWithKeyOne(imageData[index].imageKey)
+                            const imageB64 = await getImageWithKeyOne(imageData[index].imageKey)
                             console.log("Image In Post Recieved")
                             //Add
                             const addAndPush = async () => {
-                                var imageB64 = imageInPost.data
                                 console.log("TestHere")
                                 var tempSectionsTemp = {data: [{imageKey: imageData[index].imageKey, imageB64: imageB64, imageTitle: imageData[index].imageTitle, imageDescription: imageData[index].imageDescription, imageUpVotes: imageData[index].imageUpVotes, imageComments: imageData[index].imageComments, creatorName: imageData[index].creatorName, creatorDisplayName: imageData[index].creatorDisplayName, datePosted: imageData[index].datePosted, postNum: index}]}
                                 if (imageData[index].imageUpVoted) {
@@ -1904,7 +1898,7 @@ const Welcome = ({navigation, route}) => {
         cancelTokenPostFormatFive.cancel()
         setFormatTwoText("This user has no Video posts.")
         setSelectedPostFormat("Two")
-        setChangeSectionsTwo()
+        setChangeSectionsTwo([])
     }
 
     const changeToThree = () => {
@@ -1931,7 +1925,7 @@ const Welcome = ({navigation, route}) => {
             setFindingVotedPolls(findingVotedPollsArray)
             changingVotedPollsArray = []
             setChangingVotedPolls(changingVotedPollsArray)
-            setChangeSectionsThree()
+            setChangeSectionsThree([])
             handleMessage(null, null, null);
             const layoutPollPosts = (data) => {
                 setFormatThreeText("Users Poll Posts:")
@@ -2105,7 +2099,7 @@ const Welcome = ({navigation, route}) => {
             cancelTokenPostFormatTwo.cancel()
             cancelTokenPostFormatThree.cancel()
             cancelTokenPostFormatFive.cancel()
-            setChangeSectionsFour()
+            setChangeSectionsFour([])
             setSelectedPostFormat("Four")
             setFormatFourText("This user has no Thread posts.")
             upVotedThreads = []
@@ -2172,9 +2166,8 @@ const Welcome = ({navigation, route}) => {
                                 }
                                 await addAndPush()
                             } else if (threadData[index].threadType == "Images") {
-                                const imageInThread = await getImageWithKeyFour(threadData[index].threadImageKey)
+                                const imageInThreadB64 = await getImageWithKeyFour(threadData[index].threadImageKey)
                                 const addAndPush = async () => {
-                                    var imageInThreadB64 = imageInThread.data
                                     var tempSectionsTemp = {data: [{postNum: index, threadId: threadData[index].threadId, threadComments: threadData[index].threadComments, threadType: threadData[index].threadType, threadUpVotes: threadData[index].threadUpVotes, threadTitle: threadData[index].threadTitle, threadSubtitle: threadData[index].threadSubtitle, threadTags: threadData[index].threadTags, threadCategory: threadData[index].threadCategory, threadBody: threadData[index].threadBody, threadImageKey: threadData[index].threadImageKey, threadImageDescription: threadData[index].threadImageDescription, threadNSFW: threadData[index].threadNSFW, threadNSFL: threadData[index].threadNSFL, datePosted: threadData[index].datePosted, threadUpVoted: threadData[index].threadUpVoted, threadDownVoted: threadData[index].threadDownVoted, creatorDisplayName: threadData[index].creatorDisplayName, creatorName: threadData[index].creatorName, imageInThreadB64: imageInThreadB64}]}
                                     if (threadData[index].threadUpVoted == true) {
                                         console.log("UpVoted")
@@ -2251,7 +2244,7 @@ const Welcome = ({navigation, route}) => {
             cancelTokenPostFormatTwo.cancel()
             cancelTokenPostFormatThree.cancel()
             cancelTokenPostFormatFour.cancel()
-            setChangeSectionsFive()
+            setChangeSectionsFive([])
             setSelectedPostFormat("Five")
             setFormatFiveText("This user associates with no categories.")
             const layoutCategoriesFound = (data) => {
@@ -2265,8 +2258,7 @@ const Welcome = ({navigation, route}) => {
                     if (allData[index].imageKey !== "") {
                         if (index+1 <= userLoadMax) {      
                             async function asyncFunctionForImages() {
-                                const imageInCategory = await getImageWithKeyFive(allData[index].imageKey)
-                                const imageB64 = imageInCategory.data
+                                const imageB64 = await getImageWithKeyFive(allData[index].imageKey)
                                 var tempSectionsTemp = {data: [{categoryTitle: allData[index].categoryTitle, categoryDescription: allData[index].categoryDescription, members: allData[index].members, categoryTags: allData[index].categoryTags, image: imageB64, NSFW: allData[index].NSFW, NSFL: allData[index].NSFL, datePosted: allData[index].datePosted}]}
                                 tempSections.push(tempSectionsTemp)
                                 itemsProcessed++;

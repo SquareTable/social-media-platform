@@ -66,14 +66,13 @@ const FindScreen = ({navigation}) => {
     const [messageType, setMessageType] = useState();
     const [foundAmount, setFoundAmount] = useState();
     const [debounce, setDebounce] = useState(false);
-    const [changeSections, setChangeSections] = useState()
-    const [changeSectionsOne, setChangeSectionsOne] = useState()
-    const [changeSectionsTwo, setChangeSectionsTwo] = useState()
+    const [changeSectionsOne, setChangeSectionsOne] = useState([])
+    const [changeSectionsTwo, setChangeSectionsTwo] = useState([])
     const [loadingOne, setLoadingOne] = useState(false)
     const [loadingTwo, setLoadingTwo] = useState(false)
     const [noResults, setNoResults] = useState(false);
     const searchValue = useRef(null);
-    var userLoadMax = 10;
+    var userLoadMax = 20;
     let cancelTokenPostFormatOne = axios.CancelToken.source();
     let cancelTokenPostFormatTwo = axios.CancelToken.source();
     const {serverUrl, setServerurl} = useContext(ServerUrlContext);
@@ -82,7 +81,7 @@ const FindScreen = ({navigation}) => {
         /* OLD DESIGN
             <SearchFrame onPress={() => navigation.navigate("ProfilePages", {profilesName: name, profilesDisplayName: displayName, following: following, followers: followers, totalLikes: totalLikes, profileKey: profileKey != null ? `data:image/jpg;base64,${profileKey}` : SocialSquareLogo_B64_png, badges: badges})}>
                 {profileKey !== null && (
-                    <Avatar resizeMode="cover" searchPage={true} source={{uri: `data:image/jpg;base64,${profileKey}`}} />
+                    <Avatar resizeMode="cover" searchPage={true} source={{uri: profileKey}} />
                 )}
                 {profileKey == null && (
                     <Avatar resizeMode="cover" searchPage={true} source={require('./../assets/img/Logo.png')} />
@@ -110,10 +109,10 @@ const FindScreen = ({navigation}) => {
                 </SearchHorizontalView>
             </SearchFrame>
         */
-            <TouchableOpacity onPress={() => navigation.navigate("ProfilePages", {profilesName: name, profilesDisplayName: displayName, following: following, followers: followers, totalLikes: totalLikes, profileKey: profileKey != null ? `data:image/jpg;base64,${profileKey}` : SocialSquareLogo_B64_png, badges: badges, pubId: pubId, bio: bio, privateAccount: privateAccount})} style={{borderColor: colors.darkLight, flexDirection: 'row', width: '100%', padding: 5}}>
+            <TouchableOpacity onPress={() => navigation.navigate("ProfilePages", {profilesName: name, profilesDisplayName: displayName, following: following, followers: followers, totalLikes: totalLikes, profileKey: profileKey != null ? profileKey : SocialSquareLogo_B64_png, badges: badges, pubId: pubId, bio: bio, privateAccount: privateAccount})} style={{borderColor: colors.darkLight, flexDirection: 'row', width: '100%', padding: 5}}>
                 <View style={{alignItems: 'flex-start', justifyContent: 'center', flexDirection: 'row'}}>
                     {console.log(profileKey)}
-                    <Avatar style={{width: 60, height: 60, marginBottom: 5, marginTop: 5}} resizeMode="cover" searchPage={true} source={{uri: profileKey != null ? `data:image/jpg;base64,${profileKey}` : SocialSquareLogo_B64_png}} />
+                    <Avatar style={{width: 60, height: 60, marginBottom: 5, marginTop: 5}} resizeMode="cover" searchPage={true} source={{uri: profileKey != null ? profileKey : SocialSquareLogo_B64_png}} />
                     <SubTitle style={{color: colors.tertiary, marginTop: 24, marginLeft: 10}} searchResTitle={true}>{displayName || name}</SubTitle>
                 </View>
             </TouchableOpacity>
@@ -121,7 +120,7 @@ const FindScreen = ({navigation}) => {
 
     const CategoryItem = ({categoryTitle, categoryDescription, members, categoryTags, image, NSFW, NSFL, datePosted, allowScreenShots}) => (
         <SearchFrame onPress={() => navigation.navigate("CategoryViewPage", {categoryTitle: categoryTitle, NSFL: NSFL, NSFW: NSFW, allowScreenShots: (allowScreenShots != undefined ? allowScreenShots : true)})}>
-            <Avatar resizeMode="cover" searchPage={true} source={{uri: image != undefined && image != null && image != '' ? `data:image/jpg;base64,${image}` : SocialSquareLogo_B64_png}} />
+            <Avatar resizeMode="cover" searchPage={true} source={{uri: image != undefined && image != null && image != '' ? image : SocialSquareLogo_B64_png}} />
             {NSFW == false && (
                 <View>
                     {NSFL == false && (
@@ -166,7 +165,7 @@ const FindScreen = ({navigation}) => {
     //any image honestly
     async function getImageWithKeyOne(imageKey) {
         return axios.get((serverUrl + '/getImageOnServer/' + imageKey), { cancelToken: cancelTokenPostFormatOne.token})
-        .then(res => res.data).catch(error => {
+        .then(res => 'data:image/jpeg;base64,' + res.data).catch(error => {
             console.log(error);
             //setSubmitting(false);
             console.log("Either an error or cancelled.");
@@ -174,7 +173,7 @@ const FindScreen = ({navigation}) => {
     }
 
     const handleUserSearch = (val) => {
-        setChangeSectionsOne()
+        setChangeSectionsOne([])
         if (val !== "") {
             const layoutUsersFound = (data) => {
                 setFoundAmount("Poll Comments:")
@@ -191,8 +190,7 @@ const FindScreen = ({navigation}) => {
                                 if (displayName == "") {
                                     displayName = allData[index].name
                                 }
-                                const imageInPfp = await getImageWithKeyOne(allData[index].profileKey)
-                                const imageInPfpB64 = imageInPfp.data
+                                const imageInPfpB64 = await getImageWithKeyOne(allData[index].profileKey)
                                 var tempSectionsTemp = {data: [{name: allData[index].name, displayName: displayName, followers: allData[index].followers, following: allData[index].following, totalLikes: allData[index].totalLikes, profileKey: imageInPfpB64, badges: allData[index].badges, pubId: allData[index].pubId, bio: allData[index].bio, privateAccount: allData[index].privateAccount}]}
                                 tempSections.push(tempSectionsTemp)
                                 itemsProcessed++;
@@ -257,18 +255,18 @@ const FindScreen = ({navigation}) => {
         } else {
             console.log('Empty search')
             setNoResults(false)
-            setChangeSectionsOne()
+            setChangeSectionsOne([])
         }
     }
 
     async function getImageInCategory(imageKey) {
         return axios.get((serverUrl + '/getImageOnServer/' + imageKey), { cancelToken: cancelTokenPostFormatTwo.token})
-        .then(res => res.data);
+        .then(res => 'data:image/jpeg;base64,' + res.data);
     }
 
     const handleCategorySearch = (val) => {
         if (val !== "") {
-            setChangeSectionsTwo()
+            setChangeSectionsTwo([])
             const layoutCategoriesFound = (data) => {
                 setFoundAmount("Poll Comments:")
                 var allData = data
@@ -280,8 +278,7 @@ const FindScreen = ({navigation}) => {
                     if (allData[index].imageKey !== "") {
                         if (index+1 <= userLoadMax) {      
                             async function asyncFunctionForImages() {
-                                const imageInCategory = await getImageInCategory(allData[index].imageKey)
-                                const imageB64 = imageInCategory.data
+                                const imageB64 = await getImageInCategory(allData[index].imageKey)
                                 var tempSectionsTemp = {data: [{categoryTitle: allData[index].categoryTitle, categoryDescription: allData[index].categoryDescription, members: allData[index].members, categoryTags: allData[index].categoryTags, image: imageB64, NSFW: allData[index].NSFW, NSFL: allData[index].NSFL, datePosted: allData[index].datePosted, allowScreenShots: allData[index].allowScreenShots}]}
                                 tempSections.push(tempSectionsTemp)
                                 itemsProcessed++;
@@ -342,7 +339,7 @@ const FindScreen = ({navigation}) => {
         } else {
             console.log('Empty category search')
             setNoResults(false)
-            setChangeSectionsTwo()
+            setChangeSectionsTwo([])
         }
     }
 
@@ -396,7 +393,7 @@ const FindScreen = ({navigation}) => {
                         {filterFormatSearch !== "Users" && (
                             <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: slightlyLighterGrey, borderWidth: 3, padding: 10, backgroundColor: dark? darkLight : colors.borderColor, alignItems: 'center', justifyContent: 'center'}} onPress={() => {
                                 cancelTokenPostFormatTwo.cancel()
-                                setChangeSectionsOne()
+                                setChangeSectionsOne([])
                                 setFilterFormatSearch("Users")  
                             }}>
                                 <PostIcons style={{width: '100%', height: '100%', resizeMode: 'contain'}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/035-file-text.png')}/>
@@ -413,7 +410,7 @@ const FindScreen = ({navigation}) => {
                         {filterFormatSearch !== "Categories" && (
                             <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: slightlyLighterGrey, borderWidth: 3, padding: 10, backgroundColor: dark? darkLight : colors.borderColor, alignItems: 'center', justifyContent: 'center'}} onPress={() => {
                                 cancelTokenPostFormatOne.cancel()
-                                setChangeSectionsTwo()
+                                setChangeSectionsTwo([])
                                 setFilterFormatSearch("Categories")
                             }}>
                                 <PostIcons style={{width: '100%', height: '100%', resizeMode: 'contain'}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/093-drawer.png')}/>
@@ -431,7 +428,7 @@ const FindScreen = ({navigation}) => {
                             <TouchableOpacity style={{width: 50, height: 50, borderRadius: 30, borderColor: slightlyLighterGrey, borderWidth: 3, padding: 10, backgroundColor: dark? darkLight : colors.borderColor, alignItems: 'center', justifyContent: 'center'}} onPress={() => {
                                 //cancelTokenPostFormatOne.cancel()
                                 //cancelTokenPostFormatTwo.cancel()
-                                //setChangeSections()
+                                //setChangeSections([])
                                 //setFilterFormatSearch("Images")
                                 alert('This feature is coming soon')
                             }}>
@@ -464,6 +461,8 @@ const FindScreen = ({navigation}) => {
                             )}
                         </>
                     }
+                    keyboardDismissMode="on-drag"
+                    keyboardShouldPersistTaps="handled"
                 />
             )}
             {filterFormatSearch == "Categories" && (
@@ -489,6 +488,8 @@ const FindScreen = ({navigation}) => {
                             )}
                         </>
                     }
+                    keyboardDismissMode="on-drag"
+                    keyboardShouldPersistTaps="handled"
                 />
             )}
             {filterFormatSearch == "Images" && (

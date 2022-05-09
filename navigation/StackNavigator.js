@@ -103,7 +103,6 @@ const RootStack = () => {
     >
       <Stack.Screen name="Welcome" component={ProfileScreen}/>
       <Stack.Screen name="SettingsScreen" component={SettingsScreen}/>
-      <Stack.Screen name="CategoryViewPage" component={CategoryViewPage}/>
       <Stack.Screen name="CommentViewPage" component={CommentViewPage}/>
       <Stack.Screen name="CategoryHome" component={CategoryHome}/>
       <Stack.Screen name="CategoryCreationPage" component={CategoryCreationPage}/>
@@ -129,6 +128,7 @@ const RootStack = () => {
         <Stack.Screen name="ViewPollPostPage" component={ViewPollPostPage}/>
         <Stack.Screen name="ThreadViewPage" component={ThreadViewPage}/>
         <Stack.Screen name="EditProfile" component={EditProfile}/>
+        <Stack.Screen name="CategoryViewPage" component={CategoryViewPage}/>
       </Stack.Group>
     </Stack.Navigator>
   );
@@ -175,7 +175,7 @@ const FindScreen_Stack = () => {
   );
 };
 
-const home_screen_post_to_profile_screen = () => {
+const HomeScreenStack = () => {
   const { colors } = useTheme();
   return(
     <Stack.Navigator screenOptions={{
@@ -200,7 +200,7 @@ const home_screen_post_to_profile_screen = () => {
   )
 }
 
-const post_screen_navigator = () => {
+const PostScreenStack = () => {
   const { colors } = useTheme();
   return(
     <Stack.Navigator screenOptions={{
@@ -278,7 +278,7 @@ const SettingsStack = () => {
 export {
   RootStack, 
   FindScreen_Stack, 
-  home_screen_post_to_profile_screen, 
-  post_screen_navigator,
+  HomeScreenStack, 
+  PostScreenStack,
   SettingsStack,
 };

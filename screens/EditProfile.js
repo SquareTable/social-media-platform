@@ -140,7 +140,7 @@ const EditProfile = ({navigation, route}) => {
     const getProfilePicture = () => {
         const url = serverUrl + '/user/getProfilePic/' + secondId;
 
-        axios.get(url).then((response) => {
+        axios.get(url).then(async (response) => {
             const result = response.data;
             const {message, status, data} = result;
 
@@ -148,54 +148,43 @@ const EditProfile = ({navigation, route}) => {
                 console.log('GETTING PROFILE PICTURE FOR PROFILESCREEN.JS WAS NOT A SUCCESS')
                 console.log(status)
                 console.log(message)
+                alert('Profile picture has been uploaded but an error occured while setting your profile picture. Log out and log back in and your profile picture will show up.')
+                setChangingPfp(false)
             } else {
                 console.log(status)
                 console.log(message)
-                axios.get(`${serverUrl}/getImageOnServer/${data}`)
-                .then((response) => {
-                    const result = response.data;
-                    const {message, status, data} = result;
-                    console.log(status)
-                    console.log(message)
-                    console.log(data)
-                    //set image
-                    if (message == 'No profile image.' && status == 'FAILED') {
-                        console.log('Setting logo to SocialSquare logo')
-                        setProfilePictureUri(SocialSquareLogo_B64_png)
+                try {
+                    const imageResponse = await axios.get(`${serverUrl}/getImageOnServer/${data}`);
+
+                    if (imageResponse) {
+                        const pfp = 'data:image/jpeg;base64,' + imageResponse.data;
+                        console.log('Setting profile picture to user profile picture')
+                        setProfilePictureUri(pfp)
                         setChangingPfp(false)
-                        const temp = allCredentialsStoredList;
-                        temp[storedCredentials.indexLength].profilePictureUri = SocialSquareLogo_B64_png;
+                        var temp = allCredentialsStoredList;
+                        temp[storedCredentials.indexLength].profilePictureUri = pfp;
                         setAllCredentialsStoredList(temp)
-                        AsyncStorage.setItem('socialSquare_AllCredentialsList', JSON.stringify(temp));
-                    } else if (data) {
-                        //convert back to image
-                        console.log('Setting logo in tab bar to profile logo')
-                        var base64Icon = `data:image/jpg;base64,${data}`
-                        setProfilePictureUri(base64Icon)
-                        setChangingPfp(false)
-                        const temp = allCredentialsStoredList;
-                        temp[storedCredentials.indexLength].profilePictureUri = base64Icon;
-                        setAllCredentialsStoredList(temp)
+                        const currentStoredCredentials = temp[storedCredentials.indexLength];
+                        setStoredCredentials(currentStoredCredentials)
+                        AsyncStorage.setItem('socialSquareCredentials', JSON.stringify(currentStoredCredentials));
                         AsyncStorage.setItem('socialSquare_AllCredentialsList', JSON.stringify(temp));
                     } else {
-                        console.log('Setting logo to SocialSquare logo')
-                        setProfilePictureUri(SocialSquareLogo_B64_png)
+                        alert('Profile picture has been uploaded but an error occured while setting your profile picture. Log out and log back in and your profile picture will show up.')
                         setChangingPfp(false)
-                        const temp = allCredentialsStoredList;
-                        temp[storedCredentials.indexLength].profilePictureUri = SocialSquareLogo_B64_png;
-                        setAllCredentialsStoredList(temp)
-                        AsyncStorage.setItem('socialSquare_AllCredentialsList', JSON.stringify(temp));
                     }
-                })
-                .catch(function (error) {
+                } catch (error) {
                     console.log("Image not recieved")
                     console.log(error);
-                });
+                    alert('Profile picture has been uploaded but an error occured while setting your profile picture. Log out and log back in and your profile picture will show up.')
+                    setChangingPfp(false)
+                }
             }
             //setSubmitting(false);
 
         }).catch(error => {
             console.log(error);
+            alert('Profile picture has been uploaded but an error occured while setting your profile picture. Log out and log back in and your profile picture will show up.')
+            setChangingPfp(false)
         })
     }
 

@@ -98,7 +98,7 @@ import SocialSquareLogo_B64_png from '../assets/SocialSquareLogo_Base64_png';
 
 import { ServerUrlContext } from '../components/ServerUrlContext.js';
 
-const ThreadViewPage = ({route, navigation}) => {
+const ThreadViewPage = ({navigation, route}) => {
     const {colors, dark} = useTheme()
      //context
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
@@ -121,7 +121,7 @@ const ThreadViewPage = ({route, navigation}) => {
     const [postNumForMsg, setPostNumForMsg] = useState();
     //Comment stuff
     const [ifCommentText, setIfCommentText] = useState("No comments found")
-    const [changeSections, setChangeSections] = useState()
+    const [changeSections, setChangeSections] = useState([])
     const [submitting, setSubmitting] = useState(false)
     const [limitSearch, setLimitSearch] = useState(false)
     const [commentLoadMax, setCommentLoadMax] = useState(10)
@@ -176,22 +176,22 @@ const ThreadViewPage = ({route, navigation}) => {
     //get image of post
     async function getImageInPost(imageData, index) {
         return axios.get(`${serverUrl}/getImageOnServer/${imageData[index].imageKey}`)
-        .then(res => res.data);
+        .then(res => 'data:image/jpeg;base64,' + res.data);
     }
     //profile image of creator
     async function getImageInPfp(threadData, index) {
         return axios.get(`${serverUrl}/getImageOnServer/${threadData[index].creatorImageKey}`)
-        .then(res => res.data);
+        .then(res => 'data:image/jpeg;base64,' + res.data);
     }
     //profile image of commenter
     async function getImageInPfpComments(commentData, index) {
         return axios.get(`${serverUrl}/getImageOnServer/${commentData[index].profileImageKey}`)
-        .then(res => res.data);
+        .then(res => 'data:image/jpeg;base64,' + res.data);
     }
     //any image honestly
     async function getImageWithKey(imageKey) {
         return axios.get(`${serverUrl}/getImageOnServer/${imageKey}`)
-        .then(res => res.data);
+        .then(res => 'data:image/jpeg;base64,' + res.data);
     }
 
     const handleMessage = (message, type = 'FAILED') => {
@@ -234,7 +234,6 @@ const ThreadViewPage = ({route, navigation}) => {
             if (threadData.creatorImageKey !== "") {
                 console.log(threadData.creatorImageKey)
                 creatorB64Var = await getImageWithKey(threadData.creatorImageKey)
-                creatorB64Var = creatorB64Var.data
             } else {
                 creatorB64Var = null
             }
@@ -242,7 +241,6 @@ const ThreadViewPage = ({route, navigation}) => {
             if (threadData.threadImageKey !== "") {
                 console.log(threadData.threadImageKey)
                 imageB64Var = await getImageWithKey(threadData.threadImageKey)
-                imageB64Var = imageB64Var.data
             } else {
                 imageB64Var = null
             }
@@ -250,7 +248,6 @@ const ThreadViewPage = ({route, navigation}) => {
             if (threadData.categoryImageKey !== "") {
                 console.log(threadData.categoryImageKey)
                 categoryB64Var = await getImageWithKey(threadData.categoryImageKey)
-                categoryB64Var = categoryB64Var.data
             } else {
                 categoryB64Var = null
             }
@@ -308,7 +305,7 @@ const ThreadViewPage = ({route, navigation}) => {
             var commentData = imageData
             console.log(commentData)
             setCommentsLength(commentData.length)
-            setChangeSections()
+            setChangeSections([])
             console.log(commentData.length)
             var tempSections = []
             var itemsProcessed = 0;
@@ -321,8 +318,7 @@ const ThreadViewPage = ({route, navigation}) => {
                     //get pfp
                     if (commentData[index].profileImageKey !== "" || data !== null) {
                         async function getImageWithAwait() {
-                            const imageInPfp = await getImageInPfpComments(imageData, index)
-                            var pfpB64 = `data:image/jpg;base64,${imageInPfp.data}`
+                            const pfpB64 = await getImageInPfpComments(imageData, index)
                             var tempSectionsTemp = {data: [{commentId: commentData[index].commentId, commenterName: commentData[index].commenterName, commenterDisplayName: displayName, commentsText: commentData[index].commentText, commentUpVotes: commentData[index].commentUpVotes, commentReplies: commentData[index].commentReplies, datePosted: commentData[index].datePosted, commenterImageB64: pfpB64}]}
                             tempSections.push(tempSectionsTemp)
                             if (commentData[index].commentUpVotes == true) {
@@ -935,19 +931,7 @@ const ThreadViewPage = ({route, navigation}) => {
             </ChatScreen_Title>
             <ScrollView style={{backgroundColor: colors.primary}}>
                 <StyledContainer style={{width: '100%', backgroundColor: dark ? colors.darkest : colors.greyish, alignItems: 'center', paddingBottom: 2, paddingTop: 0}}>
-                    {categoryImageB64 == "Finding" && (
-                        <Avatar style={{height: 70, width: 70, marginBottom: 0}} source={{uri: SocialSquareLogo_B64_png}}/>
-                    )}
-                    {categoryImageB64 == null && (
-                        <Avatar style={{height: 70, width: 70, marginBottom: 0}} source={{uri: SocialSquareLogo_B64_png}}/>
-                    )}
-                    {categoryImageB64 !== null && (
-                        <View>
-                            {categoryImageB64 !== "Finding" && (
-                                <Avatar style={{height: 70, width: 70, marginBottom: 0}} source={{uri: `data:image/jpg;base64,${categoryImageB64}`}}/>
-                            )}
-                        </View>
-                    )}
+                        <Avatar style={{height: 70, width: 70, marginBottom: 0}} source={{uri: categoryImageB64 == null || categoryImageB64 == "Finding" ? SocialSquareLogo_B64_png : categoryImageB64}}/>
                     <SubTitle style={{marginBottom: 0, color: colors.tertiary}}>Category: {threadCategory}</SubTitle>
                 </StyledContainer>
                     <View style={{backgroundColor: dark ? darkest : greyish}}>
@@ -993,7 +977,7 @@ const ThreadViewPage = ({route, navigation}) => {
                                     <View>
                                         {imageInThreadB64 !== null && (
                                             <View style={{height: 200, width: 200}}>
-                                                <Image style={{height: '100%', width: 'auto', resizeMode: 'contain'}} source={{uri: `data:image/jpg;base64,${imageInThreadB64}`}}/>
+                                                <Image style={{height: '100%', width: 'auto', resizeMode: 'contain'}} source={{uri: imageInThreadB64}}/>
                                             </View>
                                         )}
                                         {imageInThreadB64 == null && (

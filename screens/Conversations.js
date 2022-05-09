@@ -96,12 +96,12 @@ const Conversations = ({navigation}) => {
     if (storedCredentials) {var {_id, name} = storedCredentials} else {var {_id} = {_id: 'SSGUEST', name: 'SSGUEST'}}
     const [message, setMessage] = useState();
     const [messageType, setMessageType] = useState();
-    const [conversationsSections, setConversationSections] = useState()
+    const [conversationsSections, setConversationSections] = useState([])
     const [loadingConversations, setLoadingConversations] = useState(false)
     const [extraUnreadsMessages, setExtraUnreadMessages] = useState([])
     const {colors, dark} = useTheme()
     const {serverUrl, setServerUrl} = useContext(ServerUrlContext);
-    var userLoadMax = 20
+    var userLoadMax = 30
     const LoadingOnlineUsersPlaceholderAnimationOpacity = useRef(new Animated.Value(1)).current;
 
     Animated.loop(
@@ -127,24 +127,15 @@ const Conversations = ({navigation}) => {
     //any image honestly
     async function getImageWithKey(imageKey) {
         return axios.get(`${serverUrl}/getImageOnServer/${imageKey}`)
-        .then(res => res.data);
+        .then(res => 'data:image/jpeg;base64,' + res.data);
     }
 
     const ConversationItem = ({conversationId, isDirectMessage, members, conversationImageB64, conversationTitle, conversationNSFW, conversationNSFL, dateCreated, lastMessage, lastMessageDate, cryptographicNonce, conversationDescription, unreadsMessages}) => (
         <TouchableOpacity style={{borderColor: colors.darkLight, borderWidth: 3, height: 100, borderRadius: 20, paddingTop: 5, paddingBottom: 5, paddingLeft: 2, paddingRight: 2, marginBottom: 10, width: '90%', alignSelf: 'center'}} onPress={() => navigation.navigate("Chat", {conversationId: conversationId, conversationTitleSent: conversationTitle, cryptographicNonce: cryptographicNonce, conversationDescriptionSent: conversationDescription, isDirectMessage: isDirectMessage, conversationNSFL: conversationNSFL, conversationNSFW: conversationNSFW})}>
             <PostsHorizontalView>
-                {conversationImageB64 !== null && (
-                    <PostsVerticalView>
-                        {conversationImageB64 !== null && (
-                            <PostCreatorIcon style={{height: 50, aspectRatio: 1/1}} source={{uri: `data:image/jpg;base64,${conversationImageB64}`}}/>
-                        )}
-                    </PostsVerticalView>
-                )}
-                {conversationImageB64 == null && (
-                    <PostsVerticalView>
-                        <PostCreatorIcon style={{height: 50, aspectRatio: 1/1}} source={{uri: SocialSquareLogo_B64_png}}/>
-                    </PostsVerticalView>
-                )}
+                <PostsVerticalView>
+                    <PostCreatorIcon style={{height: 50, aspectRatio: 1/1}} source={{uri: conversationImageB64 != null || '' ? conversationImageB64 : SocialSquareLogo_B64_png}}/>
+                </PostsVerticalView>
                 <PostsVerticalView style={{marginTop: 9, width: '55%'}}>
                     <View style={{height: 70, justifyContent: 'center', width: '100%'}}>
                         {conversationNSFW == true && (
@@ -202,8 +193,7 @@ const Conversations = ({navigation}) => {
                 if (allData[index].conversationImageKey !== "") {
                     if (index+1 <= userLoadMax) {      
                         async function asyncFunctionForImages() {
-                            const imageInCategory = await getImageWithKey(allData[index].conversationImageKey)
-                            const imageB64 = imageInCategory.data
+                            const imageB64 = await getImageWithKey(allData[index].conversationImageKey)
                             var tempSectionsTemp = {data: [{conversationId: allData[index].conversationId, isDirectMessage: allData[index].isDirectMessage, members: allData[index].members, conversationImageB64: imageB64, conversationTitle: allData[index].conversationTitle, conversationDescription: allData[index].conversationDescription, conversationNSFW: allData[index].conversationNSFW, conversationNSFL: allData[index].conversationNSFL, dateCreated: allData[index].dateCreated, lastMessage: allData[index].lastMessage, lastMessageDate: allData[index].lastMessageDate, cryptographicNonce: allData[index].cryptographicNonce, unreadsMessages: allData[index].unreadsMessages}]}
                             tempSections.push(tempSectionsTemp)
                             itemsProcessed++;
@@ -274,8 +264,7 @@ const Conversations = ({navigation}) => {
                         }
                     } else {
                         async function asyncForImageGetting() {
-                            const imageDataOfOnlineMember = await getImageWithKey(arrayOfNewMembersOnline[index].imageKey)
-                            const imageB64OfOnlineMember = imageDataOfOnlineMember.data
+                            const imageB64OfOnlineMember = await getImageWithKey(arrayOfNewMembersOnline[index].imageKey)
                             tempImageB64s.push({imageKey: arrayOfNewMembersOnline[index].imageKey, imageB64: imageB64OfOnlineMember})
                             itemsProcessed++;
                             if (itemsProcessed == arrayOfNewMembersOnline.length) {
@@ -444,8 +433,7 @@ const Conversations = ({navigation}) => {
                                     }
                                 } else {
                                     async function asyncForImageGetting() {
-                                        const imageDataOfOnlineMember = await getImageWithKey(arrayOfNewMembersOnline[index].imageKey)
-                                        const imageB64OfOnlineMember = imageDataOfOnlineMember.data
+                                        const imageB64OfOnlineMember = await getImageWithKey(arrayOfNewMembersOnline[index].imageKey)
                                         tempImageB64s.push({imageKey: arrayOfNewMembersOnline[index].imageKey, imageB64: imageB64OfOnlineMember})
                                         itemsProcessed++;
                                         if (itemsProcessed == arrayOfNewMembersOnline.length) {

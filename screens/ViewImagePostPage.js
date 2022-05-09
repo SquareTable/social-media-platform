@@ -122,7 +122,7 @@ const ViewImagePostPage = ({route, navigation}) => {
     const {imageKey, imageB64, imageTitle, imageDescription, creatorName, creatorDisplayName, creatorPfpB64, datePosted} = route.params;
     //Comment stuff
     const [ifCommentText, setIfCommentText] = useState("No comments found")
-    const [changeSections, setChangeSections] = useState()
+    const [changeSections, setChangeSections] = useState([])
     const [submitting, setSubmitting] = useState(false)
     const [limitSearch, setLimitSearch] = useState(false)
     const [commentLoadMax, setCommentLoadMax] = useState(10)
@@ -148,17 +148,17 @@ const ViewImagePostPage = ({route, navigation}) => {
     //get image of post
     async function getImageInPost(imageData, index) {
         return axios.get(`${serverUrl}/getImageOnServer/${imageData[index].imageKey}`)
-        .then(res => res.data);
+        .then(res => 'data:image/jpeg;base64,' + res.data);
     }
     //profile image of creator
     async function getImageInPfp(imageData, index) {
         return axios.get(`${serverUrl}/getImageOnServer/${imageData[index].creatorPfpKey}`)
-        .then(res => res.data);
+        .then(res => 'data:image/jpeg;base64,' + res.data);
     }
     //profile image of commenter
     async function getImageInPfpComments(commentData, index) {
         return axios.get(`${serverUrl}/getImageOnServer/${commentData[index].profileImageKey}`)
-        .then(res => res.data);
+        .then(res => 'data:image/jpeg;base64,' + res.data);
     }
 
     const UpVoteImage = () => {
@@ -278,7 +278,7 @@ const ViewImagePostPage = ({route, navigation}) => {
                     <VoteText style={{color: colors.tertiary}}>
                         {datePosted}
                     </VoteText>
-                    <TouchableOpacity onPress={() => {navigation.navigate("CommentViewPage", {commentId: commentId, "postId": imageKey, postFormat: "Image"})}}>
+                    <TouchableOpacity onPress={() => {navigation.navigate("CommentViewPage", {commentId: commentId, postId: imageKey, postFormat: "Image"})}}>
                         <VoteText style={{color: brand}}>
                             {commentReplies} replies
                         </VoteText>
@@ -334,7 +334,7 @@ const ViewImagePostPage = ({route, navigation}) => {
             var commentData = imageData
             console.log(commentData)
             setCommentsLength(commentData.length)
-            setChangeSections()
+            setChangeSections([])
             console.log(commentData.length)
             var tempSections = []
             var itemsProcessed = 0;
@@ -348,8 +348,7 @@ const ViewImagePostPage = ({route, navigation}) => {
                         //get pfp
                         if (commentData[index].profileImageKey !== "" || data !== null) {
                             async function getImageWithAwait() {
-                                const imageInPfp = await getImageInPfpComments(imageData, index)
-                                var pfpB64 = `data:image/jpg;base64,${imageInPfp.data}`
+                                const pfpB64 = await getImageInPfpComments(imageData, index)
                                 var tempSectionsTemp = {data: [{commentId: commentData[index].commentId, commenterName: commentData[index].commenterName, commenterDisplayName: displayName, commentsText: commentData[index].commentText, commentUpVotes: commentData[index].commentUpVotes, commentReplies: commentData[index].commentReplies, datePosted: commentData[index].datePosted, commenterImageB64: pfpB64}]}
                                 tempSections.push(tempSectionsTemp)
                                 itemsProcessed++;
@@ -464,7 +463,7 @@ const ViewImagePostPage = ({route, navigation}) => {
                 onHandlerStateChange={onPinchStateChange}
             >
                 <Animated.Image
-                    source={{ uri: `data:image/jpg;base64,${imageUri}` }}
+                    source={{ uri: imageUri }}
                     style={{
                     width: '100%',
                     height: '100%',

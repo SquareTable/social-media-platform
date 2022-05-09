@@ -3,7 +3,7 @@ import { StyleSheet, Text, View, Image, TouchableOpacity, TouchableWithoutFeedba
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useTheme } from '@react-navigation/native';
 
-import {ChatScreen_Stack, ProfileScreenToSettings_StackNavigation, RootStack, SettingsToBadges_StackNavigation, FindScreen_Stack, post_screen_navigator, home_screen_post_to_profile_screen, SettingsStack} from '../navigation/StackNavigator.js'
+import {ChatScreen_Stack, ProfileScreenToSettings_StackNavigation, RootStack, SettingsToBadges_StackNavigation, FindScreen_Stack, PostScreenStack, HomeScreenStack, SettingsStack} from '../navigation/StackNavigator.js'
 import * as Haptics from 'expo-haptics';
 import { ProfilePictureURIContext } from '../components/ProfilePictureURIContext';
 import { ShowAccountSwitcherContext } from '../components/ShowAccountSwitcherContext.js';
@@ -111,7 +111,7 @@ const Tabs = ({navigation}) => {
                 }
             }}
         >
-            <Tab.Screen name="Home" component={home_screen_post_to_profile_screen} options={{
+            <Tab.Screen name="Home" component={HomeScreenStack} options={{
                 tabBarIcon: ({focused}) => (
                     <TouchableWithoutFeedback style={{backgroundColor: colors.primary, width: 'auto', height: 75, marginTop: 30}} onPress={() => {onHomeScreenNavigate()}}>
                         <View style={{alignItems: 'center', justifyContent: 'center', top: 10}}>
@@ -147,7 +147,7 @@ const Tabs = ({navigation}) => {
                     </TouchableWithoutFeedback>
                 ),
             }} />
-            <Tab.Screen name="Post" component={post_screen_navigator} initialParams={{postData: null, postType: null, navigateToHomeScreen: false}}
+            <Tab.Screen name="Post" component={PostScreenStack} initialParams={{postData: null, postType: null, navigateToHomeScreen: false}}
             options={{
                 tabBarIcon: ({focused}) => (
                     <TouchableWithoutFeedback onPress={() => {onPostScreenNavigate()}}>

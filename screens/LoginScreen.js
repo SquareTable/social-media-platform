@@ -120,7 +120,7 @@ const LoginScreen = ({navigation, route}) => {
         const getProfilePicture = () => {
             const url = serverUrl + '/user/getProfilePic/' + credentialsToUse.secondId;
     
-            axios.get(url).then((response) => {
+            axios.get(url).then(async (response) => {
                 const result = response.data;
                 const {message, status, data} = result;
     
@@ -132,34 +132,27 @@ const LoginScreen = ({navigation, route}) => {
                 } else {
                     console.log(status)
                     console.log(message)
-                    axios.get(serverUrl + '/getImageOnServer/' + data)
-                    .then((response) => {
-                        const result = response.data;
-                        const {message, status, data} = result;
-                        console.log(status)
-                        console.log(message)
-                        console.log(data)
-                        //set image
-                        if (message == 'No profile image.' && status == 'FAILED') {
-                            console.log('Setting logo to SocialSquare logo')
-                            setProfilePictureUri(SocialSquareLogo_B64_png)
-                            setProfilePictureData([SocialSquareLogo_B64_png, message, status, credentialsToUse])
-                        } else if (data) {
-                            //convert back to image
-                            console.log('Setting logo in tab bar to profile logo')
-                            var base64Icon = `data:image/jpg;base64,${data}`
-                            setProfilePictureUri(base64Icon)
-                            setProfilePictureData([base64Icon, message, status, credentialsToUse])
+                    const getImageUrl = serverUrl + '/getImageOnServer/' + data;
+                    try {
+                        const imageResponse = await axios.get(getImageUrl);
+
+                        if (imageResponse) {
+                            console.log('Setting profile picture to user profile picture')
+                            setProfilePictureUri('data:image/jpeg;base64,' + imageResponse.data);
+                            setProfilePictureData([('data:image/jpeg;base64,' + imageResponse.data), message, status, credentialsToUse])
                         } else {
-                            console.log('Setting logo to SocialSquare logo')
+                            console.log('Setting profile picture to SocialSquare logo')
+                            console.warn('An unexpected error occured while getting profile picture')
                             setProfilePictureUri(SocialSquareLogo_B64_png)
                             setProfilePictureData([SocialSquareLogo_B64_png, message, status, credentialsToUse])
                         }
-                    })
-                    .catch(function (error) {
-                        console.log("Image not recieved")
-                        console.log(error);
-                    });
+                    } catch (error) {
+                        console.log('Setting profile picture to SocialSquare logo')
+                        console.warn('An unexpected error occured while getting profile picture')
+                        console.warn(error)
+                        setProfilePictureUri(SocialSquareLogo_B64_png)
+                        setProfilePictureData([SocialSquareLogo_B64_png, error, 'FAILED', credentialsToUse])
+                    }
                 }
                 //setSubmitting(false);
     

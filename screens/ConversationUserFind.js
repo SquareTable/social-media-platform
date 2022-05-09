@@ -69,7 +69,7 @@ const ConversationUserFind = ({route, navigation}) => {
     const [messageType, setMessageType] = useState();
     const [foundAmount, setFoundAmount] = useState();
     const [debounce, setDebounce] = useState(false);
-    const [changeSections, setChangeSections] = useState()
+    const [changeSections, setChangeSections] = useState([])
     const [loadingOne, setLoadingOne] = useState()
     const [conversationMembersSections, setConversationMembersSections] = useState(null)
     const [conversationMembers, setConversationMembers] = useState(null)
@@ -255,7 +255,7 @@ const ConversationUserFind = ({route, navigation}) => {
     }
 
     const handleUserSearch = (val) => {
-        setChangeSections()
+        setChangeSections([])
         if (val !== "") {
             const layoutUsersFound = (data) => {
                 var allData = data
@@ -346,7 +346,7 @@ const ConversationUserFind = ({route, navigation}) => {
             })
         } else {
             handleMessage("Empty search");
-            setChangeSections()
+            setChangeSections([])
         }
     }
 

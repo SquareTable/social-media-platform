@@ -191,7 +191,7 @@ const HomeScreen = ({navigation, route}) => {
     //organise data and put to be displayed
     async function getImageWithKey(imageKey) {
         return axios.get(`${serverUrl}/getImageOnServer/${imageKey}`)
-            .then(res => res.data).catch(error => {
+            .then(res => 'data:image/jpeg;base64,' + res.data).catch(error => {
                 console.log(error);
                 //setSubmitting(false);
                 //setLoadingPostsImage(false)
@@ -221,13 +221,11 @@ const HomeScreen = ({navigation, route}) => {
             //
             if (imageData.creatorPfpKey) {
                 async function asyncFunctionForImages() {
-                    const imageInPost = await getImageWithKey(imageData.imageKey)
-                    const imageInPfp = await getImageWithKey(imageData.creatorPfpKey)
+                    const imageB64 = await getImageWithKey(imageData.imageKey)
+                    const pfpB64 = await getImageWithKey(imageData.creatorPfpKey)
                     console.log("Image In Post Recieved")
                     //Add
                     const addAndPush = async () => {
-                        var imageB64 = imageInPost.data
-                        var pfpB64 = imageInPfp.data
                         console.log("TestHere")
                         var usersUdnVote = "Neither"
                         if (imageData.imageUpVoted) {
@@ -248,11 +246,10 @@ const HomeScreen = ({navigation, route}) => {
                 asyncFunctionForImages()
             } else {
                 console.log("No pfp")
-                const imageInPost = await getImageWithKey(imageData.imageKey)
+                const imageB64 = await getImageWithKey(imageData.imageKey)
                 var imageInPfp = null
                 //Add
                 const addAndPush = async () => {
-                    var imageB64 = imageInPost.data
                     var pfpB64 = imageInPfp
                     console.log("TestHere")
                     var usersUdnVote = "Neither"
@@ -381,8 +378,7 @@ const HomeScreen = ({navigation, route}) => {
             */
             async function getPfpImageForPollWithAsync() {
                 var imageData = pollData
-                const imageInPfp = await getImageWithKey(imageData.creatorPfpKey)
-                var pfpB64 = imageInPfp.data
+                const pfpB64 = await getImageWithKey(imageData.creatorPfpKey)
                 var usersUdnVote = "Neither"
                 if (pollData.pollUpOrDownVoted == "UpVoted") {
                     console.log("UpVoted")
