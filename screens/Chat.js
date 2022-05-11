@@ -198,8 +198,8 @@ const Chat = ({route, navigation}) => {
     }, [arrivalMessage])
 
     async function getImageWithKey(imageKey) {
-        return axios.get(`${serverUrl}/getImageOmServer/${imageKey}`)
-        .then(res => res.data).catch(error => {
+        return axios.get(`${serverUrl}/getImageOnServer/${imageKey}`)
+        .then(res => 'data:image/jpg;base64,' + res.data).catch(error => {
             console.log(error);
         })
     }
@@ -228,14 +228,10 @@ const Chat = ({route, navigation}) => {
                 console.log(message)
                 axios.get(`${serverUrl}/getImageOnServer/${data}`)
                 .then((response) => {
-                    const result = response.data;
-                    const {message, status, data} = result;
-                    console.log(status)
-                    console.log(message)
                     //set image
-                    if (data) {
+                    if (response.data) {
                         //convert back to image
-                        var base64Icon = `data:image/jpg;base64,${data}`
+                        var base64Icon = `data:image/jpeg;base64,${response.data}`
                         setGroupIcon(base64Icon)
                         setLoadingGroupIcon(false)
                     } else {
@@ -429,7 +425,7 @@ const Chat = ({route, navigation}) => {
                 //get image
                 var thisImage = await getImageWithKey(keyForTest)
                 var imageB64s = usersPFPData.slice()
-                imageB64s.push({imageKey: keyForTest, b64: thisImage.data})
+                imageB64s.push({imageKey: keyForTest, b64: thisImage})
                 setUsersPFPData(imageB64s)
             }
             forAsync()
@@ -966,7 +962,7 @@ const Chat = ({route, navigation}) => {
                         async function forAsync () {
                             //get image
                             var thisImage = await getImageWithKey(data[index].profileImageKey)
-                            imageB64s.push({imageKey: data[index].profileImageKey, b64: thisImage.data})
+                            imageB64s.push({imageKey: data[index].profileImageKey, b64: thisImage})
                             //members
                             membersFound.push({pubId: data[index].publicId, name: data[index].name, displayName: data[index].displayName, imageKey: data[index].profileImageKey, isOwner: data[index].isOwner})
                             //push image
@@ -1083,7 +1079,7 @@ const Chat = ({route, navigation}) => {
                             async function forAsync () {
                                 //get image
                                 var thisImage = await getImageWithKey(data.profileImageKey)
-                                imageB64s.push({imageKey: data.profileImageKey, b64: thisImage.data})
+                                imageB64s.push({imageKey: data.profileImageKey, b64: thisImage})
                                 //members
                                 membersFound.push({pubId: data.publicId, name: data.name, displayName: data.displayName, imageKey: data.profileImageKey, isOwner: data.isOwner})
                                 //push image
@@ -1111,7 +1107,7 @@ const Chat = ({route, navigation}) => {
                             async function forAsync () {
                                 //get image
                                 var thisImage = await getImageWithKey(data.profileImageKey)
-                                imageB64s.push({imageKey: data.profileImageKey, b64: thisImage.data})
+                                imageB64s.push({imageKey: data.profileImageKey, b64: thisImage})
                                 //members
                                 membersFound.splice(index, 1);
                                 membersFound.push({pubId: data.publicId, name: data.name, displayName: data.displayName, imageKey: data.profileImageKey, isOwner: data.isOwner})
@@ -2206,7 +2202,7 @@ const Chat = ({route, navigation}) => {
     const UserItem = ({pubId, name, displayName, following, followers, totalLikes, profileKey}) => (
         <SearchFrame onPress={() => {addUser(pubId)}}>
             {profileKey !== null && (
-                <Avatar resizeMode="cover" searchPage={true} source={{uri: `data:image/jpg;base64,${profileKey}`}} />
+                <Avatar resizeMode="cover" searchPage={true} source={{uri: profileKey}} />
             )}
             {profileKey == null && (
                 <Avatar resizeMode="cover" searchPage={true} source={{uri: SocialSquareLogo_B64_png}} />
@@ -2259,7 +2255,7 @@ const Chat = ({route, navigation}) => {
     //any image honestly
     async function getImageWithKeyOne(imageKey) {
         return axios.get(`${serverUrl}/getImageOnServer/${imageKey}`)
-        .then(res => res.data).catch(error => {
+        .then(res => 'data:image/jpg;base64,' + res.data).catch(error => {
             console.log(error);
             //setSubmitting(false);
             console.log("Either an error or cancelled.");
@@ -2286,8 +2282,7 @@ const Chat = ({route, navigation}) => {
                                         if (displayName == "") {
                                             displayName = allData[index].name
                                         }
-                                        const imageInPfp = await getImageWithKeyOne(allData[index].profileKey)
-                                        const imageInPfpB64 = imageInPfp.data
+                                        const imageInPfpB64 = await getImageWithKeyOne(allData[index].profileKey)
                                         var tempSectionsTemp = {data: [{pubId: allData[index].pubId, name: allData[index].name, displayName: displayName, followers: allData[index].followers, following: allData[index].following, totalLikes: allData[index].totalLikes, profileKey: imageInPfpB64}]}
                                         tempSections.push(tempSectionsTemp)
                                         itemsProcessed++;
@@ -3303,7 +3298,7 @@ const Chat = ({route, navigation}) => {
                                                                 )}
                                                                 <PostsVerticalView>
                                                                     {usersPFPData.findIndex(x => x.imageKey === member.imageKey) !== -1 && (
-                                                                        <PostCreatorIcon source={{uri: `data:image/jpg;base64,${usersPFPData[usersPFPData.findIndex(x => x.imageKey === member.imageKey)].b64}`}}/>
+                                                                        <PostCreatorIcon source={{uri: usersPFPData[usersPFPData.findIndex(x => x.imageKey === member.imageKey)].b64}}/>
                                                                     )}
                                                                     {usersPFPData.findIndex(x => x.imageKey === member.imageKey) == -1 && (
                                                                         <PostCreatorIcon source={{uri: SocialSquareLogo_B64_png}}/>
@@ -3367,7 +3362,7 @@ const Chat = ({route, navigation}) => {
                                             {membersInChat.findIndex(x => x.pubId !== secondId) !== -1 && (
                                                 <View style={{alignSelf: 'center', alignContent: 'center'}}>
                                                     {usersPFPData.findIndex(x => x.imageKey == membersInChat[membersInChat.findIndex(x => x.pubId !== secondId).imageKey]) !== -1 && (
-                                                        <Avatar resizeMode="cover" source={{uri: `data:image/jpg;base64,${usersPFPData[usersPFPData.findIndex(x => x.imageKey == membersInChat[membersInChat.findIndex(x => x.pubId !== secondId).imageKey])].b64}`}}/>
+                                                        <Avatar resizeMode="cover" source={{uri: usersPFPData[usersPFPData.findIndex(x => x.imageKey == membersInChat[membersInChat.findIndex(x => x.pubId !== secondId).imageKey])].b64}}/>
                                                     )}
                                                     {usersPFPData.findIndex(x => x.imageKey == membersInChat[membersInChat.findIndex(x => x.pubId !== secondId).imageKey]) == -1 && (
                                                         <Avatar resizeMode="cover"/>
@@ -3589,7 +3584,7 @@ const Chat = ({route, navigation}) => {
                                                                 {m.senderImageKey !== "" && (
                                                                     <PostsVerticalView style={{width: '20%'}}>
                                                                         {usersPFPData.findIndex(x => x.imageKey === m.senderImageKey) !== -1 && (
-                                                                            <PostCreatorIcon style={{width: 60, height: 60}} source={{uri: `data:image/jpg;base64,${usersPFPData[usersPFPData.findIndex(x => x.imageKey === m.senderImageKey)].b64}`}}/>
+                                                                            <PostCreatorIcon style={{width: 60, height: 60}} source={{uri: usersPFPData[usersPFPData.findIndex(x => x.imageKey === m.senderImageKey)].b64}}/>
                                                                         )}
                                                                         {usersPFPData.findIndex(x => x.imageKey === m.senderImageKey) == -1 && (
                                                                             <PostCreatorIcon style={{width: 60, height: 60}}/>
@@ -3647,7 +3642,7 @@ const Chat = ({route, navigation}) => {
                                                                 {m.senderImageKey !== "" && (
                                                                     <PostsVerticalView style={{width: '20%'}}>
                                                                         {usersPFPData.findIndex(x => x.imageKey === m.senderImageKey) !== -1 && (
-                                                                            <PostCreatorIcon style={{width: 60, height: 60}} source={{uri: `data:image/jpg;base64,${usersPFPData[usersPFPData.findIndex(x => x.imageKey === m.senderImageKey)].b64}`}}/>
+                                                                            <PostCreatorIcon style={{width: 60, height: 60}} source={{uri: usersPFPData[usersPFPData.findIndex(x => x.imageKey === m.senderImageKey)].b64}}/>
                                                                         )}
                                                                         {usersPFPData.findIndex(x => x.imageKey === m.senderImageKey) == -1 && (
                                                                             <PostCreatorIcon style={{width: 60, height: 60}}/>

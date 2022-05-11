@@ -157,22 +157,22 @@ const CommentViewPage = ({route, navigation}) => {
     //get image of post
     async function getImageInPost(imageData, index) {
         return axios.get(`${serverUrl}/getImageOnServer/${imageData[index].imageKey}`)
-        .then(res => res.data);
+        .then(res => 'data:image/jpg;base64,' + res.data);
     }
     //profile image of creator
     async function getImageInPfp(threadData, index) {
         return axios.get(`${serverUrl}/getImageOnServer/${threadData[index].creatorImageKey}`)
-        .then(res => res.data);
+        .then(res => 'data:image/jpg;base64,' + res.data);
     }
     //profile image of commenter
     async function getImageInPfpComments(commentData, index) {
         return axios.get(`${serverUrl}/getImageOnServer/${commentData[index].profileImageKey}`)
-        .then(res => res.data);
+        .then(res => 'data:image/jpg;base64,' + res.data);
     }
     //any image honestly
     async function getImageWithKey(imageKey) {
         return axios.get(`${serverUrl}/getImageOnServer/${imageKey}`)
-        .then(res => res.data);
+        .then(res => 'data:image/jpg;base64,' + res.data);
     }
 
     const handleMessage = (message, type = 'FAILED') => {
@@ -208,7 +208,6 @@ const CommentViewPage = ({route, navigation}) => {
                 console.log("ImageKey:")
                 console.log(commentData.profileImageKey)
                 creatorB64Var = await getImageWithKey(commentData.profileImageKey)
-                creatorB64Var = creatorB64Var.data
                 setCommenterImageB64(creatorB64Var)
             } else {
                 creatorB64Var = null
@@ -285,8 +284,7 @@ const CommentViewPage = ({route, navigation}) => {
                     //get pfp
                     if (commentData[index].profileImageKey !== "" || data !== null) {
                         async function getImageWithAwait() {
-                            const imageInPfp = await getImageInPfpComments(imageData, index)
-                            var pfpB64 = `data:image/jpg;base64,${imageInPfp.data}`
+                            const pfpB64= await getImageInPfpComments(imageData, index)
                             var tempSectionsTemp = {data: [{commentId: commentData[index].commentId, commenterName: commentData[index].commenterName, commenterDisplayName: displayName, commentsText: commentData[index].commentText, commentUpVotes: commentData[index].commentUpVotes, datePosted: commentData[index].datePosted, commenterImageB64: pfpB64}]}
                             tempSections.push(tempSectionsTemp)
                             if (commentData[index].commentUpVotes == true) {
@@ -798,12 +796,7 @@ const CommentViewPage = ({route, navigation}) => {
                             <CommentsHorizontalView>
                                 <CommentsVerticalView alongLeft={true}>
                                     <TouchableOpacity>
-                                        {commenterImageB64 !== null && (
-                                            <CommenterIcon source={{uri: `data:image/jpg;base64,${commenterImageB64}`}}/>
-                                        )}
-                                        {commenterImageB64 == null && (
-                                            <CommenterIcon source={{uri: SocialSquareLogo_B64_png}}/>
-                                        )}
+                                        <CommenterIcon source={{uri: commenterImageB64 != null && commenterImageB64 != '' ? commenterImageB64 : SocialSquareLogo_B64_png}}/>
                                     </TouchableOpacity>
                                     <TouchableOpacity onPress={()=>{UpVoteComment(commentId)}}>
                                         {commentUpOrDownVoted == "UpVoted" && (
@@ -973,7 +966,7 @@ const CommentViewPage = ({route, navigation}) => {
                                 </CommentsHorizontalView>
                                 <PollPostSubTitle style={{color: colors.tertiary}}>{ifCommentText}</PollPostSubTitle>
                                 <SectionList
-                                    data={changeSections}
+                                    sections={changeSections}
                                     keyExtractor={(item, index) => item + index}
                                     renderItem={({ item }) => <Item commentId={item.commentId} commenterName={item.commenterName} commenterDisplayName={item.commenterDisplayName} commentsText={item.commentsText}  commentUpVotes={item.commentUpVotes} datePosted={item.datePosted} commenterImageB64={item.commenterImageB64}/>}
                                 />

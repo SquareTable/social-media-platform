@@ -73,6 +73,8 @@ import ConversationCreationPage from "../screens/CreateConversation.js";
 import ChangePasswordScreen from "../screens/ChangePasswordScreen.js";
 import EditProfile from "../screens/EditProfile.js";
 import AccountFollowRequestsScreen from "../screens/AccountFollowRequestsScreen.js";
+import SafetySettingsScreen from "../screens/SafetySettingsScreen.js";
+import BlockedAccountsScreen from "../screens/SafetySettings/BlockedAccountsScreen.js";
 
 
 const Stack = createStackNavigator();
@@ -268,6 +270,8 @@ const SettingsStack = () => {
       <Stack.Screen name="Algorithm_HomeScreenSettings" component={Algorithm_HomeScreenSettings}/>
       <Stack.Screen name="Audio_HomeScreenSettings" component={Audio_HomeScreenSettings}/>
       <Stack.Screen name="ChangePasswordScreen" component={ChangePasswordScreen}/>
+      <Stack.Screen name="SafetySettingsScreen" component={SafetySettingsScreen}/>
+      <Stack.Screen name="BlockedAccountsScreen" component={BlockedAccountsScreen}/>
     </Stack.Navigator>
   )
 }

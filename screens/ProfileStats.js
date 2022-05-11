@@ -1,6 +1,6 @@
 import React, {useContext, useEffect, memo, useState, useRef} from 'react';
 import { useTheme } from '@react-navigation/native';
-import {View, SafeAreaView, Text, TouchableOpacity, Image, FlatList, ActivityIndicator, TouchableWithoutFeedback} from 'react-native';
+import {View, SafeAreaView, Text, TouchableOpacity, Image, FlatList, ActivityIndicator, Animated} from 'react-native';
 import {
     ChatScreen_Title,
     Navigator_BackButton,
@@ -38,6 +38,8 @@ const ProfileStats = ({navigation, route}) => {
     const [updateFlatList, setUpdateFlatList] = useState(false);
     const [userOnThreeDotsMenu, setUserOnThreeDotsMenu] = useState(null);
     const [removingAFollower, setRemovingAFollower] = useState(false);
+    const [blockingUser, setBlockingUser] = useState(false);
+    const showUserBlockedConfirmation = useRef(new Animated.Value(0)).current;
 
     useEffect(() => {
         arrayOfUserChanges = [];
@@ -68,14 +70,12 @@ const ProfileStats = ({navigation, route}) => {
                                 let getImageUrl = serverUrl + '/getImageOnServer/' + data.profileImageKey
                                 try {
                                     const imageResponse = await axios.get(getImageUrl);
-                                    const imageResult = imageResponse.data;
-                                    const {imageMessage, imageStatus, imageData} = imageResult;
 
-                                    if (imageStatus !== 'SUCCESS') {
+                                    if (imageResponse.data) {
+                                        dataToUse.profileImageB64 = 'data:image/jpeg;base64,' + imageResponse.data;
+                                    } else {
                                         console.log(imageMessage);
                                         dataToUse.profileImageB64 = SocialSquareLogo_B64_png;
-                                    } else {
-                                        dataToUse.profileImageB64 = imageData;
                                     }
                                 } catch (e) {
                                     console.log(e)
@@ -149,7 +149,7 @@ const ProfileStats = ({navigation, route}) => {
 
     const Item = ({item, index}) => {
         if (type == 'Followers') {
-            return <ProfileStats_FollowersItem item={item} index={index} setUserOnThreeDotsMenu={setUserOnThreeDotsMenu}/>
+            return <ProfileStats_FollowersItem item={item} index={index} setUserOnThreeDotsMenu={setUserOnThreeDotsMenu} userOnThreeDotsMenu={userOnThreeDotsMenu}/>
         } else {
             return <ProfileStats_FollowingItem item={item} index={index} setListItems={setListItems} UnfollowPrivateAccountConfirmationPickerMenu={UnfollowPrivateAccountConfirmationPickerMenu}/>
         }
@@ -158,9 +158,13 @@ const ProfileStats = ({navigation, route}) => {
     const MemoizedItem = memo(Item);
 
     const removeFollower = async (userPubIdToRemove) => {
+        if (userPubIdToRemove == null) {
+            alert('An error occured.')
+            return
+        }
         setRemovingAFollower(true)
         console.log('Removing follower: ' + userPubIdToRemove)
-        arrayOfUserChanges.push(userPubIdToRemove);
+        
         
         const url = serverUrl + '/user/removefollowerfromaccount';
         const toSend = {userID: _id, userToRemovePubId: userPubIdToRemove};
@@ -174,6 +178,7 @@ const ProfileStats = ({navigation, route}) => {
                 alert('An error occured. Please try again.')
                 setRemovingAFollower(false)
             } else {
+                arrayOfUserChanges.push(userPubIdToRemove);
                 console.log('Successfully removed follower')
                 setRemovingAFollower(false)
                 setListItems(listItems => listItems.filter(user => user.pubId !== userPubIdToRemove))
@@ -187,8 +192,52 @@ const ProfileStats = ({navigation, route}) => {
             setRemovingAFollower(false)
         }
     }
+
+    const blockUser = async (userPubIdToBlock) => {
+        if (userPubIdToBlock == null) {
+            alert('An error occured.')
+            return
+        }
+        setBlockingUser(true)
+        console.log('Blocking user: ' + userPubIdToBlock)
+
+        const url = serverUrl + '/user/blockaccount';
+        const toSend = {userID: _id, userToBlockPubId: userPubIdToBlock};
+        try {
+            const response = await axios.post(url, toSend);
+            const result = response.data;
+            const {message, status} = result;
+
+            if (status !== 'SUCCESS') {
+                console.log(message);
+                alert('An error occured. Please try again.')
+                setBlockingUser(false)
+            } else {
+                arrayOfUserChanges.push(userPubIdToBlock);
+                console.log('Successfully blocked user')
+                setBlockingUser(false)
+                setListItems(listItems => listItems.filter(user => user.pubId !== userPubIdToBlock))
+                navigation.setParams({followers: followers.filter(user => user !== userPubIdToBlock)})
+                setUpdateFlatList(!updateFlatList)
+                setUserOnThreeDotsMenu(null)
+                showUserBlockedConfirmation.setValue(1);
+                setTimeout(() => {
+                    showUserBlockedConfirmation.setValue(0);
+                }, 2000);
+            }
+        } catch (e) {
+            console.log(e)
+            alert('An error occured. Please try again.')
+            setBlockingUser(false)
+        }
+    }
     return(
         <>
+            <Animated.View pointerEvents="box-none" style={{opacity: showUserBlockedConfirmation, position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, alignItems: 'center', justifyContent: 'center', zIndex: 100}}>
+                <View style={{backgroundColor: 'rgba(0, 0, 0, 0.5)', borderRadius: 10, paddingVertical: 15, paddingHorizontal: 10}}>
+                    <Text style={{color: 'white', fontSize: 16, fontWeight: 'bold'}}>User blocked</Text>
+                </View>
+            </Animated.View>
             <ReportProfileOptionsView style={{backgroundColor: colors.primary, height: 400}} viewHidden={userOnThreeDotsMenu != null ? false : true}>
                 <ReportProfileOptionsViewText style={{color: colors.tertiary}}>{userOnThreeDotsMenu == null ? null : userOnThreeDotsMenu.name}</ReportProfileOptionsViewText>
                 <ReportProfileOptionsViewButtons greyButton={true} onPress={() => {setUserOnThreeDotsMenu(null)}}>
@@ -201,9 +250,13 @@ const ProfileStats = ({navigation, route}) => {
                 :
                     <ActivityIndicator color={colors.brand} size="large" style={{marginTop: 24, marginBottom: 15}}/>
                 }
-                <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert('Coming soon')}}>
-                    <ReportProfileOptionsViewButtonsText redButton={true}>Block</ReportProfileOptionsViewButtonsText>
-                </ReportProfileOptionsViewButtons>
+                {blockingUser == false ?
+                    <ReportProfileOptionsViewButtons redButton={true} onPress={() => {blockUser(userOnThreeDotsMenu == null ? null : userOnThreeDotsMenu.pubId)}}>
+                        <ReportProfileOptionsViewButtonsText redButton={true}>Block</ReportProfileOptionsViewButtonsText>
+                    </ReportProfileOptionsViewButtons>
+                :
+                    <ActivityIndicator color={colors.brand} size="large" style={{marginTop: 24, marginBottom: 15}}/>
+                }
                 <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert('Coming soon')}}>
                     <ReportProfileOptionsViewButtonsText redButton={true}>Report</ReportProfileOptionsViewButtonsText>
                 </ReportProfileOptionsViewButtons>
@@ -292,10 +345,10 @@ const ProfileStats = ({navigation, route}) => {
             <ChatScreen_Title style={{backgroundColor: colors.primary, borderWidth: 0}}>
                 <Navigator_BackButton onPress={() => {navigation.goBack()}}>
                     <Image
-                    source={require('../assets/app_icons/back_arrow.png')}
-                    style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2, tintColor: colors.tertiary}}
-                    resizeMode="contain"
-                    resizeMethod="resize"
+                        source={require('../assets/app_icons/back_arrow.png')}
+                        style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2, tintColor: colors.tertiary}}
+                        resizeMode="contain"
+                        resizeMethod="resize"
                     />
                 </Navigator_BackButton>
                 <TestText style={{textAlign: 'center', color: colors.tertiary}}>{type == 'Followers' ? 'People following you:' : 'You follow:'}</TestText>
@@ -315,6 +368,7 @@ const ProfileStats = ({navigation, route}) => {
                             noMoreItems == true ? <Text style={{color: colors.tertiary, fontSize: 20, fontWeight: 'bold', textAlign: 'center', marginTop: 15, marginBottom: 30}}>No more users to show</Text> : <ActivityIndicator size="large" color={colors.brand} style={{marginTop: 10, marginBottom: 20}}/>
                         }
                         extraData={updateFlatList}
+                        scrollEnabled={userOnThreeDotsMenu == null}
                     />
                 :
                     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
@@ -439,7 +493,7 @@ function ProfileStats_FollowingItem({item, index, setListItems, UnfollowPrivateA
     }
 }
 
-function ProfileStats_FollowersItem({item, index, setUserOnThreeDotsMenu}) {
+function ProfileStats_FollowersItem({item, index, setUserOnThreeDotsMenu, userOnThreeDotsMenu}) {
     const {colors} = useTheme();
     if (item.status === 'FAILED') {
         return (
@@ -453,7 +507,7 @@ function ProfileStats_FollowersItem({item, index, setUserOnThreeDotsMenu}) {
             <View style={{alignItems: 'center', justifyContent: 'flex-start', flexDirection: 'row', borderTopWidth: index == 0 ? 3 : 0, borderBottomWidth: 3, paddingLeft: 5, borderColor: colors.borderColor, height: 70}}>
                 <Image style={{width: 60, height: 60, marginBottom: 5, marginTop: 5, borderRadius: 50, borderColor: colors.brand, borderWidth: 2}} source={{uri: item.profileImageB64}} />
                 <SubTitle style={{color: colors.tertiary, marginLeft: 10, marginTop: 8}} searchResTitle={true}>{item.displayName || item.name || 'Error getting username'}</SubTitle>
-                <TouchableOpacity onPress={() => {setUserOnThreeDotsMenu({name: item.displayName || item.name, pubId: item.pubId})}} style={{position: 'absolute', right: 10}}>
+                <TouchableOpacity disabled={userOnThreeDotsMenu != null} onPress={() => {setUserOnThreeDotsMenu({name: item.displayName || item.name, pubId: item.pubId})}} style={{position: 'absolute', right: 10}}>
                     <Image
                         source={require('../assets/app_icons/3dots.png')}
                         style={{ width: 40, height: 40, tintColor: colors.tertiary}}

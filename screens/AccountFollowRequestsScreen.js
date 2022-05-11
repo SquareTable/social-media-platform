@@ -52,14 +52,12 @@ const AccountFollowRequestsScreen = ({navigation, route}) => {
                                 let getImageUrl = serverUrl + '/getImageOnServer/' + data.profileImageKey
                                 try {
                                     const imageResponse = await axios.get(getImageUrl);
-                                    const imageResult = imageResponse.data;
-                                    const {imageMessage, imageStatus, imageData} = imageResult;
 
-                                    if (imageStatus !== 'SUCCESS') {
+                                    if (imageResponse.data) {
+                                        dataToUse.profileImageB64 = 'data:image/jpeg;base64,' + imageResponse.data;
+                                    } else {
                                         console.log(imageMessage);
                                         dataToUse.profileImageB64 = SocialSquareLogo_B64_png;
-                                    } else {
-                                        dataToUse.profileImageB64 = imageData;
                                     }
                                 } catch (e) {
                                     console.log(e)

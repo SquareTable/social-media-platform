@@ -266,6 +266,8 @@ const ProfilePages = ({ route, navigation }) => {
     const {serverUrl, setServerUrl} = useContext(ServerUrlContext);
     //Unfollow confirmation
     const UnfollowPrivateAccountConfirmationPickerMenu = useRef(null);
+    // When user is not found
+    const [userNotFound, setUserNotFound] = useState(false);
 
     const getFollowersEtc = () => {
         const url = `${serverUrl}/user/reloadUsersDetails/${pubId}/${secondId}`;
@@ -276,10 +278,14 @@ const ProfilePages = ({ route, navigation }) => {
             const { message, status, data } = result;
 
             if (status !== 'SUCCESS') {
+                if (message == "User not found.") {
+                    setUserNotFound(true);
+                }
                 handleMessage(message, status);
                 console.log(status)
                 console.log(message)
                 setLoadingFollowers('Error')
+                navigation.setParams({following: 'Error'});
             } else {
                 console.log(status)
                 console.log(message)
@@ -3060,95 +3066,100 @@ const ProfilePages = ({ route, navigation }) => {
                             <SubTitle style={{color: colors.tertiary}} welcome={true}> Coming soon{/*totalLikes*/} </SubTitle>
                         </ProfileHorizontalViewItem>
                     </ProfileHorizontalView>
-                    {privateAccount == false || (userIsFollowed == true && privateAccount == true) ?
-                        <>
-                            <ProfilePostsSelectionView style={{borderBottomWidth: 0}}>
-                                <ProfilePostsSelectionBtns onPress={changeToGrid}>
-                                    <Icon name="grid" color={colors.tertiary} size={45}/>
-                                </ProfilePostsSelectionBtns>
-                                <ProfilePostsSelectionBtns onPress={changeToFeatured}>
-                                    <FontAwesomeFive name="user-tag" color={colors.tertiary} size={45}/>
-                                </ProfilePostsSelectionBtns>
-                                <Animated.View style={{backgroundColor: colors.tertiary, height: 3, width: '50%', position: 'absolute', bottom: 0, transform: [{translateX: GridOrTagLineTranslateX}], zIndex: 2}}/>
-                                <View style={{backgroundColor: colors.borderColor, height: 3, width: '100%', position: 'absolute', bottom: 0}}/>
-                            </ProfilePostsSelectionView>
-                            <ProfileSelectMediaTypeHorizontalView>
-                                <ProfileSelectMediaTypeItem onPress={changeToOne}>
-                                    <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor, borderColor: colors.borderColor}}>
-                                        <ProfileSelectMediaTypeIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/015-images.png')} />
-                                    </ProfileSelectMediaTypeIconsBorder>
-                                </ProfileSelectMediaTypeItem>
-                                <ProfileSelectMediaTypeItem onPress={changeToTwo}>
-                                    <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor, borderColor: colors.borderColor}}>
-                                        <ProfileSelectMediaTypeIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/020-film.png')} />
-                                    </ProfileSelectMediaTypeIconsBorder>
-                                </ProfileSelectMediaTypeItem>
-                                <ProfileSelectMediaTypeItem onPress={changeToThree}>
-                                    <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor, borderColor: colors.borderColor}}>
-                                        <ProfileSelectMediaTypeIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/157-stats-bars.png')} />
-                                    </ProfileSelectMediaTypeIconsBorder>
-                                </ProfileSelectMediaTypeItem>
-                                <ProfileSelectMediaTypeItem onPress={changeToFour}>
-                                    <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor, borderColor: colors.borderColor}}>
-                                        <ProfileSelectMediaTypeIcons style={{ height: '80%', width: '80%', tintColor: colors.tertiary }} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/007-pencil2.png')} />
-                                    </ProfileSelectMediaTypeIconsBorder>
-                                </ProfileSelectMediaTypeItem>
-                                <ProfileSelectMediaTypeItem onPress={changeToFive}>
-                                    <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor, borderColor: colors.borderColor}}>
-                                        <ProfileSelectMediaTypeIcons style={{ height: '80%', width: '80%', tintColor: colors.tertiary }} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/093-drawer.png')} />
-                                    </ProfileSelectMediaTypeIconsBorder>
-                                </ProfileSelectMediaTypeItem>
-                            </ProfileSelectMediaTypeHorizontalView>
-                            <ProfileGridPosts display={gridViewState}>
-                                {selectedPostFormat == "One" && (<SectionList
-                                    sections={changeSectionsOne}
-                                    keyExtractor={(item, index) => item + index}
-                                    renderItem={({ item }) => <ImageItem imageKey={item.imageKey} imageB64={item.imageB64} imageTitle={item.imageTitle} imageDescription={item.imageDescription} imageUpVotes={item.imageUpVotes} imageComments={item.imageComments} creatorName={item.creatorName} creatorDisplayName={item.creatorDisplayName} creatorPfpB64={item.creatorPfpB64} datePosted={item.datePosted} postNum={item.postNum} />}
-                                    ListFooterComponent={<PostLoadingSpinners selectedPostFormat={selectedPostFormat} loadingPostsImage={loadingPostsImage} loadingPostsVideo={loadingPostsVideo} loadingPostsPoll={loadingPostsPoll} loadingPostsThread={loadingPostsThread} loadingPostsCategory={loadingPostsCategory}/>}
-                                    ListHeaderComponent={<PostMessages selectedPostFormat={selectedPostFormat} formatOneText={formatOneText} formatTwoText={formatTwoText} formatThreeText={formatThreeText} formatFourText={formatFourText} formatFiveText={formatFiveText} colors={colors}/>}
-                                />)}
-                                {selectedPostFormat == "Two" && (<SectionList
-                                    sections={changeSectionsTwo}
-                                    keyExtractor={(item, index) => item + index}
-                                    renderItem={({ item }) => <PollItem pollTitle={item.pollTitle} pollSubTitle={item.pollSubTitle} optionOne={item.optionOne} optionOnesColor={item.optionOnesColor} optionOnesVotes={item.optionOnesVotes} optionOnesBarLength={item.optionOnesBarLength} optionTwo={item.optionTwo} optionTwosColor={item.optionTwosColor} optionTwosVotes={item.optionTwosVotes} optionTwosBarLength={item.optionTwosBarLength} optionThree={item.optionThree} optionThreesColor={item.optionThreesColor} optionThreesVotes={item.optionThreesVotes} optionThreesBarLength={item.optionThreesBarLength} optionFour={item.optionFour} optionFoursColor={item.optionFoursColor} optionFoursVotes={item.optionFoursVotes} optionFoursBarLength={item.optionFoursBarLength} optionFive={item.optionFive} optionFivesColor={item.optionFivesColor} optionFivesVotes={item.optionFivesVotes} optionFivesBarLength={item.optionFivesBarLength} optionSix={item.optionSix} optionSixesColor={item.optionSixesColor} optionSixesVotes={item.optionSixesVotes} optionSixesBarLength={item.optionSixesBarLength} totalNumberOfOptions={item.totalNumberOfOptions} pollUpOrDownVotes={item.pollUpOrDownVotes} pollId={item.pollId} votedFor={item.votedFor} pollLiked={item.pollLiked} pfpB64={item.pfpB64} creatorName={item.creatorName} creatorDisplayName={item.creatorDisplayName} />}
-                                    ListFooterComponent={<PostLoadingSpinners selectedPostFormat={selectedPostFormat} loadingPostsImage={loadingPostsImage} loadingPostsVideo={loadingPostsVideo} loadingPostsPoll={loadingPostsPoll} loadingPostsThread={loadingPostsThread} loadingPostsCategory={loadingPostsCategory}/>}
-                                    ListHeaderComponent={<PostMessages selectedPostFormat={selectedPostFormat} formatOneText={formatOneText} formatTwoText={formatTwoText} formatThreeText={formatThreeText} formatFourText={formatFourText} formatFiveText={formatFiveText} colors={colors}/>}
-                                />)}
-                                {selectedPostFormat == "Three" && (<SectionList
-                                    sections={changeSectionsThree}
-                                    keyExtractor={(item, index) => item + index}
-                                    renderItem={({ item }) => <PollItem pollTitle={item.pollTitle} pollSubTitle={item.pollSubTitle} optionOne={item.optionOne} optionOnesColor={item.optionOnesColor} optionOnesVotes={item.optionOnesVotes} optionOnesBarLength={item.optionOnesBarLength} optionTwo={item.optionTwo} optionTwosColor={item.optionTwosColor} optionTwosVotes={item.optionTwosVotes} optionTwosBarLength={item.optionTwosBarLength} optionThree={item.optionThree} optionThreesColor={item.optionThreesColor} optionThreesVotes={item.optionThreesVotes} optionThreesBarLength={item.optionThreesBarLength} optionFour={item.optionFour} optionFoursColor={item.optionFoursColor} optionFoursVotes={item.optionFoursVotes} optionFoursBarLength={item.optionFoursBarLength} optionFive={item.optionFive} optionFivesColor={item.optionFivesColor} optionFivesVotes={item.optionFivesVotes} optionFivesBarLength={item.optionFivesBarLength} optionSix={item.optionSix} optionSixesColor={item.optionSixesColor} optionSixesVotes={item.optionSixesVotes} optionSixesBarLength={item.optionSixesBarLength} totalNumberOfOptions={item.totalNumberOfOptions} pollUpOrDownVotes={item.pollUpOrDownVotes} pollId={item.pollId} votedFor={item.votedFor} pfpB64={item.pfpB64} creatorName={item.creatorName} creatorDisplayName={item.creatorDisplayName} postNum={item.postNum} datePosted={item.datePosted} pollComments={item.pollComments} />}
-                                    ListFooterComponent={<PostLoadingSpinners selectedPostFormat={selectedPostFormat} loadingPostsImage={loadingPostsImage} loadingPostsVideo={loadingPostsVideo} loadingPostsPoll={loadingPostsPoll} loadingPostsThread={loadingPostsThread} loadingPostsCategory={loadingPostsCategory}/>}
-                                    ListHeaderComponent={<PostMessages selectedPostFormat={selectedPostFormat} formatOneText={formatOneText} formatTwoText={formatTwoText} formatThreeText={formatThreeText} formatFourText={formatFourText} formatFiveText={formatFiveText} colors={colors}/>}
-                                />)}
-                                {selectedPostFormat == "Four" && (<SectionList
-                                    sections={changeSectionsFour}
-                                    keyExtractor={(item, index) => item + index}
-                                    renderItem={({ item }) => <ThreadItems postNum={item.postNum} threadId={item.threadId} threadComments={item.threadComments} threadType={item.threadType} threadUpVotes={item.threadUpVotes} threadTitle={item.threadTitle} threadSubtitle={item.threadSubtitle} threadTags={item.threadTags} threadCategory={item.threadCategory} threadBody={item.threadBody} threadImageKey={item.threadImageKey} threadImageDescription={item.threadImageDescription} threadNSFW={item.threadNSFW} threadNSFL={item.threadNSFL} datePosted={item.datePosted} threadUpVoted={item.threadUpVoted} threadDownVoted={item.threadDownVoted} creatorDisplayName={item.creatorDisplayName} creatorName={item.creatorName} creatorImageB64={item.creatorImageB64} imageInThreadB64={item.imageInThreadB64} />}
-                                    ListFooterComponent={<PostLoadingSpinners selectedPostFormat={selectedPostFormat} loadingPostsImage={loadingPostsImage} loadingPostsVideo={loadingPostsVideo} loadingPostsPoll={loadingPostsPoll} loadingPostsThread={loadingPostsThread} loadingPostsCategory={loadingPostsCategory}/>}
-                                    ListHeaderComponent={<PostMessages selectedPostFormat={selectedPostFormat} formatOneText={formatOneText} formatTwoText={formatTwoText} formatThreeText={formatThreeText} formatFourText={formatFourText} formatFiveText={formatFiveText} colors={colors}/>}
-                                />)}
-                                {selectedPostFormat == "Five" && (<SectionList
-                                    sections={changeSectionsFive}
-                                    keyExtractor={(item, index) => item + index}
-                                    renderItem={({ item }) => <CategoryItem categoryTitle={item.categoryTitle} categoryDescription={item.categoryDescription} members={item.members} categoryTags={item.categoryTags} image={item.image} NSFW={item.NSFW} NSFL={item.NSFL} datePosted={item.datePosted} />}
-                                    ListFooterComponent={<PostLoadingSpinners selectedPostFormat={selectedPostFormat} loadingPostsImage={loadingPostsImage} loadingPostsVideo={loadingPostsVideo} loadingPostsPoll={loadingPostsPoll} loadingPostsThread={loadingPostsThread} loadingPostsCategory={loadingPostsCategory}/>}
-                                    ListHeaderComponent={<PostMessages selectedPostFormat={selectedPostFormat} formatOneText={formatOneText} formatTwoText={formatTwoText} formatThreeText={formatThreeText} formatFourText={formatFourText} formatFiveText={formatFiveText} colors={colors}/>}
-                                />)}
-                            </ProfileGridPosts>
-                            <ProfileFeaturedPosts display={featuredViewState}>
-                                <SubTitle style={{color: colors.tertiary}} profNoPosts={true}>
-                                    Features don't work yet...
-                                </SubTitle>
-                            </ProfileFeaturedPosts>
-                        </>
-                    : 
-                        <View style={{alignItems: 'center', justifyContent: 'center'}}>
-                            <EvilIcons name="lock" color={colors.tertiary} size={70}/>
-                            <Text style={{color: colors.tertiary, fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>This is a private account.</Text>
-                            <Text style={{color: colors.tertiary, fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>Follow this account to see their posts.</Text>
+                    {userNotFound == true ? 
+                        <View style={{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
+                            <Text style={{color: colors.tertiary, fontSize: 20, fontWeight: 'bold'}}>User not found</Text>
                         </View>
-                    }
+                    :
+                        privateAccount == false || (userIsFollowed == true && privateAccount == true) ?
+                            <>
+                                <ProfilePostsSelectionView style={{borderBottomWidth: 0}}>
+                                    <ProfilePostsSelectionBtns onPress={changeToGrid}>
+                                        <Icon name="grid" color={colors.tertiary} size={45}/>
+                                    </ProfilePostsSelectionBtns>
+                                    <ProfilePostsSelectionBtns onPress={changeToFeatured}>
+                                        <FontAwesomeFive name="user-tag" color={colors.tertiary} size={45}/>
+                                    </ProfilePostsSelectionBtns>
+                                    <Animated.View style={{backgroundColor: colors.tertiary, height: 3, width: '50%', position: 'absolute', bottom: 0, transform: [{translateX: GridOrTagLineTranslateX}], zIndex: 2}}/>
+                                    <View style={{backgroundColor: colors.borderColor, height: 3, width: '100%', position: 'absolute', bottom: 0}}/>
+                                </ProfilePostsSelectionView>
+                                <ProfileSelectMediaTypeHorizontalView>
+                                    <ProfileSelectMediaTypeItem onPress={changeToOne}>
+                                        <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor, borderColor: colors.borderColor}}>
+                                            <ProfileSelectMediaTypeIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/015-images.png')} />
+                                        </ProfileSelectMediaTypeIconsBorder>
+                                    </ProfileSelectMediaTypeItem>
+                                    <ProfileSelectMediaTypeItem onPress={changeToTwo}>
+                                        <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor, borderColor: colors.borderColor}}>
+                                            <ProfileSelectMediaTypeIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/020-film.png')} />
+                                        </ProfileSelectMediaTypeIconsBorder>
+                                    </ProfileSelectMediaTypeItem>
+                                    <ProfileSelectMediaTypeItem onPress={changeToThree}>
+                                        <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor, borderColor: colors.borderColor}}>
+                                            <ProfileSelectMediaTypeIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/157-stats-bars.png')} />
+                                        </ProfileSelectMediaTypeIconsBorder>
+                                    </ProfileSelectMediaTypeItem>
+                                    <ProfileSelectMediaTypeItem onPress={changeToFour}>
+                                        <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor, borderColor: colors.borderColor}}>
+                                            <ProfileSelectMediaTypeIcons style={{ height: '80%', width: '80%', tintColor: colors.tertiary }} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/007-pencil2.png')} />
+                                        </ProfileSelectMediaTypeIconsBorder>
+                                    </ProfileSelectMediaTypeItem>
+                                    <ProfileSelectMediaTypeItem onPress={changeToFive}>
+                                        <ProfileSelectMediaTypeIconsBorder style={{backgroundColor: colors.borderColor, borderColor: colors.borderColor}}>
+                                            <ProfileSelectMediaTypeIcons style={{ height: '80%', width: '80%', tintColor: colors.tertiary }} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/093-drawer.png')} />
+                                        </ProfileSelectMediaTypeIconsBorder>
+                                    </ProfileSelectMediaTypeItem>
+                                </ProfileSelectMediaTypeHorizontalView>
+                                <ProfileGridPosts display={gridViewState}>
+                                    {selectedPostFormat == "One" && (<SectionList
+                                        sections={changeSectionsOne}
+                                        keyExtractor={(item, index) => item + index}
+                                        renderItem={({ item }) => <ImageItem imageKey={item.imageKey} imageB64={item.imageB64} imageTitle={item.imageTitle} imageDescription={item.imageDescription} imageUpVotes={item.imageUpVotes} imageComments={item.imageComments} creatorName={item.creatorName} creatorDisplayName={item.creatorDisplayName} creatorPfpB64={item.creatorPfpB64} datePosted={item.datePosted} postNum={item.postNum} />}
+                                        ListFooterComponent={<PostLoadingSpinners selectedPostFormat={selectedPostFormat} loadingPostsImage={loadingPostsImage} loadingPostsVideo={loadingPostsVideo} loadingPostsPoll={loadingPostsPoll} loadingPostsThread={loadingPostsThread} loadingPostsCategory={loadingPostsCategory}/>}
+                                        ListHeaderComponent={<PostMessages selectedPostFormat={selectedPostFormat} formatOneText={formatOneText} formatTwoText={formatTwoText} formatThreeText={formatThreeText} formatFourText={formatFourText} formatFiveText={formatFiveText} colors={colors}/>}
+                                    />)}
+                                    {selectedPostFormat == "Two" && (<SectionList
+                                        sections={changeSectionsTwo}
+                                        keyExtractor={(item, index) => item + index}
+                                        renderItem={({ item }) => <PollItem pollTitle={item.pollTitle} pollSubTitle={item.pollSubTitle} optionOne={item.optionOne} optionOnesColor={item.optionOnesColor} optionOnesVotes={item.optionOnesVotes} optionOnesBarLength={item.optionOnesBarLength} optionTwo={item.optionTwo} optionTwosColor={item.optionTwosColor} optionTwosVotes={item.optionTwosVotes} optionTwosBarLength={item.optionTwosBarLength} optionThree={item.optionThree} optionThreesColor={item.optionThreesColor} optionThreesVotes={item.optionThreesVotes} optionThreesBarLength={item.optionThreesBarLength} optionFour={item.optionFour} optionFoursColor={item.optionFoursColor} optionFoursVotes={item.optionFoursVotes} optionFoursBarLength={item.optionFoursBarLength} optionFive={item.optionFive} optionFivesColor={item.optionFivesColor} optionFivesVotes={item.optionFivesVotes} optionFivesBarLength={item.optionFivesBarLength} optionSix={item.optionSix} optionSixesColor={item.optionSixesColor} optionSixesVotes={item.optionSixesVotes} optionSixesBarLength={item.optionSixesBarLength} totalNumberOfOptions={item.totalNumberOfOptions} pollUpOrDownVotes={item.pollUpOrDownVotes} pollId={item.pollId} votedFor={item.votedFor} pollLiked={item.pollLiked} pfpB64={item.pfpB64} creatorName={item.creatorName} creatorDisplayName={item.creatorDisplayName} />}
+                                        ListFooterComponent={<PostLoadingSpinners selectedPostFormat={selectedPostFormat} loadingPostsImage={loadingPostsImage} loadingPostsVideo={loadingPostsVideo} loadingPostsPoll={loadingPostsPoll} loadingPostsThread={loadingPostsThread} loadingPostsCategory={loadingPostsCategory}/>}
+                                        ListHeaderComponent={<PostMessages selectedPostFormat={selectedPostFormat} formatOneText={formatOneText} formatTwoText={formatTwoText} formatThreeText={formatThreeText} formatFourText={formatFourText} formatFiveText={formatFiveText} colors={colors}/>}
+                                    />)}
+                                    {selectedPostFormat == "Three" && (<SectionList
+                                        sections={changeSectionsThree}
+                                        keyExtractor={(item, index) => item + index}
+                                        renderItem={({ item }) => <PollItem pollTitle={item.pollTitle} pollSubTitle={item.pollSubTitle} optionOne={item.optionOne} optionOnesColor={item.optionOnesColor} optionOnesVotes={item.optionOnesVotes} optionOnesBarLength={item.optionOnesBarLength} optionTwo={item.optionTwo} optionTwosColor={item.optionTwosColor} optionTwosVotes={item.optionTwosVotes} optionTwosBarLength={item.optionTwosBarLength} optionThree={item.optionThree} optionThreesColor={item.optionThreesColor} optionThreesVotes={item.optionThreesVotes} optionThreesBarLength={item.optionThreesBarLength} optionFour={item.optionFour} optionFoursColor={item.optionFoursColor} optionFoursVotes={item.optionFoursVotes} optionFoursBarLength={item.optionFoursBarLength} optionFive={item.optionFive} optionFivesColor={item.optionFivesColor} optionFivesVotes={item.optionFivesVotes} optionFivesBarLength={item.optionFivesBarLength} optionSix={item.optionSix} optionSixesColor={item.optionSixesColor} optionSixesVotes={item.optionSixesVotes} optionSixesBarLength={item.optionSixesBarLength} totalNumberOfOptions={item.totalNumberOfOptions} pollUpOrDownVotes={item.pollUpOrDownVotes} pollId={item.pollId} votedFor={item.votedFor} pfpB64={item.pfpB64} creatorName={item.creatorName} creatorDisplayName={item.creatorDisplayName} postNum={item.postNum} datePosted={item.datePosted} pollComments={item.pollComments} />}
+                                        ListFooterComponent={<PostLoadingSpinners selectedPostFormat={selectedPostFormat} loadingPostsImage={loadingPostsImage} loadingPostsVideo={loadingPostsVideo} loadingPostsPoll={loadingPostsPoll} loadingPostsThread={loadingPostsThread} loadingPostsCategory={loadingPostsCategory}/>}
+                                        ListHeaderComponent={<PostMessages selectedPostFormat={selectedPostFormat} formatOneText={formatOneText} formatTwoText={formatTwoText} formatThreeText={formatThreeText} formatFourText={formatFourText} formatFiveText={formatFiveText} colors={colors}/>}
+                                    />)}
+                                    {selectedPostFormat == "Four" && (<SectionList
+                                        sections={changeSectionsFour}
+                                        keyExtractor={(item, index) => item + index}
+                                        renderItem={({ item }) => <ThreadItems postNum={item.postNum} threadId={item.threadId} threadComments={item.threadComments} threadType={item.threadType} threadUpVotes={item.threadUpVotes} threadTitle={item.threadTitle} threadSubtitle={item.threadSubtitle} threadTags={item.threadTags} threadCategory={item.threadCategory} threadBody={item.threadBody} threadImageKey={item.threadImageKey} threadImageDescription={item.threadImageDescription} threadNSFW={item.threadNSFW} threadNSFL={item.threadNSFL} datePosted={item.datePosted} threadUpVoted={item.threadUpVoted} threadDownVoted={item.threadDownVoted} creatorDisplayName={item.creatorDisplayName} creatorName={item.creatorName} creatorImageB64={item.creatorImageB64} imageInThreadB64={item.imageInThreadB64} />}
+                                        ListFooterComponent={<PostLoadingSpinners selectedPostFormat={selectedPostFormat} loadingPostsImage={loadingPostsImage} loadingPostsVideo={loadingPostsVideo} loadingPostsPoll={loadingPostsPoll} loadingPostsThread={loadingPostsThread} loadingPostsCategory={loadingPostsCategory}/>}
+                                        ListHeaderComponent={<PostMessages selectedPostFormat={selectedPostFormat} formatOneText={formatOneText} formatTwoText={formatTwoText} formatThreeText={formatThreeText} formatFourText={formatFourText} formatFiveText={formatFiveText} colors={colors}/>}
+                                    />)}
+                                    {selectedPostFormat == "Five" && (<SectionList
+                                        sections={changeSectionsFive}
+                                        keyExtractor={(item, index) => item + index}
+                                        renderItem={({ item }) => <CategoryItem categoryTitle={item.categoryTitle} categoryDescription={item.categoryDescription} members={item.members} categoryTags={item.categoryTags} image={item.image} NSFW={item.NSFW} NSFL={item.NSFL} datePosted={item.datePosted} />}
+                                        ListFooterComponent={<PostLoadingSpinners selectedPostFormat={selectedPostFormat} loadingPostsImage={loadingPostsImage} loadingPostsVideo={loadingPostsVideo} loadingPostsPoll={loadingPostsPoll} loadingPostsThread={loadingPostsThread} loadingPostsCategory={loadingPostsCategory}/>}
+                                        ListHeaderComponent={<PostMessages selectedPostFormat={selectedPostFormat} formatOneText={formatOneText} formatTwoText={formatTwoText} formatThreeText={formatThreeText} formatFourText={formatFourText} formatFiveText={formatFiveText} colors={colors}/>}
+                                    />)}
+                                </ProfileGridPosts>
+                                <ProfileFeaturedPosts display={featuredViewState}>
+                                    <SubTitle style={{color: colors.tertiary}} profNoPosts={true}>
+                                        Features don't work yet...
+                                    </SubTitle>
+                                </ProfileFeaturedPosts>
+                            </>
+                        : 
+                            <View style={{alignItems: 'center', justifyContent: 'center'}}>
+                                <EvilIcons name="lock" color={colors.tertiary} size={70}/>
+                                <Text style={{color: colors.tertiary, fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>This is a private account.</Text>
+                                <Text style={{color: colors.tertiary, fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>Follow this account to see their posts.</Text>
+                            </View>
+                        }
                 </WelcomeContainer>
             </ScrollView>
         </>

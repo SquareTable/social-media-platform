@@ -140,6 +140,10 @@ const SettingsPage = ({navigation}) => {
                             <Icon name="security" size={60} color={colors.tertiary}/>
                             <SettingsItemText style={{color: colors.tertiary}}>Security</SettingsItemText>
                         </SettingsPageItemTouchableOpacity>
+                        <SettingsPageItemTouchableOpacity disabled={!logoutViewState} style={{borderColor: colors.borderColor}} onPress={() => {navigation.navigate('SafetySettingsScreen')}}>
+                            <Icon name="cards-heart-outline" size={60} color={colors.tertiary}/>
+                            <SettingsItemText style={{color: colors.tertiary}}>Safety</SettingsItemText>
+                        </SettingsPageItemTouchableOpacity>
                         <SettingsPageItemTouchableOpacity disabled={!logoutViewState} style={{borderColor: colors.borderColor}} onPress={() => {navigation.navigate('NotificationsSettingsScreen')}}>
                             <Icon name="alarm-light-outline" size={60} color={colors.tertiary}/>
                             <SettingsItemText style={{color: colors.tertiary}}>Notifications</SettingsItemText>

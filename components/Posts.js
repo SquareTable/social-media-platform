@@ -450,7 +450,7 @@ export default function Post( post ) {
                 </PostsVerticalView>
             </PostsHorizontalView>
             <PostsHorizontalView style={{ alignItems: 'center', justifyContent: 'center' }}>
-                <MultiMediaPostFrame postOnProfile={true} style={{ aspectRatio: 1 / 1 }} onPress={() => post.navigation.navigate("ViewImagePostPage", { imageKey, imageB64, imageTitle, imageDescription, creatorName, creatorDisplayName, creatorPfpB64: `data:image/jpg;base64,${creatorPfpB64}`, datePosted })}>
+                <MultiMediaPostFrame postOnProfile={true} style={{ aspectRatio: 1 / 1 }} onPress={() => post.navigation.navigate("ViewImagePostPage", { imageKey, imageB64, imageTitle, imageDescription, creatorName, creatorDisplayName, creatorPfpB64: creatorPfpB64, datePosted })}>
                     <PinchableImageBox imageUri={imageB64}/>
                 </MultiMediaPostFrame>
             </PostsHorizontalView>
@@ -528,7 +528,7 @@ export default function Post( post ) {
 
                 <PostsIconFrame>
                 </PostsIconFrame>
-                <PostsIconFrame onPress={() => post.navigation.navigate("ViewImagePostPage", { imageKey, imageB64, imageTitle, imageDescription, creatorName, creatorDisplayName, creatorPfpB64: `data:image/jpg;base64,${creatorPfpB64}`, datePosted })}>
+                <PostsIconFrame onPress={() => post.navigation.navigate("ViewImagePostPage", { imageKey, imageB64, imageTitle, imageDescription, creatorName, creatorDisplayName, creatorPfpB64: creatorPfpB64, datePosted })}>
                     <PostsIcons style={{ flex: 1, tintColor: colors.tertiary }} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/113-bubbles4.png')} />
                 </PostsIconFrame>
                 <PostsIconFrame>
@@ -543,7 +543,7 @@ export default function Post( post ) {
             {postNotFromFeed == true ?
                 <SubTitle style={{ flex: 1, alignSelf: 'center', fontSize: 16, color: colors.descTextColor, marginBottom: 0, fontWeight: 'normal' }}>{imageComments.length} comments</SubTitle>
             :
-                <TouchableOpacity onPress={() => post.navigation.navigate("ViewImagePostPage", { imageKey, imageB64, imageTitle, imageDescription, creatorName, creatorDisplayName, creatorPfpB64: `data:image/jpg;base64,${creatorPfpB64}`, datePosted })}>
+                <TouchableOpacity onPress={() => post.navigation.navigate("ViewImagePostPage", { imageKey, imageB64, imageTitle, imageDescription, creatorName, creatorDisplayName, creatorPfpB64: creatorPfpB64, datePosted })}>
                     <SubTitle style={{ flex: 1, alignSelf: 'center', fontSize: 16, color: colors.descTextColor, marginBottom: 0, fontWeight: 'normal' }}>{imageComments.length} comments</SubTitle>
                 </TouchableOpacity>
             }
@@ -551,7 +551,7 @@ export default function Post( post ) {
     );
 
     const PollItem = ({format, pollTitle, pollSubTitle, optionOne, optionOnesColor, optionOnesVotes, optionOnesBarLength, optionTwo, optionTwosColor, optionTwosVotes, optionTwosBarLength, optionThree, optionThreesColor, optionThreesVotes, optionThreesBarLength, optionFour, optionFoursColor, optionFoursVotes, optionFoursBarLength, optionFive, optionFivesColor, optionFivesVotes, optionFivesBarLength, optionSix, optionSixesColor, optionSixesVotes, optionSixesBarLength, totalNumberOfOptions, pollUpOrDownVotes, pollId, votedFor, postNum, pollComments, pfpB64, creatorName, creatorDisplayName, datePosted }) => (
-        <PollPostFrame style={{marginLeft: 0, marginRight: 0, width: '100%'}} onPress={() => post.navigation.navigate("ViewPollPostPage", { pollTitle, pollSubTitle, optionOne, optionOnesColor, optionOnesVotes, optionOnesBarLength, optionTwo, optionTwosColor, optionTwosVotes, optionTwosBarLength, optionThree, optionThreesColor, optionThreesVotes, optionThreesBarLength, optionFour, optionFoursColor, optionFoursVotes, optionFoursBarLength, optionFive, optionFivesColor, optionFivesVotes, optionFivesBarLength, optionSix, optionSixesColor, optionSixesVotes, optionSixesBarLength, totalNumberOfOptions, pollId, creatorPfpB64: `data:image/jpg;base64,${pfpB64}`, creatorName, creatorDisplayName, datePosted })}>
+        <PollPostFrame style={{marginLeft: 0, marginRight: 0, width: '100%'}} onPress={() => post.navigation.navigate("ViewPollPostPage", { pollTitle, pollSubTitle, optionOne, optionOnesColor, optionOnesVotes, optionOnesBarLength, optionTwo, optionTwosColor, optionTwosVotes, optionTwosBarLength, optionThree, optionThreesColor, optionThreesVotes, optionThreesBarLength, optionFour, optionFoursColor, optionFoursVotes, optionFoursBarLength, optionFive, optionFivesColor, optionFivesVotes, optionFivesBarLength, optionSix, optionSixesColor, optionSixesVotes, optionSixesBarLength, totalNumberOfOptions, pollId, creatorPfpB64: pfpB64, creatorName, creatorDisplayName, datePosted })}>
             <PostsHorizontalView style={{ marginLeft: '5%', borderBottomWidth: 3, borderColor: colors.borderColor, width: '90%', paddingBottom: 5, marginRight: '5%' }}>
                 <PostsVerticalView>
                     <PostCreatorIcon source={pfpB64 ? { uri: pfpB64 } : {uri: SocialSquareLogo_B64_png}} />
@@ -601,13 +601,13 @@ export default function Post( post ) {
                 <PollBarItem borderChange={optionSixesBarLength} style={{ width: optionSixesBarLength + '%', backgroundColor: colors.brand }}></PollBarItem>
             </PollBarOutline>
             <PollPostHorizontalView>
-                <PollKeyViewOne pollOptions={totalNumberOfOptions} onPress={() => post.navigation.navigate("ViewPollPostPage", { pollTitle, pollSubTitle, optionOne, optionOnesColor, optionOnesVotes, optionOnesBarLength, optionTwo, optionTwosColor, optionTwosVotes, optionTwosBarLength, optionThree, optionThreesColor, optionThreesVotes, optionThreesBarLength, optionFour, optionFoursColor, optionFoursVotes, optionFoursBarLength, optionFive, optionFivesColor, optionFivesVotes, optionFivesBarLength, optionSix, optionSixesColor, optionSixesVotes, optionSixesBarLength, totalNumberOfOptions, pollId, creatorPfpB64: `data:image/jpg;base64,${pfpB64}`, creatorName, creatorDisplayName, datePosted })}>
+                <PollKeyViewOne pollOptions={totalNumberOfOptions} onPress={() => post.navigation.navigate("ViewPollPostPage", { pollTitle, pollSubTitle, optionOne, optionOnesColor, optionOnesVotes, optionOnesBarLength, optionTwo, optionTwosColor, optionTwosVotes, optionTwosBarLength, optionThree, optionThreesColor, optionThreesVotes, optionThreesBarLength, optionFour, optionFoursColor, optionFoursVotes, optionFoursBarLength, optionFive, optionFivesColor, optionFivesVotes, optionFivesBarLength, optionSix, optionSixesColor, optionSixesVotes, optionSixesBarLength, totalNumberOfOptions, pollId, creatorPfpB64: pfpB64, creatorName, creatorDisplayName, datePosted })}>
                     <PollPostSubTitle style={{color: colors.tertiary}}>
                         1. {optionOne}
                     </PollPostSubTitle>
                     <PollKeysCircle circleColor={optionOnesColor}></PollKeysCircle>
                 </PollKeyViewOne>
-                <PollKeyViewTwo pollOptions={totalNumberOfOptions} onPress={() => post.navigation.navigate("ViewPollPostPage", { pollTitle, pollSubTitle, optionOne, optionOnesColor, optionOnesVotes, optionOnesBarLength, optionTwo, optionTwosColor, optionTwosVotes, optionTwosBarLength, optionThree, optionThreesColor, optionThreesVotes, optionThreesBarLength, optionFour, optionFoursColor, optionFoursVotes, optionFoursBarLength, optionFive, optionFivesColor, optionFivesVotes, optionFivesBarLength, optionSix, optionSixesColor, optionSixesVotes, optionSixesBarLength, totalNumberOfOptions, pollId, creatorPfpB64: `data:image/jpg;base64,${pfpB64}`, creatorName, creatorDisplayName, datePosted })}>
+                <PollKeyViewTwo pollOptions={totalNumberOfOptions} onPress={() => post.navigation.navigate("ViewPollPostPage", { pollTitle, pollSubTitle, optionOne, optionOnesColor, optionOnesVotes, optionOnesBarLength, optionTwo, optionTwosColor, optionTwosVotes, optionTwosBarLength, optionThree, optionThreesColor, optionThreesVotes, optionThreesBarLength, optionFour, optionFoursColor, optionFoursVotes, optionFoursBarLength, optionFive, optionFivesColor, optionFivesVotes, optionFivesBarLength, optionSix, optionSixesColor, optionSixesVotes, optionSixesBarLength, totalNumberOfOptions, pollId, creatorPfpB64: pfpB64, creatorName, creatorDisplayName, datePosted })}>
                     <PollKeysCircle circleColor={optionTwosColor}></PollKeysCircle>
                     <PollPostSubTitle style={{color: colors.tertiary}}>
                         2. {optionTwo}
@@ -616,13 +616,13 @@ export default function Post( post ) {
             </PollPostHorizontalView>
 
             <PollPostHorizontalView>
-                <PollKeyViewThree pollOptions={totalNumberOfOptions} onPress={() => post.navigation.navigate("ViewPollPostPage", { pollTitle, pollSubTitle, optionOne, optionOnesColor, optionOnesVotes, optionOnesBarLength, optionTwo, optionTwosColor, optionTwosVotes, optionTwosBarLength, optionThree, optionThreesColor, optionThreesVotes, optionThreesBarLength, optionFour, optionFoursColor, optionFoursVotes, optionFoursBarLength, optionFive, optionFivesColor, optionFivesVotes, optionFivesBarLength, optionSix, optionSixesColor, optionSixesVotes, optionSixesBarLength, totalNumberOfOptions, pollId, creatorPfpB64: `data:image/jpg;base64,${pfpB64}`, creatorName, creatorDisplayName, datePosted })}>
+                <PollKeyViewThree pollOptions={totalNumberOfOptions} onPress={() => post.navigation.navigate("ViewPollPostPage", { pollTitle, pollSubTitle, optionOne, optionOnesColor, optionOnesVotes, optionOnesBarLength, optionTwo, optionTwosColor, optionTwosVotes, optionTwosBarLength, optionThree, optionThreesColor, optionThreesVotes, optionThreesBarLength, optionFour, optionFoursColor, optionFoursVotes, optionFoursBarLength, optionFive, optionFivesColor, optionFivesVotes, optionFivesBarLength, optionSix, optionSixesColor, optionSixesVotes, optionSixesBarLength, totalNumberOfOptions, pollId, creatorPfpB64: pfpB64, creatorName, creatorDisplayName, datePosted })}>
                     <PollPostSubTitle style={{color: colors.tertiary}}>
                         3. {optionThree}
                     </PollPostSubTitle>
                     <PollKeysCircle circleColor={optionThreesColor}></PollKeysCircle>
                 </PollKeyViewThree>
-                <PollKeyViewFour pollOptions={totalNumberOfOptions} onPress={() => post.navigation.navigate("ViewPollPostPage", { pollTitle, pollSubTitle, optionOne, optionOnesColor, optionOnesVotes, optionOnesBarLength, optionTwo, optionTwosColor, optionTwosVotes, optionTwosBarLength, optionThree, optionThreesColor, optionThreesVotes, optionThreesBarLength, optionFour, optionFoursColor, optionFoursVotes, optionFoursBarLength, optionFive, optionFivesColor, optionFivesVotes, optionFivesBarLength, optionSix, optionSixesColor, optionSixesVotes, optionSixesBarLength, totalNumberOfOptions, pollId, creatorPfpB64: `data:image/jpg;base64,${pfpB64}`, creatorName, creatorDisplayName, datePosted })}>
+                <PollKeyViewFour pollOptions={totalNumberOfOptions} onPress={() => post.navigation.navigate("ViewPollPostPage", { pollTitle, pollSubTitle, optionOne, optionOnesColor, optionOnesVotes, optionOnesBarLength, optionTwo, optionTwosColor, optionTwosVotes, optionTwosBarLength, optionThree, optionThreesColor, optionThreesVotes, optionThreesBarLength, optionFour, optionFoursColor, optionFoursVotes, optionFoursBarLength, optionFive, optionFivesColor, optionFivesVotes, optionFivesBarLength, optionSix, optionSixesColor, optionSixesVotes, optionSixesBarLength, totalNumberOfOptions, pollId, creatorPfpB64: pfpB64, creatorName, creatorDisplayName, datePosted })}>
                     <PollKeysCircle circleColor={optionFoursColor}></PollKeysCircle>
                     <PollPostSubTitle style={{color: colors.tertiary}}>
                         4. {optionFour}
@@ -631,13 +631,13 @@ export default function Post( post ) {
             </PollPostHorizontalView>
 
             <PollPostHorizontalView>
-                <PollKeyViewFive pollOptions={totalNumberOfOptions} onPress={() => post.navigation.navigate("ViewPollPostPage", { pollTitle, pollSubTitle, optionOne, optionOnesColor, optionOnesVotes, optionOnesBarLength, optionTwo, optionTwosColor, optionTwosVotes, optionTwosBarLength, optionThree, optionThreesColor, optionThreesVotes, optionThreesBarLength, optionFour, optionFoursColor, optionFoursVotes, optionFoursBarLength, optionFive, optionFivesColor, optionFivesVotes, optionFivesBarLength, optionSix, optionSixesColor, optionSixesVotes, optionSixesBarLength, totalNumberOfOptions, pollId, creatorPfpB64: `data:image/jpg;base64,${pfpB64}`, creatorName, creatorDisplayName, datePosted })}>
+                <PollKeyViewFive pollOptions={totalNumberOfOptions} onPress={() => post.navigation.navigate("ViewPollPostPage", { pollTitle, pollSubTitle, optionOne, optionOnesColor, optionOnesVotes, optionOnesBarLength, optionTwo, optionTwosColor, optionTwosVotes, optionTwosBarLength, optionThree, optionThreesColor, optionThreesVotes, optionThreesBarLength, optionFour, optionFoursColor, optionFoursVotes, optionFoursBarLength, optionFive, optionFivesColor, optionFivesVotes, optionFivesBarLength, optionSix, optionSixesColor, optionSixesVotes, optionSixesBarLength, totalNumberOfOptions, pollId, creatorPfpB64: pfpB64, creatorName, creatorDisplayName, datePosted })}>
                     <PollPostSubTitle style={{color: colors.tertiary}}>
                         5. {optionFive}
                     </PollPostSubTitle>
                     <PollKeysCircle circleColor={optionFivesColor}></PollKeysCircle>
                 </PollKeyViewFive>
-                <PollKeyViewSix pollOptions={totalNumberOfOptions} onPress={() => post.navigation.navigate("ViewPollPostPage", { pollTitle, pollSubTitle, optionOne, optionOnesColor, optionOnesVotes, optionOnesBarLength, optionTwo, optionTwosColor, optionTwosVotes, optionTwosBarLength, optionThree, optionThreesColor, optionThreesVotes, optionThreesBarLength, optionFour, optionFoursColor, optionFoursVotes, optionFoursBarLength, optionFive, optionFivesColor, optionFivesVotes, optionFivesBarLength, optionSix, optionSixesColor, optionSixesVotes, optionSixesBarLength, totalNumberOfOptions, pollId, creatorPfpB64: `data:image/jpg;base64,${pfpB64}`, creatorName, creatorDisplayName, datePosted })}>
+                <PollKeyViewSix pollOptions={totalNumberOfOptions} onPress={() => post.navigation.navigate("ViewPollPostPage", { pollTitle, pollSubTitle, optionOne, optionOnesColor, optionOnesVotes, optionOnesBarLength, optionTwo, optionTwosColor, optionTwosVotes, optionTwosBarLength, optionThree, optionThreesColor, optionThreesVotes, optionThreesBarLength, optionFour, optionFoursColor, optionFoursVotes, optionFoursBarLength, optionFive, optionFivesColor, optionFivesVotes, optionFivesBarLength, optionSix, optionSixesColor, optionSixesVotes, optionSixesBarLength, totalNumberOfOptions, pollId, creatorPfpB64: pfpB64, creatorName, creatorDisplayName, datePosted })}>
                     <PollKeysCircle circleColor={optionSixesColor}></PollKeysCircle>
                     <PollPostSubTitle style={{color: colors.tertiary}}>
                         6. {optionSix}
@@ -713,7 +713,7 @@ export default function Post( post ) {
 
                 <PostsIconFrame>
                 </PostsIconFrame>
-                <PostsIconFrame onPress={() => post.navigation.navigate("ViewPollPostPage", { pollTitle, pollSubTitle, optionOne, optionOnesColor, optionOnesVotes, optionOnesBarLength, optionTwo, optionTwosColor, optionTwosVotes, optionTwosBarLength, optionThree, optionThreesColor, optionThreesVotes, optionThreesBarLength, optionFour, optionFoursColor, optionFoursVotes, optionFoursBarLength, optionFive, optionFivesColor, optionFivesVotes, optionFivesBarLength, optionSix, optionSixesColor, optionSixesVotes, optionSixesBarLength, totalNumberOfOptions, pollId, creatorPfpB64: `data:image/jpg;base64,${pfpB64}`, creatorName, creatorDisplayName, datePosted })}>
+                <PostsIconFrame onPress={() => post.navigation.navigate("ViewPollPostPage", { pollTitle, pollSubTitle, optionOne, optionOnesColor, optionOnesVotes, optionOnesBarLength, optionTwo, optionTwosColor, optionTwosVotes, optionTwosBarLength, optionThree, optionThreesColor, optionThreesVotes, optionThreesBarLength, optionFour, optionFoursColor, optionFoursVotes, optionFoursBarLength, optionFive, optionFivesColor, optionFivesVotes, optionFivesBarLength, optionSix, optionSixesColor, optionSixesVotes, optionSixesBarLength, totalNumberOfOptions, pollId, creatorPfpB64: pfpB64, creatorName, creatorDisplayName, datePosted })}>
                     <PostsIcons style={{ flex: 1, tintColor: colors.tertiary }} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/113-bubbles4.png')} />
                 </PostsIconFrame>
                 <PostsIconFrame>
@@ -747,7 +747,7 @@ export default function Post( post ) {
                         {creatorImageB64 !== null && (
                             <PostsVerticalView>
                                 {creatorImageB64 !== null && (
-                                    <PostCreatorIcon source={{ uri: `data:image/jpg;base64,${creatorImageB64}` }} />
+                                    <PostCreatorIcon source={{ uri: creatorImageB64}} />
                                 )}
                             </PostsVerticalView>
                         )}
@@ -789,7 +789,7 @@ export default function Post( post ) {
                         {threadType == "Images" && (
                             <View>
                                 <View style={{ height: 200, width: 200 }}>
-                                    <Image style={{ height: '100%', width: 'auto', resizeMode: 'contain' }} source={{ uri: `data:image/jpg;base64,${imageInThreadB64}` }} />
+                                    <Image style={{ height: '100%', width: 'auto', resizeMode: 'contain' }} source={{ uri: imageInThreadB64 }} />
                                 </View>
                                 <SubTitle style={{ fontSize: 16, color: colors.descTextColor, marginBottom: 0, fontWeight: 'normal' }}>{threadImageDescription}</SubTitle>
                             </View>
