@@ -21,6 +21,8 @@ import { ChatScreen_Stack } from "./ChatScreenStackNavigator.js";
 import ForgottenPasswordScreen from "../screens/ForgottenPasswordScreen.js";
 import ResetPasswordScreen from "../screens/ResetPasswordScreen.js";
 import ResetPasswordAfterVerificationScreen from "../screens/ResetPasswordAfterVerificationScreen.js";
+import WelcomeToSocialSquareScreen from "../screens/WelcomeScreens/WelcomeToSocialSquare.js";
+import TransferFromOtherPlatformsScreen from "../screens/WelcomeScreens/TransferFromOtherPlatforms.js";
 
 const Stack = createStackNavigator();
 
@@ -77,6 +79,8 @@ const Start_Stack = () => {
                             <Stack.Screen name="ForgottenPasswordScreen" component={ForgottenPasswordScreen}/>
                             <Stack.Screen name="ResetPasswordScreen" component={ResetPasswordScreen}/>
                             <Stack.Screen name="ResetPasswordAfterVerificationScreen" component={ResetPasswordAfterVerificationScreen}/>
+                            <Stack.Screen name="WelcomeToSocialSquareScreen" component={WelcomeToSocialSquareScreen}/>
+                            <Stack.Screen name="TransferFromOtherPlatformsScreen" component={TransferFromOtherPlatformsScreen}/>
                         </>
                     ) : ( 
                         <>
@@ -105,6 +109,8 @@ const Start_Stack = () => {
                             <Stack.Screen name="ForgottenPasswordScreen" component={ForgottenPasswordScreen}/>
                             <Stack.Screen name="ResetPasswordScreen" component={ResetPasswordScreen}/>
                             <Stack.Screen name="ResetPasswordAfterVerificationScreen" component={ResetPasswordAfterVerificationScreen}/>
+                            <Stack.Screen name="WelcomeToSocialSquareScreen" component={WelcomeToSocialSquareScreen}/>
+                            <Stack.Screen name="TransferFromOtherPlatformsScreen" component={TransferFromOtherPlatformsScreen}/>
                         </>
                     ) : (
                         <>
@@ -116,6 +122,8 @@ const Start_Stack = () => {
                             <Stack.Screen name="ForgottenPasswordScreen" component={ForgottenPasswordScreen}/>
                             <Stack.Screen name="ResetPasswordScreen" component={ResetPasswordScreen}/>
                             <Stack.Screen name="ResetPasswordAfterVerificationScreen" component={ResetPasswordAfterVerificationScreen}/>
+                            <Stack.Screen name="WelcomeToSocialSquareScreen" component={WelcomeToSocialSquareScreen}/>
+                            <Stack.Screen name="TransferFromOtherPlatformsScreen" component={TransferFromOtherPlatformsScreen}/>
                         </>
                     )}
                 </Stack.Navigator>

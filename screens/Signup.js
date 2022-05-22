@@ -134,14 +134,7 @@ const Signup = ({navigation, route}) => {
             temp.push(credentialsToUse);
             AsyncStorage.setItem('socialSquare_AllCredentialsList', JSON.stringify(temp)).then(() => {
                 setAllCredentialsStoredList(temp);
-                if (Modal_NoCredentials) {
-                    navigation.pop(2);
-                } else {
-                    navigation.reset({
-                        index: 0,
-                        routes: [{ name: 'Tabs' }],
-                    });
-                }
+                navigation.replace('WelcomeToSocialSquareScreen', {navigateMethod: Modal_NoCredentials ? 'pop' : 'reset'});
             })
         })
         .catch((error) => {

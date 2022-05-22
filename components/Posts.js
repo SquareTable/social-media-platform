@@ -76,7 +76,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 //credentials context
 import { CredentialsContext } from './CredentialsContext';
-import { ImageBackground, ScrollView, View, FlatList, ActivityIndicator, Image, Animated } from 'react-native';
+import { ImageBackground, ScrollView, View, FlatList, ActivityIndicator, Image } from 'react-native';
 
 // formik
 import {Formik} from 'formik';
@@ -90,9 +90,16 @@ import { useTheme } from '@react-navigation/native';
 
 import SocialSquareLogo_B64_png from '../assets/SocialSquareLogo_Base64_png.js';
 
-import { PinchGestureHandler, State } from 'react-native-gesture-handler';
-
 import { ServerUrlContext } from './ServerUrlContext.js';
+
+import Animated, {
+    useSharedValue,
+    withTiming,
+    useAnimatedStyle,
+    Easing,
+    withSpring
+} from 'react-native-reanimated';
+import {Gesture, GestureDetector} from 'react-native-gesture-handler'
 
 export default function Post( post ) {
     const { storedCredentials, setStoredCredentials } = useContext(CredentialsContext);
@@ -379,54 +386,43 @@ export default function Post( post ) {
     }
 
     const PinchableImageBox = ({ imageUri }) => {
-        let scale = new Animated.Value(1)
-        let translateX = useRef(new Animated.Value(0)).current;
-        let translateY = useRef(new Animated.Value(0)).current;
-        let translate = useRef(new Animated.ValueXY(0)).current
-        const onPinchEvent = Animated.event(
-          [
-            {
-              nativeEvent: { scale: scale, focalX: translate.x, focalY: translate.y }
-            }
-          ],
-          {
-            useNativeDriver: true
-          }
-        )
-        const onPinchStateChange = event => {
-          if (event.nativeEvent.oldState === State.ACTIVE) {
-            Animated.spring(scale, {
-              toValue: 1,
-              useNativeDriver: true
-            }).start()
-            Animated.spring(translate, {
-                toValue: 0,
-                useNativeDriver: true
-            }).start()
-          }
-        }
+        const scale = useSharedValue(1);
+        
+        const pinchGesture = Gesture.Pinch()
+            .onUpdate((e) => {
+            scale.value = e.scale < 1 ? 1 : e.scale > 3 ? 3 : e.scale;
+            })
+            .onEnd(() => {
+            scale.value = withSpring(1, {stiffness: 90, overshootClamping: true});
+            });
+
+        const animatedStyle = useAnimatedStyle(() => ({
+            transform: [{ scale: scale.value }],
+        }));
+
         return (
-            <PinchGestureHandler
-                onGestureEvent={onPinchEvent}
-                onHandlerStateChange={onPinchStateChange}
-            >
+            <GestureDetector gesture={pinchGesture}>
                 <Animated.Image
                     source={{ uri: imageUri}}
-                    style={{
-                    width: '100%',
-                    height: '100%',
-                    borderRadius: 20,
-                    position: 'absolute',
-                    top: 0,
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    zIndex: 100,
-                    transform: [{ scale: scale}/*, {translateX: translate.x}, {translateY: translate.y}*/]
-                    }}
+                    style={
+                        [
+                            {
+                                width: '100%',
+                                height: '100%',
+                                borderRadius: 20,
+                                position: 'absolute',
+                                top: 0,
+                                bottom: 0,
+                                left: 0,
+                                right: 0,
+                                zIndex: 100,
+                            },
+                            animatedStyle,
+                        ]
+                    }
                     resizeMode='cover'
                 />
-            </PinchGestureHandler>
+            </GestureDetector>
         )
     }
 

@@ -10,7 +10,6 @@ import { Start_Stack } from './navigation/Start_Stack.js';
 import * as Notifications from 'expo-notifications';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Asset } from 'expo-asset';
-import { DefaultTheme, DarkTheme, useRoute } from '@react-navigation/native';
 import { CredentialsContext } from './components/CredentialsContext';
 import { AdIDContext } from './components/AdIDContext.js';
 import { AppStylingContext } from './components/AppStylingContext.js';
@@ -728,7 +727,9 @@ useEffect(() => {
   var appTheme = AppStylingContextState == 'Default' ? scheme === 'dark' ? AppDarkTheme : AppLightTheme : AppStylingContextState == 'Dark' ? AppDarkTheme : AppStylingContextState == 'Light' ? AppLightTheme : AppStylingContextState == 'PureDark' ? AppPureDarkTheme : AppStylingContextState == 'PureLight' ? AppPureLightTheme : currentSimpleStylingData;
 
   const NotificationBox = () => {
-    if (notification !== false && notification?.request?.content?.title && notification?.request?.content?.body) {
+    const route = navigationRef?.current?.getCurrentRoute();
+    const routeName = route ? route.name : '';
+    if (notification !== false && notification?.request?.content?.title && notification?.request?.content?.body && routeName != 'WelcomeToSocialSquareScreen' && routeName != 'IntroScreen') {
       return (
         <View style={{position: 'absolute', opacity: 0.9, backgroundColor: appTheme.colors.darkerPrimary, top: Dimensions.get('window').height * 0.05, zIndex: 110, width: Dimensions.get('window').width * 0.9, alignSelf: 'center', alignItems: 'center', justifyContent: 'center'}}>
             <Animated.View style={{width: popUpTimeoutLength, backgroundColor: appTheme.colors.brand, height: 3 }}>
@@ -798,15 +799,27 @@ useEffect(() => {
         useNativeDriver: true
       }).start();
     }
-    return(
-      <PanGestureHandler onGestureEvent={onPanGestureEvent} onHandlerStateChange={onHandlerStateChange}>
-        <Animated.View style={{backgroundColor: 'rgba(255, 0, 0, 0.7)', height: 60, width: '90%', position: 'absolute', zIndex: 999, top: appHeight - 140, marginHorizontal: '5%', flexDirection: 'row', borderColor: 'black', borderRadius: 15, borderWidth: 1, transform: [{translateY: DisconnectedFromInternetBoxY}], justifyContent: 'center', alignItems: 'center'}}>
-          <TouchableOpacity onPress={onBoxPress}>
-            <Text style={{color: 'white', fontSize: 20, fontWeight: 'bold'}}>Lost connection</Text>
-          </TouchableOpacity>
-        </Animated.View>
-      </PanGestureHandler>
-    )
+
+    const route = navigationRef?.current?.getCurrentRoute();
+    const routeName = route ? route.name : '';
+    if (routeName == 'WelcomeToSocialSquareScreen' || routeName == 'IntroScreen' || routeName == 'LoginScreen' || routeName == 'Signup' || routeName == 'ModalLoginScreen' || routeName == 'ModalSignupScreen') {
+      Animated.timing(DisconnectedFromInternetBoxY, {
+        toValue: 250,
+        duration: 200,
+        useNativeDriver: true
+      }).start();
+      return null
+    } else {
+      return(
+        <PanGestureHandler onGestureEvent={onPanGestureEvent} onHandlerStateChange={onHandlerStateChange}>
+          <Animated.View style={{backgroundColor: 'rgba(255, 0, 0, 0.7)', height: 60, width: '90%', position: 'absolute', zIndex: 999, top: appHeight - 140, marginHorizontal: '5%', flexDirection: 'row', borderColor: 'black', borderRadius: 15, borderWidth: 1, transform: [{translateY: DisconnectedFromInternetBoxY}], justifyContent: 'center', alignItems: 'center'}}>
+            <TouchableOpacity onPress={onBoxPress}>
+              <Text style={{color: 'white', fontSize: 20, fontWeight: 'bold'}}>Lost connection</Text>
+            </TouchableOpacity>
+          </Animated.View>
+        </PanGestureHandler>
+      )
+    }
   }
 
   const AccountSwitcher = () => {
@@ -942,20 +955,33 @@ useEffect(() => {
         useNativeDriver: true
       }).start();
     }
-    return(
-      <>
-        {storedCredentials ?
-          <PanGestureHandler onGestureEvent={onPanGestureEvent} onHandlerStateChange={onHandlerStateChange}>
-            <Animated.View style={{backgroundColor: (colors.primary + 'CC'), height: 60, width: '90%', position: 'absolute', zIndex: 999, top: appHeight - 140, marginHorizontal: '5%', flexDirection: 'row', borderColor: 'black', borderRadius: 15, borderWidth: 1, transform: [{translateY: AccountSwitchedBoxY}], justifyContent: 'center', alignItems: 'center'}}>
-              <TouchableOpacity onPress={onBoxPress} style={{flexDirection: 'row', justifyContent: 'flex-start'}}>
-                <Avatar style={{width: 40, height: 40, marginLeft: 15}} source={{uri: profilePictureUri}}/>
-                <Text style={{color: colors.tertiary, fontSize: 16, marginTop: 20, marginLeft: 15, fontWeight: 'bold'}}>{'Switched to ' + (storedCredentials.displayName || storedCredentials.name)}</Text>
-              </TouchableOpacity>
-            </Animated.View>
-          </PanGestureHandler>
-        : null}
-      </>
-    )
+
+    const route = navigationRef?.current?.getCurrentRoute();
+    const routeName = route ? route.name : '';
+
+    if (routeName == 'WelcomeToSocialSquareScreen' || routeName == 'IntroScreen') {
+      Animated.timing(AccountSwitchedBoxY, {
+        toValue: 250,
+        duration: 200,
+        useNativeDriver: true
+      }).start();
+      return null
+    } else {
+      return(
+        <>
+          {storedCredentials && routeName != 'WelcomeToSocialSquareScreen' && routeName != 'IntroScreen' ?
+            <PanGestureHandler onGestureEvent={onPanGestureEvent} onHandlerStateChange={onHandlerStateChange}>
+              <Animated.View style={{backgroundColor: (colors.primary + 'CC'), height: 60, width: '90%', position: 'absolute', zIndex: 999, top: appHeight - 140, marginHorizontal: '5%', flexDirection: 'row', borderColor: 'black', borderRadius: 15, borderWidth: 1, transform: [{translateY: AccountSwitchedBoxY}], justifyContent: 'center', alignItems: 'center'}}>
+                <TouchableOpacity onPress={onBoxPress} style={{flexDirection: 'row', justifyContent: 'flex-start'}}>
+                  <Avatar style={{width: 40, height: 40, marginLeft: 15}} source={{uri: profilePictureUri}}/>
+                  <Text style={{color: colors.tertiary, fontSize: 16, marginTop: 20, marginLeft: 15, fontWeight: 'bold'}}>{'Switched to ' + (storedCredentials.displayName || storedCredentials.name)}</Text>
+                </TouchableOpacity>
+              </Animated.View>
+            </PanGestureHandler>
+          : null}
+        </>
+      )
+    }
   }
 
   useEffect(() => {
@@ -971,19 +997,18 @@ useEffect(() => {
       }
       if (storedCredentials && allCredentialsStoredList) {
         if (allCredentialsStoredList.length > 1) {
-          Animated.sequence([
-            Animated.timing(AccountSwitchedBoxY, {
-              toValue: 0,
-              duration: 100,
-              useNativeDriver: true
-            }),
-            Animated.delay(3000),
+          Animated.timing(AccountSwitchedBoxY, {
+            toValue: 0,
+            duration: 100,
+            useNativeDriver: true
+          }).start()
+          setTimeout(() => {
             Animated.timing(AccountSwitchedBoxY, {
               toValue: 250,
               duration: 100,
               useNativeDriver: true
-            })
-          ]).start();
+            }).start()
+          }, 3000);
         }
       }
     } catch (error) {

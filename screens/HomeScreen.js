@@ -666,45 +666,47 @@ const HomeScreen = ({navigation, route}) => {
                 }
             })
         } else {
-            handleMessage("No more posts")
+            setAllPosts(allPosts => [...allPosts, 'No More Posts'])
             setLoadingFeed(false)
         }   
     }
 
     const loadMorePosts = () => {
         if (currentFeed == "Following") {
-            //is reload so bottom two isnt needed
-            const imagePosts = allPosts.filter(x => x.imageId).map(x => x.imageId)
-            const pollPosts = allPosts.filter(x => x.pollId).map(x => x.pollId)
-            const threadPosts = allPosts.filter(x => x.threadId).map(x => x.threadId)
-            const imageAndPolls = imagePosts.concat(pollPosts)
-            const allPostIds = imageAndPolls.concat(threadPosts) // concat doesnt change original array
-            const allPostIdsStringed = allPostIds.toString() 
-            console.log("allPostIdsStringed:")
-            console.log(allPostIdsStringed)
+                if (allPosts.at(-1) != 'No More Posts') { //Stop loading more posts if there are no more posts to load
+                //is reload so bottom two isnt needed
+                const imagePosts = allPosts.filter(x => x.imageId).map(x => x.imageId)
+                const pollPosts = allPosts.filter(x => x.pollId).map(x => x.pollId)
+                const threadPosts = allPosts.filter(x => x.threadId).map(x => x.threadId)
+                const imageAndPolls = imagePosts.concat(pollPosts)
+                const allPostIds = imageAndPolls.concat(threadPosts) // concat doesnt change original array
+                const allPostIdsStringed = allPostIds.toString() 
+                console.log("allPostIdsStringed:")
+                console.log(allPostIdsStringed)
 
-            setLoadingFeed(true)
-            const url = `${serverUrl}/feed/followerFeed/${_id}/${allPostIdsStringed}`
-            axios.get(url).then((response) => {
-                const result = response.data;
-                const { message, status, data } = result;
+                setLoadingFeed(true)
+                const url = `${serverUrl}/feed/followerFeed/${_id}/${allPostIdsStringed}`
+                axios.get(url).then((response) => {
+                    const result = response.data;
+                    const { message, status, data } = result;
 
-                if (status !== 'SUCCESS') {
+                    if (status !== 'SUCCESS') {
+                        setLoadingFeed(false)
+                        handleMessage(message, status);
+                        console.log(status)
+                        console.log(message)
+                    } else {
+                        layOutAllPosts(data, false);
+                        console.log(status)
+                        console.log(message)
+                    }
+
+                }).catch(error => {
+                    console.log(error);
                     setLoadingFeed(false)
-                    handleMessage(message, status);
-                    console.log(status)
-                    console.log(message)
-                } else {
-                    layOutAllPosts(data, false);
-                    console.log(status)
-                    console.log(message)
-                }
-
-            }).catch(error => {
-                console.log(error);
-                setLoadingFeed(false)
-                handleMessage("An error occured. Try checking your network connection and retry.");
-            })
+                    handleMessage("An error occured. Try checking your network connection and retry.");
+                })
+            }
         } else if ("Normal") {
             console.log("Doesnt exist yet lol")
         }
@@ -1592,80 +1594,88 @@ const HomeScreen = ({navigation, route}) => {
                             }
                         }}
                         renderItem={({item, index}) => {
-                            return(
-                                <View>
-                                    {item.hasSeenPosts == true && (
-                                        <View>
-                                            {index-1 == -1 && (
-                                                <View>
-                                                    <SubTitle style={{marginBottom: 0, color: colors.brand, textAlign: 'center'}}>All possible unviewed posts seen</SubTitle>
-                                                    <SubTitle style={{fontSize: 8, color: colors.tertiary, textAlign: 'center', marginBottom: 5}}>Now on you may have seen these posts more than twice or interacted with them</SubTitle>
-                                                </View>
-                                            )}
-                                            {index-1 !== -1 && (
-                                                <View>
-                                                    {allPosts.slice(0, index).findIndex(x => x.hasSeenPosts == true) == -1 && (
-                                                        <View>
-                                                            <SubTitle style={{marginBottom: 0, color: colors.brand, textAlign: 'center'}}>All possible unviewed posts seen</SubTitle>
-                                                            <SubTitle style={{fontSize: 8, color: colors.tertiary, textAlign: 'center', marginBottom: 5}}>Now on you may have seen these posts more than twice or interacted with them</SubTitle>
-                                                        </View>
-                                                    )}
-                                                </View>
-                                            )}
-                                        </View>
-                                    )}
-                                    
-                                    {item.hasSeenPosts == false && (
-                                        <View>
-                                            {index-1 !== -1 && (
-                                                <View>
-                                                    {allPosts.slice(0, index).findIndex(x => x.hasSeenPosts == true) !== -1 && ( //has seen one above somewhere
-                                                        <View>
-                                                            <SubTitle style={{marginBottom: 0, color: colors.brand, textAlign: 'center'}}>New Post</SubTitle>
-                                                            <SubTitle style={{fontSize: 8, color: colors.tertiary, textAlign: 'center', marginBottom: 5}}>You may have not seen the following post</SubTitle>
-                                                        </View>
-                                                    )}
-                                                </View>
-                                            )}
-                                        </View>
-                                    )}
+                            if (item == 'No More Posts') {
+                                return (
+                                    <View style={{borderColor: colors.tertiary, borderTopWidth: 3, borderBottomWidth: 3, borderLeftWidth: 1, borderRightWidth: 1, paddingVertical: 15, justifyContent: 'center', alignItems: 'center'}}>
+                                        <Text style={{color: colors.tertiary, fontWeight: 'bold', fontSize: 20}}>No More Posts</Text>
+                                    </View>
+                                )
+                            } else {
+                                return(
+                                    <View>
+                                        {item.hasSeenPosts == true && (
+                                            <View>
+                                                {index-1 == -1 && (
+                                                    <View>
+                                                        <SubTitle style={{marginBottom: 0, color: colors.brand, textAlign: 'center'}}>All possible unviewed posts seen</SubTitle>
+                                                        <SubTitle style={{fontSize: 8, color: colors.tertiary, textAlign: 'center', marginBottom: 5}}>Now on you may have seen these posts more than twice or interacted with them</SubTitle>
+                                                    </View>
+                                                )}
+                                                {index-1 !== -1 && (
+                                                    <View>
+                                                        {allPosts.slice(0, index).findIndex(x => x.hasSeenPosts == true) == -1 && (
+                                                            <View>
+                                                                <SubTitle style={{marginBottom: 0, color: colors.brand, textAlign: 'center'}}>All possible unviewed posts seen</SubTitle>
+                                                                <SubTitle style={{fontSize: 8, color: colors.tertiary, textAlign: 'center', marginBottom: 5}}>Now on you may have seen these posts more than twice or interacted with them</SubTitle>
+                                                            </View>
+                                                        )}
+                                                    </View>
+                                                )}
+                                            </View>
+                                        )}
+                                        
+                                        {item.hasSeenPosts == false && (
+                                            <View>
+                                                {index-1 !== -1 && (
+                                                    <View>
+                                                        {allPosts.slice(0, index).findIndex(x => x.hasSeenPosts == true) !== -1 && ( //has seen one above somewhere
+                                                            <View>
+                                                                <SubTitle style={{marginBottom: 0, color: colors.brand, textAlign: 'center'}}>New Post</SubTitle>
+                                                                <SubTitle style={{fontSize: 8, color: colors.tertiary, textAlign: 'center', marginBottom: 5}}>You may have not seen the following post</SubTitle>
+                                                            </View>
+                                                        )}
+                                                    </View>
+                                                )}
+                                            </View>
+                                        )}
 
-                                    {index % 5 == 0 && index !== 0 && (
-                                        <View style={{alignItems: 'center'}}>
-                                            <AdMobBanner
-                                                bannerSize="mediumRectangle"
-                                                adUnitID={AdID} // SocialSquare Google AdMob Ad ID
-                                                servePersonalizedAds={false}
-                                                onDidFailToReceiveAdWithError={(error) => {console.warn(error)}} 
-                                            />
-                                        </View>
-                                    )}
+                                        {index % 5 == 0 && index !== 0 && (
+                                            <View style={{alignItems: 'center'}}>
+                                                <AdMobBanner
+                                                    bannerSize="mediumRectangle"
+                                                    adUnitID={AdID} // SocialSquare Google AdMob Ad ID
+                                                    servePersonalizedAds={false}
+                                                    onDidFailToReceiveAdWithError={(error) => {console.warn(error)}} 
+                                                />
+                                            </View>
+                                        )}
 
-                                    {item.format == "Image" && (
-                                        <MemoizedPost colors={colors} navigation={navigation} format={item.format} imageId={item.imageId} imageKey={item.imageKey} imageB64={item.imageB64} imageTitle={item.imageTitle} imageDescription={item.imageDescription} imageUpVotes={item.imageUpVotes} imageComments={item.imageComments} creatorName={item.creatorName} creatorDisplayName={item.creatorDisplayName} creatorPfpB64={item.creatorPfpB64} datePosted={item.datePosted} postNum={item.postNum} usersUdnVote={item.usersUdnVote} postNotFromFeed={false}/>
-                                    )}
-                                    {item.format == "Poll" && (
-                                        <MemoizedPost colors={colors} navigation={navigation} format={item.format} pollTitle={item.pollTitle} pollSubTitle={item.pollSubTitle} optionOne={item.optionOne} optionOnesColor={item.optionOnesColor} optionOnesVotes={item.optionOnesVotes} optionOnesBarLength={item.optionOnesBarLength} optionTwo={item.optionTwo} optionTwosColor={item.optionTwosColor} optionTwosVotes={item.optionTwosVotes} optionTwosBarLength={item.optionTwosBarLength} optionThree={item.optionThree} optionThreesColor={item.optionThreesColor} optionThreesVotes={item.optionThreesVotes} optionThreesBarLength={item.optionThreesBarLength} optionFour={item.optionFour} optionFoursColor={item.optionFoursColor} optionFoursVotes={item.optionFoursVotes} optionFoursBarLength={item.optionFoursBarLength} optionFive={item.optionFive} optionFivesColor={item.optionFivesColor} optionFivesVotes={item.optionFivesVotes} optionFivesBarLength={item.optionFivesBarLength} optionSix={item.optionSix} optionSixesColor={item.optionSixesColor} optionSixesVotes={item.optionSixesVotes} optionSixesBarLength={item.optionSixesBarLength} totalNumberOfOptions={item.totalNumberOfOptions} pollUpOrDownVotes={item.pollUpOrDownVotes} pollId={item.pollId} votedFor={item.votedFor} pfpB64={item.pfpB64} creatorName={item.creatorName} creatorDisplayName={item.creatorDisplayName} postNum={item.postNum} datePosted={item.datePosted} pollComments={item.pollComments} usersUdnVote={item.usersUdnVote}/>
-                                    )}
-                                    {item.format == "Thread" && (
-                                        <MemoizedPost colors={colors} navigation={navigation} format={item.format} postNum={item.postNum} threadId={item.threadId} threadComments={item.threadComments} threadType={item.threadType} threadUpVotes={item.threadUpVotes} threadTitle={item.threadTitle} threadSubtitle={item.threadSubtitle} threadTags={item.threadTags} threadCategory={item.threadCategory} threadBody={item.threadBody} threadImageKey={item.threadImageKey} threadImageDescription={item.threadImageDescription} threadNSFW={item.threadNSFW} threadNSFL={item.threadNSFL} datePosted={item.datePosted} threadUpVoted={item.threadUpVoted} threadDownVoted={item.threadDownVoted} creatorDisplayName={item.creatorDisplayName} creatorName={item.creatorName} creatorImageB64={item.creatorImageB64} imageInThreadB64={item.imageInThreadB64} usersUdnVote={item.usersUdnVote}/>
-                                    )}
+                                        {item.format == "Image" && (
+                                            <MemoizedPost colors={colors} navigation={navigation} format={item.format} imageId={item.imageId} imageKey={item.imageKey} imageB64={item.imageB64} imageTitle={item.imageTitle} imageDescription={item.imageDescription} imageUpVotes={item.imageUpVotes} imageComments={item.imageComments} creatorName={item.creatorName} creatorDisplayName={item.creatorDisplayName} creatorPfpB64={item.creatorPfpB64} datePosted={item.datePosted} postNum={item.postNum} usersUdnVote={item.usersUdnVote} postNotFromFeed={false}/>
+                                        )}
+                                        {item.format == "Poll" && (
+                                            <MemoizedPost colors={colors} navigation={navigation} format={item.format} pollTitle={item.pollTitle} pollSubTitle={item.pollSubTitle} optionOne={item.optionOne} optionOnesColor={item.optionOnesColor} optionOnesVotes={item.optionOnesVotes} optionOnesBarLength={item.optionOnesBarLength} optionTwo={item.optionTwo} optionTwosColor={item.optionTwosColor} optionTwosVotes={item.optionTwosVotes} optionTwosBarLength={item.optionTwosBarLength} optionThree={item.optionThree} optionThreesColor={item.optionThreesColor} optionThreesVotes={item.optionThreesVotes} optionThreesBarLength={item.optionThreesBarLength} optionFour={item.optionFour} optionFoursColor={item.optionFoursColor} optionFoursVotes={item.optionFoursVotes} optionFoursBarLength={item.optionFoursBarLength} optionFive={item.optionFive} optionFivesColor={item.optionFivesColor} optionFivesVotes={item.optionFivesVotes} optionFivesBarLength={item.optionFivesBarLength} optionSix={item.optionSix} optionSixesColor={item.optionSixesColor} optionSixesVotes={item.optionSixesVotes} optionSixesBarLength={item.optionSixesBarLength} totalNumberOfOptions={item.totalNumberOfOptions} pollUpOrDownVotes={item.pollUpOrDownVotes} pollId={item.pollId} votedFor={item.votedFor} pfpB64={item.pfpB64} creatorName={item.creatorName} creatorDisplayName={item.creatorDisplayName} postNum={item.postNum} datePosted={item.datePosted} pollComments={item.pollComments} usersUdnVote={item.usersUdnVote}/>
+                                        )}
+                                        {item.format == "Thread" && (
+                                            <MemoizedPost colors={colors} navigation={navigation} format={item.format} postNum={item.postNum} threadId={item.threadId} threadComments={item.threadComments} threadType={item.threadType} threadUpVotes={item.threadUpVotes} threadTitle={item.threadTitle} threadSubtitle={item.threadSubtitle} threadTags={item.threadTags} threadCategory={item.threadCategory} threadBody={item.threadBody} threadImageKey={item.threadImageKey} threadImageDescription={item.threadImageDescription} threadNSFW={item.threadNSFW} threadNSFL={item.threadNSFL} datePosted={item.datePosted} threadUpVoted={item.threadUpVoted} threadDownVoted={item.threadDownVoted} creatorDisplayName={item.creatorDisplayName} creatorName={item.creatorName} creatorImageB64={item.creatorImageB64} imageInThreadB64={item.imageInThreadB64} usersUdnVote={item.usersUdnVote}/>
+                                        )}
 
-                                    {/*Check if its last index*/}
-                                    {index == allPosts.length-1 && (
-                                        <View>
-                                            {loadingFeed == true && (
-                                                <ActivityIndicator size="large" color={colors.brand} />  
-                                            )}
-                                            {loadingFeed == false && (
-                                                <TouchableOpacity style={{alignSelf: 'center'}} onPress={() => loadMorePosts()}>
-                                                    <SubTitle style={{textAlign: 'center', alignSelf: 'center', textAlign: 'center', color: colors.tertiary}}>Load More</SubTitle>
-                                                </TouchableOpacity>
-                                            )}
-                                        </View>
-                                    )}
-                                </View>
-                            )
+                                        {/*Check if its last index*/}
+                                        {index == allPosts.length-1 && (
+                                            <View>
+                                                {loadingFeed == true && (
+                                                    <ActivityIndicator size="large" color={colors.brand} />  
+                                                )}
+                                                {loadingFeed == false && (
+                                                    <TouchableOpacity style={{alignSelf: 'center'}} onPress={() => loadMorePosts()}>
+                                                        <SubTitle style={{textAlign: 'center', alignSelf: 'center', textAlign: 'center', color: colors.tertiary}}>Load More</SubTitle>
+                                                    </TouchableOpacity>
+                                                )}
+                                            </View>
+                                        )}
+                                    </View>
+                                )
+                            }
                         }}
                         keyExtractor={(item, index) => index.toString()}
                     />
