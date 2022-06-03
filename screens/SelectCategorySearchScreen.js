@@ -52,6 +52,7 @@ import axios from 'axios';
 import { useTheme } from '@react-navigation/native';
 
 import { ServerUrlContext } from '../components/ServerUrlContext.js';
+import SocialSquareLogo_B64_png from '../assets/SocialSquareLogo_Base64_png.js';
 
 const SelectCategorySearchScreen = ({route, navigation}) => {
     const {colors, dark} = useTheme()
@@ -65,7 +66,7 @@ const SelectCategorySearchScreen = ({route, navigation}) => {
     const [messageType, setMessageType] = useState();
     const [foundAmount, setFoundAmount] = useState();
     const [debounce, setDebounce] = useState(false);
-    const [changeSections, setChangeSections] = useState();
+    const [changeSections, setChangeSections] = useState([]);
     const [noResults, setNoResults] = useState(false);
     const [loadingResults, setLoadingResults] = useState(false);
     const [errorMessage, setErrorMessage] = useState();
@@ -74,11 +75,10 @@ const SelectCategorySearchScreen = ({route, navigation}) => {
 
     const CategoryItem = ({categoryTitle, categoryDescription, members, categoryTags, image, NSFW, NSFL, datePosted, allowScreenShots}) => (
         <SearchFrame onPress={() => navigation.navigate("ThreadUploadPage", {threadFormat: threadFormat, threadTitle: threadTitle, threadSubtitle: threadSubtitle, threadTags: threadTags, categoryTitle: categoryTitle, threadBody: threadBody, threadImage: threadImage, threadImageDescription: threadImageDescription, threadNSFW: threadNSFW, threadNSFL: threadNSFL, allowScreenShots: (allowScreenShots != undefined ? allowScreenShots : true)})}>
-            {image !== null && (
+            {image !== null ? (
                 <Avatar resizeMode="cover" searchPage={true} source={{uri: `data:image/jpg;base64,${image}`}} />
-            )}
-            {image == null && (
-                <Avatar resizeMode="cover" searchPage={true} source={require('./../assets/img/Logo.png')} />
+            ) : (
+                <Avatar resizeMode="cover" searchPage={true} source={{uri: SocialSquareLogo_B64_png}} />
             )}
             {NSFW == false && (
                 <View>
@@ -139,8 +139,7 @@ const SelectCategorySearchScreen = ({route, navigation}) => {
                     if (allData[index].imageKey !== "") {
                         if (index+1 <= userLoadMax) {      
                             async function asyncFunctionForImages() {
-                                const imageInCategory = await getImageInCategory(allData[index].imageKey)
-                                const imageB64 = imageInCategory.data
+                                const imageB64 = await getImageInCategory(allData[index].imageKey)
                                 var tempSectionsTemp = {data: [{categoryTitle: allData[index].categoryTitle, categoryDescription: allData[index].categoryDescription, members: allData[index].members, categoryTags: allData[index].categoryTags, image: imageB64, NSFW: allData[index].NSFW, NSFL: allData[index].NSFL, datePosted: allData[index].datePosted, allowScreenShots: allData[index].allowScreenShots}]}
                                 tempSections.push(tempSectionsTemp)
                                 itemsProcessed++;
@@ -204,7 +203,7 @@ const SelectCategorySearchScreen = ({route, navigation}) => {
             console.log('Empty search')
             setNoResults(false)
             setLoadingResults(false)
-            setChangeSections()
+            setChangeSections([])
             setErrorMessage()
         }
     }
