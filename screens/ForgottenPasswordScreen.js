@@ -48,7 +48,7 @@ const ForgottenPasswordScreen = ({navigation}) => {
             if (status !== 'SUCCESS') {
                 handleMessage(message,status);
             } else {
-                isFocused ? navigation.navigate('ResetPasswordScreen', {username: values.username, email: data}) : null
+                isFocused ? navigation.navigate('ResetPasswordScreen', {username: values.username, email: data.blurredEmail, fromAddress: data.fromAddress}) : null
             }
             setSubmitting(false);
         }).catch(error => {

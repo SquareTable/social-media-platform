@@ -26,7 +26,7 @@ import { useIsFocused } from '@react-navigation/native';
 
 const ResetPasswordScreen = ({route, navigation}) => {
     const {colors, dark} = useTheme();
-    const {username, email} = route.params;
+    const {username, email, fromAddress} = route.params;
     const [message, setMessage] = useState();
     const [messageType, setMessageType] = useState();
     const {serverUrl, setServerUrl} = useContext(ServerUrlContext);
@@ -127,7 +127,7 @@ const ResetPasswordScreen = ({route, navigation}) => {
                 console.warn(message)
                 handleMessage('An error occured while resending verification code. Try checking your network connection and then try again.');
             } else {
-                handleMessage(('Resent code to ' + email), 'SUCCESS');
+                handleMessage(('Resent code to ' + email + ' from ' + fromAddress), 'SUCCESS');
                 setCode('');
                 inputFocusRef?.current?.focus();
                 setContainerIsFocused(true)
@@ -152,7 +152,7 @@ const ResetPasswordScreen = ({route, navigation}) => {
                 </Navigator_BackButton>
                 <TestText style={{textAlign: 'center', color: colors.tertiary}}>Reset Password</TestText>
             </ChatScreen_Title>
-            <Text style={{color: colors.tertiary, fontSize: 18, fontWeight: 'bold', textAlign: 'center', marginHorizontal: '5%'}}>An email with a verification code has been sent to {email}.</Text>
+            <Text style={{color: colors.tertiary, fontSize: 18, fontWeight: 'bold', textAlign: 'center', marginHorizontal: '5%'}}>An email with a verification code has been sent to {email} from {fromAddress}.</Text>
             <Text style={{color: colors.tertiary, fontSize: 16, textAlign: 'center', marginHorizontal: '5%'}}>If you can't find it please check your spam folder.</Text>
             <Text style={{color: colors.errorColor, fontSize: 16, textAlign: 'center', marginHorizontal: '5%'}}>Codes expire after 5 minutes from being sent.</Text>
             <MsgBox type={messageType}>{message}</MsgBox>
