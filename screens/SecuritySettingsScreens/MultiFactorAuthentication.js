@@ -123,6 +123,7 @@ const MultiFactorAuthentication = ({navigation}) => {
 
 const FactorBox = ({colors, text, enabledAuthenticationFactors, index, navigation, items}) => {
     const navigateTo = ['ActivateEmailMFA', 'ActivateSMSMFA', 'ActivateAuthenticationAppMFA']
+    console.log(enabledAuthenticationFactors)
     return (
         <TouchableOpacity onPress={() => {navigation.navigate(navigateTo[index], {emailEnabled: enabledAuthenticationFactors.includes(items[0]), SMSEnabled: enabledAuthenticationFactors.includes(items[1]), authenticationAppEnabled: enabledAuthenticationFactors.includes(items[2])})}} style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 10, borderColor: colors.tertiary, borderWidth: 3, height: 60}}>
             <Text style={{color: colors.tertiary, fontSize: 18}}>{text}</Text>

@@ -23,6 +23,7 @@ import ResetPasswordScreen from "../screens/ResetPasswordScreen.js";
 import ResetPasswordAfterVerificationScreen from "../screens/ResetPasswordAfterVerificationScreen.js";
 import WelcomeToSocialSquareScreen from "../screens/WelcomeScreens/WelcomeToSocialSquare.js";
 import TransferFromOtherPlatformsScreen from "../screens/WelcomeScreens/TransferFromOtherPlatforms.js";
+import VerifyEmailCodeScreen from "../screens/VerifyEmailCodeScreen.js";
 
 const Stack = createStackNavigator();
 
@@ -81,6 +82,7 @@ const Start_Stack = () => {
                             <Stack.Screen name="ResetPasswordAfterVerificationScreen" component={ResetPasswordAfterVerificationScreen}/>
                             <Stack.Screen name="WelcomeToSocialSquareScreen" component={WelcomeToSocialSquareScreen}/>
                             <Stack.Screen name="TransferFromOtherPlatformsScreen" component={TransferFromOtherPlatformsScreen}/>
+                            <Stack.Screen name="VerifyEmailCodeScreen" component={VerifyEmailCodeScreen}/>
                         </>
                     ) : ( 
                         <>
@@ -111,6 +113,7 @@ const Start_Stack = () => {
                             <Stack.Screen name="ResetPasswordAfterVerificationScreen" component={ResetPasswordAfterVerificationScreen}/>
                             <Stack.Screen name="WelcomeToSocialSquareScreen" component={WelcomeToSocialSquareScreen}/>
                             <Stack.Screen name="TransferFromOtherPlatformsScreen" component={TransferFromOtherPlatformsScreen}/>
+                            <Stack.Screen name="VerifyEmailCodeScreen" component={VerifyEmailCodeScreen}/>
                         </>
                     ) : (
                         <>
@@ -124,6 +127,7 @@ const Start_Stack = () => {
                             <Stack.Screen name="ResetPasswordAfterVerificationScreen" component={ResetPasswordAfterVerificationScreen}/>
                             <Stack.Screen name="WelcomeToSocialSquareScreen" component={WelcomeToSocialSquareScreen}/>
                             <Stack.Screen name="TransferFromOtherPlatformsScreen" component={TransferFromOtherPlatformsScreen}/>
+                            <Stack.Screen name="VerifyEmailCodeScreen" component={VerifyEmailCodeScreen}/>
                         </>
                     )}
                 </Stack.Navigator>

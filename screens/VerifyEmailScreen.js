@@ -1,14 +1,14 @@
-import React, {useState, useContext} from 'react';
+import React, {useState, useContext, useEffect, useRef} from 'react';
 import {View, Text, Image, TouchableOpacity, ActivityIndicator} from 'react-native';
 import { useTheme } from '@react-navigation/native';
 import axios from 'axios';
 import { ServerUrlContext } from '../components/ServerUrlContext';
 import { Formik } from 'formik';
+import KeyboardAvoidingWrapper from '../components/KeyboardAvoidingWrapper';
 import {
     ChatScreen_Title,
     Navigator_BackButton,
     TestText,
-    KeyboardAvoidingWrapper,
     InnerContainer,
     StyledFormArea,
     StyledButton,
@@ -18,11 +18,20 @@ import {
     ButtonText,
     MsgBox
 } from './screenStylings/styling.js';
+import Octicons from 'react-native-vector-icons/Octicons';
+import { CredentialsContext } from '../components/CredentialsContext';
 
 const VerifyEmailScreen = ({navigation, route}) => {
     const [message, setMessage] = useState();
     const [messageType, setMessageType] = useState();
     const {serverUrl, setServerUrl} = useContext(ServerUrlContext);
+    const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
+    const {_id} = storedCredentials;
+    const emailInputRef = useRef();
+
+    useEffect(() => {
+        emailInputRef?.current?.focus();
+    }, [])
 
     try {
         var {task} = route.params;
@@ -39,7 +48,26 @@ const VerifyEmailScreen = ({navigation, route}) => {
     }
 
     const handleVerifyEmail = (values, setSubmitting) => {
-        alert("It worked")
+        setSubmitting(true);
+        const url = serverUrl + '/user/sendemailverificationcode';
+        const toSend = {userID: _id, task: 'Add Email Multi-Factor Authentication', getAccountMethod: 'userID', username: null, email: values.email};
+
+        axios.post(url, toSend).then((response) => {
+            const result = response.data;
+            const {message, status, data} = result;
+
+            if (status !== 'SUCCESS') {
+                handleMessage(message,status);
+                setSubmitting(false);
+            } else {
+                setSubmitting(false);
+                navigation.navigate('VerifyEmailCodeScreen', {task: 'Add Email Multi-Factor Authentication', email: values.email, fromAddress: data.fromAddress, userID: _id});
+            }
+        }).catch(error => {
+            console.log(error);
+            setSubmitting(false);
+            handleMessage('An error occured. Try checking your network connection and then try again.');
+        })
     }
 
     return (
@@ -63,7 +91,7 @@ const VerifyEmailScreen = ({navigation, route}) => {
                             onSubmit={(values, {setSubmitting}) => {
                                 console.log("Submitting")
                                 if (values.email == '') {
-                                    handleMessage('Please enter your username.');
+                                    handleMessage('Please enter your email.');
                                     setSubmitting(false);
                                 } else {
                                     setMessage();
@@ -87,6 +115,7 @@ const VerifyEmailScreen = ({navigation, route}) => {
                                         colors={colors}
                                         autoCapitalize="none"
                                         autoCorrect={false}
+                                        emailInputRef={emailInputRef}
                                     />
                                     <MsgBox type={messageType}>{message}</MsgBox>
                                     {!isSubmitting && (<StyledButton onPress={handleSubmit}>
@@ -105,14 +134,14 @@ const VerifyEmailScreen = ({navigation, route}) => {
     )
 }
 
-const UserTextInput = ({label, icon, colors, ...props}) => {
+const UserTextInput = ({label, icon, colors, emailInputRef, ...props}) => {
     return(
         <View>
             <LeftIcon>
                 <Octicons name={icon} size={30} color={colors.brand} />
             </LeftIcon>
             <StyledInputLabel>{label}</StyledInputLabel>
-            <StyledTextInput {...props}/>
+            <StyledTextInput ref={emailInputRef} {...props}/>
         </View>
     )
 }

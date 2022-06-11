@@ -87,7 +87,11 @@ const LoginScreen = ({navigation, route}) => {
             if (status !== 'SUCCESS') {
                 handleMessage(message,status);
             } else {
-                persistLogin({...data[0]}, message, status);
+                if (message == "Email") {
+                    navigation.navigate('VerifyEmailCodeScreen', {task: 'Verify Email MFA Code', email: data.email, fromAddress: data.fromAddress, username: undefined, userID: undefined, secondId: data.secondId});
+                } else {
+                    persistLogin({...data[0]}, message, status);
+                }
             }
             setSubmitting(false);
 

@@ -77,6 +77,7 @@ import SafetySettingsScreen from "../screens/SafetySettingsScreen.js";
 import BlockedAccountsScreen from "../screens/SafetySettings/BlockedAccountsScreen.js";
 import ActivateEmailMFA from "../screens/SecuritySettingsScreens/MFAScreens/ActivateEmailMFA.js";
 import VerifyEmailScreen from "../screens/VerifyEmailScreen.js";
+import VerifyEmailCodeScreen from "../screens/VerifyEmailCodeScreen.js";
 
 
 const Stack = createStackNavigator();
@@ -276,6 +277,7 @@ const SettingsStack = () => {
       <Stack.Screen name="BlockedAccountsScreen" component={BlockedAccountsScreen}/>
       <Stack.Screen name="ActivateEmailMFA" component={ActivateEmailMFA}/>
       <Stack.Screen name="VerifyEmailScreen" component={VerifyEmailScreen}/>
+      <Stack.Screen name="VerifyEmailCodeScreen" component={VerifyEmailCodeScreen}/>
     </Stack.Navigator>
   )
 }
