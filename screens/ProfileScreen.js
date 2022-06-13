@@ -7,6 +7,7 @@ import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import ActionSheet from 'react-native-actionsheet';
 import * as MediaLibrary from 'expo-media-library';
+import cloneDeep from 'lodash/cloneDeep';
 
 import {
     InnerContainer,
@@ -2442,8 +2443,77 @@ const Welcome = ({navigation, route}) => {
     const onRefresh = useCallback(() => {
         setRefreshing(true)
         // Get data here
-        setRefreshing(false)
-        
+        console.log("HI")
+        const url = serverUrl + '/user/reloadProfileEssentials/' + _id;
+        axios.get(url).then((response) => {
+            const result = response.data;
+            const {message, status, data} = result;
+
+            if (status !== 'SUCCESS') {
+                handleMessage(message, status);
+                console.log("FAILED, " + message)
+                setRefreshing(false)
+            } else {
+                const finishedIdentifying = (finalToSet, didAnErrorOccur) => {
+                    console.log("Finished Identifying.")
+                    if (finalToSet !== storedCredentials) {
+                        if (didAnErrorOccur == false) {
+                            setStoredCredentials(finalToSet)
+                            console.log("Successfully refreshed.")
+                            handleMessage("Successfully refreshed.", "SUCCESS")
+                        } else {
+                            setStoredCredentials(finalToSet)
+                            console.log("Changes but may have not refreshed correctly.")
+                            handleMessage("Changes but may have not refreshed correctly.", "SUCCESS")
+                        }
+                    } else {
+                        if (didAnErrorOccur == false) {
+                            console.log("Nothing changed refresh complete.")
+                            handleMessage("Nothing changed refresh complete.", "SUCCESS")
+                        } else {
+                            console.log("Nothing changed but this may be due to an error.")
+                            handleMessage("Nothing changed but this may be due to an error.", "FAILED")
+                        }
+                    }
+                }
+                //
+                //console.log(data)
+                let toSetAsStoredCredentials = cloneDeep(storedCredentials)
+                let itemsProcessed = 0;
+                let errorWhileRefreshing = false
+                const dataKeys = Object.keys(data)
+                dataKeys.forEach(function(key) {
+                    console.log("HELLO1")
+                    try {
+                        if (toSetAsStoredCredentials[key] !== data[key]) {
+                            console.log("HELLO2")
+                            toSetAsStoredCredentials[key] = data[key]
+                            itemsProcessed++;
+                            if (itemsProcessed == dataKeys.length) {
+                                finishedIdentifying(toSetAsStoredCredentials, errorWhileRefreshing)
+                            }
+                        } else {
+                            console.log("HELLO3")
+                            itemsProcessed++;
+                            if (itemsProcessed == dataKeys.length) {
+                                finishedIdentifying(toSetAsStoredCredentials, errorWhileRefreshing)
+                            }
+                        }
+                    } catch (err) {
+                        itemsProcessed++;
+                        console.log("An error occured while refreshing. " + err)
+                        if (itemsProcessed == dataKeys.length) {
+                            finishedIdentifying(toSetAsStoredCredentials, errorWhileRefreshing)
+                        }
+                    }
+                })
+            }
+
+        }).catch(error => {
+            console.log(error);
+            setRefreshing(true)
+            handleMessage("An error occured. Try checking your network connection and retry.");
+        })
     })
 
     const isFocused = useIsFocused()
