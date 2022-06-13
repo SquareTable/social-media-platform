@@ -571,25 +571,24 @@ const HomeScreen = ({navigation, route}) => {
                     return firstTime > secondTime ? -1 : (firstTime > secondTime ? 1 : 0);
                 }
             });
+            const sortedRecievedPosts = allPosts.concat(notSeenSortedRecievedPosts).concat(seenSortedRecievedPosts)
             if (allPosts.length !== 0) {
                 if (resetPostsShowingOnLoad !== true) {
-                    const sortedRecievedPosts = allPosts.concat(notSeenSortedRecievedPosts).concat(seenSortedRecievedPosts)
                     console.log("sortedRecievedPosts")
                     //console.log(sortedRecievedPosts)
                     setAllPosts(sortedRecievedPosts)
                 } else {
-                    setAllPosts(seenSortedRecievedPosts)
+                    setAllPosts(sortedRecievedPosts)
                     console.log('Reload was successful')
                 }
                 setReloadFeed(false)
             } else {
                 if (resetPostsShowingOnLoad !== true) {
-                    const sortedRecievedPosts = notSeenSortedRecievedPosts.concat(seenSortedRecievedPosts)
                     console.log("sortedRecievedPosts")
                     //console.log(sortedRecievedPosts)
                     setAllPosts(sortedRecievedPosts)
                 } else {
-                    setAllPosts(seenSortedRecievedPosts)
+                    setAllPosts(sortedRecievedPosts)
                     console.log('Reload was successful')
                 }
                 setReloadFeed(false)
@@ -671,9 +670,16 @@ const HomeScreen = ({navigation, route}) => {
         }   
     }
 
+    /*
+    useEffect(() => {
+        console.log(allPosts)
+    }, [allPosts])
+    */
+
     const loadMorePosts = () => {
         if (currentFeed == "Following") {
-                if (allPosts.at(-1) != 'No More Posts') { //Stop loading more posts if there are no more posts to load
+            //console.log(allPosts)
+            if (allPosts[allPosts.length-1] != 'No More Posts') { //Stop loading more posts if there are no more posts to load
                 //is reload so bottom two isnt needed
                 const imagePosts = allPosts.filter(x => x.imageId).map(x => x.imageId)
                 const pollPosts = allPosts.filter(x => x.pollId).map(x => x.pollId)

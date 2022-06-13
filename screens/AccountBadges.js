@@ -101,7 +101,8 @@ const AccountBadges = ({navigation, route}) => {
                     <Text style={{fontSize: 14, color: colors.tertiary, marginLeft: 10}}>GENERAL</Text>
                     <SeperationLine/>
                     <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
-                        <TouchableOpacity style={badgesObject.includes('onSignUpBadge') ? {opacity: 1} : {opacity: 0.3}} onPress={() => {navigation.navigate('BadgeInfo', {badgeName: 'Joined SocialSquare', badgeUnlocked: badgesObject.includes('onSignUpBadge'), usernameToUse: displayName || name || 'Cannot Find Name', hiddenBadge: false})}}>
+                        <TouchableOpacity style={badgesObject.findIndex(x => x.badgeName =='onSignUpBadge') !== -1 ? {opacity: 1} : {opacity: 0.3}} onPress={() => {console.log(storedCredentials)
+                            navigation.navigate('BadgeInfo', {badgeName: 'Joined SocialSquare', badgeUnlocked: badgesObject[badgesObject.findIndex(x => x.badgeName == "onSignUpBadge")].dateRecieved, usernameToUse: displayName || name || 'Cannot Find Name', hiddenBadge: false})}}>
                             <EvilIcons name="trophy" size={75} color={colors.tertiary} style={{marginLeft: -10}}/>
                         </TouchableOpacity>
                     </View>
@@ -144,7 +145,7 @@ const AccountBadges = ({navigation, route}) => {
                     <Text style={{fontSize: 14, color: colors.tertiary, marginLeft: 10}}>SPECIAL</Text>
                     <SeperationLine/>
                     <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
-                        <TouchableOpacity style={badgesObject.includes('homeScreenLogoPressEasterEgg') ? {opacity: 1} : {opacity: 0.3}} onPress={() => {navigation.navigate('BadgeInfo', {badgeName: badgesObject.includes('homeScreenLogoPressEasterEgg') ? 'Home Screen Easter Egg 1' : 'Easter Egg', badgeUnlocked: badgesObject.includes('homeScreenLogoPressEasterEgg'), usernameToUse: displayName || name || 'Cannot Find Name', hiddenBadge: !badges.includes('homeScreenLogoPressEasterEgg')})}}>
+                        <TouchableOpacity style={badgesObject.findIndex(x => x.badgeName =='homeScreenLogoPressEasterEgg') !== -1 ? {opacity: 1} : {opacity: 0.3}} onPress={() => {navigation.navigate('BadgeInfo', {badgeName: badgesObject.includes('homeScreenLogoPressEasterEgg') ? 'Home Screen Easter Egg 1' : 'Easter Egg', badgeUnlocked: badgesObject[badgesObject.findIndex(x => x.badgeName == "homeScreenLogoPressEasterEgg")].dateRecieved, usernameToUse: displayName || name || 'Cannot Find Name', hiddenBadge: !badges.includes('homeScreenLogoPressEasterEgg')})}}>
                             {badges.includes('homeScreenLogoPressEasterEgg') ?
                                 <Image style={{width: 60, height: 60, tintColor: colors.tertiary, marginTop: 10}} source={require('../assets/app_icons/home.png')}/>
                             :

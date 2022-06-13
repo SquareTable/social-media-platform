@@ -97,7 +97,7 @@ const BadgeInfo = ({navigation, route}) => {
                 <Text style={{color: colors.tertiary, fontSize: 20, fontWeight: 'bold', textAlign: 'center', marginVertical: 10}}>{returnBadgeName(badgeName)}</Text>
                 <Text style={{color: colors.tertiary, fontSize: 20, fontWeight: 'bold', textAlign: 'center', marginBottom: 10, marginHorizontal: 10}}>{badgeDescription(badgeName)}</Text>
                 {badgeUnlocked ?
-                    <Text style={{color: colors.tertiary, fontSize: 20, textAlign: 'center'}}>{(name == usernameToUse || displayName == usernameToUse ? 'You have' : (usernameToUse + ' has')) + ' unlocked this badge at: backend implementation coming soon.'}</Text>
+                    <Text style={{color: colors.tertiary, fontSize: 20, textAlign: 'center'}}>{(name == usernameToUse || displayName == usernameToUse ? 'You have' : (usernameToUse + ' has')) + ' unlocked this badge at: ' + badgeUnlocked + '.'}</Text>
                 :
                     <>
                         {badgeName != 'Easter Egg' &&
