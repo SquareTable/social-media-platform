@@ -2571,9 +2571,9 @@ const Welcome = ({navigation, route}) => {
     const GetBadgeIcon = (badge) => {
         return (
             <View style={{width: 25, height: 25, marginHorizontal: 3, marginTop: 6, marginBottom: 12}}>
-                {badge == 'onSignUpBadge' ?
+                {badge.badgeName == 'onSignUpBadge' ?
                     <EvilIcons name="trophy" size={35} color={colors.tertiary} style={{marginLeft: -5, marginTop: -1}}/>
-                : badge == 'homeScreenLogoPressEasterEgg' ?
+                : badge.badgeName == 'homeScreenLogoPressEasterEgg' ?
                     <Image style={{width: 25, height: 25, tintColor: colors.tertiary}} source={require('../assets/app_icons/home.png')}/>
                 :
                     <AntDesign name="questioncircleo" size={25} color={colors.tertiary}/>

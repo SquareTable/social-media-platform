@@ -14,7 +14,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import { CredentialsContext } from "../components/CredentialsContext.js";
 
 const BadgeInfo = ({navigation, route}) => {
-    const {badgeName, badgeUnlocked, usernameToUse, hiddenBadge} = route.params;
+    const {badgeName, badgeUnlocked, usernameToUse, hiddenBadge, dateBadgeUnlocked} = route.params;
     const {colors, dark} = useTheme();
     const StatusBarHeight = Constants.statusBarHeight;
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext)
@@ -97,7 +97,7 @@ const BadgeInfo = ({navigation, route}) => {
                 <Text style={{color: colors.tertiary, fontSize: 20, fontWeight: 'bold', textAlign: 'center', marginVertical: 10}}>{returnBadgeName(badgeName)}</Text>
                 <Text style={{color: colors.tertiary, fontSize: 20, fontWeight: 'bold', textAlign: 'center', marginBottom: 10, marginHorizontal: 10}}>{badgeDescription(badgeName)}</Text>
                 {badgeUnlocked ?
-                    <Text style={{color: colors.tertiary, fontSize: 20, textAlign: 'center'}}>{(name == usernameToUse || displayName == usernameToUse ? 'You have' : (usernameToUse + ' has')) + ' unlocked this badge at: ' + badgeUnlocked + '.'}</Text>
+                    <Text style={{color: colors.tertiary, fontSize: 20, textAlign: 'center'}}>{(name == usernameToUse || displayName == usernameToUse ? 'You have' : (usernameToUse + ' has')) + ' unlocked this badge at: ' + dateBadgeUnlocked + '.'}</Text>
                 :
                     <>
                         {badgeName != 'Easter Egg' &&

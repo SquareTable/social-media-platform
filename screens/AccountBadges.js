@@ -145,8 +145,8 @@ const AccountBadges = ({navigation, route}) => {
                     <Text style={{fontSize: 14, color: colors.tertiary, marginLeft: 10}}>SPECIAL</Text>
                     <SeperationLine/>
                     <View style={{flexDirection: 'row', flexWrap: 'wrap'}}>
-                        <TouchableOpacity style={badgesObject.findIndex(x => x.badgeName =='homeScreenLogoPressEasterEgg') !== -1 ? {opacity: 1} : {opacity: 0.3}} onPress={() => {navigation.navigate('BadgeInfo', {badgeName: badgesObject.includes('homeScreenLogoPressEasterEgg') ? 'Home Screen Easter Egg 1' : 'Easter Egg', badgeUnlocked: badgesObject[badgesObject.findIndex(x => x.badgeName == "homeScreenLogoPressEasterEgg")].dateRecieved, usernameToUse: displayName || name || 'Cannot Find Name', hiddenBadge: !badges.includes('homeScreenLogoPressEasterEgg')})}}>
-                            {badges.includes('homeScreenLogoPressEasterEgg') ?
+                        <TouchableOpacity style={badgesObject.findIndex(x => x.badgeName =='homeScreenLogoPressEasterEgg') !== -1 ? {opacity: 1} : {opacity: 0.3}} onPress={() => {navigation.navigate('BadgeInfo', {badgeName: badgesObject.findIndex(x => x.badgeName =='homeScreenLogoPressEasterEgg') !== -1 ? 'Home Screen Easter Egg 1' : 'Easter Egg', badgeUnlocked: badgesObject.findIndex(x => x.badgeName =='homeScreenLogoPressEasterEgg') !== -1, usernameToUse: displayName || name || 'Cannot Find Name', hiddenBadge: badges.findIndex(x => x.badgeName == "homeScreenLogoPressEasterEgg") == -1, dateBadgeUnlocked: badgesObject[badgesObject.findIndex(x => x.badgeName == "homeScreenLogoPressEasterEgg")].dateRecieved})}}>
+                            {badgesObject.findIndex(x => x.badgeName =='homeScreenLogoPressEasterEgg') !== -1 ?
                                 <Image style={{width: 60, height: 60, tintColor: colors.tertiary, marginTop: 10}} source={require('../assets/app_icons/home.png')}/>
                             :
                                 <MaterialCommunityIcons name="egg-easter" size={65} color={colors.tertiary}/>
