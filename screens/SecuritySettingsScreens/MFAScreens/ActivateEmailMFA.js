@@ -17,7 +17,7 @@ import { CredentialsContext } from '../../../components/CredentialsContext.js';
 
 const ActivateEmailMFA = ({navigation, route}) => {
     const {colors, dark} = useTheme();
-    const {emailEnabled, SMSEnabled, authenticationAppEnabled} = route.params;
+    const {emailEnabled, SMSEnabled, authenticationAppEnabled, MFAEmail} = route.params;
     const [hideTurnOffConfirmation, setHideTurnOffConfirmation] = useState(true);
     const [turningOffEmailMFA, setTurningOffEmailMFA] = useState(false);
     const {serverUrl, setServerUrl} = useContext(ServerUrlContext);
@@ -39,7 +39,7 @@ const ActivateEmailMFA = ({navigation, route}) => {
             } else {
                 setHideTurnOffConfirmation(true);
                 setTurningOffEmailMFA(false);
-                navigation.setParams({emailEnabled: false});
+                navigation.setParams({emailEnabled: false, MFAEmail: ''});
             }
         }).catch(error => {
             console.log(error);
@@ -78,7 +78,7 @@ const ActivateEmailMFA = ({navigation, route}) => {
                 <TestText style={{textAlign: 'center', color: colors.tertiary}}>Email MFA</TestText>
             </ChatScreen_Title>
             <View style={{backgroundColor: colors.primary, flex: 1}}>
-            <Text style={{color: colors.tertiary, fontSize: 14, textAlign: 'center', marginBottom: 10}}>With Email Multi-Factor Authentication enabled, whenever someone tries to login to your SocialSquare account, they must enter a code sent to your email along with any other steps for other multi-factor authentication options you have turned on to get into your account.</Text>
+                <Text style={{color: colors.tertiary, fontSize: 14, textAlign: 'center', marginBottom: 10}}>With Email Multi-Factor Authentication enabled, whenever someone tries to login to your SocialSquare account, they must enter a code sent to your email along with any other steps for other multi-factor authentication options you have turned on to get into your account.</Text>
                 <View style={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderColor: colors.tertiary, borderWidth: 2, padding: 10}}>
                     <Text style={{color: colors.tertiary, fontSize: 18, textAlign: 'center', fontWeight: 'bold'}}>Email</Text>
                     <Switch
@@ -96,6 +96,12 @@ const ActivateEmailMFA = ({navigation, route}) => {
                         disabled={!hideTurnOffConfirmation}
                     />
                 </View>
+                {MFAEmail != '' && MFAEmail != null && MFAEmail != undefined &&
+                    <>
+                        <Text style={{color: colors.tertiary, fontSize: 18, textAlign: 'center', marginTop: 10}}>Current email being used:</Text>
+                        <Text style={{color: colors.tertiary, fontSize: 18, textAlign: 'center'}}>{MFAEmail}</Text>
+                    </>
+                }
             </View>
         </>
     )

@@ -26,6 +26,7 @@ const MultiFactorAuthentication = ({navigation}) => {
     const [enabledAuthenticationFactors, setEnabledAuthenticationFactors] = useState([]);
     const isFocused = useIsFocused();
     const loadingAnimationOpacity = useRef(new Animated.Value(0.7)).current;
+    const MFAEmail = useRef(undefined);
     if (loading) {
         Animated.loop(
             Animated.sequence([
@@ -55,7 +56,8 @@ const MultiFactorAuthentication = ({navigation}) => {
                 setErrorOccuredWhileLoading(true);
                 setLoading(false);
             } else {
-                setEnabledAuthenticationFactors(data);
+                setEnabledAuthenticationFactors(data.authenticationFactorsEnabled);
+                MFAEmail.current = data.MFAEmail
                 setLoading(false);
                 setErrorOccuredWhileLoading(false);
             }
@@ -99,7 +101,7 @@ const MultiFactorAuthentication = ({navigation}) => {
                                 loading == true ? 
                                     null
                                 :
-                                    <FactorBox colors={colors} text={item} enabledAuthenticationFactors={enabledAuthenticationFactors} index={index} navigation={navigation} items={items}/>
+                                    <FactorBox colors={colors} text={item} enabledAuthenticationFactors={enabledAuthenticationFactors} index={index} navigation={navigation} items={items} MFAEmail={MFAEmail.current}/>
                             }
                             ListFooterComponent={() => loading == true ? <ActivityIndicator size="large" color={colors.brand}/> : null}
                             ItemSeparatorComponent={() => <View style={{height: 20}}/>}
@@ -121,11 +123,11 @@ const MultiFactorAuthentication = ({navigation}) => {
     );
 }
 
-const FactorBox = ({colors, text, enabledAuthenticationFactors, index, navigation, items}) => {
+const FactorBox = ({colors, text, enabledAuthenticationFactors, index, navigation, items, MFAEmail}) => {
     const navigateTo = ['ActivateEmailMFA', 'ActivateSMSMFA', 'ActivateAuthenticationAppMFA']
     console.log(enabledAuthenticationFactors)
     return (
-        <TouchableOpacity onPress={() => {navigation.navigate(navigateTo[index], {emailEnabled: enabledAuthenticationFactors.includes(items[0]), SMSEnabled: enabledAuthenticationFactors.includes(items[1]), authenticationAppEnabled: enabledAuthenticationFactors.includes(items[2])})}} style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 10, borderColor: colors.tertiary, borderWidth: 3, height: 60}}>
+        <TouchableOpacity onPress={() => {text == 'Email' ? navigation.navigate(navigateTo[index], {emailEnabled: enabledAuthenticationFactors.includes(items[0]), SMSEnabled: enabledAuthenticationFactors.includes(items[1]), authenticationAppEnabled: enabledAuthenticationFactors.includes(items[2]), MFAEmail: MFAEmail}) : alert('Email is the only supported Multi-Factor Authentication option at the moment. SMS and Authentication App support will be coming soon.')}} style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 10, borderColor: colors.tertiary, borderWidth: 3, height: 60}}>
             <Text style={{color: colors.tertiary, fontSize: 18}}>{text}</Text>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <View style={{borderColor: enabledAuthenticationFactors.includes(text) ? colors.green : colors.red, borderWidth: 3, borderRadius: 20, padding: 5, margin: 5}}>

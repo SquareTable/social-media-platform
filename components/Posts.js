@@ -116,8 +116,6 @@ export default function Post( post ) {
     const {serverUrl, setServerUrl} = useContext(ServerUrlContext);
 
     const colors = post.colors
-    
-    console.log('Image B64 is: ' + post.imageB64)
 
     const handleMessage = (message, type = 'FAILED', postNum) => {
         setMessage(message);
