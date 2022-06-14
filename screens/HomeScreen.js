@@ -1142,7 +1142,7 @@ const HomeScreen = ({navigation, route}) => {
                 const {message, status, data} = result;
                 
                 if (status !== 'SUCCESS') {
-                    setUploadingText('Error occured while creating a category. Press here to try again.')
+                    setUploadingText(message)
                     setErrorOccuredWhileUploading(true)
                 } else {
                     setUploadingText('Category created!');
@@ -1166,7 +1166,7 @@ const HomeScreen = ({navigation, route}) => {
                 const {message, status, data} = result;
 
                 if (status !== 'SUCCESS') {
-                    setUploadingText('Error occured while creating a category. Press here to try again.')
+                    setUploadingText(message)
                     setErrorOccuredWhileUploading(true)
                 } else {
                     setUploadingText('Category created!');
