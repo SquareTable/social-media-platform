@@ -85,7 +85,7 @@ const LoginScreen = ({navigation, route}) => {
             const {message, status, data} = result;
 
             if (status !== 'SUCCESS') {
-                handleMessage(message,status);
+                handleMessage(String(message),status);
             } else {
                 if (message == "Email") {
                     navigation.navigate('VerifyEmailCodeScreen', {task: 'Verify Email MFA Code', email: data.email, fromAddress: data.fromAddress, username: undefined, userID: undefined, secondId: data.secondId});
@@ -211,7 +211,7 @@ const LoginScreen = ({navigation, route}) => {
                 }
                 AsyncStorage.setItem('socialSquare_AllCredentialsList', JSON.stringify(temp))
                 .then(() => {
-                    handleMessage(message, status);
+                    handleMessage(String(message), status);
                     if (sameAccount.current === false) {
                         setAllCredentialsStoredList(temp);
                     }
@@ -227,7 +227,7 @@ const LoginScreen = ({navigation, route}) => {
                     } else {
                         navigation.replace("Tabs");
                     }
-                    handleMessage(message, status);
+                    handleMessage(String(message), status);
                 })
                 .catch((error) => {
                     console.log(error);

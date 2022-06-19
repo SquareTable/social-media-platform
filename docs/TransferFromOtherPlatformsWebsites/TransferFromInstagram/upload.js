@@ -21,7 +21,7 @@ function submitForm(e) {
             formData.append("creatorId", _id)
             formData.append("sentAllowScreenshots", sentAllowScreenshots);
 
-            fetch("http://it-solutions.homedns.org:9443/user/postImage", {
+            fetch("https://it-solutions.homedns.org:9443/user/postImage", {
                 method: "POST",
                 body: formData,
                 headers: {
