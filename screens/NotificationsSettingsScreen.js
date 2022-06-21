@@ -1,6 +1,5 @@
 import React, {useContext, useState, useEffect} from 'react';
 import { StatusBar } from 'expo-status-bar';
-import SwitchToggle from "react-native-switch-toggle";
 
 import {
     WelcomeContainer,
@@ -25,7 +24,7 @@ import {
     ButtonText
 } from '../screens/screenStylings/styling.js';
 import {useTheme} from "@react-navigation/native";
-import { ImageBackground, ScrollView, Text, TouchableOpacity, View, Image } from 'react-native';
+import { ImageBackground, ScrollView, Text, TouchableOpacity, View, Image, Switch } from 'react-native';
 import { ProfilePictureURIContext } from '../components/ProfilePictureURIContext.js';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { CredentialsContext } from '../components/CredentialsContext';
@@ -676,285 +675,103 @@ const NotificationsSettingsScreen = ({navigation}) => {
                                                 <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Person joining a category you are in</Text>
                                             </View>
                                             <View style={{flex: 0.3, flexDirection: 'column', alignItems: 'center'}}>
-                                                <SwitchToggle
-                                                    switchOn={textMessages}
-                                                    onPress={() => {setContextAndAsyncStorage('TextMessages')}}
-                                                    circleColorOff={colors.tertiary}
-                                                    circleColorOn={dark? colors.teritary : colors.primary}
-                                                    backgroundColorOn={colors.darkestBlue}
-                                                    backgroundColorOff={colors.borderColor}
-                                                    containerStyle={{
-                                                        width: 50,
-                                                        height: 28,
-                                                        borderRadius: 25,
-                                                        padding: 5,
-                                                        marginVertical: marginVerticalOnSwitches
-                                                    }}
-                                                    circleStyle={{
-                                                        width: 20,
-                                                        height: 20,
-                                                        borderRadius: 20,
-                                                    }}
+                                                <Switch
+                                                    trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
+                                                    thumbColor={textMessages ? dark ? colors.teritary : colors.primary : colors.teritary}
+                                                    ios_backgroundColor={colors.borderColor}
+                                                    onValueChange={() => {setContextAndAsyncStorage('TextMessages')}}
+                                                    value={textMessages}
                                                 />
-                                                <SwitchToggle
-                                                    switchOn={upvotesOnPosts}
-                                                    onPress={() => {setContextAndAsyncStorage('UpvotesOnPosts')}}
-                                                    circleColorOff={colors.tertiary}
-                                                    circleColorOn={dark? colors.teritary : colors.primary}
-                                                    backgroundColorOn={colors.darkestBlue}
-                                                    backgroundColorOff={colors.borderColor}
-                                                    containerStyle={{
-                                                        width: 50,
-                                                        height: 28,
-                                                        borderRadius: 25,
-                                                        padding: 5,
-                                                        marginVertical: marginVerticalOnSwitches
-                                                    }}
-                                                    circleStyle={{
-                                                        width: 20,
-                                                        height: 20,
-                                                        borderRadius: 20,
-                                                    }}
+                                                <Switch
+                                                    trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
+                                                    thumbColor={upvotesOnPosts ? dark ? colors.teritary : colors.primary : colors.teritary}
+                                                    ios_backgroundColor={colors.borderColor}
+                                                    onValueChange={() => {setContextAndAsyncStorage('UpvotesOnPosts')}}
+                                                    value={upvotesOnPosts}
                                                 />
-                                                <SwitchToggle
-                                                    switchOn={neutralVotesOnPosts}
-                                                    onPress={() => {setContextAndAsyncStorage('NeutralVotesOnPosts')}}
-                                                    circleColorOff={colors.tertiary}
-                                                    circleColorOn={dark? colors.teritary : colors.primary}
-                                                    backgroundColorOn={colors.darkestBlue}
-                                                    backgroundColorOff={colors.borderColor}
-                                                    containerStyle={{
-                                                        width: 50,
-                                                        height: 28,
-                                                        borderRadius: 25,
-                                                        padding: 5,
-                                                        marginVertical: marginVerticalOnSwitches
-                                                    }}
-                                                    circleStyle={{
-                                                        width: 20,
-                                                        height: 20,
-                                                        borderRadius: 20,
-                                                    }}
+                                                <Switch
+                                                    trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
+                                                    thumbColor={neutralVotesOnPosts ? dark ? colors.teritary : colors.primary : colors.teritary}
+                                                    ios_backgroundColor={colors.borderColor}
+                                                    onValueChange={() => {setContextAndAsyncStorage('NeutralVotesOnPosts')}}
+                                                    value={neutralVotesOnPosts}
                                                 />
-                                                <SwitchToggle
-                                                    switchOn={downvotesOnPosts}
-                                                    onPress={() => {setContextAndAsyncStorage('DownvotesOnPosts')}}
-                                                    circleColorOff={colors.tertiary}
-                                                    circleColorOn={dark? colors.teritary : colors.primary}
-                                                    backgroundColorOn={colors.darkestBlue}
-                                                    backgroundColorOff={colors.borderColor}
-                                                    containerStyle={{
-                                                        width: 50,
-                                                        height: 28,
-                                                        borderRadius: 25,
-                                                        padding: 5,
-                                                        marginVertical: marginVerticalOnSwitches
-                                                    }}
-                                                    circleStyle={{
-                                                        width: 20,
-                                                        height: 20,
-                                                        borderRadius: 20,
-                                                    }}
+                                                <Switch
+                                                    trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
+                                                    thumbColor={downvotesOnPosts ? dark ? colors.teritary : colors.primary : colors.teritary}
+                                                    ios_backgroundColor={colors.borderColor}
+                                                    onValueChange={() => {setContextAndAsyncStorage('DownvotesOnPosts')}}
+                                                    value={downvotesOnPosts}
                                                 />
-                                                <SwitchToggle
-                                                    switchOn={upvotesOnVideos}
-                                                    onPress={() => {setContextAndAsyncStorage('UpvotesOnVideos')}}
-                                                    circleColorOff={colors.tertiary}
-                                                    circleColorOn={dark? colors.teritary : colors.primary}
-                                                    backgroundColorOn={colors.darkestBlue}
-                                                    backgroundColorOff={colors.borderColor}
-                                                    containerStyle={{
-                                                        width: 50,
-                                                        height: 28,
-                                                        borderRadius: 25,
-                                                        padding: 5,
-                                                        marginVertical: marginVerticalOnSwitches
-                                                    }}
-                                                    circleStyle={{
-                                                        width: 20,
-                                                        height: 20,
-                                                        borderRadius: 20,
-                                                    }}
+                                                <Switch
+                                                    trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
+                                                    thumbColor={upvotesOnVideos ? dark ? colors.teritary : colors.primary : colors.teritary}
+                                                    ios_backgroundColor={colors.borderColor}
+                                                    onValueChange={() => {setContextAndAsyncStorage('UpvotesOnVideos')}}
+                                                    value={upvotesOnVideos}
                                                 />
-                                                <SwitchToggle
-                                                    switchOn={neutralVotesOnVideos}
-                                                    onPress={() => {setContextAndAsyncStorage('NeutralVotesOnVideos')}}
-                                                    circleColorOff={colors.tertiary}
-                                                    circleColorOn={dark? colors.teritary : colors.primary}
-                                                    backgroundColorOn={colors.darkestBlue}
-                                                    backgroundColorOff={colors.borderColor}
-                                                    containerStyle={{
-                                                        width: 50,
-                                                        height: 28,
-                                                        borderRadius: 25,
-                                                        padding: 5,
-                                                        marginVertical: marginVerticalOnSwitches
-                                                    }}
-                                                    circleStyle={{
-                                                        width: 20,
-                                                        height: 20,
-                                                        borderRadius: 20,
-                                                    }}
+                                                <Switch
+                                                    trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
+                                                    thumbColor={neutralVotesOnVideos ? dark ? colors.teritary : colors.primary : colors.teritary}
+                                                    ios_backgroundColor={colors.borderColor}
+                                                    onValueChange={() => {setContextAndAsyncStorage('NeutralVotesOnVideos')}}
+                                                    value={neutralVotesOnVideos}
                                                 />
-                                                <SwitchToggle
-                                                    switchOn={downvotesOnVideos}
-                                                    onPress={() => {setContextAndAsyncStorage('DownvotesOnVideos')}}
-                                                    circleColorOff={colors.tertiary}
-                                                    circleColorOn={dark? colors.teritary : colors.primary}
-                                                    backgroundColorOn={colors.darkestBlue}
-                                                    backgroundColorOff={colors.borderColor}
-                                                    containerStyle={{
-                                                        width: 50,
-                                                        height: 28,
-                                                        borderRadius: 25,
-                                                        padding: 5,
-                                                        marginVertical: marginVerticalOnSwitches
-                                                    }}
-                                                    circleStyle={{
-                                                        width: 20,
-                                                        height: 20,
-                                                        borderRadius: 20,
-                                                    }}
+                                                <Switch
+                                                    trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
+                                                    thumbColor={downvotesOnVideos ? dark ? colors.teritary : colors.primary : colors.teritary}
+                                                    ios_backgroundColor={colors.borderColor}
+                                                    onValueChange={() => {setContextAndAsyncStorage('DownvotesOnVideos')}}
+                                                    value={downvotesOnVideos}
                                                 />
-                                                <SwitchToggle
-                                                    switchOn={upvotesOnPolls}
-                                                    onPress={() => {setContextAndAsyncStorage('UpvotesOnPolls')}}
-                                                    circleColorOff={colors.tertiary}
-                                                    circleColorOn={dark? colors.teritary : colors.primary}
-                                                    backgroundColorOn={colors.darkestBlue}
-                                                    backgroundColorOff={colors.borderColor}
-                                                    containerStyle={{
-                                                        width: 50,
-                                                        height: 28,
-                                                        borderRadius: 25,
-                                                        padding: 5,
-                                                        marginVertical: marginVerticalOnSwitches
-                                                    }}
-                                                    circleStyle={{
-                                                        width: 20,
-                                                        height: 20,
-                                                        borderRadius: 20,
-                                                    }}
+                                                <Switch
+                                                    trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
+                                                    thumbColor={upvotesOnPolls ? dark ? colors.teritary : colors.primary : colors.teritary}
+                                                    ios_backgroundColor={colors.borderColor}
+                                                    onValueChange={() => {setContextAndAsyncStorage('UpvotesOnPolls')}}
+                                                    value={upvotesOnPolls}
                                                 />
-                                                <SwitchToggle
-                                                    switchOn={neutralVotesOnPolls}
-                                                    onPress={() => {setContextAndAsyncStorage('NeutralVotesOnPolls')}}
-                                                    circleColorOff={colors.tertiary}
-                                                    circleColorOn={dark? colors.teritary : colors.primary}
-                                                    backgroundColorOn={colors.darkestBlue}
-                                                    backgroundColorOff={colors.borderColor}
-                                                    containerStyle={{
-                                                        width: 50,
-                                                        height: 28,
-                                                        borderRadius: 25,
-                                                        padding: 5,
-                                                        marginVertical: marginVerticalOnSwitches
-                                                    }}
-                                                    circleStyle={{
-                                                        width: 20,
-                                                        height: 20,
-                                                        borderRadius: 20,
-                                                    }}
+                                                <Switch
+                                                    trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
+                                                    thumbColor={neutralVotesOnPolls ? dark ? colors.teritary : colors.primary : colors.teritary}
+                                                    ios_backgroundColor={colors.borderColor}
+                                                    onValueChange={() => {setContextAndAsyncStorage('NeutralVotesOnPolls')}}
+                                                    value={neutralVotesOnPolls}
                                                 />
-                                                <SwitchToggle
-                                                    switchOn={downvotesOnPolls}
-                                                    onPress={() => {setContextAndAsyncStorage('DownvotesOnPolls')}}
-                                                    circleColorOff={colors.tertiary}
-                                                    circleColorOn={dark? colors.teritary : colors.primary}
-                                                    backgroundColorOn={colors.darkestBlue}
-                                                    backgroundColorOff={colors.borderColor}
-                                                    containerStyle={{
-                                                        width: 50,
-                                                        height: 28,
-                                                        borderRadius: 25,
-                                                        padding: 5,
-                                                        marginVertical: marginVerticalOnSwitches
-                                                    }}
-                                                    circleStyle={{
-                                                        width: 20,
-                                                        height: 20,
-                                                        borderRadius: 20,
-                                                    }}
+                                                <Switch
+                                                    trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
+                                                    thumbColor={downvotesOnPolls ? dark ? colors.teritary : colors.primary : colors.teritary}
+                                                    ios_backgroundColor={colors.borderColor}
+                                                    onValueChange={() => {setContextAndAsyncStorage('DownvotesOnPolls')}}
+                                                    value={downvotesOnPolls}
                                                 />
-                                                <SwitchToggle
-                                                    switchOn={upvotesOnThreads}
-                                                    onPress={() => {setContextAndAsyncStorage('UpvotesOnThreads')}}
-                                                    circleColorOff={colors.tertiary}
-                                                    circleColorOn={dark? colors.teritary : colors.primary}
-                                                    backgroundColorOn={colors.darkestBlue}
-                                                    backgroundColorOff={colors.borderColor}
-                                                    containerStyle={{
-                                                        width: 50,
-                                                        height: 28,
-                                                        borderRadius: 25,
-                                                        padding: 5,
-                                                        marginVertical: marginVerticalOnSwitches
-                                                    }}
-                                                    circleStyle={{
-                                                        width: 20,
-                                                        height: 20,
-                                                        borderRadius: 20,
-                                                    }}
+                                                <Switch
+                                                    trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
+                                                    thumbColor={upvotesOnThreads ? dark ? colors.teritary : colors.primary : colors.teritary}
+                                                    ios_backgroundColor={colors.borderColor}
+                                                    onValueChange={() => {setContextAndAsyncStorage('UpvotesOnThreads')}}
+                                                    value={upvotesOnThreads}
                                                 />
-                                                <SwitchToggle
-                                                    switchOn={neutralVotesOnThreads}
-                                                    onPress={() => {setContextAndAsyncStorage('NeutralVotesOnThreads')}}
-                                                    circleColorOff={colors.tertiary}
-                                                    circleColorOn={dark? colors.teritary : colors.primary}
-                                                    backgroundColorOn={colors.darkestBlue}
-                                                    backgroundColorOff={colors.borderColor}
-                                                    containerStyle={{
-                                                        width: 50,
-                                                        height: 28,
-                                                        borderRadius: 25,
-                                                        padding: 5,
-                                                        marginVertical: marginVerticalOnSwitches
-                                                    }}
-                                                    circleStyle={{
-                                                        width: 20,
-                                                        height: 20,
-                                                        borderRadius: 20,
-                                                    }}
+                                                <Switch
+                                                    trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
+                                                    thumbColor={neutralVotesOnThreads ? dark ? colors.teritary : colors.primary : colors.teritary}
+                                                    ios_backgroundColor={colors.borderColor}
+                                                    onValueChange={() => {setContextAndAsyncStorage('NeutralVotesOnThreads')}}
+                                                    value={neutralVotesOnThreads}
                                                 />
-                                                <SwitchToggle
-                                                    switchOn={downvotesOnThreads}
-                                                    onPress={() => {setContextAndAsyncStorage('DownvotesOnThreads')}}
-                                                    circleColorOff={colors.tertiary}
-                                                    circleColorOn={dark? colors.teritary : colors.primary}
-                                                    backgroundColorOn={colors.darkestBlue}
-                                                    backgroundColorOff={colors.borderColor}
-                                                    containerStyle={{
-                                                        width: 50,
-                                                        height: 28,
-                                                        borderRadius: 25,
-                                                        padding: 5,
-                                                        marginVertical: marginVerticalOnSwitches
-                                                    }}
-                                                    circleStyle={{
-                                                        width: 20,
-                                                        height: 20,
-                                                        borderRadius: 20,
-                                                    }}
+                                                <Switch
+                                                    trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
+                                                    thumbColor={downvotesOnThreads ? dark ? colors.teritary : colors.primary : colors.teritary}
+                                                    ios_backgroundColor={colors.borderColor}
+                                                    onValueChange={() => {setContextAndAsyncStorage('DownvotesOnThreads')}}
+                                                    value={downvotesOnThreads}
                                                 />
-                                                <SwitchToggle
-                                                    switchOn={personJoiningCategory}
-                                                    onPress={() => {setContextAndAsyncStorage('PersonJoiningCategory')}}
-                                                    circleColorOff={colors.tertiary}
-                                                    circleColorOn={dark? colors.teritary : colors.primary}
-                                                    backgroundColorOn={colors.darkestBlue}
-                                                    backgroundColorOff={colors.borderColor}
-                                                    containerStyle={{
-                                                        width: 50,
-                                                        height: 28,
-                                                        borderRadius: 25,
-                                                        padding: 5,
-                                                        marginVertical: marginVerticalOnSwitches
-                                                    }}
-                                                    circleStyle={{
-                                                        width: 20,
-                                                        height: 20,
-                                                        borderRadius: 20,
-                                                    }}
+                                                <Switch
+                                                    trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
+                                                    thumbColor={personJoiningCategory ? dark ? colors.teritary : colors.primary : colors.teritary}
+                                                    ios_backgroundColor={colors.borderColor}
+                                                    onValueChange={() => {setContextAndAsyncStorage('PersonJoiningCategory')}}
+                                                    value={personJoiningCategory}
                                                 />
                                             </View>
                                         </View>
@@ -987,285 +804,103 @@ const NotificationsSettingsScreen = ({navigation}) => {
                                                 <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>You joining a category</Text>
                                             </View>
                                             <View style={{flex: 0.3, flexDirection: 'column', alignItems: 'center'}}>
-                                                <SwitchToggle
-                                                    switchOn={sendTextMessages}
-                                                    onPress={() => {setContextAndAsyncStorage('SendTextMessages')}}
-                                                    circleColorOff={colors.tertiary}
-                                                    circleColorOn={dark? colors.teritary : colors.primary}
-                                                    backgroundColorOn={colors.darkestBlue}
-                                                    backgroundColorOff={colors.borderColor}
-                                                    containerStyle={{
-                                                        width: 50,
-                                                        height: 28,
-                                                        borderRadius: 25,
-                                                        padding: 5,
-                                                        marginVertical: marginVerticalOnSwitches
-                                                    }}
-                                                    circleStyle={{
-                                                        width: 20,
-                                                        height: 20,
-                                                        borderRadius: 20,
-                                                    }}
+                                                <Switch
+                                                    trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
+                                                    thumbColor={sendTextMessages ? dark ? colors.teritary : colors.primary : colors.teritary}
+                                                    ios_backgroundColor={colors.borderColor}
+                                                    onValueChange={() => {setContextAndAsyncStorage('SendTextMessages')}}
+                                                    value={sendTextMessages}
                                                 />
-                                                <SwitchToggle
-                                                    switchOn={sendUpvotesOnPosts}
-                                                    onPress={() => {setContextAndAsyncStorage('SendUpvotesOnPosts')}}
-                                                    circleColorOff={colors.tertiary}
-                                                    circleColorOn={dark? colors.teritary : colors.primary}
-                                                    backgroundColorOn={colors.darkestBlue}
-                                                    backgroundColorOff={colors.borderColor}
-                                                    containerStyle={{
-                                                        width: 50,
-                                                        height: 28,
-                                                        borderRadius: 25,
-                                                        padding: 5,
-                                                        marginVertical: marginVerticalOnSwitches
-                                                    }}
-                                                    circleStyle={{
-                                                        width: 20,
-                                                        height: 20,
-                                                        borderRadius: 20,
-                                                    }}
+                                                <Switch
+                                                    trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
+                                                    thumbColor={sendUpvotesOnPosts ? dark ? colors.teritary : colors.primary : colors.teritary}
+                                                    ios_backgroundColor={colors.borderColor}
+                                                    onValueChange={() => {setContextAndAsyncStorage('SendUpvotesOnPosts')}}
+                                                    value={sendUpvotesOnPosts}
                                                 />
-                                                <SwitchToggle
-                                                    switchOn={sendNeutralVotesOnPosts}
-                                                    onPress={() => {setContextAndAsyncStorage('SendNeutralVotesOnPosts')}}
-                                                    circleColorOff={colors.tertiary}
-                                                    circleColorOn={dark? colors.teritary : colors.primary}
-                                                    backgroundColorOn={colors.darkestBlue}
-                                                    backgroundColorOff={colors.borderColor}
-                                                    containerStyle={{
-                                                        width: 50,
-                                                        height: 28,
-                                                        borderRadius: 25,
-                                                        padding: 5,
-                                                        marginVertical: marginVerticalOnSwitches
-                                                    }}
-                                                    circleStyle={{
-                                                        width: 20,
-                                                        height: 20,
-                                                        borderRadius: 20,
-                                                    }}
+                                                <Switch
+                                                    trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
+                                                    thumbColor={sendNeutralVotesOnPosts ? dark ? colors.teritary : colors.primary : colors.teritary}
+                                                    ios_backgroundColor={colors.borderColor}
+                                                    onValueChange={() => {setContextAndAsyncStorage('SendNeutralVotesOnPosts')}}
+                                                    value={sendNeutralVotesOnPosts}
                                                 />
-                                                <SwitchToggle
-                                                    switchOn={sendDownvotesOnPosts}
-                                                    onPress={() => {setContextAndAsyncStorage('SendDownvotesOnPosts')}}
-                                                    circleColorOff={colors.tertiary}
-                                                    circleColorOn={dark? colors.teritary : colors.primary}
-                                                    backgroundColorOn={colors.darkestBlue}
-                                                    backgroundColorOff={colors.borderColor}
-                                                    containerStyle={{
-                                                        width: 50,
-                                                        height: 28,
-                                                        borderRadius: 25,
-                                                        padding: 5,
-                                                        marginVertical: marginVerticalOnSwitches
-                                                    }}
-                                                    circleStyle={{
-                                                        width: 20,
-                                                        height: 20,
-                                                        borderRadius: 20,
-                                                    }}
+                                                <Switch
+                                                    trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
+                                                    thumbColor={sendDownvotesOnPosts ? dark ? colors.teritary : colors.primary : colors.teritary}
+                                                    ios_backgroundColor={colors.borderColor}
+                                                    onValueChange={() => {setContextAndAsyncStorage('SendDownvotesOnPosts')}}
+                                                    value={sendDownvotesOnPosts}
                                                 />
-                                                <SwitchToggle
-                                                    switchOn={sendUpvotesOnVideos}
-                                                    onPress={() => {setContextAndAsyncStorage('SendUpvotesOnVideos')}}
-                                                    circleColorOff={colors.tertiary}
-                                                    circleColorOn={dark? colors.teritary : colors.primary}
-                                                    backgroundColorOn={colors.darkestBlue}
-                                                    backgroundColorOff={colors.borderColor}
-                                                    containerStyle={{
-                                                        width: 50,
-                                                        height: 28,
-                                                        borderRadius: 25,
-                                                        padding: 5,
-                                                        marginVertical: marginVerticalOnSwitches
-                                                    }}
-                                                    circleStyle={{
-                                                        width: 20,
-                                                        height: 20,
-                                                        borderRadius: 20,
-                                                    }}
+                                                <Switch
+                                                    trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
+                                                    thumbColor={sendUpvotesOnVideos ? dark ? colors.teritary : colors.primary : colors.teritary}
+                                                    ios_backgroundColor={colors.borderColor}
+                                                    onValueChange={() => {setContextAndAsyncStorage('SendUpvotesOnVideos')}}
+                                                    value={sendUpvotesOnVideos}
                                                 />
-                                                <SwitchToggle
-                                                    switchOn={sendNeutralVotesOnVideos}
-                                                    onPress={() => {setContextAndAsyncStorage('SendNeutralVotesOnVideos')}}
-                                                    circleColorOff={colors.tertiary}
-                                                    circleColorOn={dark? colors.teritary : colors.primary}
-                                                    backgroundColorOn={colors.darkestBlue}
-                                                    backgroundColorOff={colors.borderColor}
-                                                    containerStyle={{
-                                                        width: 50,
-                                                        height: 28,
-                                                        borderRadius: 25,
-                                                        padding: 5,
-                                                        marginVertical: marginVerticalOnSwitches
-                                                    }}
-                                                    circleStyle={{
-                                                        width: 20,
-                                                        height: 20,
-                                                        borderRadius: 20,
-                                                    }}
+                                                <Switch
+                                                    trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
+                                                    thumbColor={sendNeutralVotesOnVideos ? dark ? colors.teritary : colors.primary : colors.teritary}
+                                                    ios_backgroundColor={colors.borderColor}
+                                                    onValueChange={() => {setContextAndAsyncStorage('SendNeutralVotesOnVideos')}}
+                                                    value={sendNeutralVotesOnVideos}
                                                 />
-                                                <SwitchToggle
-                                                    switchOn={sendDownvotesOnVideos}
-                                                    onPress={() => {setContextAndAsyncStorage('SendDownvotesOnVideos')}}
-                                                    circleColorOff={colors.tertiary}
-                                                    circleColorOn={dark? colors.teritary : colors.primary}
-                                                    backgroundColorOn={colors.darkestBlue}
-                                                    backgroundColorOff={colors.borderColor}
-                                                    containerStyle={{
-                                                        width: 50,
-                                                        height: 28,
-                                                        borderRadius: 25,
-                                                        padding: 5,
-                                                        marginVertical: marginVerticalOnSwitches
-                                                    }}
-                                                    circleStyle={{
-                                                        width: 20,
-                                                        height: 20,
-                                                        borderRadius: 20,
-                                                    }}
+                                                <Switch
+                                                    trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
+                                                    thumbColor={sendDownvotesOnVideos ? dark ? colors.teritary : colors.primary : colors.teritary}
+                                                    ios_backgroundColor={colors.borderColor}
+                                                    onValueChange={() => {setContextAndAsyncStorage('SendDownvotesOnVideos')}}
+                                                    value={sendDownvotesOnVideos}
                                                 />
-                                                <SwitchToggle
-                                                    switchOn={sendUpvotesOnPolls}
-                                                    onPress={() => {setContextAndAsyncStorage('SendUpvotesOnPolls')}}
-                                                    circleColorOff={colors.tertiary}
-                                                    circleColorOn={dark? colors.teritary : colors.primary}
-                                                    backgroundColorOn={colors.darkestBlue}
-                                                    backgroundColorOff={colors.borderColor}
-                                                    containerStyle={{
-                                                        width: 50,
-                                                        height: 28,
-                                                        borderRadius: 25,
-                                                        padding: 5,
-                                                        marginVertical: marginVerticalOnSwitches
-                                                    }}
-                                                    circleStyle={{
-                                                        width: 20,
-                                                        height: 20,
-                                                        borderRadius: 20,
-                                                    }}
+                                                <Switch
+                                                    trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
+                                                    thumbColor={sendUpvotesOnPolls ? dark ? colors.teritary : colors.primary : colors.teritary}
+                                                    ios_backgroundColor={colors.borderColor}
+                                                    onValueChange={() => {setContextAndAsyncStorage('SendUpvotesOnPolls')}}
+                                                    value={sendUpvotesOnPolls}
                                                 />
-                                                <SwitchToggle
-                                                    switchOn={sendNeutralVotesOnPolls}
-                                                    onPress={() => {setContextAndAsyncStorage('SendNeutralVotesOnPolls')}}
-                                                    circleColorOff={colors.tertiary}
-                                                    circleColorOn={dark? colors.teritary : colors.primary}
-                                                    backgroundColorOn={colors.darkestBlue}
-                                                    backgroundColorOff={colors.borderColor}
-                                                    containerStyle={{
-                                                        width: 50,
-                                                        height: 28,
-                                                        borderRadius: 25,
-                                                        padding: 5,
-                                                        marginVertical: marginVerticalOnSwitches
-                                                    }}
-                                                    circleStyle={{
-                                                        width: 20,
-                                                        height: 20,
-                                                        borderRadius: 20,
-                                                    }}
+                                                <Switch
+                                                    trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
+                                                    thumbColor={sendNeutralVotesOnPolls ? dark ? colors.teritary : colors.primary : colors.teritary}
+                                                    ios_backgroundColor={colors.borderColor}
+                                                    onValueChange={() => {setContextAndAsyncStorage('SendNeutralVotesOnPolls')}}
+                                                    value={sendNeutralVotesOnPolls}
                                                 />
-                                                <SwitchToggle
-                                                    switchOn={sendDownvotesOnPolls}
-                                                    onPress={() => {setContextAndAsyncStorage('SendDownvotesOnPolls')}}
-                                                    circleColorOff={colors.tertiary}
-                                                    circleColorOn={dark? colors.teritary : colors.primary}
-                                                    backgroundColorOn={colors.darkestBlue}
-                                                    backgroundColorOff={colors.borderColor}
-                                                    containerStyle={{
-                                                        width: 50,
-                                                        height: 28,
-                                                        borderRadius: 25,
-                                                        padding: 5,
-                                                        marginVertical: marginVerticalOnSwitches
-                                                    }}
-                                                    circleStyle={{
-                                                        width: 20,
-                                                        height: 20,
-                                                        borderRadius: 20,
-                                                    }}
+                                                <Switch
+                                                    trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
+                                                    thumbColor={sendDownvotesOnPolls ? dark ? colors.teritary : colors.primary : colors.teritary}
+                                                    ios_backgroundColor={colors.borderColor}
+                                                    onValueChange={() => {setContextAndAsyncStorage('SendDownvotesOnPolls')}}
+                                                    value={sendDownvotesOnPolls}
                                                 />
-                                                <SwitchToggle
-                                                    switchOn={sendUpvotesOnThreads}
-                                                    onPress={() => {setContextAndAsyncStorage('SendUpvotesOnThreads')}}
-                                                    circleColorOff={colors.tertiary}
-                                                    circleColorOn={dark? colors.teritary : colors.primary}
-                                                    backgroundColorOn={colors.darkestBlue}
-                                                    backgroundColorOff={colors.borderColor}
-                                                    containerStyle={{
-                                                        width: 50,
-                                                        height: 28,
-                                                        borderRadius: 25,
-                                                        padding: 5,
-                                                        marginVertical: marginVerticalOnSwitches
-                                                    }}
-                                                    circleStyle={{
-                                                        width: 20,
-                                                        height: 20,
-                                                        borderRadius: 20,
-                                                    }}
+                                                <Switch
+                                                    trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
+                                                    thumbColor={sendUpvotesOnThreads ? dark ? colors.teritary : colors.primary : colors.teritary}
+                                                    ios_backgroundColor={colors.borderColor}
+                                                    onValueChange={() => {setContextAndAsyncStorage('SendUpvotesOnThreads')}}
+                                                    value={sendUpvotesOnThreads}
                                                 />
-                                                <SwitchToggle
-                                                    switchOn={sendNeutralVotesOnThreads}
-                                                    onPress={() => {setContextAndAsyncStorage('SendNeutralVotesOnThreads')}}
-                                                    circleColorOff={colors.tertiary}
-                                                    circleColorOn={dark? colors.teritary : colors.primary}
-                                                    backgroundColorOn={colors.darkestBlue}
-                                                    backgroundColorOff={colors.borderColor}
-                                                    containerStyle={{
-                                                        width: 50,
-                                                        height: 28,
-                                                        borderRadius: 25,
-                                                        padding: 5,
-                                                        marginVertical: marginVerticalOnSwitches
-                                                    }}
-                                                    circleStyle={{
-                                                        width: 20,
-                                                        height: 20,
-                                                        borderRadius: 20,
-                                                    }}
+                                                <Switch
+                                                    trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
+                                                    thumbColor={sendNeutralVotesOnThreads ? dark ? colors.teritary : colors.primary : colors.teritary}
+                                                    ios_backgroundColor={colors.borderColor}
+                                                    onValueChange={() => {setContextAndAsyncStorage('SendNeutralVotesOnThreads')}}
+                                                    value={sendNeutralVotesOnThreads}
                                                 />
-                                                <SwitchToggle
-                                                    switchOn={sendDownvotesOnThreads}
-                                                    onPress={() => {setContextAndAsyncStorage('SendDownvotesOnThreads')}}
-                                                    circleColorOff={colors.tertiary}
-                                                    circleColorOn={dark? colors.teritary : colors.primary}
-                                                    backgroundColorOn={colors.darkestBlue}
-                                                    backgroundColorOff={colors.borderColor}
-                                                    containerStyle={{
-                                                        width: 50,
-                                                        height: 28,
-                                                        borderRadius: 25,
-                                                        padding: 5,
-                                                        marginVertical: marginVerticalOnSwitches
-                                                    }}
-                                                    circleStyle={{
-                                                        width: 20,
-                                                        height: 20,
-                                                        borderRadius: 20,
-                                                    }}
+                                                <Switch
+                                                    trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
+                                                    thumbColor={sendDownvotesOnThreads ? dark ? colors.teritary : colors.primary : colors.teritary}
+                                                    ios_backgroundColor={colors.borderColor}
+                                                    onValueChange={() => {setContextAndAsyncStorage('SendDownvotesOnThreads')}}
+                                                    value={sendDownvotesOnThreads}
                                                 />
-                                                <SwitchToggle
-                                                    switchOn={sendJoiningCategory}
-                                                    onPress={() => {setContextAndAsyncStorage('SendJoiningCategory')}}
-                                                    circleColorOff={colors.tertiary}
-                                                    circleColorOn={dark? colors.teritary : colors.primary}
-                                                    backgroundColorOn={colors.darkestBlue}
-                                                    backgroundColorOff={colors.borderColor}
-                                                    containerStyle={{
-                                                        width: 50,
-                                                        height: 28,
-                                                        borderRadius: 25,
-                                                        padding: 5,
-                                                        marginVertical: marginVerticalOnSwitches
-                                                    }}
-                                                    circleStyle={{
-                                                        width: 20,
-                                                        height: 20,
-                                                        borderRadius: 20,
-                                                    }}
+                                                <Switch
+                                                    trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
+                                                    thumbColor={sendJoiningCategory ? dark ? colors.teritary : colors.primary : colors.teritary}
+                                                    ios_backgroundColor={colors.borderColor}
+                                                    onValueChange={() => {setContextAndAsyncStorage('SendJoiningCategory')}}
+                                                    value={sendJoiningCategory}
                                                 />
                                             </View>
                                         </View>

@@ -1,7 +1,6 @@
 import React, {useContext, useState, useEffect} from 'react';
 import { StatusBar } from 'expo-status-bar';
 import * as Haptics from 'expo-haptics';
-import SwitchToggle from "react-native-switch-toggle";
 
 import {
     Avatar,
@@ -35,7 +34,7 @@ import {Octicons, Ionicons, Fontisto} from '@expo/vector-icons';
 import axios from 'axios';
 
 //credentials context
-import { ImageBackground, ScrollView, Text, TouchableOpacity, View, Image, Platform, ActivityIndicator } from 'react-native';
+import { ImageBackground, ScrollView, Text, TouchableOpacity, View, Image, Platform, ActivityIndicator, Switch } from 'react-native';
 import * as Linking from 'expo-linking';
 import { ProfilePictureURIContext } from '../components/ProfilePictureURIContext.js';
 import { ShowPlaceholderSceeenContext } from '../components/ShowPlaceholderScreenContext.js';
@@ -206,46 +205,20 @@ const SecuritySettingsScreen = ({navigation}) => {
                                 <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10, textAlign: 'center'}}>{Platform.OS == 'ios' ? 'Lock SocialSquare with FaceID, TouchID, or password' : Platform.OS == 'android' ? 'Lock SocialSquare with fingerprint, facial, or iris recognition or password.' : 'Error: This platform is not supported'}</Text>
                             </View>
                             <View style={{flex: 0.3, flexDirection: 'column', alignItems: 'center'}}>
-                                <SwitchToggle
-                                    switchOn={showPlaceholderScreen}
-                                    onPress={() => {setContextAndAsyncStorage('ShowPlaceholder')}}
-                                    circleColorOff={colors.tertiary}
-                                    circleColorOn={dark? colors.teritary : colors.primary}
-                                    backgroundColorOn={colors.darkestBlue}
-                                    backgroundColorOff={colors.borderColor}
-                                    containerStyle={{
-                                        width: 50,
-                                        height: 28,
-                                        borderRadius: 25,
-                                        padding: 5,
-                                        marginVertical: marginVerticalOnSwitches
-                                    }}
-                                    circleStyle={{
-                                        width: 20,
-                                        height: 20,
-                                        borderRadius: 20,
-                                    }}
+                                <Switch
+                                    trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
+                                    thumbColor={showPlaceholderScreen ? dark ? colors.teritary : colors.primary : colors.teritary}
+                                    ios_backgroundColor={colors.primary}
+                                    onValueChange={() => {setContextAndAsyncStorage('ShowPlaceholder')}}
+                                    value={showPlaceholderScreen}
                                 />
                                 {Platform.OS == 'ios' || Platform.OS == 'android' ?
-                                    <SwitchToggle
-                                        switchOn={lockSocialSquare}
-                                        onPress={() => {setContextAndAsyncStorage('LockSocialSquare')}}
-                                        circleColorOff={colors.tertiary}
-                                        circleColorOn={dark? colors.teritary : colors.primary}
-                                        backgroundColorOn={colors.darkestBlue}
-                                        backgroundColorOff={colors.borderColor}
-                                        containerStyle={{
-                                            width: 50,
-                                            height: 28,
-                                            borderRadius: 25,
-                                            padding: 5,
-                                            marginVertical: marginVerticalOnSwitches
-                                        }}
-                                        circleStyle={{
-                                            width: 20,
-                                            height: 20,
-                                            borderRadius: 20,
-                                        }}
+                                    <Switch
+                                        trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
+                                        thumbColor={lockSocialSquare ? dark ? colors.teritary : colors.primary : colors.teritary}
+                                        ios_backgroundColor={colors.primary}
+                                        onValueChange={() => {setContextAndAsyncStorage('LockSocialSquare')}}
+                                        value={lockSocialSquare}
                                     />
                                 : null}
                             </View>

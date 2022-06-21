@@ -28,7 +28,6 @@ import {
     SearchFrame,
     PostIcons
 } from './screenStylings/styling.js';
-import SwitchToggle from "react-native-switch-toggle";
 
 // Colors
 const {brand, primary, tertiary, greyish, darkLight, slightlyLighterGrey, midWhite, red} = Colors;

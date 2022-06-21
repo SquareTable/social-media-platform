@@ -20,7 +20,6 @@ import { CredentialsContext } from "../components/CredentialsContext.js";
 import { NavigationContainer, useTheme } from '@react-navigation/native';
 import FindScreen from "../screens/FindScreen.js";
 import Post from "../posts/post.js";
-import Post_FullScreen from "../posts/post_fullscreen.js";
 import ProfilePages from '../screens/ProfilePages.js'
 
 import PostScreen from '../screens/PostScreen';
@@ -161,7 +160,6 @@ const FindScreen_Stack = () => {
       <Stack.Group screenOptions={{headerLeft: null}}>
         <Stack.Screen name="FindScreen" component={FindScreen}/>
         <Stack.Screen name="ProfilePages" component={ProfilePages}/>
-        <Stack.Screen name="Post_FullScreen" component={Post_FullScreen}/>
         <Stack.Screen name="ProfileStats" component={ProfileStats}/>
         <Stack.Screen name="AccountBadges" component={AccountBadges}/>
         <Stack.Screen name="BadgeInfo" component={BadgeInfo}/>
