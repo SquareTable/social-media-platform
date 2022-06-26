@@ -183,9 +183,9 @@ const SecuritySettingsScreen = ({navigation}) => {
                 <ScrollView scrollEnabled={destroyLocalDataMenuHidden} style={{height: '100%', backgroundColor: colors.primary}}>
                     <View style={{backgroundColor: colors.primary}}>
                         <Avatar resizeMode="cover" source={{uri: profilePictureUri}} />
-                        <SettingsPageItemTouchableOpacity disabled={!destroyLocalDataMenuHidden} style={{borderColor: colors.borderColor}} onPress={() => navigation.navigate("GDPRCompliance")}>
+                        <SettingsPageItemTouchableOpacity disabled={!destroyLocalDataMenuHidden} style={{borderColor: colors.borderColor}} onPress={() => navigation.navigate("DataControl")}>
                             <SettingsItemImage style={{tintColor: colors.tertiary}} source={require('./../assets/app_icons/settings.png')}/>
-                            <SettingsItemText style={{color: colors.tertiary}}>GDPR Compliance</SettingsItemText>
+                            <SettingsItemText style={{color: colors.tertiary}}>Data Control</SettingsItemText>
                         </SettingsPageItemTouchableOpacity>
                         <SettingsPageItemTouchableOpacity disabled={!destroyLocalDataMenuHidden} style={{borderColor: colors.borderColor}} onPress={() => navigation.navigate("LoginActivity")}>
                             <SettingsItemImage style={{tintColor: colors.tertiary}} source={require('./../assets/app_icons/settings.png')}/>

@@ -84,7 +84,7 @@ const ConversationDMUserFind = ({route, navigation}) => {
 
     const UserItem = ({name, displayName, following, followers, totalLikes, profileKey}) => (
         <SearchFrame onPress={() => {tryToCreateDM(name)}}>
-            <Avatar resizeMode="cover" searchPage={true} source={{uri: profileKey != null || '' ? `data:image/jpg;base64,${profileKey}` : SocialSquareLogo_B64_png}} />
+            <Avatar resizeMode="cover" searchPage={true} source={{uri: profileKey != null && profileKey != '' ? `data:image/jpeg;base64,${profileKey}` : SocialSquareLogo_B64_png}} />
             <SubTitle searchResTitle={true} style={{color: colors.tertiary}}>{displayName}</SubTitle>
             <SubTitle searchResTitleDisplayName={true} style={{color: colors.brand}}>@{name}</SubTitle>
             <SearchHorizontalView>
@@ -137,8 +137,7 @@ const ConversationDMUserFind = ({route, navigation}) => {
                                     if (displayName == "") {
                                         displayName = allData[index].name
                                     }
-                                    const imageInPfp = await getImageWithKeyOne(allData[index].profileKey)
-                                    const imageInPfpB64 = imageInPfp.data
+                                    const imageInPfpB64 = await getImageWithKeyOne(allData[index].profileKey)
                                     var tempSectionsTemp = {data: [{name: allData[index].name, displayName: displayName, followers: allData[index].followers, following: allData[index].following, totalLikes: allData[index].totalLikes, profileKey: imageInPfpB64}]}
                                     tempSections.push(tempSectionsTemp)
                                     itemsProcessed++;

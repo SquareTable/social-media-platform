@@ -1,21 +1,20 @@
-import React, {useContext} from 'react';
+import React, {useContext, useState} from 'react';
 import { useTheme } from '@react-navigation/native';
 import {View, SafeAreaView, Text, TouchableOpacity, Image} from 'react-native';
 import {
     ChatScreen_Title,
     Navigator_BackButton,
     TestText,
-    Colors,
     StyledButton,
     ButtonText,
 } from '../screenStylings/styling.js';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {CredentialsContext} from '../../components/CredentialsContext.js';
 
-const GDPRCompliance = ({navigation}) => {
+const DataControl = ({navigation}) => {
     const {colors, dark} = useTheme()
-    const {brand} = Colors;
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
+    const [hideConfirmDeleteAccountScreen, setHideConfirmDeleteAccountScreen] = useState(true);
     return(
         <>
             <ChatScreen_Title style={{backgroundColor: colors.primary, borderWidth: 0}}>
@@ -27,19 +26,31 @@ const GDPRCompliance = ({navigation}) => {
                     resizeMethod="resize"
                     />
                 </Navigator_BackButton>
-                <TestText style={{textAlign: 'center', color: colors.tertiary}}>GDPR Compliance</TestText>
+                <TestText style={{textAlign: 'center', color: colors.tertiary}}>Data Control</TestText>
             </ChatScreen_Title>
+            <ConfirmLogoutView style={{backgroundColor: colors.primary, height: 500}} viewHidden={hideConfirmDeleteAccountScreen}>
+                <ConfirmLogoutText style={{color: colors.tertiary, fontSize: 24}}>Are you sure you want to delete your account?</ConfirmLogoutText>
+                <ConfirmLogoutText style={{color: colors.tertiary, fontSize: 20, marginVertical: 2}}>This action is IRREVERSIBLE. Once you delete your account, SocialSquare can't do anything to get your account back.</ConfirmLogoutText>
+                <ConfirmLogoutText style={{color: colors.tertiary, fontSize: 14, marginVertical: 3}}>Everything will get deleted except the categories and conversations you have created.</ConfirmLogoutText>
+                <ConfirmLogoutText style={{color: colors.tertiary, fontSize: 14, marginVertical: 2}}>The only user identifiable information stored in categories is your User ID that points to your account. When your account gets deleted, the User ID will point to nothing.</ConfirmLogoutText>
+                <ConfirmLogoutText style={{color: colors.tertiary, fontSize: 14, marginVertical: 2}}>All of the messages you have sent in conversations will be deleted, and other users will not be able to see them. But the other users in the conversation would still be able to see their own messages and send new messages.</ConfirmLogoutText>
+                <ConfirmLogoutButtons style={{height: 100}} cancelButton={true} onPress={() => {setHideConfirmDeleteAccountScreen(true)}}>
+                    <ConfirmLogoutButtonText cancelButton={true}>Cancel</ConfirmLogoutButtonText>
+                </ConfirmLogoutButtons> 
+                <ConfirmLogoutButtons style={{height: 100}} confirmButton={true} onPress={() => {alert('lol hehe boo boo kitanga maori shutup bitch lol fuck me in the ass tonight before i die beyond your grave')}}>
+                    <ConfirmLogoutButtonText confirmButton>Confirm</ConfirmLogoutButtonText>
+                </ConfirmLogoutButtons> 
+            </ConfirmLogoutView>
             {storedCredentials ?
                 <>
-                    <Text style={{color: colors.tertiary, fontSize: 16, textAlign: 'center', marginTop: 20}}>In order to comply with GDPR laws, we must give you the option to download or delete all of the data that is stored on our servers that is associated with your account within 30 days from the request. You can create a request to download or delete all of your data using this screen.</Text>
                     <TouchableOpacity onPress={() => {navigation.navigate('WhatIsStoredOnOurServers')}} style={{borderColor: colors.borderColor, borderWidth: 2, justifyContent: 'center', alignItems: 'center', paddingVertical: 10, marginVertical: 20}}>
-                        <Text style={{color: brand, fontWeight: 'bold'}}>Learn about what data we store on our servers</Text>
+                        <Text style={{color: colors.brand, fontWeight: 'bold'}}>Learn about what data we store on our servers</Text>
                     </TouchableOpacity>
                     <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
                         <TouchableOpacity onPress={() => {alert('Coming soon')}} style={{alignItems: 'center', flexDirection: 'column', borderColor: colors.borderColor, borderWidth: 2, marginHorizontal: '5%', width: '40%', paddingVertical: 30}}>
                             <Text style={{color: colors.tertiary, fontSize: 22, textAlign: 'center', fontWeight: 'bold', marginBottom: 10}}>Download Data</Text>
                             <Icon name="download" size={60} color={colors.tertiary}/>
-                            <Text style={{color: colors.tertiary, fontSize: 12, textAlign: 'center', marginHorizontal: '5%', marginTop: 10}}>After pressing this button we will email you a link to download all of your data on our servers within 30 days of pressing the button</Text>
+                            <Text style={{color: colors.tertiary, fontSize: 12, textAlign: 'center', marginHorizontal: '5%', marginTop: 10}}>After pressing this button we will email you a link to download all of your data on our servers within 2 days of pressing the button.</Text>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => {alert('Coming soon')}} style={{alignItems: 'center', flexDirection: 'column', borderColor: colors.borderColor, borderWidth: 2, marginHorizontal: '5%', width: '40%', paddingVertical: 30}}>
                             <Text style={{color: 'red', fontSize: 24, fontWeight: 'bold', textAlign: 'center'}}>Delete all data</Text>
@@ -65,4 +76,4 @@ const GDPRCompliance = ({navigation}) => {
     );
 }
 
-export default GDPRCompliance;
+export default DataControl;

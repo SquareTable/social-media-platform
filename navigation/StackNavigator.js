@@ -47,7 +47,6 @@ import ViewPollPostPage from '../screens/ViewPollPostPage'
 import CategoryHome from '../screens/CategoryHome'
 import CategoryCreationPage from "../screens/CategoryCreationPage.js";
 import TakeImage_Camera from "../screens/TakeImage_Camera.js";
-import GDPRCompliance from "../screens/SecuritySettingsScreens/GDPRCompliance.js";
 import SecuritySettingsScreen from "../screens/SecuritySettingsScreen.js";
 import LoginActivity from "../screens/SecuritySettingsScreens/LoginActivity.js";
 import MultiFactorAuthentication from "../screens/SecuritySettingsScreens/MultiFactorAuthentication.js";
@@ -77,6 +76,7 @@ import BlockedAccountsScreen from "../screens/SafetySettings/BlockedAccountsScre
 import ActivateEmailMFA from "../screens/SecuritySettingsScreens/MFAScreens/ActivateEmailMFA.js";
 import VerifyEmailScreen from "../screens/VerifyEmailScreen.js";
 import VerifyEmailCodeScreen from "../screens/VerifyEmailCodeScreen.js";
+import DataControl from "../screens/SecuritySettingsScreens/DataControl.js";
 
 
 const Stack = createStackNavigator();
@@ -252,7 +252,7 @@ const SettingsStack = () => {
       <Stack.Screen name="SettingsScreen" component={SettingsScreen}/>
       <Stack.Screen name="ChangeEmailPage" component={ChangeEmailPage}/>
       <Stack.Screen name="AppStyling" component={AppStyling}/>
-      <Stack.Screen name="GDPRCompliance" component={GDPRCompliance}/>
+      <Stack.Screen name="DataControl" component={DataControl}/>
       <Stack.Screen name="SecuritySettingsScreen" component={SecuritySettingsScreen}/>
       <Stack.Screen name="LoginActivity" component={LoginActivity}/>
       <Stack.Screen name="MultiFactorAuthentication" component={MultiFactorAuthentication}/>
