@@ -7,6 +7,10 @@ import {
     TestText,
     StyledButton,
     ButtonText,
+    ConfirmLogoutButtonText,
+    ConfirmLogoutButtons,
+    ConfirmLogoutView,
+    ConfirmLogoutText
 } from '../screenStylings/styling.js';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {CredentialsContext} from '../../components/CredentialsContext.js';
@@ -30,14 +34,21 @@ const DataControl = ({navigation}) => {
             </ChatScreen_Title>
             <ConfirmLogoutView style={{backgroundColor: colors.primary, height: 500}} viewHidden={hideConfirmDeleteAccountScreen}>
                 <ConfirmLogoutText style={{color: colors.tertiary, fontSize: 24}}>Are you sure you want to delete your account?</ConfirmLogoutText>
-                <ConfirmLogoutText style={{color: colors.tertiary, fontSize: 20, marginVertical: 2}}>This action is IRREVERSIBLE. Once you delete your account, SocialSquare can't do anything to get your account back.</ConfirmLogoutText>
+                <ConfirmLogoutText style={{color: colors.tertiary, fontSize: 18, marginVertical: 2}}>This action is IRREVERSIBLE. Once you delete your account, SocialSquare can't do anything to get your account back.</ConfirmLogoutText>
                 <ConfirmLogoutText style={{color: colors.tertiary, fontSize: 14, marginVertical: 3}}>Everything will get deleted except the categories and conversations you have created.</ConfirmLogoutText>
                 <ConfirmLogoutText style={{color: colors.tertiary, fontSize: 14, marginVertical: 2}}>The only user identifiable information stored in categories is your User ID that points to your account. When your account gets deleted, the User ID will point to nothing.</ConfirmLogoutText>
                 <ConfirmLogoutText style={{color: colors.tertiary, fontSize: 14, marginVertical: 2}}>All of the messages you have sent in conversations will be deleted, and other users will not be able to see them. But the other users in the conversation would still be able to see their own messages and send new messages.</ConfirmLogoutText>
-                <ConfirmLogoutButtons style={{height: 100}} cancelButton={true} onPress={() => {setHideConfirmDeleteAccountScreen(true)}}>
+                <ConfirmLogoutButtons style={{height: 70}} cancelButton={true} onPress={() => {setHideConfirmDeleteAccountScreen(true)}}>
                     <ConfirmLogoutButtonText cancelButton={true}>Cancel</ConfirmLogoutButtonText>
                 </ConfirmLogoutButtons> 
-                <ConfirmLogoutButtons style={{height: 100}} confirmButton={true} onPress={() => {alert('lol hehe boo boo kitanga maori shutup bitch lol fuck me in the ass tonight before i die beyond your grave')}}>
+                <ConfirmLogoutButtons 
+                    style={{height: 70}} 
+                    confirmButton={true} 
+                    onPress={() => {
+                        navigation.navigate('DeleteAccountConfirmation')
+                        setHideConfirmDeleteAccountScreen(true)
+                    }}
+                >
                     <ConfirmLogoutButtonText confirmButton>Confirm</ConfirmLogoutButtonText>
                 </ConfirmLogoutButtons> 
             </ConfirmLogoutView>
@@ -52,7 +63,7 @@ const DataControl = ({navigation}) => {
                             <Icon name="download" size={60} color={colors.tertiary}/>
                             <Text style={{color: colors.tertiary, fontSize: 12, textAlign: 'center', marginHorizontal: '5%', marginTop: 10}}>After pressing this button we will email you a link to download all of your data on our servers within 2 days of pressing the button.</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => {alert('Coming soon')}} style={{alignItems: 'center', flexDirection: 'column', borderColor: colors.borderColor, borderWidth: 2, marginHorizontal: '5%', width: '40%', paddingVertical: 30}}>
+                        <TouchableOpacity onPress={() => {setHideConfirmDeleteAccountScreen(false)}} style={{alignItems: 'center', flexDirection: 'column', borderColor: colors.borderColor, borderWidth: 2, marginHorizontal: '5%', width: '40%', paddingVertical: 30}}>
                             <Text style={{color: 'red', fontSize: 24, fontWeight: 'bold', textAlign: 'center'}}>Delete all data</Text>
                             <Icon name="exclamation" size={70} color={colors.tertiary}/>
                             <Text style={{color: colors.tertiary, fontSize: 12, textAlign: 'center', marginHorizontal: '5%', marginTop: 10}}>This will delete all of the data stored on this account on our servers forever. There will not be any way to restore your account after this button has been pressed. We will send you a confirmation email once all data has been deleted.</Text>

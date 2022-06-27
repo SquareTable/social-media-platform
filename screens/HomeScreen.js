@@ -161,7 +161,7 @@ const HomeScreen = ({navigation, route}) => {
     const [allPosts, setAllPosts] = useState([])
 
     //Usestates etc
-    const [currentFeed, setCurrentFeed] = useState('Following');
+    const [currentFeed, setCurrentFeed] = useState('For You');
     const [reloadFeed, setReloadFeed] = useState(false) //I havent made anything for this but I added it so its easier to make
     const [loadingFeed, setLoadingFeed] = useState(false)
 

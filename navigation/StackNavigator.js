@@ -77,6 +77,7 @@ import ActivateEmailMFA from "../screens/SecuritySettingsScreens/MFAScreens/Acti
 import VerifyEmailScreen from "../screens/VerifyEmailScreen.js";
 import VerifyEmailCodeScreen from "../screens/VerifyEmailCodeScreen.js";
 import DataControl from "../screens/SecuritySettingsScreens/DataControl.js";
+import DeleteAccountConfirmation from "../screens/DeleteAccountConfirmation.js";
 
 
 const Stack = createStackNavigator();
@@ -259,7 +260,7 @@ const SettingsStack = () => {
       <Stack.Screen name="WhatIsStoredOnOurServers" component={WhatIsStoredOnOurServers}/>
       <Stack.Screen name="NotificationsSettingsScreen" component={NotificationsSettingsScreen}/>
       <Stack.Screen name="SimpleStylingMenu" component={SimpleStylingMenu}/>
-      <Stack.Screen name="EditSimpleStyle" component={EditSimpleStyle}options={{gestureEnabled: false}}/>
+      <Stack.Screen name="EditSimpleStyle" component={EditSimpleStyle} options={{gestureEnabled: false}}/>
       <Stack.Screen name="Simple_ColorPickerScreen" component={Simple_ColorPickerScreen}/>
       <Stack.Screen name="BuiltInStylingMenu" component={BuiltInStylingMenu}/>
       <Stack.Screen name="LoginAttempts" component={LoginAttempts}/>

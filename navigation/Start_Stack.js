@@ -24,6 +24,7 @@ import ResetPasswordAfterVerificationScreen from "../screens/ResetPasswordAfterV
 import WelcomeToSocialSquareScreen from "../screens/WelcomeScreens/WelcomeToSocialSquare.js";
 import TransferFromOtherPlatformsScreen from "../screens/WelcomeScreens/TransferFromOtherPlatforms.js";
 import VerifyEmailCodeScreen from "../screens/VerifyEmailCodeScreen.js";
+import DeleteAccountConfirmation from "../screens/DeleteAccountConfirmation.js";
 
 const Stack = createStackNavigator();
 
@@ -83,6 +84,7 @@ const Start_Stack = () => {
                             <Stack.Screen name="WelcomeToSocialSquareScreen" component={WelcomeToSocialSquareScreen}/>
                             <Stack.Screen name="TransferFromOtherPlatformsScreen" component={TransferFromOtherPlatformsScreen}/>
                             <Stack.Screen name="VerifyEmailCodeScreen" component={VerifyEmailCodeScreen}/>
+                            <Stack.Screen name="DeleteAccountConfirmation" component={DeleteAccountConfirmation}/>
                         </>
                     ) : ( 
                         <>
@@ -114,6 +116,7 @@ const Start_Stack = () => {
                             <Stack.Screen name="WelcomeToSocialSquareScreen" component={WelcomeToSocialSquareScreen}/>
                             <Stack.Screen name="TransferFromOtherPlatformsScreen" component={TransferFromOtherPlatformsScreen}/>
                             <Stack.Screen name="VerifyEmailCodeScreen" component={VerifyEmailCodeScreen}/>
+                            <Stack.Screen name="DeleteAccountConfirmation" component={DeleteAccountConfirmation}/>
                         </>
                     ) : (
                         <>

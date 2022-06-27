@@ -37,6 +37,7 @@ import { ProfilePictureURIContext } from '../components/ProfilePictureURIContext
 import { AllCredentialsStoredContext } from '../components/AllCredentialsStoredContext.js';
 import { AdIDContext } from '../components/AdIDContext.js';
 import AppCredits from '../components/AppCredits.js';
+import Logout from '../components/HandleLogout.js';
 
 
 const SettingsPage = ({navigation}) => {
@@ -53,48 +54,7 @@ const SettingsPage = ({navigation}) => {
         AsyncStorage.removeItem('SocialSquareDMsList');
         AsyncStorage.removeItem('PlayAudioInSilentMode_AppBehaviour_AsyncStorage');
         AsyncStorage.removeItem('UserProfilePicture');
-        if (storedCredentials && allCredentialsStoredList) {
-            if (allCredentialsStoredList.length == 1 || allCredentialsStoredList.length == 0 || allCredentialsStoredList == undefined || allCredentialsStoredList == null) {
-                console.log('Running logout code for when allCredentialsStoredLists length is 1 or 0');
-                setProfilePictureUri(SocialSquareLogo_B64_png);
-                AsyncStorage.removeItem('socialSquareCredentials').then(() => {
-                    setStoredCredentials(null)
-                })
-                AsyncStorage.removeItem('socialSquare_AllCredentialsList').then(() => {
-                    setAllCredentialsStoredList(null)
-                })
-                navigation.reset({
-                    index: 0,
-                    routes: [{ name: 'LoginScreen' }],
-                });
-            } else {
-                console.log('Running logout code for when allCredentialsStoredLists length is not 1 or 0')
-                allCredentialsStoredList.splice(storedCredentials.indexLength, 1);
-                AsyncStorage.setItem('socialSquare_AllCredentialsList', JSON.stringify(allCredentialsStoredList)).then(() => {
-                    setAllCredentialsStoredList(allCredentialsStoredList)
-                });
-                AsyncStorage.setItem('socialSquareCredentials', JSON.stringify(allCredentialsStoredList[0])).then(() => {
-                    setProfilePictureUri(allCredentialsStoredList[0].profilePictureUri)
-                    setStoredCredentials(allCredentialsStoredList[0])
-                });
-                navigation.reset({
-                    index: 0,
-                    routes: [{ name: 'Tabs' }],
-                })
-            }
-        } else {
-            setProfilePictureUri(SocialSquareLogo_B64_png);
-            AsyncStorage.removeItem('socialSquareCredentials').then(() => {
-                setStoredCredentials(null)
-            })
-            AsyncStorage.removeItem('socialSquare_AllCredentialsList').then(() => {
-                setAllCredentialsStoredList(null)
-            })
-            navigation.reset({
-                index: 0,
-                routes: [{ name: 'LoginScreen' }],
-            });
-        }
+        Logout(storedCredentials, setStoredCredentials, allCredentialsStoredList, setAllCredentialsStoredList, navigation, setProfilePictureUri);
     }
 
     const changeLogoutView = () => {
