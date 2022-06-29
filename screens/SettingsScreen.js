@@ -23,6 +23,7 @@ import {useTheme} from "@react-navigation/native";
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Entypo from 'react-native-vector-icons/Entypo';
+import Octicons from 'react-native-vector-icons/Octicons';
 
 // async-storage
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -38,6 +39,7 @@ import { AllCredentialsStoredContext } from '../components/AllCredentialsStoredC
 import { AdIDContext } from '../components/AdIDContext.js';
 import AppCredits from '../components/AppCredits.js';
 import Logout from '../components/HandleLogout.js';
+import { ExperimentalFeaturesEnabledContext } from '../components/ExperimentalFeaturesEnabledContext.js';
 
 
 const SettingsPage = ({navigation}) => {
@@ -48,6 +50,7 @@ const SettingsPage = ({navigation}) => {
     const [webBrowserResult, setWebBrowserResult] = useState(null)
     const {profilePictureUri, setProfilePictureUri} = useContext(ProfilePictureURIContext);
     const {allCredentialsStoredList, setAllCredentialsStoredList} = useContext(AllCredentialsStoredContext);
+    const {experimentalFeaturesEnabled, setExperimentalFeaturesEnabled} = useContext(ExperimentalFeaturesEnabledContext);
     const {AdID, setAdID} = useContext(AdIDContext)
 
     const clearLogin = () => {
@@ -105,10 +108,12 @@ const SettingsPage = ({navigation}) => {
                             <Icon name="cards-heart-outline" size={60} color={colors.tertiary}/>
                             <SettingsItemText style={{color: colors.tertiary}}>Safety</SettingsItemText>
                         </SettingsPageItemTouchableOpacity>
-                        <SettingsPageItemTouchableOpacity disabled={!logoutViewState} style={{borderColor: colors.borderColor}} onPress={() => {navigation.navigate('NotificationsSettingsScreen')}}>
-                            <Icon name="alarm-light-outline" size={60} color={colors.tertiary}/>
-                            <SettingsItemText style={{color: colors.tertiary}}>Notifications</SettingsItemText>
-                        </SettingsPageItemTouchableOpacity>
+                        {experimentalFeaturesEnabled && (
+                            <SettingsPageItemTouchableOpacity disabled={!logoutViewState} style={{borderColor: colors.borderColor}} onPress={() => {navigation.navigate('NotificationsSettingsScreen')}}>
+                                <Icon name="alarm-light-outline" size={60} color={colors.tertiary}/>
+                                <SettingsItemText style={{color: colors.tertiary}}>Notifications</SettingsItemText>
+                            </SettingsPageItemTouchableOpacity>
+                        )}
                         <SettingsPageItemTouchableOpacity disabled={!logoutViewState} style={{borderColor: colors.borderColor}} onPress={() => navigation.navigate("AccountSettings")}>
                             <SettingsItemImage style={{tintColor: colors.tertiary}} source={require('./../assets/app_icons/settings.png')}/>
                             <SettingsItemText style={{color: colors.tertiary}}>Account Settings</SettingsItemText>
@@ -117,10 +122,12 @@ const SettingsPage = ({navigation}) => {
                             <SettingsItemImage style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/207-eye.png')}/>
                             <SettingsItemText style={{color: colors.tertiary}}>App Styling</SettingsItemText>
                         </SettingsPageItemTouchableOpacity>
-                        <SettingsPageItemTouchableOpacity disabled={!logoutViewState} style={{borderColor: colors.borderColor}} onPress={() => navigation.navigate("AppStyling")}>
-                            <Entypo name="archive" size={55} color={colors.tertiary}/>
-                            <SettingsItemText style={{color: colors.tertiary}}>Transfer Data</SettingsItemText>
-                        </SettingsPageItemTouchableOpacity>
+                        {experimentalFeaturesEnabled && (
+                            <SettingsPageItemTouchableOpacity disabled={!logoutViewState} style={{borderColor: colors.borderColor}} onPress={() => navigation.navigate("AppStyling")}>
+                                <Entypo name="archive" size={55} color={colors.tertiary}/>
+                                <SettingsItemText style={{color: colors.tertiary}}>Transfer Data</SettingsItemText>
+                            </SettingsPageItemTouchableOpacity>
+                        )}
                         <SettingsPageItemTouchableOpacity disabled={!logoutViewState} style={{borderColor: colors.borderColor}} onPress={() => {Linking.openURL('https://github.com/SquareTable/social-media-platform/issues/new?assignees=&labels=&template=bug-report.md&title=Write+Bug+Title+here')}}>
                             <SettingsItemImage style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/265-notification.png')}/>
                             <SettingsItemText style={{color: colors.tertiary}}>Report bug</SettingsItemText>
@@ -129,9 +136,15 @@ const SettingsPage = ({navigation}) => {
                             <SettingsItemImage style={{tintColor: colors.tertiary}} source={require('./../assets/app_icons/settings.png')}/>
                             <SettingsItemText style={{color: colors.tertiary}}>Advanced Settings</SettingsItemText>
                         </SettingsPageItemTouchableOpacity>
-                        <SettingsPageItemTouchableOpacity disabled={!logoutViewState} style={{borderColor: colors.borderColor}} onPress={() => navigation.navigate("HomeScreenSettings")}>
-                            <SettingsItemImage style={{tintColor: colors.tertiary}} source={require('./../assets/app_icons/home.png')}/>
-                            <SettingsItemText style={{color: colors.tertiary}}>Home Screen Settings</SettingsItemText>
+                        {experimentalFeaturesEnabled && (
+                            <SettingsPageItemTouchableOpacity disabled={!logoutViewState} style={{borderColor: colors.borderColor}} onPress={() => navigation.navigate("HomeScreenSettings")}>
+                                <SettingsItemImage style={{tintColor: colors.tertiary}} source={require('./../assets/app_icons/home.png')}/>
+                                <SettingsItemText style={{color: colors.tertiary}}>Home Screen Settings</SettingsItemText>
+                            </SettingsPageItemTouchableOpacity>
+                        )}
+                        <SettingsPageItemTouchableOpacity disabled={!logoutViewState} style={{borderColor: colors.borderColor}} onPress={() => navigation.navigate("ExperimentalFeatures")}>
+                            <Octicons name="beaker" size={55} color={colors.tertiary}/>
+                            <SettingsItemText style={{color: colors.tertiary}}>Experimental Features</SettingsItemText>
                         </SettingsPageItemTouchableOpacity>
                         <SettingsPageItemTouchableOpacity disabled={!logoutViewState} style={{borderColor: colors.borderColor}} onPress={() => {storedCredentials ? changeLogoutView() : navigation.navigate('ModalLoginScreen', {modal: true})}}>
                             {storedCredentials ?

@@ -8,6 +8,7 @@ import * as Haptics from 'expo-haptics';
 import { ProfilePictureURIContext } from '../components/ProfilePictureURIContext';
 import { ShowAccountSwitcherContext } from '../components/ShowAccountSwitcherContext.js';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import { ExperimentalFeaturesEnabledContext } from '../components/ExperimentalFeaturesEnabledContext.js';
 
 
 const Tab = createBottomTabNavigator();
@@ -39,6 +40,7 @@ const Tabs = ({navigation}) => {
     const {colors} = useTheme();
     const {profilePictureUri, setProfilePictureUri} = useContext(ProfilePictureURIContext)
     const {showAccountSwitcher, setShowAccountSwitcher} = useContext(ShowAccountSwitcherContext)
+    const {experimentalFeaturesEnabled, setExperimentalFeaturesEnabled} = useContext(ExperimentalFeaturesEnabledContext)
     const haptic_feedback_options = {
         enableVibrateFallback: true,
         ignoreAndroidSystemSettings: false
@@ -66,7 +68,7 @@ const Tabs = ({navigation}) => {
         }
     }
     const onPostScreenNavigate = () => {
-        navigation.navigate("Post", {postData: null, postType: null, navigateToHomeScreen: false});
+        experimentalFeaturesEnabled ? navigation.replace('Post') : navigation.replace('MultiMediaUploadPage')
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
         setCurrentTab('Post')
     }
@@ -147,16 +149,16 @@ const Tabs = ({navigation}) => {
                     </TouchableWithoutFeedback>
                 ),
             }} />
-            <Tab.Screen name="Post" component={PostScreenStack} initialParams={{postData: null, postType: null, navigateToHomeScreen: false}}
+            <Tab.Screen name="Post" component={PostScreenStack} initialParams={{postData: null, postType: null, navigateToHomeScreen: false, imageFromRoute: null}}
             options={{
                 tabBarIcon: ({focused}) => (
-                    <TouchableWithoutFeedback onPress={() => {onPostScreenNavigate()}}>
+                    <>
                         {focused ?
                             <AntDesign name="pluscircle" size={40} color={colors.navFocusedColor}/>
                         :
                             <AntDesign name="pluscircleo" size={40} color={colors.navNonFocusedColor}/>
                         }
-                    </TouchableWithoutFeedback>
+                    </>
                 ),
                 tabBarButton: (props) => (
                     <CustomTabBarButton {...props} />

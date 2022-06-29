@@ -66,7 +66,7 @@ const MultiMediaUploadPage = ({navigation, route}) => {
     const [messageType, setMessageType] = useState();
     const [image, setImage] = useState(null);
     const [clearingImage, setClearingImage] = useState(false);
-    const {imageFromRoute} = route.params;
+    const {imageFromRoute} = route.params ?? {imageFromRoute: null};
     const [screenshotsAllowed, setScreenshotsAllowed] = useState(false)
 
 

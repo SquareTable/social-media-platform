@@ -109,6 +109,7 @@ import {
     AdMobBanner,
 } from 'expo-ads-admob'
 import { AllCredentialsStoredContext } from '../components/AllCredentialsStoredContext.js';
+import { ExperimentalFeaturesEnabledContext } from '../components/ExperimentalFeaturesEnabledContext.js';
 
 const {brand, primary, tertiary, greyish, darkLight, darkestBlue, slightlyLighterPrimary, slightlyLighterGrey, descTextColor, darkest, red, orange, yellow, green, purple} = Colors;
 
@@ -171,6 +172,9 @@ const HomeScreen = ({navigation, route}) => {
     const [message, setMessage] = useState();
     const [messageType, setMessageType] = useState();
     const [postNumForMsg, setPostNumForMsg] = useState();
+
+    //Experimental features
+    const {experimentalFeaturesEnabled, setExperimentalFeaturesEnabled} = useContext(ExperimentalFeaturesEnabledContext);
 
     const handleMessage = (message, type = 'FAILED', postNum) => {
         setMessage(message);
@@ -1421,17 +1425,19 @@ const HomeScreen = ({navigation, route}) => {
                         }}
                     />
                 </TouchableWithoutFeedback>
-                <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={() => {navigation.navigate('ChatScreenStack')}}>
-                    <Image
-                        source={require('../assets/app_icons/chat.png')}
-                        resizeMode = 'contain'
-                        style={{
-                            width: 35,
-                            height: 35,
-                            tintColor: colors.tertiary
-                        }}
-                    />
-                </TouchableOpacity>
+                {experimentalFeaturesEnabled ? (
+                    <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={() => {navigation.navigate('ChatScreenStack')}}>
+                        <Image
+                            source={require('../assets/app_icons/chat.png')}
+                            resizeMode = 'contain'
+                            style={{
+                                width: 35,
+                                height: 35,
+                                tintColor: colors.tertiary
+                            }}
+                        />
+                    </TouchableOpacity>
+                ) : <View style={{width: 35}}/>}
             </View>
             <View style={{flexDirection: 'row', justifyContent: 'space-evenly', position: 'absolute', top: StatusBarHeight + 40, width: '100%', zIndex: 2}}>
                 <TouchableWithoutFeedback onPress={() => {

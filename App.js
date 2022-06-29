@@ -48,6 +48,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import * as Sentry from 'sentry-expo';
 import {SENTRY_DSN, IOSADID, ANDROIDADID} from '@dotenv';
 import * as SplashScreen from 'expo-splash-screen';
+import { ExperimentalFeaturesEnabledContext } from './components/ExperimentalFeaturesEnabledContext.js';
 
 const routingInstrumentation = new Sentry.Native.ReactNavigationInstrumentation();
 
@@ -129,6 +130,7 @@ const App = () => {
   let AccountSwitchedBoxY = useRef(new Animated.Value(0)).current;
   let BadgeEarntBoxY = useRef(new Animated.Value(StatusBarHeight - 200)).current;
   const popUpTimeoutLength = useRef(new Animated.Value(Dimensions.get('window').width * 0.9)).current;
+  const [experimentalFeaturesEnabled, setExperimentalFeaturesEnabled] = useState(false)
 
   //Encryption Stuff
     
@@ -1348,6 +1350,7 @@ useEffect(() => {
 
         const LockSocialSquareValue = await AsyncStorage.getItem('LockSocialSquare')
         const ShowPlaceholderScreenValue = await AsyncStorage.getItem('ShowPlaceholderScreen')
+        const ExperimentalFeaturesEnabled = await AsyncStorage.getItem('ExperimentalFeaturesEnabled')
 
         if (LockSocialSquareValue != 'true') {
           setOpenApp(true)
@@ -1371,6 +1374,17 @@ useEffect(() => {
           setShowPlaceholderScreen(true)
         } else if (ShowPlaceholderScreenValue == 'false') {
           setShowPlaceholderScreen(false)
+        }
+
+        if (ExperimentalFeaturesEnabled == null) {
+          setExperimentalFeaturesEnabled(false)
+          AsyncStorage.setItem('ExperimentalFeaturesEnabled', 'false')
+        } else if (ExperimentalFeaturesEnabled == 'true') {
+          setExperimentalFeaturesEnabled(true)
+        } else if (ExperimentalFeaturesEnabled == 'false') {
+          setExperimentalFeaturesEnabled(false)
+        } else {
+          console.error('ExperimentalFeaturesEnabled is not what it is supposed to be: ' + ExperimentalFeaturesEnabled)
         }
 
         const compatibleWithBiometrics = await LocalAuthentication.hasHardwareAsync();
@@ -1431,81 +1445,83 @@ useEffect(() => {
                               <OnlineContext.Provider value={{onlineUsers, setOnlineUsers}}>
                                 <SocketContext.Provider value={{socket, setSocket}}>
                                   <ReconnectPromptContext.Provider value={{reconnectPrompt, setReconnectPrompt}}>
-                                    {AppStylingContextState != 'Default' && AppStylingContextState != 'Light' && AppStylingContextState != 'Dark' && AppStylingContextState != 'PureDark' && AppStylingContextState != 'PureLight' ? previousStylingState.current != AppStylingContextState ? setCurrentSimpleStylingDataToStyle(AppStylingContextState) : null : null}
-                                    <NavigationContainer ref={navigationRef} theme={appTheme} onStateChange={() => {console.log('Screen changed')}} onReady={() => {
-                                      // Register the navigation container with the instrumentation
-                                      routingInstrumentation.registerNavigationContainer(navigationRef);
-                                      setTimeout(() => {
-                                        // DOCS SAY TO USE ONLAYOUT ON A VIEW TO MAKE SURE THAT AS SOON AS CONTENT LOADS THE SPLASH SCREEN WILL HIDE
-                                        // BUT BECAUSE WE DO NOT HAVE A PARENT VIEW LOADING I CANNOT SEE HOW THAT WOULD BE POSSIBLE
-                                        // PR TO FIX THIS WOULD BE GREATLY APPRECIATED :)
-                                        SplashScreen.hideAsync(); // Use setTimeout to prevent showing nothing while content loads
-                                      }, 500);
-                                    }}>
-                                      {lockSocialSquare == false ?
-                                        showPlaceholderScreen == true && (appStateVisible == 'background' || appStateVisible == 'inactive') &&
-                                            <Image source={require('./assets/Splash_Screen.png')} resizeMode="cover" style={{width: '100%', height: '100%', position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, zIndex: 100, backgroundColor: '#3B4252', borderWidth: 0}}/>
-                                        :
-                                          showSocialSquareLockedWarning == false ?
-                                            previousAppStateVisible == 'inactive' || previousAppStateVisible == 'background' ?
-                                              biometricsCanBeUsed == false ? null :
-                                                openApp == false ?
+                                    <ExperimentalFeaturesEnabledContext.Provider value={{experimentalFeaturesEnabled, setExperimentalFeaturesEnabled}}>
+                                      {AppStylingContextState != 'Default' && AppStylingContextState != 'Light' && AppStylingContextState != 'Dark' && AppStylingContextState != 'PureDark' && AppStylingContextState != 'PureLight' ? previousStylingState.current != AppStylingContextState ? setCurrentSimpleStylingDataToStyle(AppStylingContextState) : null : null}
+                                      <NavigationContainer ref={navigationRef} theme={appTheme} onStateChange={() => {console.log('Screen changed')}} onReady={() => {
+                                        // Register the navigation container with the instrumentation
+                                        routingInstrumentation.registerNavigationContainer(navigationRef);
+                                        setTimeout(() => {
+                                          // DOCS SAY TO USE ONLAYOUT ON A VIEW TO MAKE SURE THAT AS SOON AS CONTENT LOADS THE SPLASH SCREEN WILL HIDE
+                                          // BUT BECAUSE WE DO NOT HAVE A PARENT VIEW LOADING I CANNOT SEE HOW THAT WOULD BE POSSIBLE
+                                          // PR TO FIX THIS WOULD BE GREATLY APPRECIATED :)
+                                          SplashScreen.hideAsync(); // Use setTimeout to prevent showing nothing while content loads
+                                        }, 500);
+                                      }}>
+                                        {lockSocialSquare == false ?
+                                          showPlaceholderScreen == true && (appStateVisible == 'background' || appStateVisible == 'inactive') &&
+                                              <Image source={require('./assets/Splash_Screen.png')} resizeMode="cover" style={{width: '100%', height: '100%', position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, zIndex: 100, backgroundColor: '#3B4252', borderWidth: 0}}/>
+                                          :
+                                            showSocialSquareLockedWarning == false ?
+                                              previousAppStateVisible == 'inactive' || previousAppStateVisible == 'background' ?
+                                                biometricsCanBeUsed == false ? null :
+                                                  openApp == false ?
+                                                      <Image source={require('./assets/Splash_Screen.png')} resizeMode="cover" style={{width: '100%', height: '100%', position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, zIndex: 100, backgroundColor: '#3B4252', borderWidth: 0}}/>
+                                                  : null
+                                              : appStateVisible == 'inactive' || appStateVisible == 'background' ?
+                                                    <Image source={require('./assets/Splash_Screen.png')} resizeMode="cover" style={{width: '100%', height: '100%', position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, zIndex: 100, backgroundColor: '#3B4252', borderWidth: 0}}/>
+                                                : openApp == false ? biometricsCanBeUsed == false ? null :
                                                     <Image source={require('./assets/Splash_Screen.png')} resizeMode="cover" style={{width: '100%', height: '100%', position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, zIndex: 100, backgroundColor: '#3B4252', borderWidth: 0}}/>
                                                 : null
-                                            : appStateVisible == 'inactive' || appStateVisible == 'background' ?
-                                                  <Image source={require('./assets/Splash_Screen.png')} resizeMode="cover" style={{width: '100%', height: '100%', position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, zIndex: 100, backgroundColor: '#3B4252', borderWidth: 0}}/>
-                                              : openApp == false ? biometricsCanBeUsed == false ? null :
-                                                  <Image source={require('./assets/Splash_Screen.png')} resizeMode="cover" style={{width: '100%', height: '100%', position: 'absolute', top: 0, right: 0, bottom: 0, left: 0, zIndex: 100, backgroundColor: '#3B4252', borderWidth: 0}}/>
-                                              : null
-                                          :
-                                            <View style={{position: 'absolute', height: '100%', width: '100%', top: 0, right: 0, backgroundColor: '#3B4252', zIndex: 1000}}>
-                                              <Image style={{width: 200, height: 200, position: 'absolute', top: StatusBarHeight, right: '25%', zIndex: 1001}} source={require('./assets/img/LogoWithBorder.png')}/>
-                                              <Text style={{color: '#eceff4', fontSize: 30, position: 'absolute', right: '10%', textAlign: 'center', fontWeight: 'bold', top: StatusBarHeight + 230, zIndex: 1001, width: '80%'}}>SocialSquare is currently locked</Text>
-                                              <TouchableOpacity onPress={handleAppAuth} style={{position: 'absolute', top: 400, right: '25%', zIndex: 1001, width: '50%'}}>
-                                                <Text style={{color: '#88c0d0', fontSize: 24, fontWeight: 'bold', textDecorationLine: 'underline', textDecorationColor: '#88c0d0', textAlign: 'center'}}>Unlock now</Text>
-                                              </TouchableOpacity>
+                                            :
+                                              <View style={{position: 'absolute', height: '100%', width: '100%', top: 0, right: 0, backgroundColor: '#3B4252', zIndex: 1000}}>
+                                                <Image style={{width: 200, height: 200, position: 'absolute', top: StatusBarHeight, right: '25%', zIndex: 1001}} source={require('./assets/img/LogoWithBorder.png')}/>
+                                                <Text style={{color: '#eceff4', fontSize: 30, position: 'absolute', right: '10%', textAlign: 'center', fontWeight: 'bold', top: StatusBarHeight + 230, zIndex: 1001, width: '80%'}}>SocialSquare is currently locked</Text>
+                                                <TouchableOpacity onPress={handleAppAuth} style={{position: 'absolute', top: 400, right: '25%', zIndex: 1001, width: '50%'}}>
+                                                  <Text style={{color: '#88c0d0', fontSize: 24, fontWeight: 'bold', textDecorationLine: 'underline', textDecorationColor: '#88c0d0', textAlign: 'center'}}>Unlock now</Text>
+                                                </TouchableOpacity>
+                                              </View>
+                                        }
+                                        <BadgeEarntBox/>
+                                        <NotificationBox/>
+                                        <Animated.View style={{position: 'absolute', height: '100%', width: '100%', top: 0, right: 0, zIndex: DismissAccountSwitcherBoxActivated.interpolate({inputRange: [0, 1], outputRange: [-10, 997]})}}>
+                                          <TouchableOpacity style={{height: '100%', width: '100%'}} onPress={() => {
+                                              console.log('Account Switcher Dismiss Box pressed')
+                                              Animated.timing(DismissAccountSwitcherBoxActivated, { toValue: 0, duration: 1, useNativeDriver: true }).start();
+                                              Animated.timing(AccountSwitcherY, {toValue: 250, duration: 100, useNativeDriver: true}).start()
+                                            }}
+                                          />
+                                        </Animated.View>
+                                        {checkingConnectionPopUp !== false && (
+                                            <View style={{zIndex: 10, position: 'absolute', height: Dimensions.get('window').height, width: Dimensions.get('window').width}}>
+                                                <View style={{width: Dimensions.get('window').width * 0.8, top: Dimensions.get('window').height * 0.5, marginTop: Dimensions.get('window').height * -0.1, backgroundColor: appTheme.colors.primary, alignSelf: 'center', justifyContent: 'center', borderRadius: 30, borderWidth: 3, borderColor: appTheme.colors.tertiary}}>
+                                                    <ButtonText style={{marginTop: 25, textAlign: 'center', color: appTheme.colors.tertiary, fontWeight: 'bold'}}> Checking Connection </ButtonText>
+                                                    <View style={{width: Dimensions.get('window').width * 0.6, marginLeft: Dimensions.get('window').width * 0.1}}>
+                                                        <ActivityIndicator size={30} color={appTheme.colors.brand} style={{marginBottom: 25}}/>
+                                                    </View>
+                                                </View>
                                             </View>
-                                      }
-                                      <BadgeEarntBox/>
-                                      <NotificationBox/>
-                                      <Animated.View style={{position: 'absolute', height: '100%', width: '100%', top: 0, right: 0, zIndex: DismissAccountSwitcherBoxActivated.interpolate({inputRange: [0, 1], outputRange: [-10, 997]})}}>
-                                        <TouchableOpacity style={{height: '100%', width: '100%'}} onPress={() => {
-                                            console.log('Account Switcher Dismiss Box pressed')
-                                            Animated.timing(DismissAccountSwitcherBoxActivated, { toValue: 0, duration: 1, useNativeDriver: true }).start();
-                                            Animated.timing(AccountSwitcherY, {toValue: 250, duration: 100, useNativeDriver: true}).start()
-                                          }}
-                                        />
-                                      </Animated.View>
-                                      {checkingConnectionPopUp !== false && (
-                                          <View style={{zIndex: 10, position: 'absolute', height: Dimensions.get('window').height, width: Dimensions.get('window').width}}>
-                                              <View style={{width: Dimensions.get('window').width * 0.8, top: Dimensions.get('window').height * 0.5, marginTop: Dimensions.get('window').height * -0.1, backgroundColor: appTheme.colors.primary, alignSelf: 'center', justifyContent: 'center', borderRadius: 30, borderWidth: 3, borderColor: appTheme.colors.tertiary}}>
-                                                  <ButtonText style={{marginTop: 25, textAlign: 'center', color: appTheme.colors.tertiary, fontWeight: 'bold'}}> Checking Connection </ButtonText>
-                                                  <View style={{width: Dimensions.get('window').width * 0.6, marginLeft: Dimensions.get('window').width * 0.1}}>
-                                                      <ActivityIndicator size={30} color={appTheme.colors.brand} style={{marginBottom: 25}}/>
-                                                  </View>
-                                              </View>
-                                          </View>
-                                      )}
-                                      {/*reconnectPrompt !== false && (
-                                          <View style={{zIndex: 10, position: 'absolute', height: Dimensions.get('window').height, width: Dimensions.get('window').width}}>
-                                              <View style={{width: Dimensions.get('window').width * 0.8, top: Dimensions.get('window').height * 0.5, marginTop: Dimensions.get('window').height * -0.2, backgroundColor: appTheme.colors.primary, alignSelf: 'center', justifyContent: 'center', borderRadius: 30, borderWidth: 3, borderColor: appTheme.colors.tertiary}}>
-                                                  <ButtonText style={{marginTop: 25, textAlign: 'center', color: appTheme.colors.tertiary, fontWeight: 'bold'}}> You got disconnected{"\n"}   from inactivity :( </ButtonText>
-                                                  <View style={{width: Dimensions.get('window').width * 0.6, aspectRatio: 1/1, marginLeft: Dimensions.get('window').width * 0.1}}>
-                                                      <Image style={{width: '100%', height: '100%'}} source={require('./assets/img/DidulaUpsideDown.jpg')}/>
-                                                  </View>
-                                                  <TouchableOpacity style={{marginVertical: '2%', backgroundColor: appTheme.colors.brand, marginBottom: 25, width: '80%', paddingVertical: 20, alignContent: 'center', justifyContent: 'center', alignSelf: 'center', borderRadius: 30}} onPress={() => {
-                                                      tryReconnect()
-                                                  }}>
-                                                      <ButtonText style={{textAlign: 'center'}}> Reconnect </ButtonText>
-                                                  </TouchableOpacity>
-                                              </View>
-                                          </View>
-                                        )*/}
-                                      <DisconnectedFromInternetBox/>
-                                      <AccountSwitcher/>
-                                      <AccountSwitchedBox/>
-                                      <Start_Stack />
-                                    </NavigationContainer>
+                                        )}
+                                        {/*reconnectPrompt !== false && (
+                                            <View style={{zIndex: 10, position: 'absolute', height: Dimensions.get('window').height, width: Dimensions.get('window').width}}>
+                                                <View style={{width: Dimensions.get('window').width * 0.8, top: Dimensions.get('window').height * 0.5, marginTop: Dimensions.get('window').height * -0.2, backgroundColor: appTheme.colors.primary, alignSelf: 'center', justifyContent: 'center', borderRadius: 30, borderWidth: 3, borderColor: appTheme.colors.tertiary}}>
+                                                    <ButtonText style={{marginTop: 25, textAlign: 'center', color: appTheme.colors.tertiary, fontWeight: 'bold'}}> You got disconnected{"\n"}   from inactivity :( </ButtonText>
+                                                    <View style={{width: Dimensions.get('window').width * 0.6, aspectRatio: 1/1, marginLeft: Dimensions.get('window').width * 0.1}}>
+                                                        <Image style={{width: '100%', height: '100%'}} source={require('./assets/img/DidulaUpsideDown.jpg')}/>
+                                                    </View>
+                                                    <TouchableOpacity style={{marginVertical: '2%', backgroundColor: appTheme.colors.brand, marginBottom: 25, width: '80%', paddingVertical: 20, alignContent: 'center', justifyContent: 'center', alignSelf: 'center', borderRadius: 30}} onPress={() => {
+                                                        tryReconnect()
+                                                    }}>
+                                                        <ButtonText style={{textAlign: 'center'}}> Reconnect </ButtonText>
+                                                    </TouchableOpacity>
+                                                </View>
+                                            </View>
+                                          )*/}
+                                        <DisconnectedFromInternetBox/>
+                                        <AccountSwitcher/>
+                                        <AccountSwitchedBox/>
+                                        <Start_Stack />
+                                      </NavigationContainer>
+                                    </ExperimentalFeaturesEnabledContext.Provider>
                                   </ReconnectPromptContext.Provider>
                                 </SocketContext.Provider>
                               </OnlineContext.Provider>

@@ -1,10 +1,12 @@
-import React from "react";
+import React, {useContext} from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import { StyleSheet, Text, View, Button, Image, TouchableOpacity, SafeAreaView, ScrollView} from 'react-native';
 import {darkModeStyling, darkModeOn, lightModeStyling} from '../screens/screenStylings/styling.js';
 
 import {Colors} from '../screens/screenStylings/styling.js'
 const {primary, tertiary} = Colors;
+
+import { ExperimentalFeaturesEnabledContext } from "../components/ExperimentalFeaturesEnabledContext.js";
 
 import ProfileScreen from "../screens/ProfileScreen";
 import VisitingProfileScreen from "../screens/VisitingProfileScreen.js";
@@ -78,6 +80,7 @@ import VerifyEmailScreen from "../screens/VerifyEmailScreen.js";
 import VerifyEmailCodeScreen from "../screens/VerifyEmailCodeScreen.js";
 import DataControl from "../screens/SecuritySettingsScreens/DataControl.js";
 import DeleteAccountConfirmation from "../screens/DeleteAccountConfirmation.js";
+import ExperimentalFeatures from "../screens/ExperimentalFeatures.js";
 
 
 const Stack = createStackNavigator();
@@ -206,8 +209,9 @@ const HomeScreenStack = () => {
 
 const PostScreenStack = () => {
   const { colors } = useTheme();
+  const {experimentalFeaturesEnabled, setExperimentalFeaturesEnabled} = useContext(ExperimentalFeaturesEnabledContext);
   return(
-    <Stack.Navigator screenOptions={{
+    <Stack.Navigator initialRouteName={experimentalFeaturesEnabled ? 'PostScreen' : 'MultiMediaUploadPage'} screenOptions={{
       headerStyle: {
         backgroundColor: 'transparent',
       },
@@ -277,6 +281,7 @@ const SettingsStack = () => {
       <Stack.Screen name="ActivateEmailMFA" component={ActivateEmailMFA}/>
       <Stack.Screen name="VerifyEmailScreen" component={VerifyEmailScreen}/>
       <Stack.Screen name="VerifyEmailCodeScreen" component={VerifyEmailCodeScreen}/>
+      <Stack.Screen name="ExperimentalFeatures" component={ExperimentalFeatures}/>
     </Stack.Navigator>
   )
 }
