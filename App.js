@@ -198,7 +198,7 @@ useEffect(() => {
           }
           forAsync()
       }
-      AsyncStorage.getItem('deviceNotificationKey').then((result) => {
+      AsyncStorage.getItem(`deviceNotificationKey-${storedCredentials._id}`).then((result) => {
           if (result !== null) {
               setExpoPushToken(result);
               console.log('deviceNotificationKey: ' + result);
@@ -224,7 +224,7 @@ useEffect(() => {
                           console.log(`${status}: ${message}`)
                       } else {
                           setExpoPushToken(token)
-                          AsyncStorage.setItem('deviceNotificationKey', token)
+                          AsyncStorage.setItem(`deviceNotificationKey-${storedCredentials._id}`, token)
                           .then(() => {
                               setExpoPushToken(token);
                               console.log('deviceNotificationKey: ' + token);
