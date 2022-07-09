@@ -68,7 +68,7 @@ const DeleteAccountConfirmation = ({navigation}) => {
     const showDeleteAccountAlert = () => {
         Alert.alert(
             'Are you sure you want to delete your account?',
-            'It is recommended to keep your phone awake and have SocialSquare open while your account is being deleted so you can be warned of any errors that may occur. Account deletion should take less than 15 seconds but if you have a lot of posts, comments, or messages it may take a bit longer.',
+            'It is recommended to keep your phone awake and have SocialSquare open while your account is being deleted so if any errors do occur you can retry deleting your account data. If you leave SocialSquare while this process is running, you may not be able to delete all data if an error occurs. Account deletion should take less than 15 seconds but if you have a lot of posts, comments, or messages it may take a bit longer.',
             [
                 {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
                 {text: 'OK', onPress: () => handleAccountDeletion()},

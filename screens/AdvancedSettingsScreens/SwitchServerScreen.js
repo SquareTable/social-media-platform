@@ -47,6 +47,8 @@ import { ServerUrlContext } from '../../components/ServerUrlContext.js';
 import Constants from "expo-constants";
 import KeyboardAvoidingWrapper from '../../components/KeyboardAvoidingWrapper.js';
 
+import axios from 'axios';
+
 
 const SwitchServerScreen = ({navigation}) => {
     const {colors, dark} = useTheme();
@@ -61,15 +63,30 @@ const SwitchServerScreen = ({navigation}) => {
 
     const handleSwitchServer = (values, setSubmitting, setServerUrl, setMessageType, handleMessage) => {
         const {serverInfo} = values;
-        setServerUrl(serverInfo);
-        AsyncStorage.setItem('SocialSquareServerUrl', serverInfo.toString());
-        setSubmitting(false);
-        setMessageType('SUCCESS');
-        if (serverInfo == 'http://it-solutions.homedns.org:9443') {
-            handleMessage('Switched to default server');
-        } else {
-            handleMessage('Switched to ' + serverInfo);
-        }
+        axios.get(`${serverInfo}/checkIfRealSocialSquareServer`).then(response => {
+            const result = response.data;
+            const {message} = result;
+
+            if (message === 'Yes. This is a real SocialSquare server.') {
+                setServerUrl(serverInfo);
+                AsyncStorage.setItem('SocialSquareServerUrl', serverInfo.toString());
+                setSubmitting(false);
+                setMessageType('SUCCESS');
+                if (serverInfo == 'http://it-solutions.homedns.org:9443') {
+                    handleMessage('Switched to default server');
+                } else {
+                    handleMessage('Switched to ' + serverInfo);
+                }
+            } else {
+                setMessageType('FAILED');
+                handleMessage("This URL does not seem to link to a working SocialSquare server. This may be because you are trying to connect to a non-SocialSquare server, the server is set up wrong, or the server you are trying to contact is offline.");
+                setSubmitting(false);
+            }
+        }).catch(error => {
+            setMessageType('FAILED');
+            handleMessage("This URL does not seem to link to a working SocialSquare server. This may be because you are trying to connect to a non-SocialSquare server, the server is set up wrong, or the server you are trying to contact is offline.");
+            setSubmitting(false);  
+        })
     }
     
 

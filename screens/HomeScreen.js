@@ -1425,19 +1425,17 @@ const HomeScreen = ({navigation, route}) => {
                         }}
                     />
                 </TouchableWithoutFeedback>
-                {experimentalFeaturesEnabled ? (
-                    <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={() => {navigation.navigate('ChatScreenStack')}}>
-                        <Image
-                            source={require('../assets/app_icons/chat.png')}
-                            resizeMode = 'contain'
-                            style={{
-                                width: 35,
-                                height: 35,
-                                tintColor: colors.tertiary
-                            }}
-                        />
-                    </TouchableOpacity>
-                ) : <View style={{width: 35}}/>}
+                <TouchableOpacity disabled={!FlatListElementsEnabledState} onPress={() => {navigation.navigate('ChatScreenStack')}}>
+                    <Image
+                        source={require('../assets/app_icons/chat.png')}
+                        resizeMode = 'contain'
+                        style={{
+                            width: 35,
+                            height: 35,
+                            tintColor: colors.tertiary
+                        }}
+                    />
+                </TouchableOpacity>
             </View>
             <View style={{flexDirection: 'row', justifyContent: 'space-evenly', position: 'absolute', top: StatusBarHeight + 40, width: '100%', zIndex: 2}}>
                 <TouchableWithoutFeedback onPress={() => {
