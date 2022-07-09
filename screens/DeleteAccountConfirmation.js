@@ -1,6 +1,6 @@
 import React, {useContext, useState} from 'react';
 import {useTheme} from '@react-navigation/native';
-import {View, Text, TouchableOpacity, Image, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, ActivityIndicator} from 'react-native';
+import {View, Text, TouchableOpacity, Image, KeyboardAvoidingView, Platform, TouchableWithoutFeedback, Keyboard, ActivityIndicator, Alert} from 'react-native';
 import { CredentialsContext } from '../components/CredentialsContext';
 import {
     ConfirmLogoutButtons,
@@ -65,6 +65,18 @@ const DeleteAccountConfirmation = ({navigation}) => {
         setMessageType(type);
     }
 
+    const showDeleteAccountAlert = () => {
+        Alert.alert(
+            'Are you sure you want to delete your account?',
+            'It is recommended to keep your phone awake and have SocialSquare open while your account is being deleted so you can be warned of any errors that may occur. Account deletion should take less than 15 seconds but if you have a lot of posts, comments, or messages it may take a bit longer.',
+            [
+                {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+                {text: 'OK', onPress: () => handleAccountDeletion()},
+            ],
+            {cancelable: false},
+        );
+    }
+
     return (
         <View style={{flex: 1, justifyContent: 'center'}}>
             <>
@@ -92,7 +104,7 @@ const DeleteAccountConfirmation = ({navigation}) => {
                             </View>
                             <MsgBox type={messageType}>{message}</MsgBox>
                             <View style={{alignItems: 'center'}}>
-                                <ConfirmLogoutButtons style={{height: 70}} confirmButton={true} onPress={handleAccountDeletion}>
+                                <ConfirmLogoutButtons style={{height: 70}} confirmButton={true} onPress={showDeleteAccountAlert}>
                                     <ConfirmLogoutButtonText confirmButton>Delete Account</ConfirmLogoutButtonText>
                                 </ConfirmLogoutButtons>
                                 <ConfirmLogoutButtons style={{height: 70}} cancelButton={true} onPress={() => {navigation.goBack()}}>
