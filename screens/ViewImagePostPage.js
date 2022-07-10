@@ -507,10 +507,12 @@ const ViewImagePostPage = ({route, navigation}) => {
                                 <PinchableBox imageUri={imageB64}/>
                             </MultiMediaPostFrame>
                         </PostsHorizontalView>
-                        <ImagePostFrame style={{textAlign: 'left'}}>
-                            <SubTitle style={{fontSize: 20, color: colors.tertiary, marginBottom: 0}}>{imageTitle}</SubTitle>
-                            <SubTitle style={{fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{imageDescription}</SubTitle>
-                        </ImagePostFrame>
+                        {imageTitle !== '' || imageDescription !== '' &&
+                            <ImagePostFrame style={{textAlign: 'left'}}>
+                                {imageTitle !== '' && <SubTitle style={{fontSize: 20, color: colors.tertiary, marginBottom: 0}}>{imageTitle}</SubTitle>}
+                                {imageDescription !== '' && <SubTitle style={{fontSize: 16, color: descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{imageDescription}</SubTitle>}
+                            </ImagePostFrame>
+                        }
                         <PostHorizontalView style={{marginLeft: '5%', width: '90%', paddingVertical: 10, flex: 1, flexDirection: 'row'}}>
                             
                             {imageUpOrDownVoted == "UpVoted" && (<PostsIconFrame onPress={() => {UpVoteImage()}}>

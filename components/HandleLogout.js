@@ -1,7 +1,7 @@
 import SocialSquareLogo_B64_png from "../assets/SocialSquareLogo_Base64_png";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export default function Logout(storedCredentials, setStoredCredentials, allCredentialsStoredList, setAllCredentialsStoredList, navigation, setProfilePictureUri) {
+export function Logout(storedCredentials, setStoredCredentials, allCredentialsStoredList, setAllCredentialsStoredList, navigation, setProfilePictureUri) {
     if (storedCredentials && allCredentialsStoredList) {
         if (allCredentialsStoredList.length == 1 || allCredentialsStoredList.length == 0 || allCredentialsStoredList == undefined || allCredentialsStoredList == null) {
             console.log('Running logout code for when allCredentialsStoredLists length is 1 or 0');
@@ -44,4 +44,16 @@ export default function Logout(storedCredentials, setStoredCredentials, allCrede
             routes: [{ name: 'LoginScreen' }],
         });
     }
+}
+
+export async function LogoutOfAllAccounts(setStoredCredentials, setAllCredentialsStoredList, navigation, setProfilePictureUri) {
+    setStoredCredentials(null)
+    setAllCredentialsStoredList(null)
+    setProfilePictureUri(SocialSquareLogo_B64_png);
+    await AsyncStorage.removeItem('socialSquareCredentials')
+    await AsyncStorage.removeItem('socialSquare_AllCredentialsList')
+    navigation.reset({
+        index: 0,
+        routes: [{ name: 'LoginScreen' }],
+    });
 }

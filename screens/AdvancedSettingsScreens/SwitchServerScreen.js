@@ -34,7 +34,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 //credentials context
 import { CredentialsContext } from '../../components/CredentialsContext';
-import { ImageBackground, ScrollView, Settings } from 'react-native';
+import { Alert, ImageBackground, ScrollView, Settings } from 'react-native';
 import { ProfilePictureURIContext } from '../../components/ProfilePictureURIContext.js';
 
 import {Image, View, Text, TouchableOpacity, ActivityIndicator} from 'react-native';
@@ -49,6 +49,9 @@ import KeyboardAvoidingWrapper from '../../components/KeyboardAvoidingWrapper.js
 
 import axios from 'axios';
 
+import { LogoutOfAllAccounts } from '../../components/HandleLogout.js';
+import { AllCredentialsStoredContext } from '../../components/AllCredentialsStoredContext.js';
+
 
 const SwitchServerScreen = ({navigation}) => {
     const {colors, dark} = useTheme();
@@ -60,6 +63,7 @@ const SwitchServerScreen = ({navigation}) => {
     const {serverUrl, setServerUrl} = useContext(ServerUrlContext);
     const [messageType, setMessageType] = useState('FAILED');
     const StatusBarHeight = Constants.statusBarHeight;
+    const {allCredentialsStoredList, setAllCredentialsStoredList} = useContext(AllCredentialsStoredContext)
 
     const handleSwitchServer = (values, setSubmitting, setServerUrl, setMessageType, handleMessage) => {
         const {serverInfo} = values;
@@ -68,15 +72,37 @@ const SwitchServerScreen = ({navigation}) => {
             const {message} = result;
 
             if (message === 'Yes. This is a real SocialSquare server.') {
-                setServerUrl(serverInfo);
-                AsyncStorage.setItem('SocialSquareServerUrl', serverInfo.toString());
-                setSubmitting(false);
-                setMessageType('SUCCESS');
-                if (serverInfo == 'http://it-solutions.homedns.org:9443') {
-                    handleMessage('Switched to default server');
-                } else {
-                    handleMessage('Switched to ' + serverInfo);
-                }
+                Alert.alert(
+                    'Do you want to switch servers?',
+                    'You will be logged out of all accounts.',
+                    [
+                        {
+                            text: 'Continue', 
+                            onPress: () => {
+                                LogoutOfAllAccounts(setStoredCredentials, setAllCredentialsStoredList, navigation, setProfilePictureUri);
+                                setServerUrl(serverInfo);
+                                AsyncStorage.setItem('SocialSquareServerUrl', serverInfo.toString());
+                                setSubmitting(false);
+                                setMessageType('SUCCESS');
+                                if (serverInfo == 'http://it-solutions.homedns.org:9443') {
+                                    handleMessage('Switched to default server');
+                                } else {
+                                    handleMessage('Switched to ' + serverInfo);
+                                }
+                            }
+                        },
+                        {
+                            text: 'Cancel',
+                            onPress: () => {
+                                setSubmitting(false);
+                                setMessageType('FAILED');
+                                handleMessage('Cancelled');
+                            },
+                            style: 'cancel',
+                        }
+                    ],
+                    {cancelable: false},
+                );
             } else {
                 setMessageType('FAILED');
                 handleMessage("This URL does not seem to link to a working SocialSquare server. This may be because you are trying to connect to a non-SocialSquare server, the server is set up wrong, or the server you are trying to contact is offline.");

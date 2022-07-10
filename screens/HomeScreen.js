@@ -1715,10 +1715,12 @@ const HomeScreen = ({navigation, route}) => {
                                             <Image style={{width: '100%', height: '100%', resizeMode : 'cover', borderRadius: 20}} source={{uri: postData.image.uri}}/>
                                         </MultiMediaPostFrame>
                                     </PostsHorizontalView>
-                                    <ImagePostTextFrame style={{textAlign: 'center'}}>
-                                        <SubTitle style={{fontSize: 20, color: colors.tertiary, marginBottom: 0}}>{postData.title}</SubTitle>
-                                        <SubTitle style={{fontSize: 16, color: colors.descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{postData.description}</SubTitle>
-                                    </ImagePostTextFrame>
+                                    {postData.title !== '' || postData.description !== '' &&
+                                        <ImagePostTextFrame style={{textAlign: 'center'}}>
+                                            {postData.title !== '' && <SubTitle style={{fontSize: 20, color: colors.tertiary, marginBottom: 0}}>{postData.title}</SubTitle>}
+                                            {postData.description !== '' && <SubTitle style={{fontSize: 16, color: colors.descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{postData.description}</SubTitle>}
+                                        </ImagePostTextFrame>
+                                    }
                                     <PostHorizontalView style={{marginLeft: '5%', width: '90%', paddingVertical: 10, flex: 1, flexDirection: 'row'}}>
                                         <PostsIconFrame>
                                             <PostsIcons style={{flex: 1}} tintColor={colors.brand} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/322-circle-up.png')}/>

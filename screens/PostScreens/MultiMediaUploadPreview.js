@@ -107,8 +107,8 @@ const MultiMediaUploadPreview = ({route, navigation}) => {
                     <Image source={image} style={{ width: "100%", height: "100%" }} resizeMode="contain" />
                 </MultiMediaPostFrame>
                 <MultiMediaPostFrame style={{backgroundColor: colors.primary}}>
-                    <SubTitle style={{color: colors.tertiary}}>{title}</SubTitle>
-                    <SubTitle style={{fontSize: 10, color: colors.tertiary}}>{description}</SubTitle>
+                    {title !== '' && <SubTitle style={{color: colors.tertiary}}>{title}</SubTitle>}
+                    {description !== '' && <SubTitle style={{fontSize: 10, color: colors.tertiary}}>{description}</SubTitle>}
                     <View style={{flexDirection: 'row', justifyContent: 'center'}}>
                         <Text style={{color: colors.tertiary, fontSize: 18, marginTop: 10, marginRight: 10}}>{screenshotsAllowed == false ? 'Screen capture is not allowed' : 'Screen capture is allowed'}</Text>
                         <View style={{width: 40, height: 40, borderColor: colors.borderColor, borderWidth: 3, justifyContent: 'center', alignItems: 'center'}}>

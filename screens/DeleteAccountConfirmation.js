@@ -14,7 +14,7 @@ import { Formik } from 'formik';
 import Octicons from 'react-native-vector-icons/Octicons';
 import axios from 'axios';
 import { ServerUrlContext } from '../components/ServerUrlContext';
-import Logout from '../components/HandleLogout';
+import {Logout} from '../components/HandleLogout';
 import { AllCredentialsStoredContext } from '../components/AllCredentialsStoredContext';
 import { ProfilePictureURIContext } from '../components/ProfilePictureURIContext';
 

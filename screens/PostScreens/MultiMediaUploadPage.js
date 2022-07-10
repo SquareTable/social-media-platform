@@ -169,10 +169,10 @@ const MultiMediaUploadPage = ({navigation, route}) => {
                     <Formik
                         initialValues={{title: '', description: ''}}
                         onSubmit={(values) => {
-                            if (values.title == "" || values.description == "" || image == null) {
-                                handleMessage('Please fill all the fields.');
+                            if (image == null) {
+                                handleMessage('Please add an image.');
                             } else {
-                                navigation.navigate("MultiMediaUploadPreview", {title: values.title, description: values.description, image: image, screenshotsAllowed: screenshotsAllowed})
+                                navigation.navigate("MultiMediaUploadPreview", {title: values.title.trim(), description: values.description.trim(), image: image, screenshotsAllowed: screenshotsAllowed})
                             }
                         }}
                     >

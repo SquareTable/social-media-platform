@@ -38,7 +38,7 @@ import { ProfilePictureURIContext } from '../components/ProfilePictureURIContext
 import { AllCredentialsStoredContext } from '../components/AllCredentialsStoredContext.js';
 import { AdIDContext } from '../components/AdIDContext.js';
 import AppCredits from '../components/AppCredits.js';
-import Logout from '../components/HandleLogout.js';
+import {Logout} from '../components/HandleLogout.js';
 import { ExperimentalFeaturesEnabledContext } from '../components/ExperimentalFeaturesEnabledContext.js';
 
 

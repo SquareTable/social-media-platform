@@ -1205,10 +1205,12 @@ const Welcome = ({navigation, route}) => {
                     <Image style={{width: '100%', height: '100%', resizeMode : 'cover', borderRadius: 20}} source={{uri: imageB64}}/>
                 </MultiMediaPostFrame>
             </PostsHorizontalView>
-            <ImagePostTextFrame style={{textAlign: 'center'}}>
-                <SubTitle style={{fontSize: 20, color: colors.tertiary, marginBottom: 0}}>{imageTitle}</SubTitle>
-                <SubTitle style={{fontSize: 16, color: colors.descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{imageDescription}</SubTitle>
-            </ImagePostTextFrame>
+            {imageTitle !== '' || imageDescription !== '' &&
+                <ImagePostTextFrame style={{textAlign: 'center'}}>
+                    {imageTitle !== '' && <SubTitle style={{fontSize: 20, color: colors.tertiary, marginBottom: 0}}>{imageTitle}</SubTitle>}
+                    {imageDescription !== '' && <SubTitle style={{fontSize: 16, color: colors.descTextColor, marginBottom: 0, fontWeight: 'normal'}}>{imageDescription}</SubTitle>}
+                </ImagePostTextFrame>
+            }
             <PostHorizontalView style={{marginLeft: '5%', width: '90%', paddingVertical: 10, flex: 1, flexDirection: 'row'}}>
                 
                 {upVotesImages.includes(imageKey) && (<PostsIconFrame onPress={() => {UpVoteImage(imageKey, postNum)}}>

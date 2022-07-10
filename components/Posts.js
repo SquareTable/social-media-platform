@@ -448,10 +448,12 @@ export default function Post( post ) {
                     <PinchableImageBox imageUri={imageB64}/>
                 </MultiMediaPostFrame>
             </PostsHorizontalView>
-            <ImagePostTextFrame style={{ textAlign: 'center' }}>
-                <SubTitle style={{ fontSize: 20, color: colors.tertiary, marginBottom: 0 }}>{imageTitle}</SubTitle>
-                <SubTitle style={{ fontSize: 16, color: colors.descTextColor, marginBottom: 0, fontWeight: 'normal' }}>{imageDescription}</SubTitle>
-            </ImagePostTextFrame>
+            {imageTitle !== '' || imageDescription !== '' &&
+                <ImagePostTextFrame style={{ textAlign: 'center' }}>
+                    {imageTitle !== '' && <SubTitle style={{ fontSize: 20, color: colors.tertiary, marginBottom: 0 }}>{imageTitle}</SubTitle>}
+                    {imageDescription !== '' && <SubTitle style={{ fontSize: 16, color: colors.descTextColor, marginBottom: 0, fontWeight: 'normal' }}>{imageDescription}</SubTitle>}
+                </ImagePostTextFrame>
+            }
             <PostHorizontalView style={{ marginLeft: '5%', width: '90%', paddingVertical: 10, flex: 1, flexDirection: 'row' }}>
                 
                 {changingUdn == true && (<View style={{flexDirection: 'row', flex: 3}}>
