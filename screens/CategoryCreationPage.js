@@ -58,6 +58,8 @@ import { useTheme } from '@react-navigation/native';
 import ActionSheet from 'react-native-actionsheet';
 import SocialSquareLogo_B64_png from '../assets/SocialSquareLogo_Base64_png';
 
+import { ServerUrlContext } from '../components/ServerUrlContext';
+
 const CategoryCreationPage = ({navigation, route}) => {
     const {colors, dark} = useTheme()
     const [hidePassword, setHidePassword] = useState(true);
@@ -67,9 +69,9 @@ const CategoryCreationPage = ({navigation, route}) => {
     const [postIsNSFW, setPostIsNSFW] = useState(false);
     const [postIsNSFL, setPostIsNSFL] = useState(false);
     const [selectFormat, setSelectFormat] = useState("Text");
-    const [submitting, setSubmitting] = useState(false)
     const {imageFromRoute} = route.params;
     const [screenshotsAllowed, setScreenshotsAllowed] = useState(false);
+    const {serverUrl, setServerUrl} = useContext(ServerUrlContext);
     // Logo picker
     let LogoPickerActionSheet = useRef();
     let LogoPickerActionSheetOptions = [
@@ -198,19 +200,40 @@ const CategoryCreationPage = ({navigation, route}) => {
                             <PageTitle>Create Category</PageTitle>
                             <Formik
                                 initialValues={{categoryTitle: "", categoryDescription: "", categoryTags: "", categoryNSFW: false, categoryNSFL: false}}
-                                onSubmit={(values, {setSubmitting}) => {
+                                onSubmit={async (values, {setSubmitting}) => {
                                     console.log("Submitting")
                                     if (values.categoryTitle == "" || values.categoryDescription == "") {
                                         handleMessage('Please fill all the fields.');
                                         setSubmitting(false);
                                     } else {
-                                        let tempValues = values;
-                                        tempValues.image = imageFromRoute;
-                                        tempValues.sentAllowScreenShots = screenshotsAllowed;
-                                        navigation.reset({
-                                            index: 0,
-                                            routes: [{name: 'PostScreen', params: {postData: tempValues, postType: 'category', navigateToHomeScreen: true}}]
-                                        })
+                                        const url = serverUrl + '/user/checkIfCategoryExists/' + values.categoryTitle;
+                                        try {
+                                            const response = await axios.get(url);
+                                            const result = response.data;
+                                            const {message, status} = result;
+
+                                            if (status !== "SUCCESS") {
+                                                handleMessage(message, status);
+                                                setSubmitting(false);
+                                            } else {
+                                                if (message == true) {
+                                                    setSubmitting(false);
+                                                    handleMessage('Category already exists.');
+                                                } else {
+                                                    let tempValues = values;
+                                                    tempValues.image = imageFromRoute;
+                                                    tempValues.sentAllowScreenShots = screenshotsAllowed;
+                                                    navigation.reset({
+                                                        index: 0,
+                                                        routes: [{name: 'PostScreen', params: {postData: tempValues, postType: 'category', navigateToHomeScreen: true}}]
+                                                    })
+                                                }
+                                            }
+                                        } catch (error) {
+                                            console.error(error)
+                                            handleMessage('An error occured. Please check your network connection and try again.');
+                                            setSubmitting(false);
+                                        }
                                     }
                                 }}
                             >
@@ -296,14 +319,11 @@ const CategoryCreationPage = ({navigation, route}) => {
                                             </TouchableOpacity>
                                         </View>
                                         <MsgBox type={messageType}>{message}</MsgBox>
-                                        {!submitting && (<StyledButton onPress={() => {
-                                            setSubmitting(true)
-                                            handleSubmit()
-                                        }}>
+                                        {!isSubmitting && (<StyledButton onPress={handleSubmit}>
                                             <ButtonText> Submit </ButtonText>
                                         </StyledButton>)}
 
-                                        {submitting && (<StyledButton disabled={true}>
+                                        {isSubmitting && (<StyledButton disabled={true}>
                                             <ActivityIndicator size="large" color={colors.primary} />
                                         </StyledButton>)}
                                     </StyledFormArea>)}
