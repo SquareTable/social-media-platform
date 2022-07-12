@@ -24,7 +24,7 @@ import {
     ButtonText
 } from '../screens/screenStylings/styling.js';
 import {useTheme} from "@react-navigation/native";
-import { ImageBackground, ScrollView, Text, TouchableOpacity, View, Image, Switch } from 'react-native';
+import { ImageBackground, ScrollView, Text, TouchableOpacity, View, Image, Switch, ActivityIndicator } from 'react-native';
 import { ProfilePictureURIContext } from '../components/ProfilePictureURIContext.js';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { CredentialsContext } from '../components/CredentialsContext';
@@ -32,307 +32,299 @@ import * as Notifications from 'expo-notifications';
 import * as Linking from 'expo-linking';
 import * as IntentLauncher from 'expo-intent-launcher';
 import AppCredits from '../components/AppCredits.js';
+import Constants from 'expo-constants';
+import axios from 'axios';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import { ServerUrlContext } from '../components/ServerUrlContext.js';
 
 
 const NotificationsSettingsScreen = ({navigation}) => {
     const {colors, dark} = useTheme();
     const {profilePictureUri, setProfilePictureUri} = useContext(ProfilePictureURIContext)
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
-    // Receive notifications
-    const [textMessages, setTextMessages] = useState(true)
-    const [upvotesOnPosts, setUpvotesOnPosts] = useState(true)
-    const [neutralVotesOnPosts, setNeutralVotesOnPosts] = useState(true)
-    const [downvotesOnPosts, setDownvotesOnPosts] = useState(true)
-    const [upvotesOnVideos, setUpvotesOnVideos] = useState(true)
-    const [neutralVotesOnVideos, setNeutralVotesOnVideos] = useState(true)
-    const [downvotesOnVideos, setDownvotesOnVideos] = useState(true)
-    const [upvotesOnPolls, setUpvotesOnPolls] = useState(true)
-    const [neutralVotesOnPolls, setNeutralVotesOnPolls] = useState(true)
-    const [downvotesOnPolls, setDownvotesOnPolls] = useState(true)
-    const [upvotesOnThreads, setUpvotesOnThreads] = useState(true)
-    const [neutralVotesOnThreads, setNeutralVotesOnThreads] = useState(true)
-    const [downvotesOnThreads, setDownvotesOnThreads] = useState(true)
-    const [personJoiningCategory, setPersonJoiningCategory] = useState(true)
-    // Send notifications
-    const [sendTextMessages, setSendTextMessages] = useState(true)
-    const [sendUpvotesOnPosts, setSendUpvotesOnPosts] = useState(true)
-    const [sendNeutralVotesOnPosts, setSendNeutralVotesOnPosts] = useState(true)
-    const [sendDownvotesOnPosts, setSendDownvotesOnPosts] = useState(true)
-    const [sendUpvotesOnVideos, setSendUpvotesOnVideos] = useState(true)
-    const [sendNeutralVotesOnVideos, setSendNeutralVotesOnVideos] = useState(true)
-    const [sendDownvotesOnVideos, setSendDownvotesOnVideos] = useState(true)
-    const [sendUpvotesOnPolls, setSendUpvotesOnPolls] = useState(true)
-    const [sendNeutralVotesOnPolls, setSendNeutralVotesOnPolls] = useState(true)
-    const [sendDownvotesOnPolls, setSendDownvotesOnPolls] = useState(true)
-    const [sendUpvotesOnThreads, setSendUpvotesOnThreads] = useState(true)
-    const [sendNeutralVotesOnThreads, setSendNeutralVotesOnThreads] = useState(true)
-    const [sendDownvotesOnThreads, setSendDownvotesOnThreads] = useState(true)
-    const [sendJoiningCategory, setSendJoiningCategory] = useState(true)
+    const {serverUrl, setServerUrl} = useContext(ServerUrlContext);
     //
+
+    const [notificationsSettingsObject, setNotificationsSettingsObject] = useState({})
+
+    const [temp, setTemp] = useState('abc')
+
     const [showSettings, setShowSettings] = useState(false)
     const [notificationsAllowed, setNotificationsAllowed] = useState(false)
     const [notificationsAllowedObject, setNotificationsAllowedObject] = useState({})
+    const [errorOccuredDownloadingNotificationSettings, setErrorOccuredDownloadingNotificationSettings] = useState(false)
+
+    const {_id, privateAccount} = storedCredentials;
+
+    const [savingChanges, setSavingChanges] = useState(false)
     
     const marginVerticalOnSwitches = 4.9
     const fontSizeForText = 15
 
+    const StatusBarHeight = Constants.statusBarHeight;
+
+    const loadNotificationSettings = () => {
+        setErrorOccuredDownloadingNotificationSettings(false)
+        const url = serverUrl + `/user/getUserNotificationSettings/${_id}`
+        axios.get(url).then(response => {
+            const result = response.data
+            const {status, message, data} = result;
+
+            if (status !== "SUCCESS") {
+                setErrorOccuredDownloadingNotificationSettings(String(message))
+            } else {
+                console.log(data);
+                setNotificationsSettingsObject(data)
+                setShowSettings(true)
+            }
+        }).catch(error => {
+            setErrorOccuredDownloadingNotificationSettings(String(error))
+        })
+    }
+
+    const saveNotificationsSettings = () => {
+        setSavingChanges(true)
+        const url = serverUrl + '/user/uploadNotificationsSettings';
+        const toSend = {notificationSettings: notificationsSettingsObject, userID: _id}
+        axios.post(url, toSend).then(response => {
+            const result = response.data
+            const {status, message} = result;
+            if (status !== "SUCCESS") {
+                alert('An error occured: ' + String(message))
+                setSavingChanges(false)
+            } else {
+                setSavingChanges(false)
+                navigation.goBack()
+            }
+        }).catch(error => {
+            alert('An error occured: ' + String(error))
+            setSavingChanges(false)
+        })
+    }
+
     const setContextAndAsyncStorage = (type) => {
-        type == 'TextMessages' ? setTextMessages(textMessages => !textMessages)
-        : type == 'UpvotesOnPosts' ? setUpvotesOnPosts(upvotesOnPolls => !upvotesOnPolls)
-        : type == 'NeutralVotesOnPosts' ? setNeutralVotesOnPosts(neutralVotesOnPosts => !neutralVotesOnPosts)
-        : type == 'DownvotesOnPosts' ? setDownvotesOnPosts(downvotesOnPosts => !downvotesOnPosts)
-        : type == 'UpvotesOnVideos' ? setUpvotesOnVideos(upvotesOnVideos => !upvotesOnVideos)
-        : type == 'NeutralVotesOnVideos' ? setNeutralVotesOnVideos(neutralVotesOnVideos => !neutralVotesOnVideos)
-        : type == 'DownvotesOnVideos' ? setDownvotesOnVideos(downvotesOnVideos => !downvotesOnVideos)
-        : type == 'UpvotesOnPolls' ? setUpvotesOnPolls(upvotesOnPolls => !upvotesOnPolls)
-        : type == 'NeutralVotesOnPolls' ? setNeutralVotesOnPolls(neutralVotesOnPolls => !neutralVotesOnPolls)
-        : type == 'DownvotesOnPolls' ? setDownvotesOnPolls(downvotesOnPolls => !downvotesOnPolls)
-        : type == 'UpvotesOnThreads' ? setUpvotesOnThreads(upvotesOnThreads => !upvotesOnThreads)
-        : type == 'NeutralVotesOnThreads' ? setNeutralVotesOnThreads(neutralVotesOnThreads => !neutralVotesOnThreads)
-        : type == 'DownvotesOnThreads' ? setDownvotesOnThreads(downvotesOnThreads => !downvotesOnThreads)
-        : type == 'PersonJoiningCategory' ? setPersonJoiningCategory(personJoiningCategory => !personJoiningCategory)
-        : type == 'SendTextMessages' ? setSendTextMessages(sendTextMessages => !sendTextMessages)
-        : type == 'SendUpvotesOnPosts' ? setSendUpvotesOnPosts(sendUpvotesOnPolls => !sendUpvotesOnPolls)
-        : type == 'SendNeutralVotesOnPosts' ? setSendNeutralVotesOnPosts(sendNeutralVotesOnPosts => !sendNeutralVotesOnPosts)
-        : type == 'SendDownvotesOnPosts' ? setSendDownvotesOnPosts(sendDownvotesOnPosts => !sendDownvotesOnPosts)
-        : type == 'SendUpvotesOnVideos' ? setSendUpvotesOnVideos(sendUpvotesOnVideos => !sendUpvotesOnVideos)
-        : type == 'SendNeutralVotesOnVideos' ? setSendNeutralVotesOnVideos(sendNeutralVotesOnVideos => !sendNeutralVotesOnVideos)
-        : type == 'SendDownvotesOnVideos' ? setSendDownvotesOnVideos(sendDownvotesOnVideos => !sendDownvotesOnVideos)
-        : type == 'SendUpvotesOnPolls' ? setSendUpvotesOnPolls(sendUpvotesOnPolls => !sendUpvotesOnPolls)
-        : type == 'SendNeutralVotesOnPolls' ? setSendNeutralVotesOnPolls(sendNeutralVotesOnPolls => !sendNeutralVotesOnPolls)
-        : type == 'SendDownvotesOnPolls' ? setSendDownvotesOnPolls(sendDownvotesOnPolls => !sendDownvotesOnPolls)
-        : type == 'SendUpvotesOnThreads' ? setSendUpvotesOnThreads(sendUpvotesOnThreads => !sendUpvotesOnThreads)
-        : type == 'SendNeutralVotesOnThreads' ? setSendNeutralVotesOnThreads(sendNeutralVotesOnThreads => !sendNeutralVotesOnThreads)
-        : type == 'SendDownvotesOnThreads' ? setSendDownvotesOnThreads(sendDownvotesOnThreads => !sendDownvotesOnThreads)
-        : type == 'SendJoiningCategory' ? setSendJoiningCategory(sendJoiningCategory => !sendJoiningCategory)
+        type == 'TextMessages' ? setNotificationsSettingsObject(notificationsSettingsObject => {
+            notificationsSettingsObject.TextMessages = !notificationsSettingsObject.TextMessages
+            return notificationsSettingsObject
+        })
+        : type == 'GainsFollower' ? setNotificationsSettingsObject(notificationsSettingsObject => {
+            notificationsSettingsObject.GainsFollower = !notificationsSettingsObject.GainsFollower
+            return notificationsSettingsObject
+        })
+        : type == 'FollowRequests' ? setNotificationsSettingsObject(notificationsSettingsObject => {
+            notificationsSettingsObject.FollowRequests = !notificationsSettingsObject.FollowRequests
+            return notificationsSettingsObject
+        })
+        : type == 'UpvotesOnMultimediaPosts' ? setNotificationsSettingsObject(notificationsSettingsObject => {
+            notificationsSettingsObject.UpvotesOnMultimediaPosts = !notificationsSettingsObject.UpvotesOnMultimediaPosts
+            return notificationsSettingsObject
+        })
+        : type == 'NeutralVotesOnMultimediaPosts' ? setNotificationsSettingsObject(notificationsSettingsObject => {
+            notificationsSettingsObject.NeutralVotesOnMultimediaPosts = !notificationsSettingsObject.NeutralVotesOnMultimediaPosts
+            return notificationsSettingsObject
+        })
+        : type == 'DownvotesOnMultimediaPosts' ? setNotificationsSettingsObject(notificationsSettingsObject => {
+            notificationsSettingsObject.DownvotesOnMultimediaPosts = !notificationsSettingsObject.DownvotesOnMultimediaPosts
+            return notificationsSettingsObject
+        })
+        : type == 'UpvotesOnVideos' ? setNotificationsSettingsObject(notificationsSettingsObject => {
+            notificationsSettingsObject.UpvotesOnVideos = !notificationsSettingsObject.UpvotesOnVideos
+            return notificationsSettingsObject
+        })
+        : type == 'NeutralVotesOnVideos' ? setNotificationsSettingsObject(notificationsSettingsObject => {
+            notificationsSettingsObject.NeutralVotesOnVideos = !notificationsSettingsObject.NeutralVotesOnVideos
+            return notificationsSettingsObject
+        })
+        : type == 'DownvotesOnVideos' ? setNotificationsSettingsObject(notificationsSettingsObject => {
+            notificationsSettingsObject.DownvotesOnVideos = !notificationsSettingsObject.DownvotesOnVideos
+            return notificationsSettingsObject
+        })
+        : type == 'UpvotesOnPolls' ? setNotificationsSettingsObject(notificationsSettingsObject => {
+            notificationsSettingsObject.UpvotesOnPolls = !notificationsSettingsObject.UpvotesOnPolls
+            return notificationsSettingsObject
+        })
+        : type == 'NeutralVotesOnPolls' ? setNotificationsSettingsObject(notificationsSettingsObject => {
+            notificationsSettingsObject.NeutralVotesOnPolls = !notificationsSettingsObject.NeutralVotesOnPolls
+            return notificationsSettingsObject
+        })
+        : type == 'DownvotesOnPolls' ? setNotificationsSettingsObject(notificationsSettingsObject => {
+            notificationsSettingsObject.DownvotesOnPolls = !notificationsSettingsObject.DownvotesOnPolls
+            return notificationsSettingsObject
+        })
+        : type == 'UpvotesOnThreads' ? setNotificationsSettingsObject(notificationsSettingsObject => {
+            notificationsSettingsObject.UpvotesOnThreads = !notificationsSettingsObject.UpvotesOnThreads
+            return notificationsSettingsObject
+        })
+        : type == 'NeutralVotesOnThreads' ? setNotificationsSettingsObject(notificationsSettingsObject => {
+            notificationsSettingsObject.NeutralVotesOnThreads = !notificationsSettingsObject.NeutralVotesOnThreads
+            return notificationsSettingsObject
+        })
+        : type == 'DownvotesOnThreads' ? setNotificationsSettingsObject(notificationsSettingsObject => {
+            notificationsSettingsObject.DownvotesOnThreads = !notificationsSettingsObject.DownvotesOnThreads
+            return notificationsSettingsObject
+        })
+        : type == 'PersonJoiningCategory' ? setNotificationsSettingsObject(notificationsSettingsObject => {
+            notificationsSettingsObject.PersonJoiningCategory = !notificationsSettingsObject.PersonJoiningCategory
+            return notificationsSettingsObject
+        })
+        : type == 'SendTextMessages' ? setNotificationsSettingsObject(notificationsSettingsObject => {
+            notificationsSettingsObject.SendTextMessages = !notificationsSettingsObject.SendTextMessages
+            return notificationsSettingsObject
+        })
+        : type == 'SendGainsFollower' ? setNotificationsSettingsObject(notificationsSettingsObject => {
+            notificationsSettingsObject.SendGainsFollower = !notificationsSettingsObject.SendGainsFollower
+            return notificationsSettingsObject
+        })
+        : type == 'SendFollowRequests' ? setNotificationsSettingsObject(notificationsSettingsObject => {
+            notificationsSettingsObject.SendFollowRequests = !notificationsSettingsObject.SendFollowRequests
+            return notificationsSettingsObject
+        })
+        : type == 'SendUpvotesOnMultimediaPosts' ? setNotificationsSettingsObject(notificationsSettingsObject => {
+            notificationsSettingsObject.SendUpvotesOnMultimediaPosts = !notificationsSettingsObject.SendUpvotesOnMultimediaPosts
+            return notificationsSettingsObject
+        })
+        : type == 'SendNeutralVotesOnMultimediaPosts' ? setNotificationsSettingsObject(notificationsSettingsObject => {
+            notificationsSettingsObject.SendNeutralVotesOnMultimediaPosts = !notificationsSettingsObject.SendNeutralVotesOnMultimediaPosts
+            return notificationsSettingsObject
+        })
+        : type == 'SendDownvotesOnMultimediaPosts' ? setNotificationsSettingsObject(notificationsSettingsObject => {
+            notificationsSettingsObject.SendDownvotesOnMultimediaPosts = !notificationsSettingsObject.SendDownvotesOnMultimediaPosts
+            return notificationsSettingsObject
+        })
+        : type == 'SendUpvotesOnVideos' ? setNotificationsSettingsObject(notificationsSettingsObject => {
+            notificationsSettingsObject.SendUpvotesOnVideos = !notificationsSettingsObject.SendUpvotesOnVideos
+            return notificationsSettingsObject
+        })
+        : type == 'SendNeutralVotesOnVideos' ? setNotificationsSettingsObject(notificationsSettingsObject => {
+            notificationsSettingsObject.SendNeutralVotesOnVideos = !notificationsSettingsObject.SendNeutralVotesOnVideos
+            return notificationsSettingsObject
+        })
+        : type == 'SendDownvotesOnVideos' ? setNotificationsSettingsObject(notificationsSettingsObject => {
+            notificationsSettingsObject.SendDownvotesOnVideos = !notificationsSettingsObject.SendDownvotesOnVideos
+            return notificationsSettingsObject
+        })
+        : type == 'SendUpvotesOnPolls' ? setNotificationsSettingsObject(notificationsSettingsObject => {
+            notificationsSettingsObject.SendUpvotesOnPolls = !notificationsSettingsObject.SendUpvotesOnPolls
+            return notificationsSettingsObject
+        })
+        : type == 'SendNeutralVotesOnPolls' ? setNotificationsSettingsObject(notificationsSettingsObject => {
+            notificationsSettingsObject.SendNeutralVotesOnPolls = !notificationsSettingsObject.SendNeutralVotesOnPolls
+            return notificationsSettingsObject
+        })
+        : type == 'SendDownvotesOnPolls' ? setNotificationsSettingsObject(notificationsSettingsObject => {
+            notificationsSettingsObject.SendDownvotesOnPolls = !notificationsSettingsObject.SendDownvotesOnPolls
+            return notificationsSettingsObject
+        })
+        : type == 'SendUpvotesOnThreads' ? setNotificationsSettingsObject(notificationsSettingsObject => {
+            notificationsSettingsObject.SendUpvotesOnThreads = !notificationsSettingsObject.SendUpvotesOnThreads
+            return notificationsSettingsObject
+        })
+        : type == 'SendNeutralVotesOnThreads' ? setNotificationsSettingsObject(notificationsSettingsObject => {
+            notificationsSettingsObject.SendNeutralVotesOnThreads = !notificationsSettingsObject.SendNeutralVotesOnThreads
+            return notificationsSettingsObject
+        })
+        : type == 'SendDownvotesOnThreads' ? setNotificationsSettingsObject(notificationsSettingsObject => {
+            notificationsSettingsObject.SendDownvotesOnThreads = !notificationsSettingsObject.SendDownvotesOnThreads
+            return notificationsSettingsObject
+        })
+        : type == 'SendJoiningCategory' ? setNotificationsSettingsObject(notificationsSettingsObject => {
+            notificationsSettingsObject.SendJoiningCategory = !notificationsSettingsObject.SendJoiningCategory
+            return notificationsSettingsObject
+        })
         : console.error('Wrong type has been passed to setContextAndAsyncStorage function in NotificationSettings')
-        const settingsObject = {
-            TextMessages: type == 'TextMessages' ? !textMessages : textMessages,
-            UpvotesOnPosts: type == 'UpvotesOnPosts' ? !upvotesOnPosts : upvotesOnPosts,
-            NeutralVotesOnPosts: type == 'NeutralVotesOnPosts' ? !neutralVotesOnPosts : neutralVotesOnPosts,
-            DownvotesOnPosts: type == 'DownvotesOnPosts' ? !downvotesOnPosts : downvotesOnPosts,
-            UpvotesOnVideos: type == 'UpvotesOnVideos' ? !upvotesOnVideos : upvotesOnVideos,
-            NeutralVotesOnVideos: type == 'NeutralVotesOnVideos' ? !neutralVotesOnVideos : neutralVotesOnVideos,
-            DownvotesOnVideos: type == 'DownvotesOnVideos' ? !downvotesOnVideos : downvotesOnVideos,
-            UpvotesOnPolls: type == 'UpvotesOnPolls' ? !upvotesOnPolls : upvotesOnPolls,
-            NeutralVotesOnPolls: type == 'NeutralVotesOnPolls' ? !neutralVotesOnPolls : neutralVotesOnPolls,
-            DownvotesOnPolls: type == 'DownvotesOnPolls' ? !downvotesOnPolls : downvotesOnPolls,
-            UpvotesOnThreads: type == 'UpvotesOnThreads' ? !upvotesOnThreads : upvotesOnThreads,
-            NeutralVotesOnThreads: type == 'NeutralVotesOnThreads' ? !neutralVotesOnThreads : neutralVotesOnThreads,
-            DownvotesOnThreads: type == 'DownvotesOnThreads' ? !downvotesOnThreads : downvotesOnThreads,
-            PersonJoiningCategory: type == 'PersonJoiningCategory' ? !personJoiningCategory : personJoiningCategory,
-            SendTextMessages: type == 'SendTextMessages' ? !sendTextMessages : sendTextMessages,
-            SendUpvotesOnPosts: type == 'SendUpvotesOnPosts' ? !sendUpvotesOnPosts : sendUpvotesOnPosts,
-            SendNeutralVotesOnPosts: type == 'SendNeutralVotesOnPosts' ? !sendNeutralVotesOnPosts : sendNeutralVotesOnPosts,
-            SendDownvotesOnPosts: type == 'SendDownvotesOnPosts' ? !sendDownvotesOnPosts : sendDownvotesOnPosts,
-            SendUpvotesOnVideos: type == 'SendUpvotesOnVideos' ? !sendUpvotesOnVideos : sendUpvotesOnVideos,
-            SendNeutralVotesOnVideos: type == 'SendNeutralVotesOnVideos' ? !sendNeutralVotesOnVideos : sendNeutralVotesOnVideos,
-            SendDownvotesOnVideos: type == 'SendDownvotesOnVideos' ? !sendDownvotesOnVideos : sendDownvotesOnVideos,
-            SendUpvotesOnPolls: type == 'SendUpvotesOnPolls' ? !sendUpvotesOnPolls : sendUpvotesOnPolls,
-            SendNeutralVotesOnPolls: type == 'SendNeutralVotesOnPolls' ? !sendNeutralVotesOnPolls : sendNeutralVotesOnPolls,
-            SendDownvotesOnPolls: type == 'SendDownvotesOnPolls' ? !sendDownvotesOnPolls : sendDownvotesOnPolls,
-            SendUpvotesOnThreads: type == 'SendUpvotesOnThreads' ? !sendUpvotesOnThreads : sendUpvotesOnThreads,
-            SendNeutralVotesOnThreads: type == 'SendNeutralVotesOnThreads' ? !sendNeutralVotesOnThreads : sendNeutralVotesOnThreads,
-            SendDownvotesOnThreads: type == 'SendDownvotesOnThreads' ? !sendDownvotesOnThreads : sendDownvotesOnThreads,
-            SendJoiningCategory: type == 'SendJoiningCategory' ? !sendJoiningCategory : sendJoiningCategory
-        }
-        AsyncStorage.setItem('NotificationsSettings', JSON.stringify(settingsObject))
+        setTemp(temp => temp === 'abc' ? 'cba' : 'abc')
     }
 
     const turnOnAllReceiveNotifications = async () => {
-        setTextMessages(true)
-        setUpvotesOnPosts(true)
-        setNeutralVotesOnPosts(true)
-        setDownvotesOnPosts(true)
-        setUpvotesOnVideos(true)
-        setNeutralVotesOnVideos(true)
-        setDownvotesOnVideos(true)
-        setUpvotesOnPolls(true)
-        setNeutralVotesOnPolls(true)
-        setDownvotesOnPolls(true)
-        setUpvotesOnThreads(true)
-        setNeutralVotesOnThreads(true)
-        setDownvotesOnThreads(true)
-        setPersonJoiningCategory(true)
-        const asyncStorageData = JSON.parse(await AsyncStorage.getItem('NotificationsSettings'));
-        const settingsObject = {
-            TextMessages: true,
-            UpvotesOnPosts: true,
-            NeutralVotesOnPosts: true,
-            DownvotesOnPosts: true,
-            UpvotesOnVideos: true,
-            NeutralVotesOnVideos: true,
-            DownvotesOnVideos: true,
-            UpvotesOnPolls: true,
-            NeutralVotesOnPolls: true,
-            DownvotesOnPolls: true,
-            UpvotesOnThreads: true,
-            NeutralVotesOnThreads: true,
-            DownvotesOnThreads: true,
-            PersonJoiningCategory: true,
-            SendTextMessages: asyncStorageData.SendTextMessages,
-            SendUpvotesOnPosts: asyncStorageData.SendUpvotesOnPosts,
-            SendNeutralVotesOnPosts: asyncStorageData.SendNeutralVotesOnPosts,
-            SendDownvotesOnPosts: asyncStorageData.SendDownvotesOnPosts,
-            SendUpvotesOnVideos: asyncStorageData.SendUpvotesOnVideos,
-            SendNeutralVotesOnVideos: asyncStorageData.SendNeutralVotesOnVideos,
-            SendDownvotesOnVideos: asyncStorageData.SendDownvotesOnVideos,
-            SendUpvotesOnPolls: asyncStorageData.SendUpvotesOnPolls,
-            SendNeutralVotesOnPolls: asyncStorageData.SendNeutralVotesOnPolls,
-            SendDownvotesOnPolls: asyncStorageData.SendDownvotesOnPolls,
-            SendUpvotesOnThreads: asyncStorageData.SendUpvotesOnThreads,
-            SendNeutralVotesOnThreads: asyncStorageData.SendNeutralVotesOnThreads,
-            SendDownvotesOnThreads: asyncStorageData.SendDownvotesOnThreads,
-            SendJoiningCategory: asyncStorageData.SendJoiningCategory
-        }
-        AsyncStorage.setItem('NotificationsSettings', JSON.stringify(settingsObject))
+        setNotificationsSettingsObject(notificationsSettingsObject => {
+            notificationsSettingsObject.TextMessages = true
+            notificationsSettingsObject.GainsFollower = true
+            notificationsSettingsObject.FollowRequests = true
+            notificationsSettingsObject.UpvotesOnMultimediaPosts = true
+            notificationsSettingsObject.NeutralVotesOnMultimediaPosts = true
+            notificationsSettingsObject.DownvotesOnMultimediaPosts = true
+            notificationsSettingsObject.UpvotesOnVideos = true
+            notificationsSettingsObject.NeutralVotesOnVideos = true
+            notificationsSettingsObject.DownvotesOnVideos = true
+            notificationsSettingsObject.UpvotesOnPolls = true
+            notificationsSettingsObject.NeutralVotesOnPolls = true
+            notificationsSettingsObject.DownvotesOnPolls = true
+            notificationsSettingsObject.UpvotesOnThreads = true
+            notificationsSettingsObject.NeutralVotesOnThreads = true
+            notificationsSettingsObject.DownvotesOnThreads = true
+            notificationsSettingsObject.PersonJoiningCategory = true
+            return notificationsSettingsObject
+        })
+        setTemp(temp => temp === 'abc' ? 'cba' : 'abc')
     }
 
     const turnOffAllReceiveNotifications = async () => {
-        setTextMessages(false)
-        setUpvotesOnPosts(false)
-        setNeutralVotesOnPosts(false)
-        setDownvotesOnPosts(false)
-        setUpvotesOnVideos(false)
-        setNeutralVotesOnVideos(false)
-        setDownvotesOnVideos(false)
-        setUpvotesOnPolls(false)
-        setNeutralVotesOnPolls(false)
-        setDownvotesOnPolls(false)
-        setUpvotesOnThreads(false)
-        setNeutralVotesOnThreads(false)
-        setDownvotesOnThreads(false)
-        setPersonJoiningCategory(false)
-        const asyncStorageData = JSON.parse(await AsyncStorage.getItem('NotificationsSettings'));
-        const settingsObject = {
-            TextMessages: false,
-            UpvotesOnPosts: false,
-            NeutralVotesOnPosts: false,
-            DownvotesOnPosts: false,
-            UpvotesOnVideos: false,
-            NeutralVotesOnVideos: false,
-            DownvotesOnVideos: false,
-            UpvotesOnPolls: false,
-            NeutralVotesOnPolls: false,
-            DownvotesOnPolls: false,
-            UpvotesOnThreads: false,
-            NeutralVotesOnThreads: false,
-            DownvotesOnThreads: false,
-            PersonJoiningCategory: false,
-            SendTextMessages: asyncStorageData.SendTextMessages,
-            SendUpvotesOnPosts: asyncStorageData.SendUpvotesOnPosts,
-            SendNeutralVotesOnPosts: asyncStorageData.SendNeutralVotesOnPosts,
-            SendDownvotesOnPosts: asyncStorageData.SendDownvotesOnPosts,
-            SendUpvotesOnVideos: asyncStorageData.SendUpvotesOnVideos,
-            SendNeutralVotesOnVideos: asyncStorageData.SendNeutralVotesOnVideos,
-            SendDownvotesOnVideos: asyncStorageData.SendDownvotesOnVideos,
-            SendUpvotesOnPolls: asyncStorageData.SendUpvotesOnPolls,
-            SendNeutralVotesOnPolls: asyncStorageData.SendNeutralVotesOnPolls,
-            SendDownvotesOnPolls: asyncStorageData.SendDownvotesOnPolls,
-            SendUpvotesOnThreads: asyncStorageData.SendUpvotesOnThreads,
-            SendNeutralVotesOnThreads: asyncStorageData.SendNeutralVotesOnThreads,
-            SendDownvotesOnThreads: asyncStorageData.SendDownvotesOnThreads,
-            SendJoiningCategory: asyncStorageData.SendJoiningCategory
-        }
-        AsyncStorage.setItem('NotificationsSettings', JSON.stringify(settingsObject))
+        setNotificationsSettingsObject(notificationsSettingsObject => {
+            notificationsSettingsObject.TextMessages = false
+            notificationsSettingsObject.GainsFollower = false
+            notificationsSettingsObject.FollowRequests = false
+            notificationsSettingsObject.UpvotesOnMultimediaPosts = false
+            notificationsSettingsObject.NeutralVotesOnMultimediaPosts = false
+            notificationsSettingsObject.DownvotesOnMultimediaPosts = false
+            notificationsSettingsObject.UpvotesOnVideos = false
+            notificationsSettingsObject.NeutralVotesOnVideos = false
+            notificationsSettingsObject.DownvotesOnVideos = false
+            notificationsSettingsObject.UpvotesOnPolls = false
+            notificationsSettingsObject.NeutralVotesOnPolls = false
+            notificationsSettingsObject.DownvotesOnPolls = false
+            notificationsSettingsObject.UpvotesOnThreads = false
+            notificationsSettingsObject.NeutralVotesOnThreads = false
+            notificationsSettingsObject.DownvotesOnThreads = false
+            notificationsSettingsObject.PersonJoiningCategory = false
+            return notificationsSettingsObject
+        })
+        setTemp(temp => temp === 'abc' ? 'cba' : 'abc')
     }
 
     const turnOnAllSendNotifications = async () => {
-        setSendTextMessages(true)
-        setSendUpvotesOnPosts(true)
-        setSendNeutralVotesOnPosts(true)
-        setSendDownvotesOnPosts(true)
-        setSendUpvotesOnVideos(true)
-        setSendNeutralVotesOnVideos(true)
-        setSendDownvotesOnVideos(true)
-        setSendUpvotesOnPolls(true)
-        setSendNeutralVotesOnPolls(true)
-        setSendDownvotesOnPolls(true)
-        setSendUpvotesOnThreads(true)
-        setSendNeutralVotesOnThreads(true)
-        setSendDownvotesOnThreads(true)
-        setSendJoiningCategory(true)
-        const asyncStorageData = JSON.parse(await AsyncStorage.getItem('NotificationsSettings'));
-        const settingsObject = {
-            TextMessages: asyncStorageData.TextMessages,
-            UpvotesOnPosts: asyncStorageData.UpvotesOnPosts,
-            NeutralVotesOnPosts: asyncStorageData.NeutralVotesOnPosts,
-            DownvotesOnPosts: asyncStorageData.DownvotesOnPosts,
-            UpvotesOnVideos: asyncStorageData.UpvotesOnVideos,
-            NeutralVotesOnVideos: asyncStorageData.NeutralVotesOnVideos,
-            DownvotesOnVideos: asyncStorageData.DownvotesOnVideos,
-            UpvotesOnPolls: asyncStorageData.UpvotesOnPolls,
-            NeutralVotesOnPolls: asyncStorageData.NeutralVotesOnPolls,
-            DownvotesOnPolls: asyncStorageData.DownvotesOnPolls,
-            UpvotesOnThreads: asyncStorageData.UpvotesOnThreads,
-            NeutralVotesOnThreads: asyncStorageData.NeutralVotesOnThreads,
-            DownvotesOnThreads: asyncStorageData.DownvotesOnThreads,
-            PersonJoiningCategory: asyncStorageData.PersonJoiningCategory,
-            SendTextMessages: true,
-            SendUpvotesOnPosts: true,
-            SendNeutralVotesOnPosts: true,
-            SendDownvotesOnPosts: true,
-            SendUpvotesOnVideos: true,
-            SendNeutralVotesOnVideos: true,
-            SendDownvotesOnVideos: true,
-            SendUpvotesOnPolls: true,
-            SendNeutralVotesOnPolls: true,
-            SendDownvotesOnPolls: true,
-            SendUpvotesOnThreads: true,
-            SendNeutralVotesOnThreads: true,
-            SendDownvotesOnThreads: true,
-            SendJoiningCategory: true
-        }
-        AsyncStorage.setItem('NotificationsSettings', JSON.stringify(settingsObject))
+        setNotificationsSettingsObject(notificationsSettingsObject => {
+            notificationsSettingsObject.SendTextMessages = true
+            notificationsSettingsObject.SendGainsFollower = true
+            notificationsSettingsObject.SendFollowRequests = true
+            notificationsSettingsObject.SendUpvotesOnMultimediaPosts = true
+            notificationsSettingsObject.SendNeutralVotesOnMultimediaPosts = true
+            notificationsSettingsObject.SendDownvotesOnMultimediaPosts = true
+            notificationsSettingsObject.SendUpvotesOnVideos = true
+            notificationsSettingsObject.SendNeutralVotesOnVideos = true
+            notificationsSettingsObject.SendDownvotesOnVideos = true
+            notificationsSettingsObject.SendUpvotesOnPolls = true
+            notificationsSettingsObject.SendNeutralVotesOnPolls = true
+            notificationsSettingsObject.SendDownvotesOnPolls = true
+            notificationsSettingsObject.SendUpvotesOnThreads = true
+            notificationsSettingsObject.SendNeutralVotesOnThreads = true
+            notificationsSettingsObject.SendDownvotesOnThreads = true
+            notificationsSettingsObject.SendJoiningCategory = true
+            return notificationsSettingsObject
+        })
+        setTemp(temp => temp === 'abc' ? 'cba' : 'abc')
     }
 
     const turnOffAllSendNotifications = async () => {
-        setSendTextMessages(false)
-        setSendUpvotesOnPosts(false)
-        setSendNeutralVotesOnPosts(false)
-        setSendDownvotesOnPosts(false)
-        setSendUpvotesOnVideos(false)
-        setSendNeutralVotesOnVideos(false)
-        setSendDownvotesOnVideos(false)
-        setSendUpvotesOnPolls(false)
-        setSendNeutralVotesOnPolls(false)
-        setSendDownvotesOnPolls(false)
-        setSendUpvotesOnThreads(false)
-        setSendNeutralVotesOnThreads(false)
-        setSendDownvotesOnThreads(false)
-        setSendJoiningCategory(false)
-        const asyncStorageData = JSON.parse(await AsyncStorage.getItem('NotificationsSettings'));
-        const settingsObject = {
-            TextMessages: asyncStorageData.TextMessages,
-            UpvotesOnPosts: asyncStorageData.UpvotesOnPosts,
-            NeutralVotesOnPosts: asyncStorageData.NeutralVotesOnPosts,
-            DownvotesOnPosts: asyncStorageData.DownvotesOnPosts,
-            UpvotesOnVideos: asyncStorageData.UpvotesOnVideos,
-            NeutralVotesOnVideos: asyncStorageData.NeutralVotesOnVideos,
-            DownvotesOnVideos: asyncStorageData.DownvotesOnVideos,
-            UpvotesOnPolls: asyncStorageData.UpvotesOnPolls,
-            NeutralVotesOnPolls: asyncStorageData.NeutralVotesOnPolls,
-            DownvotesOnPolls: asyncStorageData.DownvotesOnPolls,
-            UpvotesOnThreads: asyncStorageData.UpvotesOnThreads,
-            NeutralVotesOnThreads: asyncStorageData.NeutralVotesOnThreads,
-            DownvotesOnThreads: asyncStorageData.DownvotesOnThreads,
-            PersonJoiningCategory: asyncStorageData.PersonJoiningCategory,
-            SendTextMessages: false,
-            SendUpvotesOnPosts: false,
-            SendNeutralVotesOnPosts: false,
-            SendDownvotesOnPosts: false,
-            SendUpvotesOnVideos: false,
-            SendNeutralVotesOnVideos: false,
-            SendDownvotesOnVideos: false,
-            SendUpvotesOnPolls: false,
-            SendNeutralVotesOnPolls: false,
-            SendDownvotesOnPolls: false,
-            SendUpvotesOnThreads: false,
-            SendNeutralVotesOnThreads: false,
-            SendDownvotesOnThreads: false,
-            SendJoiningCategory: false
-        }
-        AsyncStorage.setItem('NotificationsSettings', JSON.stringify(settingsObject))
+        setNotificationsSettingsObject(notificationsSettingsObject => {
+            notificationsSettingsObject.SendTextMessages = false
+            notificationsSettingsObject.SendGainsFollower = false
+            notificationsSettingsObject.SendFollowRequests = false
+            notificationsSettingsObject.SendUpvotesOnMultimediaPosts = false
+            notificationsSettingsObject.SendNeutralVotesOnMultimediaPosts = false
+            notificationsSettingsObject.SendDownvotesOnMultimediaPosts = false
+            notificationsSettingsObject.SendUpvotesOnVideos = false
+            notificationsSettingsObject.SendNeutralVotesOnVideos = false
+            notificationsSettingsObject.SendDownvotesOnVideos = false
+            notificationsSettingsObject.SendUpvotesOnPolls = false
+            notificationsSettingsObject.SendNeutralVotesOnPolls = false
+            notificationsSettingsObject.SendDownvotesOnPolls = false
+            notificationsSettingsObject.SendUpvotesOnThreads = false
+            notificationsSettingsObject.SendNeutralVotesOnThreads = false
+            notificationsSettingsObject.SendDownvotesOnThreads = false
+            notificationsSettingsObject.SendJoiningCategory = false
+            return notificationsSettingsObject
+        })
+        setTemp(temp => temp === 'abc' ? 'cba' : 'abc')
     }
 
     useEffect(() => {
@@ -347,246 +339,10 @@ const NotificationsSettingsScreen = ({navigation}) => {
             }
             const allowsNotifications = await allowsNotificationsAsync();
             console.log(allowsNotifications)
-            setNotificationsAllowed(allowsNotifications);  
-            await AsyncStorage.getItem('NotificationsSettings').then((data) => {
-                if (data == null) {
-                    //turnOnAllSendNotifications()
-                    //turnOnAllReceiveNotifications()
-                    const settingsObject = {
-                        TextMessages: true,
-                        UpvotesOnPosts: true,
-                        NeutralVotesOnPosts: true,
-                        DownvotesOnPosts: true,
-                        UpvotesOnVideos: true,
-                        NeutralVotesOnVideos: true,
-                        DownvotesOnVideos: true,
-                        UpvotesOnPolls: true,
-                        NeutralVotesOnPolls: true,
-                        DownvotesOnPolls: true,
-                        UpvotesOnThreads: true,
-                        NeutralVotesOnThreads: true,
-                        DownvotesOnThreads: true,
-                        PersonJoiningCategory: true,
-                        SendTextMessages: true,
-                        SendUpvotesOnPosts: true,
-                        SendNeutralVotesOnPosts: true,
-                        SendDownvotesOnPosts: true,
-                        SendUpvotesOnVideos: true,
-                        SendNeutralVotesOnVideos: true,
-                        SendDownvotesOnVideos: true,
-                        SendUpvotesOnPolls: true,
-                        SendNeutralVotesOnPolls: true,
-                        SendDownvotesOnPolls: true,
-                        SendUpvotesOnThreads: true,
-                        SendNeutralVotesOnThreads: true,
-                        SendDownvotesOnThreads: true,
-                        SendJoiningCategory: true
-                    }
-                    AsyncStorage.setItem('NotificationsSettings', JSON.stringify(settingsObject))
-                    setShowSettings(true)
-                } else {
-                    let dataToStringify = {}
-                    let dataParsed = JSON.parse(data)
-                    if (dataParsed.TextMessages == undefined) {
-                        dataToStringify.TextMessages = true
-                        setTextMessages(true)
-                    } else {
-                        dataToStringify.TextMessages = dataParsed.TextMessages
-                        setTextMessages(dataParsed.TextMessages)
-                    }
-                    if (dataParsed.UpvotesOnPosts == undefined) {
-                        dataToStringify.UpvotesOnPosts = true;
-                        setUpvotesOnPosts(true)
-                    } else {
-                        dataToStringify.UpvotesOnPosts = dataParsed.UpvotesOnPosts
-                        setUpvotesOnPosts(dataParsed.UpvotesOnPosts)
-                    }
-                    if (dataParsed.NeutralVotesOnPosts == undefined) {
-                        dataToStringify.NeutralVotesOnPosts = true
-                        setNeutralVotesOnPosts(true)
-                    } else {
-                        dataToStringify.NeutralVotesOnPosts = dataParsed.NeutralVotesOnPosts
-                        setNeutralVotesOnPosts(dataParsed.NeutralVotesOnPosts)
-                    }
-                    if (dataParsed.DownvotesOnPosts == undefined) {
-                        dataToStringify.DownvotesOnPosts = true
-                        setDownvotesOnPosts(true)
-                    } else {
-                        dataToStringify.DownvotesOnPosts = dataParsed.DownvotesOnPosts
-                        setDownvotesOnPosts(dataParsed.DownvotesOnPosts)
-                    }
-                    if (dataParsed.UpvotesOnVideos == undefined) {
-                        dataToStringify.UpvotesOnVideos = true
-                        setUpvotesOnVideos(true)
-                    } else {
-                        dataToStringify.UpvotesOnVideos = dataParsed.UpvotesOnVideos
-                        setUpvotesOnVideos(dataParsed.UpvotesOnVideos)
-                    }
-                    if (dataParsed.NeutralVotesOnVideos == undefined) {
-                        dataToStringify.NeutralVotesOnVideos = true
-                        setNeutralVotesOnVideos(true)
-                    } else {
-                        dataToStringify.NeutralVotesOnVideos = dataParsed.NeutralVotesOnVideos
-                        setNeutralVotesOnVideos(dataParsed.NeutralVotesOnVideos)
-                    }
-                    if (dataParsed.DownvotesOnVideos == undefined) {
-                        dataToStringify.DownvotesOnVideos = true
-                        setDownvotesOnVideos(true)
-                    } else {
-                        dataToStringify.DownvotesOnVideos = dataParsed.DownvotesOnVideos
-                        setDownvotesOnVideos(dataParsed.DownvotesOnVideos)
-                    }
-                    if (dataParsed.UpvotesOnPolls == undefined) {
-                        dataToStringify.UpvotesOnPolls = true
-                        setUpvotesOnPolls(true)
-                    } else {
-                        dataToStringify.UpvotesOnPolls = dataParsed.UpvotesOnPolls
-                        setUpvotesOnPolls(dataParsed.UpvotesOnPolls)
-                    }
-                    if (dataParsed.NeutralVotesOnPolls == undefined) {
-                        dataToStringify.NeutralVotesOnPolls = true
-                        setNeutralVotesOnPolls(true)
-                    } else {
-                        dataToStringify.NeutralVotesOnPolls = dataParsed.NeutralVotesOnPolls
-                        setNeutralVotesOnPolls(dataParsed.NeutralVotesOnPolls)
-                    }
-                    if (dataParsed.DownvotesOnPolls == undefined) {
-                        dataToStringify.DownvotesOnPolls = true
-                        setDownvotesOnPolls(true)
-                    } else {
-                        dataToStringify.DownvotesOnPolls = dataParsed.DownvotesOnPolls
-                        setDownvotesOnPolls(dataParsed.DownvotesOnPolls)
-                    }
-                    if (dataParsed.UpvotesOnThreads == undefined) {
-                        dataToStringify.UpvotesOnThreads = true
-                        setUpvotesOnThreads(true)
-                    } else {
-                        dataToStringify.UpvotesOnThreads = dataParsed.UpvotesOnThreads
-                        setUpvotesOnThreads(dataParsed.UpvotesOnThreads)
-                    }
-                    if (dataParsed.NeutralVotesOnThreads == undefined) {
-                        dataToStringify.NeutralVotesOnThreads = true
-                        setNeutralVotesOnThreads(true)
-                    } else {
-                        dataToStringify.NeutralVotesOnThreads = dataParsed.NeutralVotesOnThreads
-                        setNeutralVotesOnThreads(dataParsed.NeutralVotesOnThreads)
-                    }
-                    if (dataParsed.DownvotesOnThreads == undefined) {
-                        dataToStringify.DownvotesOnThreads = true
-                        setDownvotesOnThreads(true)
-                    } else {
-                        dataToStringify.DownvotesOnThreads = dataParsed.DownvotesOnThreads
-                        setDownvotesOnThreads(dataParsed.DownvotesOnThreads)
-                    }
-                    if (dataParsed.PersonJoiningCategory == undefined) {
-                        dataToStringify.PersonJoiningCategory = true
-                        setPersonJoiningCategory(true)
-                    } else {
-                        dataToStringify.PersonJoiningCategory = dataParsed.PersonJoiningCategory
-                        setPersonJoiningCategory(dataParsed.PersonJoiningCategory)
-                    }
-                    if (dataParsed.SendTextMessages == undefined) {
-                        dataToStringify.SendTextMessages = true
-                        setSendTextMessages(true)
-                    } else {
-                        dataToStringify.SendTextMessages = dataParsed.SendTextMessages
-                        setSendTextMessages(dataParsed.SendTextMessages)
-                    }
-                    if (dataParsed.SendUpvotesOnPosts == undefined) {
-                        dataToStringify.SendUpvotesOnPosts = true
-                        setSendUpvotesOnPosts(true)
-                    } else {
-                        dataToStringify.SendUpvotesOnPosts = dataParsed.SendUpvotesOnPosts
-                        setSendUpvotesOnPosts(dataParsed.SendUpvotesOnPosts)
-                    }
-                    if (dataParsed.SendNeutralVotesOnPosts == undefined) {
-                        dataToStringify.SendNeutralVotesOnPosts = true
-                        setSendNeutralVotesOnPosts(true)
-                    } else {
-                        dataToStringify.SendNeutralVotesOnPosts = dataParsed.SendNeutralVotesOnPosts
-                        setSendNeutralVotesOnPosts(dataParsed.SendNeutralVotesOnPosts)
-                    }
-                    if (dataParsed.SendDownvotesOnPosts == undefined) {
-                        dataToStringify.SendDownvotesOnPosts = true
-                        setSendDownvotesOnPosts(true)
-                    } else {
-                        dataToStringify.SendDownvotesOnPosts = dataParsed.SendDownvotesOnPosts
-                        setSendDownvotesOnPosts(dataParsed.SendDownvotesOnPosts)
-                    }
-                    if (dataParsed.SendUpvotesOnVideos == undefined) {
-                        dataToStringify.SendUpvotesOnVideos = true
-                        setSendUpvotesOnVideos(true)
-                    } else {
-                        dataToStringify.SendUpvotesOnVideos = dataParsed.SendUpvotesOnVideos
-                        setSendUpvotesOnVideos(dataParsed.SendUpvotesOnVideos)
-                    }
-                    if (dataParsed.SendNeutralVotesOnVideos == undefined) {
-                        dataToStringify.SendNeutralVotesOnVideos = true
-                        setSendNeutralVotesOnVideos(true)
-                    } else {
-                        dataToStringify.SendNeutralVotesOnVideos = dataParsed.SendNeutralVotesOnVideos
-                        setSendNeutralVotesOnVideos(dataParsed.SendNeutralVotesOnVideos)
-                    }
-                    if (dataParsed.SendDownvotesOnVideos == undefined) {
-                        dataToStringify.SendDownvotesOnVideos = true
-                        setSendDownvotesOnVideos(true)
-                    } else {
-                        dataToStringify.SendDownvotesOnVideos = dataParsed.SendDownvotesOnVideos
-                        setSendDownvotesOnVideos(dataParsed.SendDownvotesOnVideos)
-                    }
-                    if (dataParsed.SendUpvotesOnPolls == undefined) {
-                        dataToStringify.SendUpvotesOnPolls = true
-                        setSendUpvotesOnPolls(true)
-                    } else {
-                        dataToStringify.SendUpvotesOnPolls = dataParsed.SendUpvotesOnPolls
-                        setSendUpvotesOnPolls(dataParsed.SendUpvotesOnPolls)
-                    }
-                    if (dataParsed.SendNeutralVotesOnPolls == undefined) {
-                        dataToStringify.SendNeutralVotesOnPolls = true
-                        setSendNeutralVotesOnPolls(true)
-                    } else {
-                        dataToStringify.SendNeutralVotesOnPolls = dataParsed.SendNeutralVotesOnPolls
-                        setSendNeutralVotesOnPolls(dataParsed.SendNeutralVotesOnPolls)
-                    }
-                    if (dataParsed.SendDownvotesOnPolls == undefined) {
-                        dataToStringify.SendDownvotesOnPolls = true
-                        setSendDownvotesOnPolls(true)
-                    } else {
-                        dataToStringify.SendDownvotesOnPolls = dataParsed.SendDownvotesOnPolls
-                        setSendDownvotesOnPolls(dataParsed.SendDownvotesOnPolls)
-                    }
-                    if (dataParsed.SendUpvotesOnThreads == undefined) {
-                        dataToStringify.SendUpvotesOnThreads = true
-                        setSendUpvotesOnThreads(true)
-                    } else {
-                        dataToStringify.SendUpvotesOnThreads = dataParsed.SendUpvotesOnThreads
-                        setSendUpvotesOnThreads(dataParsed.SendUpvotesOnThreads)
-                    }
-                    if (dataParsed.SendNeutralVotesOnThreads == undefined) {
-                        dataToStringify.SendNeutralVotesOnThreads = true
-                        setSendNeutralVotesOnThreads(true)
-                    } else {
-                        dataToStringify.SendNeutralVotesOnThreads = dataParsed.SendNeutralVotesOnThreads
-                        setSendNeutralVotesOnThreads(dataParsed.SendNeutralVotesOnThreads)
-                    }
-                    if (dataParsed.SendDownvotesOnThreads == undefined) {
-                        dataToStringify.SendDownvotesOnThreads = true
-                        setSendDownvotesOnThreads(true)
-                    } else {
-                        dataToStringify.SendDownvotesOnThreads = dataParsed.SendDownvotesOnThreads
-                        setSendDownvotesOnThreads(dataParsed.SendDownvotesOnThreads)
-                    }
-                    if (dataParsed.SendJoiningCategory == undefined) {
-                        dataToStringify.SendJoiningCategory = true
-                        setSendJoiningCategory(true)
-                    } else {
-                        dataToStringify.SendJoiningCategory = dataParsed.SendJoiningCategory
-                        setSendJoiningCategory(dataParsed.SendJoiningCategory)
-                    }
-                    AsyncStorage.setItem('NotificationSettings', JSON.stringify(dataToStringify)).catch((e) => {console.error(e)})
-                    setShowSettings(true)
-                }
-            }).catch((e) => console.error(e))
+            setNotificationsAllowed(allowsNotifications);
+            if (allowsNotifications) {
+                loadNotificationSettings()
+            }
         }
         if (storedCredentials) {
             getNotificationsSettings()
@@ -639,295 +395,400 @@ const NotificationsSettingsScreen = ({navigation}) => {
                             />
                         </Navigator_BackButton>
                         <TestText style={{textAlign: 'center', color: colors.tertiary}}>Notifications Settings</TestText>
+                        {savingChanges ?
+                            <ActivityIndicator size="small" color={colors.brand} style={{position: 'absolute', top: StatusBarHeight + 12, right: 20}}/>
+                        :
+                            <TouchableOpacity style={{position: 'absolute', top: StatusBarHeight + 10, right: 10}} onPress={saveNotificationsSettings}>
+                                <Text style={{color: colors.brand, fontSize: 20, fontWeight: 'bold'}}>Save</Text>
+                            </TouchableOpacity>
+                        }
                     </ChatScreen_Title>
-                    <WelcomeContainer style={{backgroundColor: colors.primary, width: '100%', height: '100%'}}>
-                        {showSettings == true ?
-                            <>
-                                {notificationsAllowed == true ?
-                                    <ScrollView style={{marginTop: -50, width: '100%', height: '100%', marginBottom: -25}}>
-                                        <Avatar resizeMode="cover" source={{uri: profilePictureUri}} />
-                                        <TestText style={{textAlign: 'center', color: colors.tertiary}}>Receive notifications</TestText>
-                                        <View style={{alignSelf: 'center', alignItems: 'center', alignContent: 'center'}}>
-                                            <View style={{flexDirection: 'row', alignContent: 'center'}}>
-                                                <TextLink onPress={turnOnAllReceiveNotifications}>
-                                                    <TextLinkContent style={{color: colors.brand, fontSize: 22}}>Turn On All</TextLinkContent>
-                                                </TextLink>
-                                                <TextLink style={{marginLeft: 50}} onPress={turnOffAllReceiveNotifications}>
-                                                    <TextLinkContent style={{color: colors.brand, fontSize: 22}}>Turn Off All</TextLinkContent>
-                                                </TextLink>
-                                            </View>
+                    {showSettings == true ?
+                        <WelcomeContainer style={{backgroundColor: colors.primary, width: '100%', height: '100%'}}>
+                            {notificationsAllowed == true ?
+                                <ScrollView style={{marginTop: -50, width: '100%', height: '100%', marginBottom: -25}}>
+                                    <Avatar resizeMode="cover" source={{uri: profilePictureUri}} />
+                                    <TestText style={{textAlign: 'center', color: colors.tertiary}}>Receive notifications</TestText>
+                                    <View style={{alignSelf: 'center', alignItems: 'center', alignContent: 'center'}}>
+                                        <View style={{flexDirection: 'row', alignContent: 'center'}}>
+                                            <TextLink onPress={turnOnAllReceiveNotifications}>
+                                                <TextLinkContent style={{color: colors.brand, fontSize: 22}}>Turn On All</TextLinkContent>
+                                            </TextLink>
+                                            <TextLink style={{marginLeft: 50}} onPress={turnOffAllReceiveNotifications}>
+                                                <TextLinkContent style={{color: colors.brand, fontSize: 22}}>Turn Off All</TextLinkContent>
+                                            </TextLink>
                                         </View>
-                                        <View style={{flex: 1, flexDirection: 'row'}}>
-                                            <View style={{flexDirection: 'column', flex: 1}}>
-                                                <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Text Messages</Text>
-                                                <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Upvotes on your posts</Text>
-                                                <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Neutral votes on your posts</Text>
-                                                <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Downvotes on your posts</Text>
-                                                <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Upvotes on your videos</Text>
-                                                <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Neutral votes on your videos</Text>
-                                                <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Downvotes on your videos</Text>
-                                                <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Upvotes on your polls</Text>
-                                                <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Neutral votes on your polls</Text>
-                                                <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Downvotes on your polls</Text>
-                                                <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Upvotes on your threads</Text>
-                                                <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Neutral votes on your threads</Text>
-                                                <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Downvotes on your threads</Text>
-                                                <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Person joining a category you are in</Text>
-                                            </View>
-                                            <View style={{flex: 0.3, flexDirection: 'column', alignItems: 'center'}}>
-                                                <Switch
-                                                    trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
-                                                    thumbColor={textMessages ? dark ? colors.teritary : colors.primary : colors.teritary}
-                                                    ios_backgroundColor={colors.borderColor}
-                                                    onValueChange={() => {setContextAndAsyncStorage('TextMessages')}}
-                                                    value={textMessages}
-                                                />
-                                                <Switch
-                                                    trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
-                                                    thumbColor={upvotesOnPosts ? dark ? colors.teritary : colors.primary : colors.teritary}
-                                                    ios_backgroundColor={colors.borderColor}
-                                                    onValueChange={() => {setContextAndAsyncStorage('UpvotesOnPosts')}}
-                                                    value={upvotesOnPosts}
-                                                />
-                                                <Switch
-                                                    trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
-                                                    thumbColor={neutralVotesOnPosts ? dark ? colors.teritary : colors.primary : colors.teritary}
-                                                    ios_backgroundColor={colors.borderColor}
-                                                    onValueChange={() => {setContextAndAsyncStorage('NeutralVotesOnPosts')}}
-                                                    value={neutralVotesOnPosts}
-                                                />
-                                                <Switch
-                                                    trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
-                                                    thumbColor={downvotesOnPosts ? dark ? colors.teritary : colors.primary : colors.teritary}
-                                                    ios_backgroundColor={colors.borderColor}
-                                                    onValueChange={() => {setContextAndAsyncStorage('DownvotesOnPosts')}}
-                                                    value={downvotesOnPosts}
-                                                />
-                                                <Switch
-                                                    trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
-                                                    thumbColor={upvotesOnVideos ? dark ? colors.teritary : colors.primary : colors.teritary}
-                                                    ios_backgroundColor={colors.borderColor}
-                                                    onValueChange={() => {setContextAndAsyncStorage('UpvotesOnVideos')}}
-                                                    value={upvotesOnVideos}
-                                                />
-                                                <Switch
-                                                    trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
-                                                    thumbColor={neutralVotesOnVideos ? dark ? colors.teritary : colors.primary : colors.teritary}
-                                                    ios_backgroundColor={colors.borderColor}
-                                                    onValueChange={() => {setContextAndAsyncStorage('NeutralVotesOnVideos')}}
-                                                    value={neutralVotesOnVideos}
-                                                />
-                                                <Switch
-                                                    trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
-                                                    thumbColor={downvotesOnVideos ? dark ? colors.teritary : colors.primary : colors.teritary}
-                                                    ios_backgroundColor={colors.borderColor}
-                                                    onValueChange={() => {setContextAndAsyncStorage('DownvotesOnVideos')}}
-                                                    value={downvotesOnVideos}
-                                                />
-                                                <Switch
-                                                    trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
-                                                    thumbColor={upvotesOnPolls ? dark ? colors.teritary : colors.primary : colors.teritary}
-                                                    ios_backgroundColor={colors.borderColor}
-                                                    onValueChange={() => {setContextAndAsyncStorage('UpvotesOnPolls')}}
-                                                    value={upvotesOnPolls}
-                                                />
-                                                <Switch
-                                                    trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
-                                                    thumbColor={neutralVotesOnPolls ? dark ? colors.teritary : colors.primary : colors.teritary}
-                                                    ios_backgroundColor={colors.borderColor}
-                                                    onValueChange={() => {setContextAndAsyncStorage('NeutralVotesOnPolls')}}
-                                                    value={neutralVotesOnPolls}
-                                                />
-                                                <Switch
-                                                    trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
-                                                    thumbColor={downvotesOnPolls ? dark ? colors.teritary : colors.primary : colors.teritary}
-                                                    ios_backgroundColor={colors.borderColor}
-                                                    onValueChange={() => {setContextAndAsyncStorage('DownvotesOnPolls')}}
-                                                    value={downvotesOnPolls}
-                                                />
-                                                <Switch
-                                                    trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
-                                                    thumbColor={upvotesOnThreads ? dark ? colors.teritary : colors.primary : colors.teritary}
-                                                    ios_backgroundColor={colors.borderColor}
-                                                    onValueChange={() => {setContextAndAsyncStorage('UpvotesOnThreads')}}
-                                                    value={upvotesOnThreads}
-                                                />
-                                                <Switch
-                                                    trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
-                                                    thumbColor={neutralVotesOnThreads ? dark ? colors.teritary : colors.primary : colors.teritary}
-                                                    ios_backgroundColor={colors.borderColor}
-                                                    onValueChange={() => {setContextAndAsyncStorage('NeutralVotesOnThreads')}}
-                                                    value={neutralVotesOnThreads}
-                                                />
-                                                <Switch
-                                                    trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
-                                                    thumbColor={downvotesOnThreads ? dark ? colors.teritary : colors.primary : colors.teritary}
-                                                    ios_backgroundColor={colors.borderColor}
-                                                    onValueChange={() => {setContextAndAsyncStorage('DownvotesOnThreads')}}
-                                                    value={downvotesOnThreads}
-                                                />
-                                                <Switch
-                                                    trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
-                                                    thumbColor={personJoiningCategory ? dark ? colors.teritary : colors.primary : colors.teritary}
-                                                    ios_backgroundColor={colors.borderColor}
-                                                    onValueChange={() => {setContextAndAsyncStorage('PersonJoiningCategory')}}
-                                                    value={personJoiningCategory}
-                                                />
-                                            </View>
+                                    </View>
+                                    <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 10}}>
+                                        <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Text Messages</Text>
+                                        <Switch
+                                            trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
+                                            thumbColor={notificationsSettingsObject.TextMessages ? dark ? colors.tertiary : colors.primary : colors.teritary}
+                                            ios_backgroundColor={colors.borderColor}
+                                            onValueChange={() => {setContextAndAsyncStorage('TextMessages')}}
+                                            value={notificationsSettingsObject.TextMessages}
+                                        />
+                                    </View>
+                                    <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 10}}>
+                                        <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Someone follows you</Text>
+                                        <Switch
+                                            trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
+                                            thumbColor={notificationsSettingsObject.GainsFollower ? dark ? colors.tertiary : colors.primary : colors.teritary}
+                                            ios_backgroundColor={colors.borderColor}
+                                            onValueChange={() => {setContextAndAsyncStorage('GainsFollower')}}
+                                            value={notificationsSettingsObject.GainsFollower}
+                                        />
+                                    </View>
+                                    {privateAccount ?
+                                        <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 10}}>
+                                            <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Someone requests to follow you</Text>
+                                            <Switch
+                                                trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
+                                                thumbColor={notificationsSettingsObject.FollowRequests ? dark ? colors.tertiary : colors.primary : colors.teritary}
+                                                ios_backgroundColor={colors.borderColor}
+                                                onValueChange={() => {setContextAndAsyncStorage('FollowRequests')}}
+                                                value={notificationsSettingsObject.FollowRequests}
+                                            />
                                         </View>
-                                        <TestText style={{textAlign: 'center', color: colors.tertiary}}>Send notifications</TestText>
-                                        <View style={{alignSelf: 'center', alignItems: 'center', alignContent: 'center'}}>
-                                            <View style={{flexDirection: 'row'}}>
-                                                <TextLink onPress={turnOnAllSendNotifications}>
-                                                    <TextLinkContent style={{color: colors.brand, fontSize: 22}}>Turn On All</TextLinkContent>
-                                                </TextLink>
-                                                <TextLink style={{marginLeft: 50}} onPress={turnOffAllSendNotifications}>
-                                                    <TextLinkContent style={{color: colors.brand, fontSize: 22}}>Turn Off All</TextLinkContent>
-                                                </TextLink>
-                                            </View>
+                                    : null}
+                                    <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 10}}>
+                                        <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Upvotes on multimedia posts</Text>
+                                        <Switch
+                                            trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
+                                            thumbColor={notificationsSettingsObject.UpvotesOnMultimediaPosts ? dark ? colors.teritary : colors.primary : colors.teritary}
+                                            ios_backgroundColor={colors.borderColor}
+                                            onValueChange={() => {setContextAndAsyncStorage('UpvotesOnMultimediaPosts')}}
+                                            value={notificationsSettingsObject.UpvotesOnMultimediaPosts}
+                                        />
+                                    </View>
+                                    <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 10}}>
+                                        <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Neutral votes on multimedia posts</Text>
+                                        <Switch
+                                            trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
+                                            thumbColor={notificationsSettingsObject.NeutralVotesOnMultimediaPosts ? dark ? colors.teritary : colors.primary : colors.teritary}
+                                            ios_backgroundColor={colors.borderColor}
+                                            onValueChange={() => {setContextAndAsyncStorage('NeutralVotesOnMultimediaPosts')}}
+                                            value={notificationsSettingsObject.NeutralVotesOnMultimediaPosts}
+                                        />
+                                    </View>
+                                    <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 10}}>
+                                        <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Downvotes on multimedia posts</Text>
+                                        <Switch
+                                            trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
+                                            thumbColor={notificationsSettingsObject.DownvotesOnMultimediaPosts ? dark ? colors.teritary : colors.primary : colors.teritary}
+                                            ios_backgroundColor={colors.borderColor}
+                                            onValueChange={() => {setContextAndAsyncStorage('DownvotesOnMultimediaPosts')}}
+                                            value={notificationsSettingsObject.DownvotesOnMultimediaPosts}
+                                        />
+                                    </View>
+                                    <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 10}}>
+                                        <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Upvotes on videos</Text>
+                                        <Switch
+                                            trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
+                                            thumbColor={notificationsSettingsObject.UpvotesOnVideos ? dark ? colors.teritary : colors.primary : colors.teritary}
+                                            ios_backgroundColor={colors.borderColor}
+                                            onValueChange={() => {setContextAndAsyncStorage('UpvotesOnVideos')}}
+                                            value={notificationsSettingsObject.UpvotesOnVideos}
+                                        />
+                                    </View>
+                                    <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 10}}>
+                                        <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Neutral votes on videos</Text>
+                                        <Switch
+                                            trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
+                                            thumbColor={notificationsSettingsObject.NeutralVotesOnVideos ? dark ? colors.teritary : colors.primary : colors.teritary}
+                                            ios_backgroundColor={colors.borderColor}
+                                            onValueChange={() => {setContextAndAsyncStorage('NeutralVotesOnVideos')}}
+                                            value={notificationsSettingsObject.NeutralVotesOnVideos}
+                                        />
+                                    </View>
+                                    <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 10}}>
+                                        <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Downvotes on videos</Text>
+                                        <Switch
+                                            trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
+                                            thumbColor={notificationsSettingsObject.DownvotesOnVideos ? dark ? colors.teritary : colors.primary : colors.teritary}
+                                            ios_backgroundColor={colors.borderColor}
+                                            onValueChange={() => {setContextAndAsyncStorage('DownvotesOnVideos')}}
+                                            value={notificationsSettingsObject.DownvotesOnVideos}
+                                        />
+                                    </View>
+                                    <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 10}}>
+                                        <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Upvotes on polls</Text>
+                                        <Switch
+                                            trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
+                                            thumbColor={notificationsSettingsObject.UpvotesOnPolls ? dark ? colors.teritary : colors.primary : colors.teritary}
+                                            ios_backgroundColor={colors.borderColor}
+                                            onValueChange={() => {setContextAndAsyncStorage('UpvotesOnPolls')}}
+                                            value={notificationsSettingsObject.UpvotesOnPolls}
+                                        />
+                                    </View>
+                                    <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 10}}>
+                                        <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Neutral votes on polls</Text>
+                                        <Switch
+                                            trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
+                                            thumbColor={notificationsSettingsObject.NeutralVotesOnPolls ? dark ? colors.teritary : colors.primary : colors.teritary}
+                                            ios_backgroundColor={colors.borderColor}
+                                            onValueChange={() => {setContextAndAsyncStorage('NeutralVotesOnPolls')}}
+                                            value={notificationsSettingsObject.NeutralVotesOnPolls}
+                                        />
+                                    </View>
+                                    <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 10}}>
+                                        <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Downvotes on polls</Text>
+                                        <Switch
+                                            trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
+                                            thumbColor={notificationsSettingsObject.DownvotesOnPolls ? dark ? colors.teritary : colors.primary : colors.teritary}
+                                            ios_backgroundColor={colors.borderColor}
+                                            onValueChange={() => {setContextAndAsyncStorage('DownvotesOnPolls')}}
+                                            value={notificationsSettingsObject.DownvotesOnPolls}
+                                        />
+                                    </View>
+                                    <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 10}}>
+                                        <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Upvotes on threads</Text>
+                                        <Switch
+                                            trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
+                                            thumbColor={notificationsSettingsObject.UpvotesOnThreads ? dark ? colors.teritary : colors.primary : colors.teritary}
+                                            ios_backgroundColor={colors.borderColor}
+                                            onValueChange={() => {setContextAndAsyncStorage('UpvotesOnThreads')}}
+                                            value={notificationsSettingsObject.UpvotesOnThreads}
+                                        />
+                                    </View>
+                                    <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 10}}>
+                                        <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Neutral votes on threads</Text>
+                                        <Switch
+                                            trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
+                                            thumbColor={notificationsSettingsObject.NeutralVotesOnThreads ? dark ? colors.teritary : colors.primary : colors.teritary}
+                                            ios_backgroundColor={colors.borderColor}
+                                            onValueChange={() => {setContextAndAsyncStorage('NeutralVotesOnThreads')}}
+                                            value={notificationsSettingsObject.NeutralVotesOnThreads}
+                                        />
+                                    </View>
+                                    <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 10}}>
+                                        <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Downvotes on threads</Text>
+                                        <Switch
+                                            trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
+                                            thumbColor={notificationsSettingsObject.DownvotesOnThreads ? dark ? colors.teritary : colors.primary : colors.teritary}
+                                            ios_backgroundColor={colors.borderColor}
+                                            onValueChange={() => {setContextAndAsyncStorage('DownvotesOnThreads')}}
+                                            value={notificationsSettingsObject.DownvotesOnThreads}
+                                        />
+                                    </View>
+                                    <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 10}}>
+                                        <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Person joining a category you own</Text>
+                                        <Switch
+                                            trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
+                                            thumbColor={notificationsSettingsObject.PersonJoiningCategory ? dark ? colors.teritary : colors.primary : colors.teritary}
+                                            ios_backgroundColor={colors.borderColor}
+                                            onValueChange={() => {setContextAndAsyncStorage('PersonJoiningCategory')}}
+                                            value={notificationsSettingsObject.PersonJoiningCategory}
+                                        />
+                                    </View>
+                                    <TestText style={{textAlign: 'center', color: colors.tertiary}}>Send notifications</TestText>
+                                    <View style={{alignSelf: 'center', alignItems: 'center', alignContent: 'center'}}>
+                                        <View style={{flexDirection: 'row'}}>
+                                            <TextLink onPress={turnOnAllSendNotifications}>
+                                                <TextLinkContent style={{color: colors.brand, fontSize: 22}}>Turn On All</TextLinkContent>
+                                            </TextLink>
+                                            <TextLink style={{marginLeft: 50}} onPress={turnOffAllSendNotifications}>
+                                                <TextLinkContent style={{color: colors.brand, fontSize: 22}}>Turn Off All</TextLinkContent>
+                                            </TextLink>
                                         </View>
-                                        <View style={{flex: 1, flexDirection: 'row'}}>
-                                            <View style={{flexDirection: 'column', flex: 1}}>
-                                                <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Text Messages</Text>
-                                                <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Upvotes on posts</Text>
-                                                <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Neutral votes on posts</Text>
-                                                <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Downvotes on posts</Text>
-                                                <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Upvotes on videos</Text>
-                                                <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Neutral votes on videos</Text>
-                                                <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Downvotes on videos</Text>
-                                                <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Upvotes on polls</Text>
-                                                <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Neutral votes on polls</Text>
-                                                <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Downvotes on polls</Text>
-                                                <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Upvotes on threads</Text>
-                                                <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Neutral votes on threads</Text>
-                                                <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Downvotes on threads</Text>
-                                                <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>You joining a category</Text>
-                                            </View>
-                                            <View style={{flex: 0.3, flexDirection: 'column', alignItems: 'center'}}>
-                                                <Switch
-                                                    trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
-                                                    thumbColor={sendTextMessages ? dark ? colors.teritary : colors.primary : colors.teritary}
-                                                    ios_backgroundColor={colors.borderColor}
-                                                    onValueChange={() => {setContextAndAsyncStorage('SendTextMessages')}}
-                                                    value={sendTextMessages}
-                                                />
-                                                <Switch
-                                                    trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
-                                                    thumbColor={sendUpvotesOnPosts ? dark ? colors.teritary : colors.primary : colors.teritary}
-                                                    ios_backgroundColor={colors.borderColor}
-                                                    onValueChange={() => {setContextAndAsyncStorage('SendUpvotesOnPosts')}}
-                                                    value={sendUpvotesOnPosts}
-                                                />
-                                                <Switch
-                                                    trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
-                                                    thumbColor={sendNeutralVotesOnPosts ? dark ? colors.teritary : colors.primary : colors.teritary}
-                                                    ios_backgroundColor={colors.borderColor}
-                                                    onValueChange={() => {setContextAndAsyncStorage('SendNeutralVotesOnPosts')}}
-                                                    value={sendNeutralVotesOnPosts}
-                                                />
-                                                <Switch
-                                                    trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
-                                                    thumbColor={sendDownvotesOnPosts ? dark ? colors.teritary : colors.primary : colors.teritary}
-                                                    ios_backgroundColor={colors.borderColor}
-                                                    onValueChange={() => {setContextAndAsyncStorage('SendDownvotesOnPosts')}}
-                                                    value={sendDownvotesOnPosts}
-                                                />
-                                                <Switch
-                                                    trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
-                                                    thumbColor={sendUpvotesOnVideos ? dark ? colors.teritary : colors.primary : colors.teritary}
-                                                    ios_backgroundColor={colors.borderColor}
-                                                    onValueChange={() => {setContextAndAsyncStorage('SendUpvotesOnVideos')}}
-                                                    value={sendUpvotesOnVideos}
-                                                />
-                                                <Switch
-                                                    trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
-                                                    thumbColor={sendNeutralVotesOnVideos ? dark ? colors.teritary : colors.primary : colors.teritary}
-                                                    ios_backgroundColor={colors.borderColor}
-                                                    onValueChange={() => {setContextAndAsyncStorage('SendNeutralVotesOnVideos')}}
-                                                    value={sendNeutralVotesOnVideos}
-                                                />
-                                                <Switch
-                                                    trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
-                                                    thumbColor={sendDownvotesOnVideos ? dark ? colors.teritary : colors.primary : colors.teritary}
-                                                    ios_backgroundColor={colors.borderColor}
-                                                    onValueChange={() => {setContextAndAsyncStorage('SendDownvotesOnVideos')}}
-                                                    value={sendDownvotesOnVideos}
-                                                />
-                                                <Switch
-                                                    trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
-                                                    thumbColor={sendUpvotesOnPolls ? dark ? colors.teritary : colors.primary : colors.teritary}
-                                                    ios_backgroundColor={colors.borderColor}
-                                                    onValueChange={() => {setContextAndAsyncStorage('SendUpvotesOnPolls')}}
-                                                    value={sendUpvotesOnPolls}
-                                                />
-                                                <Switch
-                                                    trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
-                                                    thumbColor={sendNeutralVotesOnPolls ? dark ? colors.teritary : colors.primary : colors.teritary}
-                                                    ios_backgroundColor={colors.borderColor}
-                                                    onValueChange={() => {setContextAndAsyncStorage('SendNeutralVotesOnPolls')}}
-                                                    value={sendNeutralVotesOnPolls}
-                                                />
-                                                <Switch
-                                                    trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
-                                                    thumbColor={sendDownvotesOnPolls ? dark ? colors.teritary : colors.primary : colors.teritary}
-                                                    ios_backgroundColor={colors.borderColor}
-                                                    onValueChange={() => {setContextAndAsyncStorage('SendDownvotesOnPolls')}}
-                                                    value={sendDownvotesOnPolls}
-                                                />
-                                                <Switch
-                                                    trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
-                                                    thumbColor={sendUpvotesOnThreads ? dark ? colors.teritary : colors.primary : colors.teritary}
-                                                    ios_backgroundColor={colors.borderColor}
-                                                    onValueChange={() => {setContextAndAsyncStorage('SendUpvotesOnThreads')}}
-                                                    value={sendUpvotesOnThreads}
-                                                />
-                                                <Switch
-                                                    trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
-                                                    thumbColor={sendNeutralVotesOnThreads ? dark ? colors.teritary : colors.primary : colors.teritary}
-                                                    ios_backgroundColor={colors.borderColor}
-                                                    onValueChange={() => {setContextAndAsyncStorage('SendNeutralVotesOnThreads')}}
-                                                    value={sendNeutralVotesOnThreads}
-                                                />
-                                                <Switch
-                                                    trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
-                                                    thumbColor={sendDownvotesOnThreads ? dark ? colors.teritary : colors.primary : colors.teritary}
-                                                    ios_backgroundColor={colors.borderColor}
-                                                    onValueChange={() => {setContextAndAsyncStorage('SendDownvotesOnThreads')}}
-                                                    value={sendDownvotesOnThreads}
-                                                />
-                                                <Switch
-                                                    trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
-                                                    thumbColor={sendJoiningCategory ? dark ? colors.teritary : colors.primary : colors.teritary}
-                                                    ios_backgroundColor={colors.borderColor}
-                                                    onValueChange={() => {setContextAndAsyncStorage('SendJoiningCategory')}}
-                                                    value={sendJoiningCategory}
-                                                />
-                                            </View>
+                                    </View>
+                                    <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 10}}>
+                                        <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Text Messages</Text>
+                                        <Switch
+                                            trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
+                                            thumbColor={notificationsSettingsObject.SendTextMessages ? dark ? colors.teritary : colors.primary : colors.teritary}
+                                            ios_backgroundColor={colors.borderColor}
+                                            onValueChange={() => {setContextAndAsyncStorage('SendTextMessages')}}
+                                            value={notificationsSettingsObject.SendTextMessages}
+                                        />
+                                    </View>
+                                    <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 10}}>
+                                        <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Following someone's account</Text>
+                                        <Switch
+                                            trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
+                                            thumbColor={notificationsSettingsObject.SendGainsFollower ? dark ? colors.teritary : colors.primary : colors.teritary}
+                                            ios_backgroundColor={colors.borderColor}
+                                            onValueChange={() => {setContextAndAsyncStorage('SendGainsFollower')}}
+                                            value={notificationsSettingsObject.SendGainsFollower}
+                                        />
+                                    </View>
+                                    {privateAccount ?
+                                        <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 10}}>
+                                            <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Requesting to follow someone's account</Text>
+                                            <Switch
+                                                trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
+                                                thumbColor={notificationsSettingsObject.SendFollowRequests ? dark ? colors.teritary : colors.primary : colors.teritary}
+                                                ios_backgroundColor={colors.borderColor}
+                                                onValueChange={() => {setContextAndAsyncStorage('SendFollowRequests')}}
+                                                value={notificationsSettingsObject.SendFollowRequests}
+                                            />
                                         </View>
-                                        <AppCredits/>
-                                    </ScrollView>
-                                :
-                                    <>
-                                        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-                                            <Text style={{fontSize: 20, fontWeight: 'bold', color: colors.tertiary, textAlign: 'center', marginHorizontal: 10}}>{notificationsAllowedObject.status == 'undetermined' ? 'Notifications have not been enabled for SocialSquare yet.' : notificationsAllowedObject.status == 'denied' ? 'Push notifications for SocialSquare has been disabled in system settings.' : ('SocialSquare notification status is ' + notificationsAllowed + ' and an error has occured.')}</Text>
-                                            <Text style={{fontSize: 20, fontWeight: 'bold', color: colors.tertiary, textAlign: 'center', marginVertical: 20, marginHorizontal: 10}}>{notificationsAllowedObject.status != 'denied' ? 'Please enable notifications for SocialSquare to use this feature.' : 'Please go into your device settings and enable notifications for SocialSquare to use this feature.'}</Text>
-                                            <View style={{flexDirection: 'row'}}>
-                                                {notificationsAllowedObject.status != 'denied' ?
-                                                    <StyledButton onPress={enableNotifications}>
-                                                        <ButtonText>Enable notifications</ButtonText>
-                                                    </StyledButton>
-                                                :
-                                                    <StyledButton onPress={enableNotifications}>
-                                                        <ButtonText>Go to settings</ButtonText>
-                                                    </StyledButton>
-                                                }
-                                            </View>
+                                    : null}
+                                    <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 10}}>
+                                        <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Upvotes on multimedia posts</Text>
+                                        <Switch
+                                            trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
+                                            thumbColor={notificationsSettingsObject.SendUpvotesOnMultimediaPosts ? dark ? colors.teritary : colors.primary : colors.teritary}
+                                            ios_backgroundColor={colors.borderColor}
+                                            onValueChange={() => {setContextAndAsyncStorage('SendUpvotesOnMultimediaPosts')}}
+                                            value={notificationsSettingsObject.SendUpvotesOnMultimediaPosts}
+                                        />
+                                    </View>
+                                    <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 10}}>
+                                        <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Neutral votes on multimedia posts</Text>
+                                        <Switch
+                                            trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
+                                            thumbColor={notificationsSettingsObject.SendNeutralVotesOnMultimediaPosts ? dark ? colors.teritary : colors.primary : colors.teritary}
+                                            ios_backgroundColor={colors.borderColor}
+                                            onValueChange={() => {setContextAndAsyncStorage('SendNeutralVotesOnMultimediaPosts')}}
+                                            value={notificationsSettingsObject.SendNeutralVotesOnMultimediaPosts}
+                                        />
+                                    </View>
+                                    <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 10}}>
+                                        <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Downvotes on multimedia posts</Text>
+                                        <Switch
+                                            trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
+                                            thumbColor={notificationsSettingsObject.SendDownvotesOnMultimediaPosts ? dark ? colors.teritary : colors.primary : colors.teritary}
+                                            ios_backgroundColor={colors.borderColor}
+                                            onValueChange={() => {setContextAndAsyncStorage('SendDownvotesOnMultimediaPosts')}}
+                                            value={notificationsSettingsObject.SendDownvotesOnMultimediaPosts}
+                                        />
+                                    </View>
+                                    <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 10}}>
+                                        <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Upvotes on videos</Text>
+                                        <Switch
+                                            trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
+                                            thumbColor={notificationsSettingsObject.SendUpvotesOnVideos ? dark ? colors.teritary : colors.primary : colors.teritary}
+                                            ios_backgroundColor={colors.borderColor}
+                                            onValueChange={() => {setContextAndAsyncStorage('SendUpvotesOnVideos')}}
+                                            value={notificationsSettingsObject.SendUpvotesOnVideos}
+                                        />
+                                    </View>
+                                    <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 10}}>
+                                        <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Neutral votes on videos</Text>
+                                        <Switch
+                                            trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
+                                            thumbColor={notificationsSettingsObject.SendNeutralVotesOnVideos ? dark ? colors.teritary : colors.primary : colors.teritary}
+                                            ios_backgroundColor={colors.borderColor}
+                                            onValueChange={() => {setContextAndAsyncStorage('SendNeutralVotesOnVideos')}}
+                                            value={notificationsSettingsObject.SendNeutralVotesOnVideos}
+                                        />
+                                    </View>
+                                    <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 10}}>
+                                        <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Downvotes on videos</Text>
+                                        <Switch
+                                            trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
+                                            thumbColor={notificationsSettingsObject.SendDownvotesOnVideos ? dark ? colors.teritary : colors.primary : colors.teritary}
+                                            ios_backgroundColor={colors.borderColor}
+                                            onValueChange={() => {setContextAndAsyncStorage('SendDownvotesOnVideos')}}
+                                            value={notificationsSettingsObject.SendDownvotesOnVideos}
+                                        />
+                                    </View>
+                                    <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 10}}>
+                                        <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Upvotes on polls</Text>
+                                        <Switch
+                                            trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
+                                            thumbColor={notificationsSettingsObject.SendUpvotesOnPolls ? dark ? colors.teritary : colors.primary : colors.teritary}
+                                            ios_backgroundColor={colors.borderColor}
+                                            onValueChange={() => {setContextAndAsyncStorage('SendUpvotesOnPolls')}}
+                                            value={notificationsSettingsObject.SendUpvotesOnPolls}
+                                        />
+                                    </View>
+                                    <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 10}}>
+                                        <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Neutral votes on polls</Text>
+                                        <Switch
+                                            trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
+                                            thumbColor={notificationsSettingsObject.SendNeutralVotesOnPolls ? dark ? colors.teritary : colors.primary : colors.teritary}
+                                            ios_backgroundColor={colors.borderColor}
+                                            onValueChange={() => {setContextAndAsyncStorage('SendNeutralVotesOnPolls')}}
+                                            value={notificationsSettingsObject.SendNeutralVotesOnPolls}
+                                        />
+                                    </View>
+                                    <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 10}}>
+                                        <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Downvotes on polls</Text>
+                                        <Switch
+                                            trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
+                                            thumbColor={notificationsSettingsObject.SendDownvotesOnPolls ? dark ? colors.teritary : colors.primary : colors.teritary}
+                                            ios_backgroundColor={colors.borderColor}
+                                            onValueChange={() => {setContextAndAsyncStorage('SendDownvotesOnPolls')}}
+                                            value={notificationsSettingsObject.SendDownvotesOnPolls}
+                                        />
+                                    </View>
+                                    <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 10}}>
+                                        <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Upvotes on threads</Text>
+                                        <Switch
+                                            trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
+                                            thumbColor={notificationsSettingsObject.SendUpvotesOnThreads ? dark ? colors.teritary : colors.primary : colors.teritary}
+                                            ios_backgroundColor={colors.borderColor}
+                                            onValueChange={() => {setContextAndAsyncStorage('SendUpvotesOnThreads')}}
+                                            value={notificationsSettingsObject.SendUpvotesOnThreads}
+                                        />
+                                    </View>
+                                    <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 10}}>
+                                        <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Neutral votes on threads</Text>
+                                        <Switch
+                                            trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
+                                            thumbColor={notificationsSettingsObject.SendNeutralVotesOnThreads ? dark ? colors.teritary : colors.primary : colors.teritary}
+                                            ios_backgroundColor={colors.borderColor}
+                                            onValueChange={() => {setContextAndAsyncStorage('SendNeutralVotesOnThreads')}}
+                                            value={notificationsSettingsObject.SendNeutralVotesOnThreads}
+                                        />
+                                    </View>
+                                    <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 10}}>
+                                        <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>Downvotes on threads</Text>
+                                        <Switch
+                                            trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
+                                            thumbColor={notificationsSettingsObject.SendDownvotesOnThreads ? dark ? colors.teritary : colors.primary : colors.teritary}
+                                            ios_backgroundColor={colors.borderColor}
+                                            onValueChange={() => {setContextAndAsyncStorage('SendDownvotesOnThreads')}}
+                                            value={notificationsSettingsObject.SendDownvotesOnThreads}
+                                        />
+                                    </View>
+                                    <View style={{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 10}}>
+                                        <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10}}>You joining a category</Text>
+                                        <Switch
+                                            trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
+                                            thumbColor={notificationsSettingsObject.SendJoiningCategory ? dark ? colors.teritary : colors.primary : colors.teritary}
+                                            ios_backgroundColor={colors.borderColor}
+                                            onValueChange={() => {setContextAndAsyncStorage('SendJoiningCategory')}}
+                                            value={notificationsSettingsObject.SendJoiningCategory}
+                                        />
+                                    </View>
+                                    <AppCredits/>
+                                </ScrollView>
+                            :
+                                <>
+                                    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                                        <Text style={{fontSize: 20, fontWeight: 'bold', color: colors.tertiary, textAlign: 'center', marginHorizontal: 10}}>{notificationsAllowedObject.status == 'undetermined' ? 'Notifications have not been enabled for SocialSquare yet.' : notificationsAllowedObject.status == 'denied' ? 'Push notifications for SocialSquare has been disabled in system settings.' : ('SocialSquare notification status is ' + notificationsAllowed + ' and an error has occured.')}</Text>
+                                        <Text style={{fontSize: 20, fontWeight: 'bold', color: colors.tertiary, textAlign: 'center', marginVertical: 20, marginHorizontal: 10}}>{notificationsAllowedObject.status != 'denied' ? 'Please enable notifications for SocialSquare to use this feature.' : 'Please go into your device settings and enable notifications for SocialSquare to use this feature.'}</Text>
+                                        <View style={{flexDirection: 'row'}}>
+                                            {notificationsAllowedObject.status != 'denied' ?
+                                                <StyledButton onPress={enableNotifications}>
+                                                    <ButtonText>Enable notifications</ButtonText>
+                                                </StyledButton>
+                                            :
+                                                <StyledButton onPress={enableNotifications}>
+                                                    <ButtonText>Go to settings</ButtonText>
+                                                </StyledButton>
+                                            }
                                         </View>
-                                    </>
-                                }   
-                            </>                 
-                        : <TestText style={{textAlign: 'center', color: colors.tertiary, marginVertical: 30}}>Loading...</TestText>}
-                    </WelcomeContainer>
+                                    </View>
+                                </>
+                            }
+                        </WelcomeContainer>
+                    : errorOccuredDownloadingNotificationSettings ?
+                        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', marginHorizontal: 10}}>
+                            <Text style={{color: colors.errorColor, fontSize: 24, fontWeight: 'bold', textAlign: 'center'}}>An error occured:</Text>
+                            <Text style={{color: colors.errorColor, fontSize: 20, textAlign: 'center', marginVertical: 20}}>{errorOccuredDownloadingNotificationSettings}</Text>
+                            <TouchableOpacity onPress={loadNotificationSettings}>
+                                <Ionicons name="reload" size={50} color={colors.errorColor} />
+                            </TouchableOpacity>
+                        </View>
+                    :
+                        <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+                            <ActivityIndicator size="large" color={colors.brand} />
+                        </View>
+                    }
                 </BackgroundDarkColor>
             :
                 <>
