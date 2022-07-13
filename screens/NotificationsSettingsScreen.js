@@ -37,6 +37,8 @@ import axios from 'axios';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { ServerUrlContext } from '../components/ServerUrlContext.js';
 
+var _ = require('lodash');
+
 
 const NotificationsSettingsScreen = ({navigation}) => {
     const {colors, dark} = useTheme();
@@ -46,6 +48,8 @@ const NotificationsSettingsScreen = ({navigation}) => {
     //
 
     const [notificationsSettingsObject, setNotificationsSettingsObject] = useState({})
+    const [originalNotificationsSettingsObject, setOriginalNotificationsSettingsObject] = useState({})
+    const changesHaveBeenMade = Object.keys(notificationsSettingsObject).length > 0 ? !_.isEqual(notificationsSettingsObject, originalNotificationsSettingsObject) : false
 
     const [temp, setTemp] = useState('abc')
 
@@ -74,7 +78,8 @@ const NotificationsSettingsScreen = ({navigation}) => {
                 setErrorOccuredDownloadingNotificationSettings(String(message))
             } else {
                 console.log(data);
-                setNotificationsSettingsObject(data)
+                setNotificationsSettingsObject(_.cloneDeep(data))
+                setOriginalNotificationsSettingsObject(_.cloneDeep(data))
                 setShowSettings(true)
             }
         }).catch(error => {
@@ -398,8 +403,8 @@ const NotificationsSettingsScreen = ({navigation}) => {
                         {savingChanges ?
                             <ActivityIndicator size="small" color={colors.brand} style={{position: 'absolute', top: StatusBarHeight + 12, right: 20}}/>
                         :
-                            <TouchableOpacity style={{position: 'absolute', top: StatusBarHeight + 10, right: 10}} onPress={saveNotificationsSettings}>
-                                <Text style={{color: colors.brand, fontSize: 20, fontWeight: 'bold'}}>Save</Text>
+                            <TouchableOpacity disabled={!changesHaveBeenMade} style={{position: 'absolute', top: StatusBarHeight + 10, right: 10}} onPress={saveNotificationsSettings}>
+                                <Text style={{color: colors.brand, fontSize: 20, fontWeight: 'bold', opacity: changesHaveBeenMade ? 1 : 0.5}}>Save</Text>
                             </TouchableOpacity>
                         }
                     </ChatScreen_Title>
