@@ -24,7 +24,7 @@ import {
     ButtonText
 } from '../screens/screenStylings/styling.js';
 import {useTheme} from "@react-navigation/native";
-import { ImageBackground, ScrollView, Text, TouchableOpacity, View, Image, Switch, ActivityIndicator } from 'react-native';
+import { ImageBackground, ScrollView, Text, TouchableOpacity, View, Image, Switch, ActivityIndicator, Alert } from 'react-native';
 import { ProfilePictureURIContext } from '../components/ProfilePictureURIContext.js';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { CredentialsContext } from '../components/CredentialsContext';
@@ -385,6 +385,7 @@ const NotificationsSettingsScreen = ({navigation}) => {
             setNotificationsAllowedObject(status)
         }
     }
+
     return(
         <> 
             <StatusBar style={colors.StatusBarColor}/>
