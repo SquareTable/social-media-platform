@@ -25,6 +25,7 @@ import WelcomeToSocialSquareScreen from "../screens/WelcomeScreens/WelcomeToSoci
 import TransferFromOtherPlatformsScreen from "../screens/WelcomeScreens/TransferFromOtherPlatforms.js";
 import VerifyEmailCodeScreen from "../screens/VerifyEmailCodeScreen.js";
 import DeleteAccountConfirmation from "../screens/DeleteAccountConfirmation.js";
+import Algorithm_HomeScreenSettings from "../screens/HomeScreenSettings/Algorithm_HomeScreenSettings.js";
 
 const Stack = createStackNavigator();
 
@@ -85,6 +86,7 @@ const Start_Stack = () => {
                             <Stack.Screen name="TransferFromOtherPlatformsScreen" component={TransferFromOtherPlatformsScreen}/>
                             <Stack.Screen name="VerifyEmailCodeScreen" component={VerifyEmailCodeScreen}/>
                             <Stack.Screen name="DeleteAccountConfirmation" component={DeleteAccountConfirmation}/>
+                            <Stack.Screen name="Algorithm_HomeScreenSettings" component={Algorithm_HomeScreenSettings}/>
                         </>
                     ) : ( 
                         <>
@@ -117,6 +119,7 @@ const Start_Stack = () => {
                             <Stack.Screen name="TransferFromOtherPlatformsScreen" component={TransferFromOtherPlatformsScreen}/>
                             <Stack.Screen name="VerifyEmailCodeScreen" component={VerifyEmailCodeScreen}/>
                             <Stack.Screen name="DeleteAccountConfirmation" component={DeleteAccountConfirmation}/>
+                            <Stack.Screen name="Algorithm_HomeScreenSettings" component={Algorithm_HomeScreenSettings}/>
                         </>
                     ) : (
                         <>
@@ -131,6 +134,7 @@ const Start_Stack = () => {
                             <Stack.Screen name="WelcomeToSocialSquareScreen" component={WelcomeToSocialSquareScreen}/>
                             <Stack.Screen name="TransferFromOtherPlatformsScreen" component={TransferFromOtherPlatformsScreen}/>
                             <Stack.Screen name="VerifyEmailCodeScreen" component={VerifyEmailCodeScreen}/>
+                            <Stack.Screen name="Algorithm_HomeScreenSettings" component={Algorithm_HomeScreenSettings}/>
                         </>
                     )}
                 </Stack.Navigator>

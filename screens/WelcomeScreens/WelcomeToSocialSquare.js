@@ -59,48 +59,6 @@ const WelcomeToSocialSquareScreen = ({navigation, route}) => {
         navigation.replace('TransferFromOtherPlatformsScreen', {navigateMethod: navigateMethod});
     }
 
-    const turnOnAlgorithm = () => {
-        const toSend = {userID: _id}
-        const url = serverUrl + '/user/enableAlgorithm';
-        if (loading != true) {
-            setLoading(true)
-        }
-
-        axios.post(url, toSend).then(response => {
-            const result = response.data;
-            const {status, message} = result;
-
-            if (status != 'SUCCESS') {
-                Alert.alert(
-                    'An error occured. Do you want to retry?',
-                    message,
-                    [
-                      { text: "Retry", style: 'cancel', onPress: turnOnAlgorithm },
-                      {
-                        text: 'Cancel and continue',
-                        onPress: goToNextScreen
-                      }
-                    ]
-                );
-            } else {
-                goToNextScreen();
-            }
-        }).catch(error => {
-            console.log(error)
-            Alert.alert(
-                'An error occured.',
-                'Do you want to retry?',
-                [
-                  { text: "Retry", style: 'cancel', onPress: turnOnAlgorithm },
-                  {
-                    text: 'Cancel and continue',
-                    onPress: goToNextScreen
-                  }
-                ]
-            );
-        })
-    }
-
     return (
         <View style={{alignItems: 'center', marginTop: StatusBarHeight + 20, justifyContent: 'space-between', flex: 1, marginBottom: 40}} onLayout={runAnimations}>
             <View>
@@ -123,7 +81,7 @@ const WelcomeToSocialSquareScreen = ({navigation, route}) => {
                     <ActivityIndicator size="large" color={colors.brand} />
                 :
                     <>
-                        <TouchableOpacity onPress={turnOnAlgorithm} style={{justifyContent: 'center', borderRadius: 10, borderColor: colors.borderColor, borderWidth: 3, marginBottom: 20, paddingHorizontal: 15, paddingVertical: 10}}>
+                        <TouchableOpacity onPress={() => {navigation.replace('Algorithm_HomeScreenSettings', {navigateMethod: navigateMethod})}} style={{justifyContent: 'center', borderRadius: 10, borderColor: colors.borderColor, borderWidth: 3, marginBottom: 20, paddingHorizontal: 15, paddingVertical: 10}}>
                             <Text style={{color: colors.tertiary, fontSize: 20, fontWeight: 'bold', textAlign: 'center'}}>Use Algorithm</Text>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={goToNextScreen} style={{justifyContent: 'center', alignItems: 'center', borderRadius: 10, borderColor: colors.borderColor, borderWidth: 3, paddingHorizontal: 15, paddingVertical: 10}}>

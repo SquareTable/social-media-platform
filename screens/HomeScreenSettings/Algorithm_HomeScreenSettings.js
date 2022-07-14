@@ -34,12 +34,17 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 var _ = require('lodash');
 
 
-const Algorithm_HomeScreenSettings = ({navigation}) => {
+const Algorithm_HomeScreenSettings = ({navigation, route}) => {
     const {colors, dark} = useTheme();
     const StatusBarHeight = Constants.statusBarHeight;
     const [loadingSettings, setLoadingSettings] = useState(true);
     const [errorOccuredWhileLoadingSettings, setErrorOccuredWhileLoadingSettings] = useState(false);
-    const [algorithmSettingsObject, setAlgorithmSettingsObject] = useState({});
+    const [algorithmSettingsObject, setAlgorithmSettingsObject] = useState({
+        algorithmEnabled: true,
+        useUserUpvoteData: true,
+        useUserDownvoteData: true,
+        useUserFollowingData: true
+    });
     const [originalAlgorithmSettingsObject, setOriginalAlgorithmSettingsObject] = useState({});
     const hasUnsavedChanges = Object.keys(algorithmSettingsObject).length > 0 ? !_.isEqual(algorithmSettingsObject, originalAlgorithmSettingsObject) : false;
     const {storedCredentials, setStoredCredentials} = useContext(CredentialsContext);
@@ -47,6 +52,14 @@ const Algorithm_HomeScreenSettings = ({navigation}) => {
     const [temp, setTemp] = useState('abc');
     const [savingChanges, setSavingChanges] = useState(false);
     const {_id} = storedCredentials;
+    const [accountSetup, setAccountSetup] = useState(false)
+
+    useEffect(() => {
+        if (route?.params?.navigateMethod) {
+            setAccountSetup(true)
+            setLoadingSettings(false)
+        }
+    }, [])
 
     const loadAlgorithmSettings = () => {
         setLoadingSettings(true);
@@ -70,6 +83,20 @@ const Algorithm_HomeScreenSettings = ({navigation}) => {
         })
     }
 
+    const showAccountSetupAlert = () => {
+        Alert.alert(
+            'An error occured',
+            'Do you want to retry saving the settings or do you want to continue setting up your account and keep the algorithm off? You can change algorithm settings later on.',
+            [
+                {text: 'Retry', onPress: saveAlgorithmSettings},
+                {text: 'Continue', style: 'cancel', onPress: () => {
+                    navigation.replace('TransferFromOtherPlatformsScreen', {navigateMethod: route.params.navigateMethod})
+                }}
+            ],
+            {cancelable: false}
+        )
+    }
+
     const saveAlgorithmSettings = () => {
         setSavingChanges(true);
         const url = serverUrl + '/user/uploadAlgorithmSettings'
@@ -80,9 +107,37 @@ const Algorithm_HomeScreenSettings = ({navigation}) => {
 
             if (status !== 'SUCCESS') {
                 setSavingChanges(false);
+                if (accountSetup) {
+                    showAccountSetupAlert()
+                } else {
+                    Alert.alert(
+                        'Error',
+                        message,
+                        [
+                            { text: 'OK', onPress: () => {}, style: 'cancel' },
+                            {
+                                text: 'Retry',
+                                onPress: saveAlgorithmSettings
+                            }
+                        ]
+                    )
+                }
+            } else {
+                if (accountSetup) {
+                    navigation.replace('TransferFromOtherPlatformsScreen', {navigateMethod: route.params.navigateMethod})
+                } else {
+                    setOriginalAlgorithmSettingsObject(hi => _.cloneDeep(algorithmSettingsObject));
+                    navigation.goBack()
+                }
+            }
+        }).catch(error => {
+            setSavingChanges(false);
+            if (accountSetup) {
+                showAccountSetupAlert()
+            } else {
                 Alert.alert(
                     'Error',
-                    message,
+                    String(error),
                     [
                         { text: 'OK', onPress: () => {}, style: 'cancel' },
                         {
@@ -91,45 +146,36 @@ const Algorithm_HomeScreenSettings = ({navigation}) => {
                         }
                     ]
                 )
-            } else {
-                setOriginalAlgorithmSettingsObject(hi => _.cloneDeep(algorithmSettingsObject));
-                navigation.goBack()
             }
-        }).catch(error => {
-            setSavingChanges(false);
-            Alert.alert(
-                'Error',
-                String(error),
-                [
-                    { text: 'OK', onPress: () => {}, style: 'cancel' },
-                    {
-                        text: 'Retry',
-                        onPress: saveAlgorithmSettings
-                    }
-                ]
-            )
         })
     }
 
-    useEffect(loadAlgorithmSettings, []);
+    useEffect(() => {
+        if (!route?.params?.navigateMethod) loadAlgorithmSettings();
+    }, []);
+    console.log(algorithmSettingsObject)
     return(
         <> 
             <StatusBar style={colors.StatusBarColor}/>   
             <ChatScreen_Title style={{backgroundColor: colors.primary, borderWidth: 0}}>
-                <Navigator_BackButton onPress={() => {navigation.goBack()}}>
-                    <Image
-                    source={require('../../assets/app_icons/back_arrow.png')}
-                    style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2, tintColor: colors.tertiary}}
-                    resizeMode="contain"
-                    resizeMethod="resize"
-                    />
-                </Navigator_BackButton>
-                <TestText style={{textAlign: 'center', color: colors.tertiary, fontSize: 14, top: 3}}>Home Screen Algorithm Settings</TestText>
+                {accountSetup == false ?
+                    <>
+                        <Navigator_BackButton onPress={() => {navigation.goBack()}}>
+                            <Image
+                            source={require('../../assets/app_icons/back_arrow.png')}
+                            style={{minHeight: 40, minWidth: 40, width: 40, height: 40, maxWidth: 40, maxHeight: 40, borderRadius: 40/2, tintColor: colors.tertiary}}
+                            resizeMode="contain"
+                            resizeMethod="resize"
+                            />
+                        </Navigator_BackButton>
+                        <TestText style={{textAlign: 'center', color: colors.tertiary, fontSize: 14, top: 3}}>Home Screen Algorithm Settings</TestText>
+                    </>
+                : null}
                 {savingChanges ?
                     <ActivityIndicator size="small" color={colors.brand} style={{position: 'absolute', top: StatusBarHeight + 12, right: 22}}/>
                 :
-                    <TouchableOpacity disabled={!hasUnsavedChanges} style={{position: 'absolute', top: StatusBarHeight + 8, right: 10}} onPress={saveAlgorithmSettings}>
-                        <Text style={{color: colors.brand, fontSize: 20, fontWeight: 'bold', opacity: hasUnsavedChanges ? 1 : 0.5}}>Save</Text>
+                    <TouchableOpacity disabled={accountSetup ? false : !hasUnsavedChanges} style={{position: 'absolute', top: StatusBarHeight + 8, right: 10}} onPress={saveAlgorithmSettings}>
+                        <Text style={{color: colors.brand, fontSize: 20, fontWeight: 'bold', opacity: accountSetup ? 1 : hasUnsavedChanges ? 1 : 0.5}}>Save</Text>
                     </TouchableOpacity>
                 }
             </ChatScreen_Title>
