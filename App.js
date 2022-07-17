@@ -164,23 +164,6 @@ const checkAndCreateDeviceUUID = (callback) => {
 }
 
 useEffect(() => {
-
-  return () => {
-      if (typeof notificationListener.current == "undefined" || notificationListener.current == undefined) {
-        //Undefined
-      } else {
-        Notifications.removeNotificationSubscription(notificationListener.current);
-      }
-
-      if (typeof responseListener.current == "undefined" || responseListener.current == undefined) {
-        //Undefined
-      } else {
-        Notifications.removeNotificationSubscription(responseListener.current)
-      }
-  }
-}, []);
-
-useEffect(() => {
   if (storedCredentials == '' || storedCredentials == null) {
       //no credentials
   } else {
@@ -205,13 +188,16 @@ useEffect(() => {
 
               // This listener is fired whenever a notification is received while the app is foregrounded
               notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-                setNotification(notification);
+                console.log("Notification recieved while in app.")
                 console.log(notification)
+                setNotification(notification);
               });
 
               // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
               responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+                console.log("Notification recieved and interacted with.")
                 console.log(response);
+                navigationRef.navigate("NotificationsScreen", response)
               });
           } else {
               registerForPushNotificationsAsync().then(token => {
@@ -230,13 +216,16 @@ useEffect(() => {
                               console.log('deviceNotificationKey: ' + token);
                               // This listener is fired whenever a notification is received while the app is foregrounded
                               notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-                                setNotification(notification);
+                                console.log("Notification recieved while in app.")
                                 console.log(notification)
+                                setNotification(notification);
                               });
 
                               // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
                               responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+                                console.log("Notification recieved and interacted with.")
                                 console.log(response);
+                                navigationRef.navigate("NotificationsScreen", response)
                               });
                           })
                           .catch((error) => {
@@ -251,6 +240,20 @@ useEffect(() => {
           }
       }).catch((error) => console.log(error));
   }
+
+  return () => {
+    if (typeof notificationListener.current == "undefined" || notificationListener.current == undefined) {
+      //Undefined
+    } else {
+      Notifications.removeNotificationSubscription(notificationListener.current);
+    }
+
+    if (typeof responseListener.current == "undefined" || responseListener.current == undefined) {
+      //Undefined
+    } else {
+      Notifications.removeNotificationSubscription(responseListener.current)
+    }
+}
 }, [storedCredentials])
 
 useEffect(() => {
@@ -737,7 +740,10 @@ useEffect(() => {
             <Animated.View style={{width: popUpTimeoutLength, backgroundColor: appTheme.colors.brand, height: 3 }}>
             </Animated.View>
             <View style={{flexDirection: 'row', alignItems: 'center', width: Dimensions.get('window').width * 0.9, paddingVertical: 10}}>
-                <TouchableOpacity style={{width: '85%', flexDirection: 'row'}}>
+                <TouchableOpacity style={{width: '85%', flexDirection: 'row'}} onPress={() => {
+                  console.log("In app notif pressed.")
+                  navigationRef.navigate("NotificationsScreen", notification.request.content.data)
+                }}>
                     <View style={{marginLeft: 10, marginRight: 5, width: '20%', aspectRatio: 1/1, justifyContent: 'center', alignContent: 'center'}}>
                         <Image style={{width: '100%', height: '100%', borderRadius: 500, borderWidth: 2, borderColor: appTheme.colors.secondary}} source={{uri: SocialSquareLogo_B64_png}}/>
                     </View>
