@@ -56,7 +56,7 @@ const BlockedAccountsScreen = ({navigation}) => {
 
     useEffect(() => {
         //Fetch blocked accounts
-        const url = serverUrl + '/user/getuserblockedaccounts/' + _id;
+        const url = serverUrl + '/tempRoute/getuserblockedaccounts/' + _id;
         axios.get(url).then(response => {
             const result = response.data;
             const {message, status, data} = result;
@@ -79,7 +79,7 @@ const BlockedAccountsScreen = ({navigation}) => {
             let toAddToList = [];
             for (let i = 0; i < userLoadMax; i++) {
                 if ((listItems.length + i) < blockedAccounts.length) {
-                    let url = serverUrl + '/user/getuserbyid/' + blockedAccounts[(listItems.length + i)];
+                    let url = serverUrl + '/tempRoute/getuserbyid/' + blockedAccounts[(listItems.length + i)];
                     try {
                         const response = await axios.get(url);
                         const result = response.data;
@@ -201,7 +201,7 @@ const Item = ({item, index, setUpdateFlatList, setListItems}) => {
         setChangingUserIsBlocked(true);
         console.log('Blocking user: ' + userPubIdToBlock)
 
-        const url = serverUrl + '/user/blockaccount';
+        const url = serverUrl + '/tempRoute/blockaccount';
         const toSend = {userID: _id, userToBlockPubId: userPubIdToBlock};
         try {
             const response = await axios.post(url, toSend);
@@ -236,7 +236,7 @@ const Item = ({item, index, setUpdateFlatList, setListItems}) => {
         setChangingUserIsBlocked(true);
         console.log('Unblocking user: ' + userPubIdToUnblock)
 
-        const url = serverUrl + '/user/unblockaccount';
+        const url = serverUrl + '/tempRoute/unblockaccount';
         const toSend = {userID: _id, userToUnblockPubId: userPubIdToUnblock};
         try {
             const response = await axios.post(url, toSend);

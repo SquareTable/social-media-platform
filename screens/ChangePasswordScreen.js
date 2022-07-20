@@ -33,7 +33,7 @@ const ChangePasswordScreen = ({navigation}) => {
     const [hidePassword, setHidePassword] = useState(true);
 
     const handleChangePassword = (values, setSubmitting) => {
-        const url = serverUrl + '/user/changepassword';
+        const url = serverUrl + '/tempRoute/changepassword';
         const toSend = values;
         axios.post(url, toSend).then((response) => {
             const result = response.data;

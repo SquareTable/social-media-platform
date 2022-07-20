@@ -137,7 +137,7 @@ export default function Post( post ) {
         } else {
             //Do rest
             handleMessage(null, null, null);
-            const url = serverUrl + "/user/upvoteimage";
+            const url = serverUrl + "/tempRoute/upvoteimage";
 
             var toSend = { userId: _id, imageId: imageId }
 
@@ -180,7 +180,7 @@ export default function Post( post ) {
         } else {
             //Do rest
             handleMessage(null, null, null);
-            const url = serverUrl + "/user/downvoteimage";
+            const url = serverUrl + "/tempRoute/downvoteimage";
 
             var toSend = { userId: _id, imageId: imageId }
 
@@ -221,7 +221,7 @@ export default function Post( post ) {
         } else {
             //Do rest
             handleMessage(null, null, null);
-            const url = serverUrl + "/user/upvotepoll";
+            const url = serverUrl + "/tempRoute/upvotepoll";
 
             var toSend = { userId: _id, pollId: pollId }
 
@@ -263,7 +263,7 @@ export default function Post( post ) {
             console.log("DownVoting")
             //Do rest
             handleMessage(null, null, null);
-            const url = serverUrl + "/user/downvotepoll";
+            const url = serverUrl + "/tempRoute/downvotepoll";
 
             var toSend = { userId: _id, pollId: pollId }
 
@@ -305,7 +305,7 @@ export default function Post( post ) {
             console.log("UpVoting")
             //Do rest
             handleMessage(null, null, null);
-            const url = serverUrl + "/user/upvotethread";
+            const url = serverUrl + "/tempRoute/upvotethread";
 
             var toSend = { userId: _id, threadId: threadId }
 
@@ -347,7 +347,7 @@ export default function Post( post ) {
             console.log("DownVoting")
             //Do rest
             handleMessage(null, null, null);
-            const url = serverUrl + "/user/downvotethread";
+            const url = serverUrl + "/tempRoute/downvotethread";
 
             var toSend = { userId: _id, threadId: threadId }
 

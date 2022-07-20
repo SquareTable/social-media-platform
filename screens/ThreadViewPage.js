@@ -255,7 +255,7 @@ const ThreadViewPage = ({navigation, route}) => {
             setImageInThreadB64(imageB64Var)
             setCategoryImageB64(categoryB64Var)
         }
-        const url = `${serverUrl}/user/getthreadbyid/${threadId}/${_id}`;
+        const url = `${serverUrl}/tempRoute/getthreadbyid/${threadId}/${_id}`;
         
         axios.get(url).then((response) => {
             const result = response.data;
@@ -382,7 +382,7 @@ const ThreadViewPage = ({navigation, route}) => {
             });
         }
 
-        const urlTwo = `${serverUrl}/user/searchforthreadcomments/${threadId}/${_id}`;
+        const urlTwo = `${serverUrl}/tempRoute/searchforthreadcomments/${threadId}/${_id}`;
         setLoadingMoreComments(true)
         axios.get(urlTwo).then((response) => {
             const result = response.data;
@@ -414,7 +414,7 @@ const ThreadViewPage = ({navigation, route}) => {
 
     const handleCommentPost = (commentProperties, setSubmitting) => {
         handleMessage(null);
-        const url = serverUrl + "/user/threadpostcomment";
+        const url = serverUrl + "/tempRoute/threadpostcomment";
 
         axios.post(url, commentProperties).then((response) => {
             const result = response.data;
@@ -479,7 +479,7 @@ const ThreadViewPage = ({navigation, route}) => {
                     setChangingVotedComments(changingVotedCommentsArray)
                     //Do rest
                     handleMessage(null, null, null);
-                    const url = serverUrl + "/user/upvotecomment";
+                    const url = serverUrl + "/tempRoute/upvotecomment";
 
                     var toSend = {format: "Thread", userId: _id, postId: threadId, commentId: commentId}
 
@@ -622,7 +622,7 @@ const ThreadViewPage = ({navigation, route}) => {
                     setChangingVotedComments(changingVotedCommentsArray)
                     //Do rest
                     handleMessage(null, null, null);
-                    const url = serverUrl + "/user/downvotecomment";
+                    const url = serverUrl + "/tempRoute/downvotecomment";
 
                     var toSend = {format: "Thread", userId: _id, postId: threadId, commentId: commentId}
 
@@ -836,7 +836,7 @@ const ThreadViewPage = ({navigation, route}) => {
             setThreadUpOrDownVoted("Changing")
             //Do rest
             handleMessage(null, null, null);
-            const url = serverUrl + "/user/upvotethread";
+            const url = serverUrl + "/tempRoute/upvotethread";
 
             var toSend = {userId: _id, threadId: threadId}
 
@@ -878,7 +878,7 @@ const ThreadViewPage = ({navigation, route}) => {
             setThreadUpOrDownVoted("Changing")
             //Do rest
             handleMessage(null, null, null);
-            const url = serverUrl + "/user/downvotethread";
+            const url = serverUrl + "/tempRoute/downvotethread";
 
             var toSend = {userId: _id, threadId: threadId}
 

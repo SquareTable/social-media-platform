@@ -176,7 +176,7 @@ const ViewImagePostPage = ({route, navigation}) => {
             setImageUpOrDownVoted("Changing")
             //Do rest
             handleMessage(null, null, null);
-            const url = serverUrl + "/user/upvoteimage";
+            const url = serverUrl + "/tempRoute/upvoteimage";
 
             var toSend = {userId: _id, imageId: imageKey}
 
@@ -216,7 +216,7 @@ const ViewImagePostPage = ({route, navigation}) => {
             setImageUpOrDownVoted("Changing")
             //Do rest
             handleMessage(null, null, null);
-            const url = serverUrl + "/user/downvoteimage";
+            const url = serverUrl + "/tempRoute/downvoteimage";
 
             var toSend = {userId: _id, imageId: imageKey}
 
@@ -302,7 +302,7 @@ const ViewImagePostPage = ({route, navigation}) => {
     );
 
     const prepareUpVotes = () => {
-        const urlOne = `${serverUrl}/user/getimageupvoteswithkey`;
+        const urlOne = `${serverUrl}/tempRoute/getimageupvoteswithkey`;
 
         axios.post(urlOne, {imageKey, userId: _id}).then((response) => {
             const result = response.data;
@@ -383,7 +383,7 @@ const ViewImagePostPage = ({route, navigation}) => {
             }
         }
 
-        const urlTwo = `${serverUrl}/user/getimagecommentswithkey/${imageKey}/${_id}`;
+        const urlTwo = `${serverUrl}/tempRoute/getimagecommentswithkey/${imageKey}/${_id}`;
         setLoadingMoreComments(true)
         axios.get(urlTwo).then((response) => {
             const result = response.data;
@@ -416,7 +416,7 @@ const ViewImagePostPage = ({route, navigation}) => {
     
     const handleCommentPost = (commentProperties, setSubmitting) => {
         handleMessage(null);
-        const url = serverUrl + "/user/imagepostcomment";
+        const url = serverUrl + "/tempRoute/imagepostcomment";
 
         axios.post(url, commentProperties).then((response) => {
             const result = response.data;

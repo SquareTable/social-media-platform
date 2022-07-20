@@ -174,7 +174,7 @@ const CategoryViewPage = ({route, navigation}) => {
     }
 
     const getAllCategoryItems = () => {
-        const url = `${serverUrl}/user/findcategorywithname/${categoryTitle}/${_id}`;
+        const url = `${serverUrl}/tempRoute/findcategorywithname/${categoryTitle}/${_id}`;
     
         axios.get(url).then((response) => {
             const result = response.data;
@@ -256,7 +256,7 @@ const CategoryViewPage = ({route, navigation}) => {
     const JoinCategory = () => {
         if (storedCredentials) {
             if (inCategory !== "Finding") {
-                const url = serverUrl + "/user/joincategory";
+                const url = serverUrl + "/tempRoute/joincategory";
 
                 var toSend = {userId: _id, categoryTitle: categoryTitle}
                 const beforeChange = inCategory
@@ -334,7 +334,7 @@ const CategoryViewPage = ({route, navigation}) => {
                     setChangingVotedThreads(changingVotedThreadsArray)
                     //Do rest
                     handleMessage(null, null, null);
-                    const url = serverUrl + "/user/upvotethread";
+                    const url = serverUrl + "/tempRoute/upvotethread";
 
                     var toSend = {userId: _id, threadId: threadId}
 
@@ -477,7 +477,7 @@ const CategoryViewPage = ({route, navigation}) => {
                     setChangingVotedThreads(changingVotedThreadsArray)
                     //Do rest
                     handleMessage(null, null, null);
-                    const url = serverUrl + "/user/downvotethread";
+                    const url = serverUrl + "/tempRoute/downvotethread";
 
                     var toSend = {userId: _id, threadId: threadId}
 
@@ -918,7 +918,7 @@ const CategoryViewPage = ({route, navigation}) => {
             });
         }
 
-        const url = `${serverUrl}/user/getthreadsfromcategory/${categoryTitle}/${_id}`;
+        const url = `${serverUrl}/tempRoute/getthreadsfromcategory/${categoryTitle}/${_id}`;
 
         setLoadingPosts(true)
         axios.get(url).then((response) => {

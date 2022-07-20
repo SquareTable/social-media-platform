@@ -69,7 +69,7 @@ const NotificationsSettingsScreen = ({navigation}) => {
 
     const loadNotificationSettings = () => {
         setErrorOccuredDownloadingNotificationSettings(false)
-        const url = serverUrl + `/user/getUserNotificationSettings/${_id}`
+        const url = serverUrl + `/tempRoute/getUserNotificationSettings/${_id}`
         axios.get(url).then(response => {
             const result = response.data
             const {status, message, data} = result;
@@ -89,7 +89,7 @@ const NotificationsSettingsScreen = ({navigation}) => {
 
     const saveNotificationsSettings = () => {
         setSavingChanges(true)
-        const url = serverUrl + '/user/uploadNotificationsSettings';
+        const url = serverUrl + '/tempRoute/uploadNotificationsSettings';
         const toSend = {notificationSettings: notificationsSettingsObject, userID: _id}
         axios.post(url, toSend).then(response => {
             const result = response.data

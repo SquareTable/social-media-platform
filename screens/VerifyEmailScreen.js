@@ -49,7 +49,7 @@ const VerifyEmailScreen = ({navigation, route}) => {
 
     const handleVerifyEmail = (values, setSubmitting) => {
         setSubmitting(true);
-        const url = serverUrl + '/user/sendemailverificationcode';
+        const url = serverUrl + '/tempRoute/sendemailverificationcode';
         const toSend = {userID: _id, task: 'Add Email Multi-Factor Authentication', getAccountMethod: 'userID', username: null, email: values.email};
 
         axios.post(url, toSend).then((response) => {

@@ -64,7 +64,7 @@ const ChangeEmailPage = ({navigation}) => {
 
     const handleChangeDisplayName = (credentials, setSubmitting) => {
         handleMessage(null);
-        const url = serverUrl + "/user/changeemail";
+        const url = serverUrl + "/tempRoute/changeemail";
 
         axios.post(url, credentials).then((response) => {
             const result = response.data;

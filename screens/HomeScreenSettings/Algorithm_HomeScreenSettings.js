@@ -64,7 +64,7 @@ const Algorithm_HomeScreenSettings = ({navigation, route}) => {
     const loadAlgorithmSettings = () => {
         setLoadingSettings(true);
         setErrorOccuredWhileLoadingSettings(false)
-        const url = serverUrl + '/user/getUserAlgorithmSettings/' + _id;
+        const url = serverUrl + '/tempRoute/getUserAlgorithmSettings/' + _id;
         axios.get(url).then(response => {
             const result = response.data;
             const {status, message, data} = result;
@@ -99,7 +99,7 @@ const Algorithm_HomeScreenSettings = ({navigation, route}) => {
 
     const saveAlgorithmSettings = () => {
         setSavingChanges(true);
-        const url = serverUrl + '/user/uploadAlgorithmSettings'
+        const url = serverUrl + '/tempRoute/uploadAlgorithmSettings'
         const toSend = {userID: _id, algorithmSettings: algorithmSettingsObject}
         axios.post(url, toSend).then(response => {
             const result = response.data;

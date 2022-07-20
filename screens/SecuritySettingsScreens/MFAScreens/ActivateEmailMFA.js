@@ -26,7 +26,7 @@ const ActivateEmailMFA = ({navigation, route}) => {
 
     const turnOffEmailMFA = () => {
         setTurningOffEmailMFA(true);
-        const url = serverUrl + '/user/turnOffEmailMultiFactorAuthentication';
+        const url = serverUrl + '/tempRoute/turnOffEmailMultiFactorAuthentication';
         const toSend = {userID: _id};
 
         axios.post(url, toSend).then(response => {

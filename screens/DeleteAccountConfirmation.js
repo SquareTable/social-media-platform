@@ -39,7 +39,7 @@ const DeleteAccountConfirmation = ({navigation}) => {
             return
         }
         setSubmitting(true);
-        const url = serverUrl + '/user/deleteaccount';
+        const url = serverUrl + '/tempRoute/deleteaccount';
         const toSend = {userID: _id};
         try {
             const response = await axios.post(url, toSend);

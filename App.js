@@ -49,6 +49,7 @@ import * as Sentry from 'sentry-expo';
 import {SENTRY_DSN, IOSADID, ANDROIDADID} from '@dotenv';
 import * as SplashScreen from 'expo-splash-screen';
 import { ExperimentalFeaturesEnabledContext } from './components/ExperimentalFeaturesEnabledContext.js';
+import {setAuthAsHeaders} from './jwtHandler'
 
 const routingInstrumentation = new Sentry.Native.ReactNavigationInstrumentation();
 
@@ -136,6 +137,7 @@ const App = () => {
     
   async function saveDeviceUUID(key, value) {
     await SecureStore.setItemAsync(key, value);
+    
 }
   
 async function getDeviceUUID(key) {
@@ -167,6 +169,7 @@ useEffect(() => {
   if (storedCredentials == '' || storedCredentials == null) {
       //no credentials
   } else {
+    setAuthAsHeaders(storedCredentials._id)
       if (socket == '') {
           const forAsync = async () => {
               checkAndCreateDeviceUUID(function(uuidOfDevice) {
@@ -201,7 +204,7 @@ useEffect(() => {
               });
           } else {
               registerForPushNotificationsAsync().then(token => {
-                  const url = serverUrl + "/user/sendnotificationkey";
+                  const url = serverUrl + "/tempRoute/sendnotificationkey";
                   axios.post(url, {idSent: storedCredentials._id, keySent: token}).then((response) => {
                       const result = response.data;
                       const {message, status, data} = result;
@@ -1191,7 +1194,7 @@ useEffect(() => {
           }
           async function refreshProfilePictureContext(credentials) {
             const getProfilePicture = () => {
-              const url = `${serverUrl}/user/getProfilePic/${credentials.name}`;
+              const url = `${serverUrl}/tempRoute/getProfilePic/${credentials.name}`;
       
               axios.get(url).then((response) => {
                   const result = response.data;

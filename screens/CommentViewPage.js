@@ -216,11 +216,11 @@ const CommentViewPage = ({route, navigation}) => {
         }
         var url = ""
         if (postFormat == "Poll") {
-            url = `${serverUrl}/user/getsinglepollcomment/${postId}/${_id}/${commentId}`;
+            url = `${serverUrl}/tempRoute/getsinglepollcomment/${postId}/${_id}/${commentId}`;
         } else if (postFormat == "Image") {
-            url = `${serverUrl}/user/getsingleimagecomment/${postId}/${_id}/${commentId}`;
+            url = `${serverUrl}/tempRoute/getsingleimagecomment/${postId}/${_id}/${commentId}`;
         } else if (postFormat == "Thread") {
-            url = `${serverUrl}/user/getsinglethreadcomment/${postId}/${_id}/${commentId}`;
+            url = `${serverUrl}/tempRoute/getsinglethreadcomment/${postId}/${_id}/${commentId}`;
         }
         
         axios.get(url).then((response) => {
@@ -350,11 +350,11 @@ const CommentViewPage = ({route, navigation}) => {
 
         var urlTwo = ""
         if (postFormat == "Poll") {
-            urlTwo = `${serverUrl}/user/searchforpollcommentreplies/${postId}/${_id}/${commentId}/`;
+            urlTwo = `${serverUrl}/tempRoute/searchforpollcommentreplies/${postId}/${_id}/${commentId}/`;
         } else if (postFormat == "Image") {
-            urlTwo = `${serverUrl}/user/searchforimagecommentreplies/${postId}/${_id}/${commentId}/`;
+            urlTwo = `${serverUrl}/tempRoute/searchforimagecommentreplies/${postId}/${_id}/${commentId}/`;
         } else if (postFormat == "Thread") {
-            urlTwo = `${serverUrl}/user/searchforthreadcommentreplies/${postId}/${_id}/${commentId}/`;
+            urlTwo = `${serverUrl}/tempRoute/searchforthreadcommentreplies/${postId}/${_id}/${commentId}/`;
         }
         setLoadingMoreComments(true)
         axios.get(urlTwo).then((response) => {
@@ -384,7 +384,7 @@ const CommentViewPage = ({route, navigation}) => {
 
     const handleCommentPost = (commentProperties, setSubmitting) => {
         handleMessage(null);
-        const url = serverUrl + "/user/threadpostcommentreply";
+        const url = serverUrl + "/tempRoute/threadpostcommentreply";
 
         axios.post(url, commentProperties).then((response) => {
             const result = response.data;
@@ -448,7 +448,7 @@ const CommentViewPage = ({route, navigation}) => {
                 setChangingVotedComments(changingVotedCommentsArray)
                 //Do rest
                 handleMessage(null, null, null);
-                const url = serverUrl + "/user/upvotecomment";
+                const url = serverUrl + "/tempRoute/upvotecomment";
 
                 var toSend = {format: postFormat, userId: _id, postId: postId, commentId: commentId}
 
@@ -587,7 +587,7 @@ const CommentViewPage = ({route, navigation}) => {
                 setChangingVotedComments(changingVotedCommentsArray)
                 //Do rest
                 handleMessage(null, null, null);
-                const url = serverUrl + "/user/downvotecomment";
+                const url = serverUrl + "/tempRoute/downvotecomment";
 
                 var toSend = {format: postFormat, userId: _id, postId: postId, commentId: commentId}
 

@@ -57,6 +57,7 @@ import { ProfilePictureURIContext } from '../components/ProfilePictureURIContext
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { ServerUrlContext } from '../components/ServerUrlContext.js';
 
+import {storeJWT} from './../jwtHandler'
 
 const LoginScreen = ({navigation, route}) => {
     const { colors, dark } = useTheme();
@@ -82,7 +83,7 @@ const LoginScreen = ({navigation, route}) => {
 
         axios.post(url, credentials).then((response) => {
             const result = response.data;
-            const {message, status, data} = result;
+            const {message, status, data, token, refreshToken} = result;
 
             if (status !== 'SUCCESS') {
                 handleMessage(String(message),status);
@@ -90,7 +91,7 @@ const LoginScreen = ({navigation, route}) => {
                 if (message == "Email") {
                     navigation.navigate('VerifyEmailCodeScreen', {task: 'Verify Email MFA Code', email: data.email, fromAddress: data.fromAddress, username: undefined, userID: undefined, secondId: data.secondId});
                 } else {
-                    persistLogin({...data[0]}, message, status);
+                    persistLogin({...data[0]}, message, status, {token: token, refreshToken: refreshToken});
                 }
             }
             setSubmitting(false);
@@ -108,7 +109,8 @@ const LoginScreen = ({navigation, route}) => {
     }
 
 
-    const persistLogin = (credentials, message, status) => {
+    const persistLogin = async (credentials, message, status, tokens) => {
+        await storeJWT({webToken: tokens.token, refreshToken: tokens.refreshToken}, credentials._id)
         let credentialsToUse = credentials;
         setDownloadingPfp(true);
         if (allCredentialsStoredList) {
@@ -122,7 +124,7 @@ const LoginScreen = ({navigation, route}) => {
         }
         console.log('Getting profile picture for ProfilePictureUriContext')
         const getProfilePicture = () => {
-            const url = serverUrl + '/user/getProfilePic/' + credentialsToUse.secondId;
+            const url = serverUrl + '/tempRoute/getProfilePic/' + credentialsToUse.secondId;
     
             axios.get(url).then(async (response) => {
                 const result = response.data;

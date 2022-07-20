@@ -118,7 +118,7 @@ const CategoryHome = ({navigation}) => {
         }
 
         handleMessage(null);
-        const url = serverUrl + "/user/searchpagesearch";
+        const url = serverUrl + "/tempRoute/searchpagesearch";
         console.log(commentProperties)
         submitting = true;
         axios.post(url, commentProperties).then((response) => {

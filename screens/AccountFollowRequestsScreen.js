@@ -36,7 +36,7 @@ const AccountFollowRequestsScreen = ({navigation, route}) => {
             let toAddToList = [];
             for (let i = 0; i < userLoadMax; i++) {
                 if ((listItems.length + i) < accountFollowRequests.length) {
-                    let url = serverUrl + '/user/getuserbyid/' + accountFollowRequests[(listItems.length + i)];
+                    let url = serverUrl + '/tempRoute/getuserbyid/' + accountFollowRequests[(listItems.length + i)];
                     try {
                         const response = await axios.get(url);
                         const result = response.data;
@@ -86,7 +86,7 @@ const AccountFollowRequestsScreen = ({navigation, route}) => {
     }
 
     useEffect(() => {
-        axios.get(serverUrl + '/user/getfollowrequests/' + _id).then(response => {
+        axios.get(serverUrl + '/tempRoute/getfollowrequests/' + _id).then(response => {
             const result = response.data;
             const {message, status, data} = result;
             
@@ -109,7 +109,7 @@ const AccountFollowRequestsScreen = ({navigation, route}) => {
     }, [accountFollowRequests]) //When account follow requests have been loaded, load the items
 
     const denyFollowRequest = async (userToDeny, itemIndex) => {
-        const url = serverUrl + '/user/denyfollowrequest';
+        const url = serverUrl + '/tempRoute/denyfollowrequest';
         const toSend = {accountFollowRequestedID: _id, accountFollowRequestDeniedPubID: userToDeny};
         try {
             const response = await axios.post(url, toSend);
@@ -139,7 +139,7 @@ const AccountFollowRequestsScreen = ({navigation, route}) => {
     }
 
     const acceptFollowRequest = async (userToAccept, itemIndex) => {
-        const url = serverUrl + '/user/acceptfollowrequest';
+        const url = serverUrl + '/tempRoute/acceptfollowrequest';
         const toSend = {accountFollowRequestedID: _id, accountFollowRequestAcceptedPubID: userToAccept};
         try {
             const response = await axios.post(url, toSend);

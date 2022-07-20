@@ -284,7 +284,7 @@ const ViewPollPostPage = ({route, navigation}) => {
             setInitialPollVotesForOptions({optionOne: pollData.optionOnesVotes, optionTwo: pollData.optionTwosVotes, optionThree: pollData.optionThreesVotes, optionFour: pollData.optionFoursVotes, optionFive: pollData.optionFivesVotes, optionSix: pollData.optionSixesVotes})
             setPollVotesForOptions({optionOne: pollData.optionOnesVotes, optionTwo: pollData.optionTwosVotes, optionThree: pollData.optionThreesVotes, optionFour: pollData.optionFoursVotes, optionFive: pollData.optionFivesVotes, optionSix: pollData.optionSixesVotes})
         }
-        const url = serverUrl + "/user/searchforpollpostsbyid";
+        const url = serverUrl + "/tempRoute/searchforpollpostsbyid";
     
         var toSend = {"pollId": pollId, "userId": _id}
 
@@ -412,7 +412,7 @@ const ViewPollPostPage = ({route, navigation}) => {
             });
         }
 
-        const url = `${serverUrl}/user/searchforpollcomments/${pollId}/${_id}`;
+        const url = `${serverUrl}/tempRoute/searchforpollcomments/${pollId}/${_id}`;
         setLoadingMoreComments(true)
         axios.get(url).then((response) => {
             const result = response.data;
@@ -441,7 +441,7 @@ const ViewPollPostPage = ({route, navigation}) => {
     
     const handleCommentPost = (commentProperties, setSubmitting) => {
         handleMessage(null);
-        const url = serverUrl + "/user/pollpostcomment";
+        const url = serverUrl + "/tempRoute/pollpostcomment";
 
         axios.post(url, commentProperties).then((response) => {
             const result = response.data;
@@ -467,7 +467,7 @@ const ViewPollPostPage = ({route, navigation}) => {
         if (storedCredentials) {
             handleMessage(null);
             console.log(optionSelected)
-            const url = serverUrl + "/user/voteonpoll";
+            const url = serverUrl + "/tempRoute/voteonpoll";
 
             var toSend = {userId: _id, optionSelected: optionSelected, pollId: pollId}
 
@@ -856,7 +856,7 @@ const ViewPollPostPage = ({route, navigation}) => {
             setPollUpOrDownVoted("Changing")
             //Do rest
             handleMessage(null, null, null);
-            const url = serverUrl + "/user/upvotepoll";
+            const url = serverUrl + "/tempRoute/upvotepoll";
 
             var toSend = {userId: _id, pollId: pollId}
 
@@ -896,7 +896,7 @@ const ViewPollPostPage = ({route, navigation}) => {
             setPollUpOrDownVoted("Changing")
             //Do rest
             handleMessage(null, null, null);
-            const url = serverUrl + "/user/downvotepoll";
+            const url = serverUrl + "/tempRoute/downvotepoll";
 
             var toSend = {userId: _id, pollId: pollId}
 

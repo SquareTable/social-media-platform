@@ -91,7 +91,8 @@ const VerifyEmailCodeScreen = ({route, navigation}) => {
         setMessageType(type);
     }
 
-    const persistLogin = (credentials, message, status) => {
+    const persistLogin = async (credentials, message, status, tokens) => {
+        await storeJWT({webToken: tokens.token, refreshToken: tokens.refreshToken}, credentials._id)
         let credentialsToUse = credentials;
         if (allCredentialsStoredList) {
             for (let i = 0; i < allCredentialsStoredList.length; i++) {
@@ -104,7 +105,7 @@ const VerifyEmailCodeScreen = ({route, navigation}) => {
         }
         console.log('Getting profile picture for ProfilePictureUriContext')
         const getProfilePicture = () => {
-            const url = serverUrl + '/user/getProfilePic/' + credentialsToUse.secondId;
+            const url = serverUrl + '/tempRoute/getProfilePic/' + credentialsToUse.secondId;
     
             axios.get(url).then(async (response) => {
                 const result = response.data;
@@ -273,7 +274,7 @@ const VerifyEmailCodeScreen = ({route, navigation}) => {
             const toSend = {username: undefined, verificationCode: code, task: 'Verify Email MFA Code', getAccountMethod: 'secondId', userID: undefined, secondId: secondId}
             axios.post(url, toSend).then((response) => {
                 const result = response.data;
-                const {message, status, data} = result;
+                const {message, status, data, token, refreshToken} = result;
 
                 if (status !== 'SUCCESS') {
                     handleMessage(message, 'FAILED');
@@ -284,7 +285,7 @@ const VerifyEmailCodeScreen = ({route, navigation}) => {
                 } else {
                     console.log(message);
                     setCode('');
-                    persistLogin(data, message, status);
+                    persistLogin(data, message, status, {token: token, refreshToken: refreshToken});
                 }
             }).catch((error) => {
                 console.error(error)

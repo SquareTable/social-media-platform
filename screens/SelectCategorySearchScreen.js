@@ -165,7 +165,7 @@ const SelectCategorySearchScreen = ({route, navigation}) => {
             }
 
             handleMessage(null);
-            const url = `${serverUrl}/user/searchpagesearchcategories/${val}`;
+            const url = `${serverUrl}/tempRoute/searchpagesearchcategories/${val}`;
             submitting = true;
             setLoadingResults(true);
             axios.get(url).then((response) => {

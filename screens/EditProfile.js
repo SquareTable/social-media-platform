@@ -108,7 +108,7 @@ const EditProfile = ({navigation, route}) => {
         })
         formData.append("userId", _id)
 
-        const url = serverUrl + '/user/postProfileImage';
+        const url = serverUrl + '/tempRoute/postProfileImage';
         setChangingPfp(true)
         axios.post(url, formData, {
             headers: {
@@ -138,7 +138,7 @@ const EditProfile = ({navigation, route}) => {
     }
 
     const getProfilePicture = () => {
-        const url = serverUrl + '/user/getProfilePic/' + secondId;
+        const url = serverUrl + '/tempRoute/getProfilePic/' + secondId;
 
         axios.get(url).then(async (response) => {
             const result = response.data;
@@ -213,7 +213,7 @@ const EditProfile = ({navigation, route}) => {
                     }
                     username = username.join(''); // Put the letters back together
                     const toSend = {userID: _id, desiredUsername: username};
-                    const url = serverUrl + '/user/changeusername';
+                    const url = serverUrl + '/tempRoute/changeusername';
                     axios.post(url, toSend).then(response => {
                         const result = response.data;
                         const {message, status, data} = result;
@@ -251,7 +251,7 @@ const EditProfile = ({navigation, route}) => {
                 // Saving username
                 let displayName = displayNameText;
                 const toSend = {userID: _id, desiredDisplayName: displayName};
-                const url = serverUrl + '/user/changedisplayname';
+                const url = serverUrl + '/tempRoute/changedisplayname';
                 axios.post(url, toSend).then(response => {
                     const result = response.data;
                     const {message, status, data} = result;
@@ -283,7 +283,7 @@ const EditProfile = ({navigation, route}) => {
             if (originalBio !== bioText) {
                 let bio = bioText;
                 const toSend = {userID: _id, bio};
-                const url = serverUrl + '/user/changebio';
+                const url = serverUrl + '/tempRoute/changebio';
                 axios.post(url, toSend).then(response => {
                     const result = response.data;
                     const {message, status, data} = result;
@@ -325,7 +325,7 @@ const EditProfile = ({navigation, route}) => {
         setHideMakeAccountPrivateConfirmationScreen(true)
         setChangingPrivateAccount(true)
         setSavingChanges(true)
-        let url = serverUrl + '/user/makeaccountprivate';
+        let url = serverUrl + '/tempRoute/makeaccountprivate';
         let toSend = {userID: _id};
         axios.post(url, toSend).then(response => {
             const result = response.data;
@@ -358,7 +358,7 @@ const EditProfile = ({navigation, route}) => {
         setHideMakeAccountPublicConfirmationScreen(true)
         setChangingPrivateAccount(true)
         setSavingChanges(true)
-        let url = serverUrl + '/user/makeaccountpublic';
+        let url = serverUrl + '/tempRoute/makeaccountpublic';
         let toSend = {userID: _id};
         axios.post(url, toSend).then(response => {
             const result = response.data;

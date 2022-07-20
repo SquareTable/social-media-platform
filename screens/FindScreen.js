@@ -222,7 +222,7 @@ const FindScreen = ({navigation}) => {
 
             setLoadingOne(true)
             handleMessage(null);
-            const url = serverUrl + '/user/searchpageusersearch/' + val;
+            const url = serverUrl + '/tempRoute/searchpageusersearch/' + val;
             submitting = true;
             axios.get(url).then((response) => {
                 const result = response.data;
@@ -306,7 +306,7 @@ const FindScreen = ({navigation}) => {
 
             setLoadingTwo(true)
             handleMessage(null);
-            const url = serverUrl + '/user/searchpagesearchcategories/' + val
+            const url = serverUrl + '/tempRoute/searchpagesearchcategories/' + val
             submitting = true;
             axios.get(url).then((response) => {
                 const result = response.data;

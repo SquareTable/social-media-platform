@@ -274,7 +274,7 @@ const Welcome = ({navigation, route}) => {
 
     const confirmDeletePrompt = (postId, postNum) => {
         if (selectedPostFormat == "One") {
-            const url = serverUrl + '/user/deleteimage';
+            const url = serverUrl + '/tempRoute/deleteimage';
             var toSend = {userId: _id, imageKey: postId}
             console.log(toSend)
             axios.post(url, toSend).then((response) => { 
@@ -295,7 +295,7 @@ const Welcome = ({navigation, route}) => {
         } else if (selectedPostFormat == "Two") {
 
         } else if (selectedPostFormat == "Three") {
-            const url = serverUrl + '/user/deletepoll';
+            const url = serverUrl + '/tempRoute/deletepoll';
             var toSend = {userId: _id, pollId: postId}
             console.log(toSend)
             axios.post(url, toSend).then((response) => { 
@@ -314,7 +314,7 @@ const Welcome = ({navigation, route}) => {
                 handleMessage("An error occured. Try checking your network connection and retry.", 'FAILED', postNum);
             })
         } else if (selectedPostFormat == "Four") {
-            const url = serverUrl + '/user/deletethread';
+            const url = serverUrl + '/tempRoute/deletethread';
             var toSend = {userId: _id, threadId: postId}
             console.log(toSend)
             axios.post(url, toSend).then((response) => { 
@@ -389,7 +389,7 @@ const Welcome = ({navigation, route}) => {
                 setChangingVotedImages(changingVotedImagesArray)
                 //Do rest
                 handleMessage(null, null, null);
-                const url = serverUrl + '/user/upvoteimage';
+                const url = serverUrl + '/tempRoute/upvoteimage';
 
                 var toSend = {userId: _id, imageId: imageId}
 
@@ -526,7 +526,7 @@ const Welcome = ({navigation, route}) => {
                 setChangingVotedImages(changingVotedImagesArray)
                 //Do rest
                 handleMessage(null, null, null);
-                const url = serverUrl + '/user/downvoteimage';
+                const url = serverUrl + '/tempRoute/downvoteimage';
 
                 var toSend = {userId: _id, imageId: imageId}
 
@@ -664,7 +664,7 @@ const Welcome = ({navigation, route}) => {
                 setChangingVotedPolls(changingVotedPollsArray)
                 //Do rest
                 handleMessage(null, null, null);
-                const url = serverUrl + '/user/upvotepoll';
+                const url = serverUrl + '/tempRoute/upvotepoll';
 
                 var toSend = {userId: _id, pollId: pollId}
 
@@ -802,7 +802,7 @@ const Welcome = ({navigation, route}) => {
                 setChangingVotedPolls(changingVotedPollsArray)
                 //Do rest
                 handleMessage(null, null, null);
-                const url = serverUrl + '/user/downvotepoll';
+                const url = serverUrl + '/tempRoute/downvotepoll';
 
                 var toSend = {userId: _id, pollId: pollId}
 
@@ -940,7 +940,7 @@ const Welcome = ({navigation, route}) => {
                 setChangingVotedThreads(changingVotedThreadsArray)
                 //Do rest
                 handleMessage(null, null, null);
-                const url = serverUrl + '/user/upvotethread';
+                const url = serverUrl + '/tempRoute/upvotethread';
 
                 var toSend = {userId: _id, threadId: threadId}
 
@@ -1079,7 +1079,7 @@ const Welcome = ({navigation, route}) => {
                 setChangingVotedThreads(changingVotedThreadsArray)
                 //Do rest
                 handleMessage(null, null, null);
-                const url = serverUrl + '/user/downvotethread';
+                const url = serverUrl + '/tempRoute/downvotethread';
 
                 var toSend = {userId: _id, threadId: threadId}
 
@@ -1858,7 +1858,7 @@ const Welcome = ({navigation, route}) => {
                 });
             }
 
-            const url = serverUrl + '/user/getImagesFromProfile';
+            const url = serverUrl + '/tempRoute/getImagesFromProfile';
 
             setLoadingPostsImage(true)
             axios.post(url, toSendProfileName).then((response) => {
@@ -2065,7 +2065,7 @@ const Welcome = ({navigation, route}) => {
                 });
             }
 
-            const url = serverUrl + '/user/searchforpollposts';
+            const url = serverUrl + '/tempRoute/searchforpollposts';
 
             setLoadingPostsPoll(true)
             axios.post(url, toSendProfileName).then((response) => {
@@ -2210,7 +2210,7 @@ const Welcome = ({navigation, route}) => {
                 });
             }
 
-            const url = serverUrl + '/user/getthreadsfromprofile/' + secondId + '/' + _id;
+            const url = serverUrl + '/tempRoute/getthreadsfromprofile/' + secondId + '/' + _id;
 
             setLoadingPostsThread(true)
             axios.get(url).then((response) => {
@@ -2287,7 +2287,7 @@ const Welcome = ({navigation, route}) => {
             }
 
             handleMessage(null);
-            const url = serverUrl + '/user/findcategorywithuserid/' + _id;
+            const url = serverUrl + '/tempRoute/findcategorywithuserid/' + _id;
             setLoadingPostsCategory(true)
             axios.get(url).then((response) => {
                 const result = response.data;
@@ -2315,7 +2315,7 @@ const Welcome = ({navigation, route}) => {
     }
 
     const getProfilePicture = () => {
-        const url = serverUrl + '/user/getProfilePic/' + storedCredentials.name;
+        const url = serverUrl + '/tempRoute/getProfilePic/' + storedCredentials.name;
 
         axios.get(url).then((response) => {
             const result = response.data;
@@ -2385,7 +2385,7 @@ const Welcome = ({navigation, route}) => {
         })
         formData.append("userId", _id)
 
-        const url = serverUrl + '/user/postProfileImage';
+        const url = serverUrl + '/tempRoute/postProfileImage';
         setChangingPfp(true)
         axios.post(url, formData, {
             headers: {
@@ -2446,7 +2446,7 @@ const Welcome = ({navigation, route}) => {
         setRefreshing(true)
         // Get data here
         console.log("HI")
-        const url = serverUrl + '/user/reloadProfileEssentials/' + _id;
+        const url = serverUrl + '/tempRoute/reloadProfileEssentials/' + _id;
         axios.get(url).then((response) => {
             const result = response.data;
             const {message, status, data} = result;

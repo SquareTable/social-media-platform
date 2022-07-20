@@ -2337,7 +2337,7 @@ const Chat = ({route, navigation}) => {
 
             setLoadingOne(true)
             handleMessage(null);
-            const url = `${serverUrl}/user/searchpageusersearch/${val}`;
+            const url = `${serverUrl}/tempRoute/searchpageusersearch/${val}`;
             submitting = true;
             axios.get(url).then((response) => {
                 const result = response.data;

@@ -51,7 +51,7 @@ const ProfileStats = ({navigation, route}) => {
             let toAddToList = [];
             for (let i = 0; i < userLoadMax; i++) {
                 if ((listItems.length + i) < followers.length) {
-                    let url = serverUrl + '/user/getuserbyid/' + followers[(listItems.length + i)];
+                    let url = serverUrl + '/tempRoute/getuserbyid/' + followers[(listItems.length + i)];
                     try {
                         const response = await axios.get(url);
                         const result = response.data;
@@ -166,7 +166,7 @@ const ProfileStats = ({navigation, route}) => {
         console.log('Removing follower: ' + userPubIdToRemove)
         
         
-        const url = serverUrl + '/user/removefollowerfromaccount';
+        const url = serverUrl + '/tempRoute/removefollowerfromaccount';
         const toSend = {userID: _id, userToRemovePubId: userPubIdToRemove};
         try {
             const response = await axios.post(url, toSend);
@@ -201,7 +201,7 @@ const ProfileStats = ({navigation, route}) => {
         setBlockingUser(true)
         console.log('Blocking user: ' + userPubIdToBlock)
 
-        const url = serverUrl + '/user/blockaccount';
+        const url = serverUrl + '/tempRoute/blockaccount';
         const toSend = {userID: _id, userToBlockPubId: userPubIdToBlock};
         try {
             const response = await axios.post(url, toSend);
@@ -286,7 +286,7 @@ const ProfileStats = ({navigation, route}) => {
                                 }
                             }
                     
-                            const url = `${serverUrl}/user/toggleFollowOfAUser`;
+                            const url = `${serverUrl}/tempRoute/toggleFollowOfAUser`;
                             const toSend = {userId: _id, userToFollowPubId: userPubId};
                             try {
                                 const response = await axios.post(url, toSend);
@@ -409,7 +409,7 @@ function ProfileStats_FollowingItem({item, index, setListItems, UnfollowPrivateA
             }
         }
 
-        const url = `${serverUrl}/user/toggleFollowOfAUser`;
+        const url = `${serverUrl}/tempRoute/toggleFollowOfAUser`;
         const toSend = {userId: _id, userToFollowPubId: userPubId};
         try {
             const response = await axios.post(url, toSend);

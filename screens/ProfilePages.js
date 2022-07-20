@@ -270,7 +270,7 @@ const ProfilePages = ({ route, navigation }) => {
     const [userNotFound, setUserNotFound] = useState(false);
 
     const getFollowersEtc = () => {
-        const url = `${serverUrl}/user/reloadUsersDetails/${pubId}/${secondId}`;
+        const url = `${serverUrl}/tempRoute/reloadUsersDetails/${pubId}/${secondId}`;
         changeToOne()
         
         axios.get(url).then((response) => {
@@ -367,7 +367,7 @@ const ProfilePages = ({ route, navigation }) => {
                     setChangingVotedImages(changingVotedImagesArray)
                     //Do rest
                     handleMessage(null, null, null);
-                    const url = serverUrl + "/user/upvoteimage";
+                    const url = serverUrl + "/tempRoute/upvoteimage";
 
                     var toSend = { userId: _id, imageId: imageId }
 
@@ -509,7 +509,7 @@ const ProfilePages = ({ route, navigation }) => {
                     setChangingVotedImages(changingVotedImagesArray)
                     //Do rest
                     handleMessage(null, null, null);
-                    const url = serverUrl + "/user/downvoteimage";
+                    const url = serverUrl + "/tempRoute/downvoteimage";
 
                     var toSend = { userId: _id, imageId: imageId }
 
@@ -651,7 +651,7 @@ const ProfilePages = ({ route, navigation }) => {
                     setChangingVotedPolls(changingVotedPollsArray)
                     //Do rest
                     handleMessage(null, null, null);
-                    const url = serverUrl + "/user/upvotepoll";
+                    const url = serverUrl + "/tempRoute/upvotepoll";
 
                     var toSend = { userId: _id, pollId: pollId }
 
@@ -793,7 +793,7 @@ const ProfilePages = ({ route, navigation }) => {
                     setChangingVotedPolls(changingVotedPollsArray)
                     //Do rest
                     handleMessage(null, null, null);
-                    const url = serverUrl + "/user/downvotepoll";
+                    const url = serverUrl + "/tempRoute/downvotepoll";
 
                     var toSend = { userId: _id, pollId: pollId }
 
@@ -935,7 +935,7 @@ const ProfilePages = ({ route, navigation }) => {
                     setChangingVotedThreads(changingVotedThreadsArray)
                     //Do rest
                     handleMessage(null, null, null);
-                    const url = serverUrl + "/user/upvotethread";
+                    const url = serverUrl + "/tempRoute/upvotethread";
 
                     var toSend = { userId: _id, threadId: threadId }
 
@@ -1078,7 +1078,7 @@ const ProfilePages = ({ route, navigation }) => {
                     setChangingVotedThreads(changingVotedThreadsArray)
                     //Do rest
                     handleMessage(null, null, null);
-                    const url = serverUrl + "/user/downvotethread";
+                    const url = serverUrl + "/tempRoute/downvotethread";
 
                     var toSend = { userId: _id, threadId: threadId }
 
@@ -1829,7 +1829,7 @@ const ProfilePages = ({ route, navigation }) => {
                 });
             }
 
-            const url = serverUrl + "/user/getImagesFromProfile";
+            const url = serverUrl + "/tempRoute/getImagesFromProfile";
 
             setLoadingPostsImage(true)
             axios.post(url, toSendProfileName).then((response) => {
@@ -2029,7 +2029,7 @@ const ProfilePages = ({ route, navigation }) => {
                 });
             }
 
-            const url = serverUrl + "/user/searchforpollposts";
+            const url = serverUrl + "/tempRoute/searchforpollposts";
 
             setLoadingPostsPoll(true)
             axios.post(url, toSendProfileName).then((response) => {
@@ -2174,7 +2174,7 @@ const ProfilePages = ({ route, navigation }) => {
                 });
             }
 
-            const url = `${serverUrl}/user/getthreadsfromprofile/${pubId}/${_id}`;
+            const url = `${serverUrl}/tempRoute/getthreadsfromprofile/${pubId}/${_id}`;
 
             setLoadingPostsThread(true)
             axios.get(url).then((response) => {
@@ -2251,7 +2251,7 @@ const ProfilePages = ({ route, navigation }) => {
             }
 
             handleMessage(null);
-            const url = `${serverUrl}/user/findcategoryfromprofile/${pubId}/${_id}`;
+            const url = `${serverUrl}/tempRoute/findcategoryfromprofile/${pubId}/${_id}`;
             setLoadingPostsCategory(true)
             axios.get(url).then((response) => {
                 const result = response.data;
@@ -2717,7 +2717,7 @@ const ProfilePages = ({ route, navigation }) => {
     const toggleFollowOfAUser = () => {
         if (storedCredentials) {
             setTogglingFollow(true)
-            const url = `${serverUrl}/user/toggleFollowOfAUser`;
+            const url = `${serverUrl}/tempRoute/toggleFollowOfAUser`;
             axios.post(url, {userId: _id, userToFollowPubId: pubId}).then((response) => {
                 const result = response.data;
                 const { message, status, data } = result;

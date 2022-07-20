@@ -46,7 +46,7 @@ const MultiFactorAuthentication = ({navigation}) => {
 
     const checkAuthenticationFactors = () => {
         setLoading(true);
-        const url = serverUrl + '/user/getAuthenticationFactorsEnabled/' + _id;
+        const url = serverUrl + '/tempRoute/getAuthenticationFactorsEnabled/' + _id;
         axios.get(url).then(response => {
             const result = response.data;
             const {message, status, data} = result;

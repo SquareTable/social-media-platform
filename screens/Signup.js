@@ -94,13 +94,13 @@ const Signup = ({navigation, route}) => {
 
         axios.post(url, credentials).then((response) => { 
             const result = response.data;
-            const {message, status, data} = result;
+            const {message, status, data, token, refreshToken} = result;
 
             
             if (status !== 'SUCCESS') {
                 handleMessage(message,status);
             } else {
-                persistLogin({...data}, message, status);
+                persistLogin({...data}, message, status, {token: token, refreshToken: refreshToken});
             }
             setSubmitting(false);
 
@@ -116,7 +116,8 @@ const Signup = ({navigation, route}) => {
         setMessageType(type);
     }
 
-    const persistLogin = (credentials, message, status) => {
+    const persistLogin = async (credentials, message, status, tokens) => {
+        await storeJWT({webToken: tokens.token, refreshToken: tokens.refreshToken}, credentials._id)
         let credentialsToUse = credentials;
         var temp = allCredentialsStoredList;
         credentialsToUse.profilePictureUri = SocialSquareLogo_B64_png

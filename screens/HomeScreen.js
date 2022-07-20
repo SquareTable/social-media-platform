@@ -974,7 +974,7 @@ const HomeScreen = ({navigation, route}) => {
         console.log("Post pressed")
         setUploadingText('Uploading photo post...')
         setUploading(true)
-        const url = serverUrl + '/user/postImage';
+        const url = serverUrl + '/tempRoute/postImage';
 
         axios.post(url, formData, {
             headers: {
@@ -1008,7 +1008,7 @@ const HomeScreen = ({navigation, route}) => {
         setUploadingText('Uploading poll post...')
         setUploading(true)
         console.log(pollValues)
-        const url = serverUrl + '/user/createpollpost';
+        const url = serverUrl + '/tempRoute/createpollpost';
 
         axios.post(url, pollValues).then((response) => {
             const result = response.data;
@@ -1037,7 +1037,7 @@ const HomeScreen = ({navigation, route}) => {
         setUploading(true)
         if (selectFormat == "Text") {
             console.log("Text Format")
-            const url = serverUrl + '/user/posttextthread';
+            const url = serverUrl + '/tempRoute/posttextthread';
             var toSend = {creatorId: _id, threadTitle: credentials.threadTitle, threadSubtitle: credentials.threadSubtitle, threadTags: credentials.threadTags, threadCategory: credentials.selectedCategory, threadBody: credentials.threadBody, threadNSFW: credentials.threadNSFW, threadNSFL: credentials.threadNSFL, sentAllowScreenShots: credentials.sentAllowScreenShots}
             console.log(toSend)
             axios.post(url, toSend).then((response) => {
@@ -1082,7 +1082,7 @@ const HomeScreen = ({navigation, route}) => {
             console.log(formData);
             
             //post
-            const url = serverUrl + '/user/postimagethread';
+            const url = serverUrl + '/tempRoute/postimagethread';
             axios.post(url, formData, {
                 headers: {
                     Accept: 'application/json',
@@ -1129,7 +1129,7 @@ const HomeScreen = ({navigation, route}) => {
             formData.append("sentAllowScreenShots", credentials.sentAllowScreenShots)
             console.log(formData);
 
-            const url = serverUrl + '/user/postcategorywithimage';
+            const url = serverUrl + '/tempRoute/postcategorywithimage';
             
             axios.post(url, formData, {
                 headers: {
@@ -1156,7 +1156,7 @@ const HomeScreen = ({navigation, route}) => {
                 setErrorOccuredWhileUploading(true);
             })
         } else {
-            const url = serverUrl + '/user/postcategorywithoutimage';
+            const url = serverUrl + '/tempRoute/postcategorywithoutimage';
             const toSend = {creatorId: _id, categoryTitle: credentials.categoryTitle, categoryDescription: credentials.categoryDescription, categoryTags: credentials.categoryTags, categoryNSFW: credentials.categoryNSFW, categoryNSFL: credentials.categoryNSFL, sentAllowScreenShots: credentials.sentAllowScreenShots}
             console.log(toSend)
             axios.post(url, toSend).then((response) => {
@@ -1367,7 +1367,7 @@ const HomeScreen = ({navigation, route}) => {
         if (storedCredentials && allCredentialsStoredList && allCredentialsStoredList.length > 0) {
             logoPressedTimes.current = 0;
             
-            const url = serverUrl + '/user/earnSpecialBadge';
+            const url = serverUrl + '/tempRoute/earnSpecialBadge';
             const toSend = {userId: _id, badgeEarnt: "homeScreenLogoPressEasterEgg"};
             axios.post(url, toSend).then((response) => {
                 const result = response.data;
