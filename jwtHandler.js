@@ -31,11 +31,11 @@ export const setAuthAsHeaders = async (userId) => {
 export const storeJWT = async (tokens, userId) => {
     if (tokens.webToken !== "") {
         await SecureStore.setItemAsync(userId + '-auth-web-token', tokens.webToken)
-        console.log("Set webToken: " + JSON.stringify(tokens.webToken))
+        console.log("Set: " + userId + '-auth-web-token'+ JSON.stringify(tokens.webToken))
     }
     if (tokens.refreshToken !== "") {
-        await SecureStore.setItemAsync(userId + '-auth-refresh-token', tokens.refreshToken)
-        console.log("Set refreshToken: " + JSON.stringify(tokens.refreshToken))
+        await SecureStore.setItemAsync(userId + "-auth-refresh-token", tokens.refreshToken)
+        console.log("Set: " + userId + "-auth-refresh-token" + JSON.stringify(tokens.refreshToken))
     }
     await setAuthAsHeaders(userId)
     return
@@ -52,15 +52,19 @@ axios.interceptors.response.use((response) => {
         //setAuthAsHeaders() // why not // cant do anymore since userid is used in the keys for multiple accounts
     } else if (status == 403) {
         if (error.response.data.message == "Token generated.") {
+            console.log("New token generated.")
             //refresh occured so repeat last request
             let token = error.response.data.token
             const forAsync = async () => {
                 await storeJWT({webToken: token, refreshToken: ""}, error.response.data.userId)
-                return axios.request(error.config);
+                let configOfOriginal = error.config;
+                delete configOfOriginal.headers["auth-web-token"]; // it will use from defaults so the new one bc the await above
+                return axios.request(configOfOriginal);
             }
             forAsync()
         } else {
             console.log("Invalid token, should only be refresh token that sends this as a response so new login required.")
+            return Promise.reject(error) // for now
             //for logout or smth
         }
     } else {
