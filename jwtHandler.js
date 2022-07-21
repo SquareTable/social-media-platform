@@ -54,21 +54,28 @@ axios.interceptors.response.use((response) => {
         if (error.response.data.message == "Token generated.") {
             console.log("New token generated.")
             //refresh occured so repeat last request
-            let token = error.response.data.token
+            let token = error.response.data.token;
             const forAsync = async () => {
                 await storeJWT({webToken: token, refreshToken: ""}, error.response.data.userId)
                 let configOfOriginal = error.config;
+                //console.log("Config of og:")
+                //console.log(configOfOriginal)
                 delete configOfOriginal.headers["auth-web-token"]; // it will use from defaults so the new one bc the await above
-                return axios.request(configOfOriginal);
+                //console.log("Config of og new header:")
+                //console.log(configOfOriginal)
+                let response = axios.request(configOfOriginal).then(response => {
+                    return response;
+                })
+                return response;
             }
-            forAsync()
+            let response = forAsync()
+            return response;
         } else {
-            console.log("Invalid token, should only be refresh token that sends this as a response so new login required.")
+            console.log("Invalid refresh token, should only be refresh token that sends this as a response so new login required.")
             return Promise.reject(error) // for now
             //for logout or smth
         }
     } else {
-        Promise.reject(error) //let continue as normal
+        return Promise.reject(error) //let continue as normal
     }
-   return Promise.reject(error)
 });

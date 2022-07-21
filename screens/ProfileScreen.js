@@ -1862,6 +1862,8 @@ const Welcome = ({navigation, route}) => {
 
             setLoadingPostsImage(true)
             axios.post(url, toSendProfileName).then((response) => {
+                console.log("Response here in post.")
+                console.log(response)
                 const result = response.data;
                 const {message, status, data} = result;
 
