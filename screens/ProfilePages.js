@@ -236,11 +236,13 @@ const ProfilePages = ({ route, navigation }) => {
     const ReportProfile_ContentThatShouldNotBePosted_Opacity = useRef(new Animated.Value(0)).current;
     const ReportProfile_PretendingToBeSomeoneElse_Opacity = useRef(new Animated.Value(0)).current;
     const ReportProfile_MayBeUnder13_Opacity = useRef(new Animated.Value(0)).current;
+    const ReportProfile_ReportSuccess_Opacity = useRef(new Animated.Value(0)).current; 
     const ProfileOptionsViewOpen = useRef(false);
     const ReportProfileOptionsViewOpen = useRef(false);
     const ReportProfileOptionsView_ContentThatShouldNotBePosted_Open = useRef(false);
     const ReportProfileOptionsView_MayBeUnder13_Open = useRef(false);
     const ReportProfileOptionsView_PretendingToBeSomeoneElse_Open = useRef(false);
+    const ReportProfileOptionsView_ReportSuccess_Open = useRef(false);
     const PreventTouchEventsViewZIndex = useRef(new Animated.Value(-10)).current;
     // double tap for ImageItem
     const ScaleUpvoteImageAmount = useRef(new Animated.Value(0.5)).current;
@@ -2435,6 +2437,31 @@ const ProfilePages = ({ route, navigation }) => {
         changeReportProfilesOptionsView();
     }
 
+    const submitReportOfAccount = (reportType) => {
+        axios.post(serverUrl + '/tempRoute/reportUser', {reportType: reportType, reporterId: storedCredentials._id, reporteePubId: pubId}).then(response => {
+            const result = response.data;
+            const { message, status } = result;
+            
+            if (status !== "SUCCESS") {
+                console.log("FAILED: " + message)
+                handleMessage(message, "FAILED")
+            } else {
+                console.log("SUCCESS: " + message)
+                changeReportProfiles_ReportSuccess
+                ReportProfileOptionsView_PretendingToBeSomeoneElse_Open.current = false;
+                ReportProfileOptionsViewOpen.current = false;
+                ReportProfileOptionsView_ContentThatShouldNotBePosted_Open.current = false;
+                ReportProfileOptionsView_PretendingToBeSomeoneElse_Open.current = false;
+                ReportProfileOptionsView_MayBeUnder13_Open.current = false;
+            }
+
+        }).catch(error => {
+            console.log("An error occured while reporting user.")
+            console.log(error)
+            handleMessage("Error occured while reporting user.", "FAILED")
+        })
+    }
+
     const changeReportProfilesOptionsView = () => {
         if (ReportProfileOptionsViewOpen.current == true) {
             changeProfilesOptionsView()
@@ -2526,6 +2553,26 @@ const ProfilePages = ({ route, navigation }) => {
                 useNativeDriver: 'true'
             }).start()
             ReportProfileOptionsView_MayBeUnder13_Open.current = true;
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        }
+    }
+
+    const changeReportProfiles_ReportSuccess = () => {
+        if (ReportProfileOptionsView_ReportSuccess_Open.current == true) {
+            Animated.timing(ReportProfile_ReportSuccess_Opacity, {
+                toValue: 0,
+                duration: 1,
+                useNativeDriver: 'true'
+            }).start()
+            ReportProfileOptionsView_ReportSuccess_Open.current = false;
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        } else {
+            Animated.timing(ReportProfile_ReportSuccess_Opacity, {
+                toValue: 1,
+                duration: 1,
+                useNativeDriver: 'true'
+            }).start()
+            ReportProfileOptionsView_ReportSuccess_Open.current = true;
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
         }
     }
@@ -2836,38 +2883,38 @@ const ProfilePages = ({ route, navigation }) => {
                     <ReportProfileOptionsViewButtons padding={true} paddingAmount={'100px'}greyButton={true} onPress={changeReportProfiles_ContentThatShouldNotBePosted_OptionsView}>
                         <ReportProfileOptionsViewButtonsText greyButton={true}>Back</ReportProfileOptionsViewButtonsText>
                     </ReportProfileOptionsViewButtons>
-                    <ScrollView style={{width: '100%'}}>
-                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                    <ScrollView style={{width: '100%', height: '100%'}}>
+                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => submitReportOfAccount({topic: "Content", subTopic: "Spam"})}>
                             <ReportProfileOptionsViewButtonsText redButton={true}>It's spam</ReportProfileOptionsViewButtonsText>
                         </ReportProfileOptionsViewButtons>
-                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => submitReportOfAccount({topic: "Content", subTopic: "Nudity/Sexual"})}>
                             <ReportProfileOptionsViewButtonsText redButton={true}>Nudity or sexual activity</ReportProfileOptionsViewButtonsText>
                         </ReportProfileOptionsViewButtons> 
-                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => submitReportOfAccount({topic: "Content", subTopic: "Don't Like"})}>
                             <ReportProfileOptionsViewButtonsText redButton={true}>I just don't like it</ReportProfileOptionsViewButtonsText>
                         </ReportProfileOptionsViewButtons> 
-                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => submitReportOfAccount({topic: "Content", subTopic: "Hate"})}>
                             <ReportProfileOptionsViewButtonsText redButton={true}>Hate speech or symbols</ReportProfileOptionsViewButtonsText>
                         </ReportProfileOptionsViewButtons> 
-                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => submitReportOfAccount({topic: "Content", subTopic: "SelfHarm"})}>
                             <ReportProfileOptionsViewButtonsText redButton={true}>Suicide, self-injury or eating disorders</ReportProfileOptionsViewButtonsText>
                         </ReportProfileOptionsViewButtons> 
-                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => submitReportOfAccount({topic: "Content", subTopic: "Illegal/Regulated goods"})}>
                             <ReportProfileOptionsViewButtonsText redButton={true}>Sale of illegal or regulated goods</ReportProfileOptionsViewButtonsText>
                         </ReportProfileOptionsViewButtons> 
-                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => submitReportOfAccount({topic: "Content", subTopic: "Violence/Dangerous"})}>
                             <ReportProfileOptionsViewButtonsText redButton={true}>Violence or dangerous organizations</ReportProfileOptionsViewButtonsText>
                         </ReportProfileOptionsViewButtons> 
-                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => submitReportOfAccount({topic: "Content", subTopic: "Bullying/Harassment"})}>
                             <ReportProfileOptionsViewButtonsText redButton={true}>Bullying or harassment</ReportProfileOptionsViewButtonsText>
                         </ReportProfileOptionsViewButtons> 
-                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => submitReportOfAccount({topic: "Content", subTopic: "Intellectual property violation"})}>
                             <ReportProfileOptionsViewButtonsText redButton={true}>Intellectual property violation</ReportProfileOptionsViewButtonsText>
                         </ReportProfileOptionsViewButtons> 
-                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => submitReportOfAccount({topic: "Content", subTopic: "Scam/Fraud"})}>
                             <ReportProfileOptionsViewButtonsText redButton={true}>Scam or fraud</ReportProfileOptionsViewButtonsText>
                         </ReportProfileOptionsViewButtons> 
-                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => submitReportOfAccount({topic: "Content", subTopic: "False Info"})}>
                             <ReportProfileOptionsViewButtonsText redButton={true}>False information</ReportProfileOptionsViewButtonsText>
                         </ReportProfileOptionsViewButtons>
                     </ScrollView>
@@ -2881,7 +2928,7 @@ const ProfilePages = ({ route, navigation }) => {
                         <ReportProfileOptionsViewButtonsText greyButton={true}>Back</ReportProfileOptionsViewButtonsText>
                     </ReportProfileOptionsViewButtons>
                     <Text style={{color: colors.tertiary, fontSize: 18, textAlign: 'center', marginTop: 25, marginBottom: 10}}>Everyone must be at least 13 to have a SocialSquare account. In some jurisdictions, this age limit may be higher. If you would like to report an account because it belongs to someone under the age of 13, or someone is impresonating your child who's under 13, please press the report button.</Text>
-                    <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                    <ReportProfileOptionsViewButtons redButton={true} onPress={() => submitReportOfAccount({topic: "Age", subTopic: "Underage"})}>
                         <ReportProfileOptionsViewButtonsText redButton={true}>Send report</ReportProfileOptionsViewButtonsText>
                     </ReportProfileOptionsViewButtons>
                 </ReportProfileOptionsView>
@@ -2893,20 +2940,29 @@ const ProfilePages = ({ route, navigation }) => {
                     <ReportProfileOptionsViewButtons greyButton={true} onPress={changeReportProfiles_PretendingToBeSomeoneElse_OptionsView}>
                         <ReportProfileOptionsViewButtonsText greyButton={true}>Back</ReportProfileOptionsViewButtonsText>
                     </ReportProfileOptionsViewButtons>
-                    <ScrollView style={{width: '100%'}}>
-                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                    <ScrollView style={{width: '100%', height: '100%'}}>
+                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => submitReportOfAccount({topic: "Impersonation", subTopic: "Of Reporter"})}>
                             <ReportProfileOptionsViewButtonsText redButton={true}>This account is pretending to be me</ReportProfileOptionsViewButtonsText>
                         </ReportProfileOptionsViewButtons> 
-                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => submitReportOfAccount({topic: "Impersonation", subTopic: "Of Someone Reporter Knows"})}>
                             <ReportProfileOptionsViewButtonsText redButton={true}>This account is pretending to be someone I know</ReportProfileOptionsViewButtonsText>
                         </ReportProfileOptionsViewButtons> 
-                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => submitReportOfAccount({topic: "Impersonation", subTopic: "Celebrity/Public"})}>
                             <ReportProfileOptionsViewButtonsText redButton={true}>This account is pretending to be a celebrity or public figure</ReportProfileOptionsViewButtonsText>
                         </ReportProfileOptionsViewButtons> 
-                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => {alert("Coming soon")}}>
+                        <ReportProfileOptionsViewButtons redButton={true} onPress={() => submitReportOfAccount({topic: "Impersonation", subTopic: "Business/Organisation"})}>
                             <ReportProfileOptionsViewButtonsText redButton={true}>This account is pretending to be a business or organisation</ReportProfileOptionsViewButtonsText>
                         </ReportProfileOptionsViewButtons> 
                     </ScrollView>
+                </ReportProfileOptionsView>
+            </Animated.View>
+            <Animated.View style={{opacity: ReportProfile_ReportSuccess_Opacity, zIndex: ReportProfile_ReportSuccess_Opacity.interpolate({inputRange: [0, 1], outputRange: [-10, 5]})}}>
+                <ReportProfileOptionsView style={{backgroundColor: colors.primary}} viewHidden={false}>
+                    <ReportProfileOptionsViewText style={{color: colors.tertiary}}>{profilesName} reported</ReportProfileOptionsViewText>
+                    <ReportProfileOptionsViewSubtitleText style={{color: colors.tertiary}}>Thanks, our moderators will try to review your report.</ReportProfileOptionsViewSubtitleText>
+                    <ReportProfileOptionsViewButtons greyButton={true} onPress={changeReportProfiles_ReportSuccess}>
+                        <ReportProfileOptionsViewButtonsText greyButton={true}>Back</ReportProfileOptionsViewButtonsText>
+                    </ReportProfileOptionsViewButtons>
                 </ReportProfileOptionsView>
             </Animated.View>
             <Animated.View style={{paddingTop: StatusBarHeight - 10, backgroundColor: colors.primary, borderColor: colors.borderColor, borderBottomWidth: 0, alignItems: 'center', opacity: TopProfileBarFadeAnim, zIndex: TopProfileBarFadeAnim.interpolate({inputRange: [0, 1], outputRange: [-10, 100]}), position: 'absolute', top: 0, width: '100%', flexDirection: 'column'}}>
