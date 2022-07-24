@@ -2587,22 +2587,22 @@ const Welcome = ({navigation, route}) => {
     }
 
     const BadgesArea = (badges) => {
-        if (badges.length > 0) {
+        if (badges?.length > 0) {
             return (
                 <ProfileBadgesView onPress={() => navigation.navigate("AccountBadges", {name: name, displayName: displayName, badgesObject: badges, profilePictureUri: profilePictureUri})} style={{borderColor: colors.primary}}>
-                    {badges.length == 1 ?
+                    {badges?.length == 1 ?
                         <>
                             <ProfileBadgeItemUnderline style={{backgroundColor: colors.tertiary}}/>
                             {GetBadgeIcon(badges[0])}
                         </>
-                    : badges.length == 2 ?
+                    : badges?.length == 2 ?
                         <>
                             <ProfileBadgeItemUnderline style={{backgroundColor: colors.tertiary}}/>
                             {GetBadgeIcon(badges[0])}
                             <ProfileBadgeItemUnderline style={{backgroundColor: colors.tertiary, left: 31}}/>
                             {GetBadgeIcon(badges[1])}
                         </>
-                    : badges.length == 3 ?
+                    : badges?.length == 3 ?
                         <>
                             <ProfileBadgeItemUnderline style={{backgroundColor: colors.tertiary}}/>
                             {GetBadgeIcon(badges[0])}
@@ -2611,7 +2611,7 @@ const Welcome = ({navigation, route}) => {
                             <ProfileBadgeItemUnderline style={{backgroundColor: colors.tertiary, left: 62}}/>
                             {GetBadgeIcon(badges[2])}
                         </>
-                    : badges.length == 4 ?
+                    : badges?.length == 4 ?
                         <>
                             <ProfileBadgeItemUnderline style={{backgroundColor: colors.tertiary}}/>
                             {GetBadgeIcon(badges[0])}
@@ -2788,14 +2788,14 @@ const Welcome = ({navigation, route}) => {
                                     <TouchableOpacity onPress={() => {navigation.navigate('ProfileStats', {followers: followers, type: 'Followers'})}} style={{alignItems: 'center'}}>
                                         <SubTitle style={{color: colors.tertiary}} welcome={true}> Followers </SubTitle>
                                         <ProfIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/114-user.png')}/>
-                                        <SubTitle style={{color: colors.tertiary}} welcome={true}> {followers.length} </SubTitle>
+                                        <SubTitle style={{color: colors.tertiary}} welcome={true}> {followers?.length} </SubTitle>
                                     </TouchableOpacity>
                                 </ProfileHorizontalViewItem>
                                 <ProfileHorizontalViewItem profCenterIcon={true}>
                                     <TouchableOpacity onPress={() => {navigation.navigate('ProfileStats', {followers: following, type: 'Following'})}} style={{alignItems: 'center'}}>
                                         <SubTitle style={{color: colors.tertiary}} welcome={true}> Following </SubTitle>
                                         <ProfIcons style={{tintColor: colors.tertiary}} source={require('./../assets/icomoon-icons/IcoMoon-Free-master/PNG/64px/115-users.png')}/>
-                                        <SubTitle style={{color: colors.tertiary}} welcome={true}> {following.length} </SubTitle>
+                                        <SubTitle style={{color: colors.tertiary}} welcome={true}> {following?.length} </SubTitle>
                                     </TouchableOpacity>
                                 </ProfileHorizontalViewItem>
                                 <ProfileHorizontalViewItem profRightIcon={true}>

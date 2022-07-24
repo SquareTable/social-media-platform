@@ -30,6 +30,8 @@ import NetInfo from '@react-native-community/netinfo';
 import SocialSquareLogo_B64_png from '../assets/SocialSquareLogo_Base64_png.js';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import {storeJWT} from './../jwtHandler'
+
 const VerifyEmailCodeScreen = ({route, navigation}) => {
     const {colors, dark} = useTheme();
     const {task, email, fromAddress, username, userID, secondId} = route.params;
