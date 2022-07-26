@@ -172,7 +172,7 @@ const SecuritySettingsScreen = ({navigation}) => {
                 </ChatScreen_Title>
                 <ConfirmLogoutView style={{backgroundColor: colors.primary, height: 500}} viewHidden={destroyLocalDataMenuHidden}>
                     <ConfirmLogoutText style={{color: colors.tertiary, fontSize: 24}}>Are you sure you want to delete all locally stored data?</ConfirmLogoutText>
-                    <ConfirmLogoutText style={{color: colors.tertiary, fontSize: 14}}>Any data that is not on SocialSquare's servers will be destroyed and will not be able to be recovered. By pressing confirm you are agreeing to take the risk that any data not uploaded will be lost. For destruction of server data AND local data please go to the GDPR settings screen.</ConfirmLogoutText>
+                    <ConfirmLogoutText style={{color: colors.tertiary, fontSize: 14}}>Any data stored on your device will be removed. Data stored on a SocialSquare server will not be removed however.</ConfirmLogoutText>
                     <ConfirmLogoutButtons cancelButton={true} onPress={() => {setDestroyLocalDataMenuHidden(true)}}>
                         <ConfirmLogoutButtonText cancelButton={true}>Cancel</ConfirmLogoutButtonText>
                     </ConfirmLogoutButtons> 
@@ -199,28 +199,36 @@ const SecuritySettingsScreen = ({navigation}) => {
                             <SettingsItemImage style={{tintColor: colors.tertiary}} source={require('./../assets/app_icons/settings.png')}/>
                             <SettingsItemText style={{color: colors.tertiary}}>Login Attempts</SettingsItemText>
                         </SettingsPageItemTouchableOpacity>
-                        <View style={{flex: 1, flexDirection: 'row'}}>
-                            <View style={{flexDirection: 'column', flex: 1}}>
-                                <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10, textAlign: 'center'}}>Show a placeholder screen when leaving SocialSquare to hide screen contents</Text>
-                                <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10, textAlign: 'center'}}>{Platform.OS == 'ios' ? 'Lock SocialSquare with FaceID, TouchID, or password' : Platform.OS == 'android' ? 'Lock SocialSquare with fingerprint, facial, or iris recognition or password.' : 'Error: This platform is not supported'}</Text>
-                            </View>
-                            <View style={{flex: 0.3, flexDirection: 'column', alignItems: 'center'}}>
-                                <Switch
-                                    trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
-                                    thumbColor={showPlaceholderScreen ? dark ? colors.teritary : colors.primary : colors.teritary}
-                                    ios_backgroundColor={colors.primary}
-                                    onValueChange={() => {setContextAndAsyncStorage('ShowPlaceholder')}}
-                                    value={showPlaceholderScreen}
-                                />
-                                {Platform.OS == 'ios' || Platform.OS == 'android' ?
+                        <View>
+                            <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+                                <View style={{flex: 1}}>
+                                    <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10, textAlign: 'center'}}>Show a placeholder screen when leaving SocialSquare to hide screen contents</Text>
+                                </View>
+                                <View style={{flex: 0.2}}>
                                     <Switch
                                         trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
-                                        thumbColor={lockSocialSquare ? dark ? colors.teritary : colors.primary : colors.teritary}
+                                        thumbColor={showPlaceholderScreen ? dark ? colors.teritary : colors.primary : colors.teritary}
                                         ios_backgroundColor={colors.primary}
-                                        onValueChange={() => {setContextAndAsyncStorage('LockSocialSquare')}}
-                                        value={lockSocialSquare}
+                                        onValueChange={() => {setContextAndAsyncStorage('ShowPlaceholder')}}
+                                        value={showPlaceholderScreen}
                                     />
-                                : null}
+                                </View>
+                            </View>
+                            <View style={{flexDirection: 'row', justifyContent: 'center', alignItems: 'center'}}>
+                                <View style={{flex: 1}}>
+                                    <Text style={{color: colors.tertiary, fontSize: fontSizeForText, fontWeight: 'bold', marginVertical: 10, textAlign: 'center'}}>{Platform.OS == 'ios' ? 'Lock SocialSquare with FaceID, TouchID, or password' : Platform.OS == 'android' ? 'Lock SocialSquare with fingerprint, facial, or iris recognition or password.' : 'Error: This platform is not supported'}</Text>
+                                </View>
+                                <View style={{flex: 0.2}}>
+                                    {Platform.OS == 'ios' || Platform.OS == 'android' ?
+                                        <Switch
+                                            trackColor={{false: colors.borderColor, true: colors.darkestBlue}}
+                                            thumbColor={lockSocialSquare ? dark ? colors.teritary : colors.primary : colors.teritary}
+                                            ios_backgroundColor={colors.primary}
+                                            onValueChange={() => {setContextAndAsyncStorage('LockSocialSquare')}}
+                                            value={lockSocialSquare}
+                                        />
+                                    : null}
+                                </View>
                             </View>
                         </View>
                         <TouchableOpacity disabled={!destroyLocalDataMenuHidden} onPress={() => {setDestroyLocalDataMenuHidden(false)}} style={{borderColor: colors.borderColor, borderWidth: 2, borderRadius: 20, paddingVertical: 30, alignItems: 'center', marginBottom: 20}}>
